@@ -235,6 +235,12 @@ public class AllAppsTransitionController
      */
     public void setProgress(float progress) {
         mProgress = progress;
+        if (mLauncher.isMergeAppDrawerToWorkspace()) {
+            getAppsViewProgressTranslationY().setValue(0f);
+            getAppsViewProgressAlpha().setValue(1f);
+            mLauncher.onAllAppsTransition(1 - progress);
+            return;
+        }
         boolean fromBackground =
                 mLauncher.getStateManager().getCurrentStableState() == BACKGROUND_APP;
         // Allow apps panel to shift the full screen if coming from another app.
@@ -432,6 +438,17 @@ public class AllAppsTransitionController
      * Updates the property for the provided state
      */
     public void setAlphas(LauncherState state, StateAnimationConfig config, PropertySetter setter) {
+        if (mLauncher.isMergeAppDrawerToWorkspace()) {
+            setter.setFloat(getAppsViewProgressAlpha(), MultiPropertyFactory.MULTI_PROPERTY_VALUE,
+                    1f, LINEAR);
+            setter.setFloat(getAppsViewPullbackAlpha(), MultiPropertyFactory.MULTI_PROPERTY_VALUE,
+                    1f, LINEAR);
+            if (mScrimView != null) {
+                mScrimView.setDrawingController(null);
+            }
+            return;
+        }
+
         int visibleElements = state.getVisibleElements(mLauncher);
         boolean hasAllAppsContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 

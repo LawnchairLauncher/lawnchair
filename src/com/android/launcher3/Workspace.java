@@ -81,6 +81,7 @@ import androidx.core.view.ViewCompat;
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellInfo;
@@ -719,13 +720,21 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // insert it before that.
         int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
         if (insertIndex < 0) {
+            insertIndex = mScreenOrder.indexOf(MERGED_APP_DRAWER_SCREEN_ID);
+        }
+        if (insertIndex < 0) {
             insertIndex = mScreenOrder.size();
         }
         insertNewWorkspaceScreen(screenId, insertIndex);
     }
 
     public void insertNewWorkspaceScreen(int screenId) {
-        insertNewWorkspaceScreen(screenId, getChildCount());
+        int insertIndex = getChildCount();
+        int mergedIndex = mScreenOrder.indexOf(MERGED_APP_DRAWER_SCREEN_ID);
+        if (mergedIndex >= 0) {
+            insertIndex = mergedIndex;
+        }
+        insertNewWorkspaceScreen(screenId, insertIndex);
     }
 
     public CellLayout insertNewWorkspaceScreen(int screenId, int insertIndex) {
@@ -847,13 +856,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         int panelCount = getPanelCount();
-        if (hasExtraEmptyScreens() || mScreenOrder.size() < panelCount) {
+        int pageCount = mScreenOrder.size();
+        if (mScreenOrder.contains(MERGED_APP_DRAWER_SCREEN_ID)) {
+            pageCount--;
+        }
+        if (hasExtraEmptyScreens() || pageCount < panelCount) {
             return;
         }
 
         SparseArray<CellLayout> finalScreens = new SparseArray<>();
 
-        int pageCount = mScreenOrder.size();
         // First we add the last page(s) to the finalScreens collection. The number of final pages
         // depends on the panel count.
         for (int pageIndex = pageCount - panelCount; pageIndex < pageCount; pageIndex++) {
@@ -880,7 +892,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             int newScreenId = mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)
                     ? EXTRA_EMPTY_SCREEN_SECOND_ID : EXTRA_EMPTY_SCREEN_ID;
             mWorkspaceScreens.put(newScreenId, screen);
-            mScreenOrder.add(newScreenId);
+            int insertIndex = mScreenOrder.indexOf(MERGED_APP_DRAWER_SCREEN_ID);
+            if (insertIndex >= 0) {
+                mScreenOrder.add(insertIndex, newScreenId);
+            } else {
+                mScreenOrder.add(newScreenId);
+            }
         }
     }
 
@@ -944,6 +961,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             stripEmptyScreens();
         }
 
+        ensureMergedAppDrawerScreen();
+
         persistCurrentScreenOrderSync();
 
         if (onComplete != null) {
@@ -992,7 +1011,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         mWorkspaceScreens.put(newScreenId, cl);
-        mScreenOrder.add(newScreenId);
+        int insertIndex = mScreenOrder.indexOf(MERGED_APP_DRAWER_SCREEN_ID);
+        if (insertIndex >= 0) {
+            mScreenOrder.add(insertIndex, newScreenId);
+        } else {
+            mScreenOrder.add(newScreenId);
+        }
         persistCurrentScreenOrderSync();
 
         return newScreenId;
@@ -1113,6 +1137,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         int total = mWorkspaceScreens.size();
         for (int i = 0; i < total; i++) {
             int id = mWorkspaceScreens.keyAt(i);
+            if (id == MERGED_APP_DRAWER_SCREEN_ID) {
+                continue;
+            }
             CellLayout cl = mWorkspaceScreens.valueAt(i);
             // FIRST_SCREEN_ID can never be removed.
             if (shouldPreserveEmptyScreenWhenStripping(
@@ -1144,7 +1171,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // We enforce at least one page (two pages on two panel home) to add new items to.
         // In the case that we remove the last such screen(s), we convert the last screen(s)
         // to the empty screen(s)
-        int minScreens = getPanelCount();
+        int minScreens = getPanelCount() + (mScreenOrder.contains(MERGED_APP_DRAWER_SCREEN_ID) ? 1 : 0);
 
         int pageShift = 0;
         for (int i = 0; i < removeScreens.size(); i++) {
@@ -1168,7 +1195,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                         // in a two panel scenario when there are only two empty pages left
                         : EXTRA_EMPTY_SCREEN_ID;
                 mWorkspaceScreens.put(extraScreenId, cl);
-                mScreenOrder.add(extraScreenId);
+                int insertIndex = mScreenOrder.indexOf(MERGED_APP_DRAWER_SCREEN_ID);
+                if (insertIndex >= 0) {
+                    mScreenOrder.add(insertIndex, extraScreenId);
+                } else {
+                    mScreenOrder.add(extraScreenId);
+                }
             }
         }
 
@@ -1458,7 +1490,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void setLauncherOverlay(LauncherOverlayTouchProxy overlay) {
         final EdgeEffectCompat newEffect;
         if (overlay == null) {
-            newEffect = new EdgeEffectCompat(getContext());
+            newEffect = EdgeEffectCompat.create(getContext(), this);
             mOverlayEdgeEffect = null;
         } else {
             newEffect = mOverlayEdgeEffect = new OverlayEdgeEffect(getContext(), overlay);
@@ -1503,6 +1535,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         updatePageAlphaValues();
         updatePageScrollValues();
         enableHwLayersOnVisiblePages();
+        updateMergedAppDrawerScroll(l);
     }
 
     public void showPageIndicatorAtCurrentScroll() {
@@ -1656,6 +1689,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWallpaperOffset.setWindowToken(getWindowToken());
         computeScroll();
         mLauncher.getStateManager().addStateListener(mAccessibilityDropListener);
+        ensureMergedAppDrawerScreen();
     }
 
     protected void onDetachedFromWindow() {
@@ -1677,6 +1711,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
         super.onLayout(changed, left, top, right, bottom);
         updatePageAlphaValues();
+        updateMergedAppDrawerScroll(getScrollX());
     }
 
     @Override
@@ -2023,6 +2058,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public boolean acceptDrop(DragObject d) {
         // If it's an external drop (e.g. from All Apps), check if it should be accepted
         CellLayout dropTargetLayout = mDropToLayout;
+        if (dropTargetLayout != null && getCellLayoutId(dropTargetLayout) == MERGED_APP_DRAWER_SCREEN_ID) {
+            return false;
+        }
         if (d.dragSource != this) {
             // Don't accept the drop if we're not over a valid drop target at time of drop
             if (dropTargetLayout == null) {
@@ -2816,6 +2854,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
 
+        if (layout != null && getCellLayoutId(layout) == MERGED_APP_DRAWER_SCREEN_ID) {
+            layout = null;
+        }
+
         // Update the current drop layout if the target changed
         if (layout != mDragTargetLayout) {
             setCurrentDropLayout(layout);
@@ -3369,13 +3411,124 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return screenId == EXTRA_EMPTY_SCREEN_ID || screenId == EXTRA_EMPTY_SCREEN_SECOND_ID;
     }
 
+    public boolean isMergedAppDrawerScreen(int screenId) {
+        return screenId == MERGED_APP_DRAWER_SCREEN_ID;
+    }
+
+    public void ensureMergedAppDrawerScreen() {
+        if (!mLauncher.isMergeAppDrawerToWorkspace()) {
+            removeMergedAppDrawerScreen();
+            return;
+        }
+        if (mLauncher.isWorkspaceLoading()) {
+            return;
+        }
+        CellLayout layout = mWorkspaceScreens.get(MERGED_APP_DRAWER_SCREEN_ID);
+        if (layout == null) {
+            DeviceProfile dp = mLauncher.getDeviceProfile();
+            if (FOLDABLE_SINGLE_PAGE.get() && dp.getDeviceProperties().isTwoPanels()) {
+                layout = (CellLayout) LayoutInflater.from(getContext()).inflate(
+                        R.layout.workspace_screen_foldable, this, false /* attachToRoot */);
+            } else {
+                layout = (CellLayout) LayoutInflater.from(getContext()).inflate(
+                        R.layout.workspace_screen, this, false /* attachToRoot */);
+            }
+            layout.setCellLayoutContainer(this);
+            mWorkspaceScreens.put(MERGED_APP_DRAWER_SCREEN_ID, layout);
+        }
+        if (!mScreenOrder.contains(MERGED_APP_DRAWER_SCREEN_ID)) {
+            mScreenOrder.add(MERGED_APP_DRAWER_SCREEN_ID);
+            addView(layout);
+        } else {
+            int currentIndex = mScreenOrder.indexOf(MERGED_APP_DRAWER_SCREEN_ID);
+            if (currentIndex != mScreenOrder.size() - 1) {
+                mScreenOrder.removeValue(MERGED_APP_DRAWER_SCREEN_ID);
+                mScreenOrder.add(MERGED_APP_DRAWER_SCREEN_ID);
+                removeView(layout);
+                addView(layout);
+            }
+        }
+        updatePageScrollValues();
+    }
+
+    public void removeMergedAppDrawerScreen() {
+        if (mWorkspaceScreens.containsKey(MERGED_APP_DRAWER_SCREEN_ID)) {
+            CellLayout layout = mWorkspaceScreens.get(MERGED_APP_DRAWER_SCREEN_ID);
+            removeView(layout);
+            mWorkspaceScreens.remove(MERGED_APP_DRAWER_SCREEN_ID);
+            mScreenOrder.removeValue(MERGED_APP_DRAWER_SCREEN_ID);
+            updatePageScrollValues();
+        }
+    }
+
+    public int getMergedAppDrawerPageIndex() {
+        if (!mLauncher.isMergeAppDrawerToWorkspace()) {
+            return -1;
+        }
+        return mScreenOrder.indexOf(MERGED_APP_DRAWER_SCREEN_ID);
+    }
+
+    private void updateMergedAppDrawerScroll(int scrollX) {
+        if (!mLauncher.isMergeAppDrawerToWorkspace()) {
+            return;
+        }
+        int mergedPageIndex = getMergedAppDrawerPageIndex();
+        if (mergedPageIndex <= 0) {
+            return;
+        }
+        int prevPageIndex = mergedPageIndex - 1;
+        int prevScroll = getScrollForPage(prevPageIndex);
+        int mergedScroll = getScrollForPage(mergedPageIndex);
+        int scrollRange = mergedScroll - prevScroll;
+
+        float progress = 0f;
+        if (scrollRange != 0) {
+            progress = (float) (scrollX - prevScroll) / scrollRange;
+        }
+        progress = Math.max(0f, Math.min(1f, progress));
+
+        int screenWidth = getWidth();
+        if (screenWidth <= 0) {
+            screenWidth = getResources().getDisplayMetrics().widthPixels;
+        }
+
+        boolean isRtl = Utilities.isRtl(getResources());
+        float dir = isRtl ? 1f : -1f;
+
+        ActivityAllAppsContainerView<?> appsView = mLauncher.getAppsView();
+        if (appsView != null) {
+            if (progress <= 0f) {
+                appsView.setVisibility(INVISIBLE);
+                appsView.setTranslationX(-dir * screenWidth);
+            } else {
+                appsView.setVisibility(VISIBLE);
+                appsView.setTranslationX(-dir * (1f - progress) * screenWidth);
+            }
+        }
+
+        Hotseat hotseat = mLauncher.getHotseat();
+        if (hotseat != null) {
+            hotseat.setTranslationX(dir * progress * screenWidth);
+        }
+
+        if (mPageIndicator != null) {
+            mPageIndicator.setTranslationX(dir * progress * screenWidth);
+        }
+
+        View scrimView = mLauncher.getScrimView();
+        if (scrimView instanceof app.lawnchair.views.LawnchairScrimView) {
+            ((app.lawnchair.views.LawnchairScrimView) scrimView).onMergedDrawerScroll(progress);
+        }
+    }
+
     private boolean isPageGroupMovable(int pageGroupStart) {
         int panelCount = getPanelCount();
         if (pageGroupStart < 0 || pageGroupStart + panelCount > mScreenOrder.size()) {
             return false;
         }
         for (int i = 0; i < panelCount; i++) {
-            if (isExtraEmptyScreen(mScreenOrder.get(pageGroupStart + i))) {
+            int screenId = mScreenOrder.get(pageGroupStart + i);
+            if (isExtraEmptyScreen(screenId) || screenId == MERGED_APP_DRAWER_SCREEN_ID) {
                 return false;
             }
         }
@@ -3500,7 +3653,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         IntArray persistableOrder = new IntArray();
         for (int i = 0; i < mScreenOrder.size(); i++) {
             int screenId = mScreenOrder.get(i);
-            if (!isExtraEmptyScreen(screenId)) {
+            if (!isExtraEmptyScreen(screenId) && screenId != MERGED_APP_DRAWER_SCREEN_ID) {
                 persistableOrder.add(screenId);
             }
         }
@@ -3579,6 +3732,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (!reordered.contains(existingId)) {
                 reordered.add(existingId);
             }
+        }
+        if (reordered.contains(MERGED_APP_DRAWER_SCREEN_ID)) {
+            reordered.removeValue(MERGED_APP_DRAWER_SCREEN_ID);
+            reordered.add(MERGED_APP_DRAWER_SCREEN_ID);
         }
         mScreenOrder.clear();
         mScreenOrder.addAll(reordered);

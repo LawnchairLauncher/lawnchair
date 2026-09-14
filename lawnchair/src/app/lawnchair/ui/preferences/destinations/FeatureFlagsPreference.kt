@@ -80,7 +80,7 @@ fun FeatureFlagsPreference(modifier: Modifier = Modifier) {
 
         preferenceCategory(
             "Workspace grid layout",
-            "To share your current workspace, use Lawnchair's backup and restore system.",
+            "To share your current workspace, use Sora Launcher's backup and restore system.",
         )
         item(key = "open_backup_system") {
             val navController = LocalNavController.current

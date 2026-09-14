@@ -61,7 +61,7 @@ import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.components.layout.TwoTabPreferenceLayout
+import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.GeneralCustomIconShapeCreator
 import com.android.launcher3.R
 
@@ -75,37 +75,13 @@ enum class ShapeRoute {
  * @return The list of all [IconShape]s each wrapped inside a [ListPreferenceEntry].
  */
 fun iconShapeEntries(context: Context): List<ListPreferenceEntry<IconShape>> {
-    val systemShape = IconShapeManager.getSystemIconShape(context)
     return listOf(
-        // Organized as seen in /lawnchair/res/values/strings.xml
-        ListPreferenceEntry(systemShape) { stringResource(id = R.string.icon_shape_system) },
         ListPreferenceEntry(IconShape.Circle) { stringResource(id = R.string.icon_shape_circle) },
-        ListPreferenceEntry(IconShape.Cylinder) { stringResource(id = R.string.icon_shape_cylinder) },
-        ListPreferenceEntry(IconShape.Diamond) { stringResource(id = R.string.icon_shape_diamond) },
-        ListPreferenceEntry(IconShape.Egg) { stringResource(id = R.string.icon_shape_egg) },
-        ListPreferenceEntry(IconShape.Hexagon) { stringResource(id = R.string.icon_shape_hexagon) },
-        ListPreferenceEntry(IconShape.Cupertino) { stringResource(id = R.string.icon_shape_cupertino) },
-        ListPreferenceEntry(IconShape.Octagon) { stringResource(id = R.string.icon_shape_octagon) },
-        ListPreferenceEntry(IconShape.Sammy) { stringResource(id = R.string.icon_shape_sammy) },
         ListPreferenceEntry(IconShape.RoundedSquare) { stringResource(id = R.string.icon_shape_rounded_square) },
-        ListPreferenceEntry(IconShape.SharpSquare) { stringResource(id = R.string.icon_shape_sharp_square) },
-        ListPreferenceEntry(IconShape.Square) { stringResource(id = R.string.icon_shape_square) },
         ListPreferenceEntry(IconShape.Squircle) { stringResource(id = R.string.icon_shape_squircle) },
-        ListPreferenceEntry(IconShape.Teardrop) { stringResource(id = R.string.icon_shape_teardrop) },
-        ListPreferenceEntry(IconShape.VerySunny) { stringResource(id = R.string.icon_shape_very_sunny) },
-        ListPreferenceEntry(IconShape.ComplexClover) { stringResource(id = R.string.icon_shape_complex_clover) },
-        ListPreferenceEntry(IconShape.FourSidedCookie) { stringResource(id = R.string.icon_shape_four_sided_cookie) },
-        ListPreferenceEntry(IconShape.SevenSidedCookie) { stringResource(id = R.string.icon_shape_seven_sided_cookie) },
-        ListPreferenceEntry(IconShape.Arch) { stringResource(id = R.string.icon_shape_arch) },
-        ListPreferenceEntry(IconShape.Cloudy) { stringResource(id = R.string.icon_shape_cloudy) },
-        ListPreferenceEntry(IconShape.Flower) { stringResource(id = R.string.icon_shape_flower) },
-        ListPreferenceEntry(IconShape.Heart) { stringResource(id = R.string.icon_shape_heart) },
-        ListPreferenceEntry(IconShape.Leaf) { stringResource(id = R.string.icon_shape_leaf) },
-        ListPreferenceEntry(IconShape.Meow) { stringResource(id = R.string.icon_shape_meow) },
-        ListPreferenceEntry(IconShape.Pebble) { stringResource(id = R.string.icon_shape_pebble) },
-        ListPreferenceEntry(IconShape.RoundedHexagon) { stringResource(id = R.string.icon_shape_roundedhexagon) },
-        ListPreferenceEntry(IconShape.Stretched) { stringResource(id = R.string.icon_shape_stretched) },
-        ListPreferenceEntry(IconShape.Vessel) { stringResource(id = R.string.icon_shape_vessel) },
+        // The continuous-curvature corner iOS uses. Folders follow it without
+        // anything further: LawnchairThemeManager reads one shape for both.
+        ListPreferenceEntry(IconShape.Cupertino) { stringResource(id = R.string.icon_shape_cupertino) },
     )
 }
 
@@ -114,73 +90,31 @@ fun ShapePreference(
     modifier: Modifier = Modifier,
     currentTab: ShapeRoute = ShapeRoute.APP_SHAPE,
 ) {
-    TwoTabPreferenceLayout(
+    val context = LocalContext.current
+    val entries = remember { iconShapeEntries(context) }
+    val shapeAdapter = preferenceManager2().iconShape.getAdapter()
+
+    PreferenceLayout(
         label = stringResource(id = R.string.icon_shape_label),
         backArrowVisible = !LocalIsExpandedScreen.current,
-        defaultPage = currentTab.ordinal,
-        firstPageLabel = stringResource(id = R.string.app_icon_shape_label),
-        firstPageContent = {
-            ShapeTabContent(currentTab = ShapeRoute.APP_SHAPE)
-        },
-        secondPageLabel = stringResource(id = R.string.folder_label),
-        secondPageContent = {
-            ShapeTabContent(currentTab = ShapeRoute.FOLDER_SHAPE)
-        },
         modifier = modifier,
-    )
-}
-
-@Composable
-private fun ShapeTabContent(currentTab: ShapeRoute) {
-    val context = LocalContext.current
-    val preferenceManager2 = preferenceManager2()
-    val entries = remember { iconShapeEntries(context) }
-    val shapeAdapter = when (currentTab) {
-        ShapeRoute.APP_SHAPE -> preferenceManager2.iconShape.getAdapter()
-        ShapeRoute.FOLDER_SHAPE -> preferenceManager2.folderShape.getAdapter()
-    }
-    val customShape by when (currentTab) {
-        ShapeRoute.APP_SHAPE -> preferenceManager2.customIconShape.asState()
-        ShapeRoute.FOLDER_SHAPE -> preferenceManager2.customFolderShape.asState()
-    }
-
-    PreferenceGroup(
-        heading = stringResource(id = R.string.custom),
     ) {
-        customShape?.let { shape ->
-            CustomIconShapePreferenceOption(
-                iconShapeAdapter = shapeAdapter,
-                customIconShape = shape,
-            )
-        }
-        ModifyCustomIconShapePreference(
-            customIconShape = customShape,
-            currentTab = currentTab,
-        )
-    }
-    PreferenceGroup(
-        heading = stringResource(id = R.string.presets),
-    ) {
-        entries.forEach { item ->
-            PreferenceTemplate(
-                title = { Text(item.label()) },
-                enabled = item.enabled,
-                startWidget = {
-                    RadioButton(
-                        selected = item.value == shapeAdapter.state.value,
-                        onClick = null,
-                        enabled = item.enabled,
-                    )
-                },
-                endWidget = {
-                    IconShapePreview(iconShape = item.value)
-                },
-                onClick = if (item.enabled) {
-                    { shapeAdapter.onChange(newValue = item.value) }
-                } else {
-                    null
-                },
-            )
+        PreferenceGroup {
+            entries.forEach { item ->
+                PreferenceTemplate(
+                    title = { Text(item.label()) },
+                    startWidget = {
+                        RadioButton(
+                            selected = item.value == shapeAdapter.state.value,
+                            onClick = null,
+                        )
+                    },
+                    endWidget = {
+                        IconShapePreview(iconShape = item.value)
+                    },
+                    onClick = { shapeAdapter.onChange(newValue = item.value) },
+                )
+            }
         }
     }
 }

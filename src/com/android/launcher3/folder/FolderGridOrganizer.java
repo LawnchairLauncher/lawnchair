@@ -39,8 +39,18 @@ public class FolderGridOrganizer {
     private final int mMaxItemsPerPage;
 
     private int mNumItemsInFolder;
+    /**
+     * How many items the folder icon's preview has room for.
+     *
+     * Four, for as long as a folder was always one cell. A folder given more
+     * cells lays its preview on a grid and can show more, so it says how many
+     * before asking for them.
+     */
+    private int mPreviewLimit = MAX_NUM_ITEMS_IN_PREVIEW;
     private int mCountX;
     private int mCountY;
+    private int mMinCountX = 0;
+    private int mMinCountY = 0;
     private boolean mDisplayingUpperLeftQuadrant = false;
     private static final int PREVIEW_MAX_ROWS = 2;
     private static final int PREVIEW_MAX_COLUMNS = 2;
@@ -81,6 +91,12 @@ public class FolderGridOrganizer {
         return this;
     }
 
+    /** Sets how many items the caller's preview can show. Never fewer than four. */
+    public FolderGridOrganizer setPreviewLimit(int limit) {
+        mPreviewLimit = Math.max(MAX_NUM_ITEMS_IN_PREVIEW, limit);
+        return this;
+    }
+
     public int getCountX() {
         return mCountX;
     }
@@ -91,6 +107,16 @@ public class FolderGridOrganizer {
 
     public int getMaxItemsPerPage() {
         return mMaxItemsPerPage;
+    }
+
+    /** Sets minimum grid columns and rows (e.g. forced 3x3 in Centered mode). */
+    public FolderGridOrganizer setMinGridSize(int minX, int minY) {
+        if (mMinCountX != minX || mMinCountY != minY) {
+            mMinCountX = minX;
+            mMinCountY = minY;
+            calculateGridSize(mNumItemsInFolder);
+        }
+        return this;
     }
 
     /**
@@ -131,8 +157,8 @@ public class FolderGridOrganizer {
             done = gridCountX == oldCountX && gridCountY == oldCountY;
         }
 
-        mCountX = gridCountX;
-        mCountY = gridCountY;
+        mCountX = Math.max(gridCountX, mMinCountX);
+        mCountY = Math.max(gridCountY, mMinCountY);
     }
 
     /**
@@ -177,7 +203,7 @@ public class FolderGridOrganizer {
                 result.add((R) contents.get(i));
             }
 
-            if (result.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
+            if (result.size() == mPreviewLimit) {
                 break;
             }
         }
@@ -205,6 +231,13 @@ public class FolderGridOrganizer {
      * @return True iff the icon is in the 2x2 upper left quadrant of the Folder.
      */
     public boolean isItemInPreview(int page, int rank) {
+        // A grown plate lays its preview out on a grid of its own and fills it
+        // in reading order, so the upper-left quadrant the huddle drew from
+        // stops applying -- it would hand back four items for a preview with
+        // seven places to put them.
+        if (mPreviewLimit > MAX_NUM_ITEMS_IN_PREVIEW) {
+            return rank < mPreviewLimit;
+        }
         // First page items are laid out such that the first 4 items are always in the upper
         // left quadrant. For all other pages, we need to check the row and col.
         if (page > 0 || mDisplayingUpperLeftQuadrant) {

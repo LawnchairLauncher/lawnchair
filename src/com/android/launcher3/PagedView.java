@@ -58,9 +58,12 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.ChildBounds;
+import static com.android.launcher3.touch.PagedOrientationHandler.CANVAS_TRANSLATE;
+import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.util.EdgeEffectCompat;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.TranslateEdgeEffect;
 import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
@@ -173,6 +176,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected EdgeEffectCompat mEdgeGlowLeft;
     protected EdgeEffectCompat mEdgeGlowRight;
+    protected int mOverScrollShift = 0;
+    protected final float[] mTempFloat = new float[1];
 
     public PagedView(Context context) {
         this(context, null);
@@ -2250,53 +2255,79 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @Override
     public void draw(Canvas canvas) {
-        if (!Utilities.ATLEAST_S) drawStretchEdgeEffect(canvas);
         super.draw(canvas);
-        if (Utilities.ATLEAST_S) drawEdgeEffect(canvas);
         pageEndTransition();
     }
 
     protected void drawStretchEdgeEffect(Canvas canvas) {
-        if (mAllowOverScroll && (!mEdgeGlowRight.isFinished() || !mEdgeGlowLeft.isFinished())) {
-            final int width = getWidth();
-            final int height = getHeight();
-            if (!mEdgeGlowLeft.isFinished() && mEdgeGlowLeft instanceof StretchEdgeEffect) {
-                mEdgeGlowLeft.setSize(width, height);
-                ((StretchEdgeEffect) mEdgeGlowLeft).applyStretch(canvas, StretchEdgeEffect.POSITION_LEFT);
-            }
-            if (!mEdgeGlowRight.isFinished() && mEdgeGlowRight instanceof StretchEdgeEffect) {
-                mEdgeGlowRight.setSize(width, height);
-                ((StretchEdgeEffect) mEdgeGlowRight).applyStretch(canvas, StretchEdgeEffect.POSITION_RIGHT,
-                        -Math.max(mMaxScroll, getScrollX()), 0);
-            }
-        }
+        // Stretch overscroll disabled: using translation overscroll instead
     }
 
     protected void drawEdgeEffect(Canvas canvas) {
-        if (mAllowOverScroll && (!mEdgeGlowRight.isFinished() || !mEdgeGlowLeft.isFinished())) {
-            final int width = getWidth();
-            final int height = getHeight();
-            if (!mEdgeGlowLeft.isFinished()) {
-                final int restoreCount = canvas.save();
-                canvas.rotate(-90);
-                canvas.translate(-height, Math.min(mMinScroll, getScrollX()));
-                mEdgeGlowLeft.setSize(height, width);
-                if (mEdgeGlowLeft.draw(canvas)) {
-                    postInvalidateOnAnimation();
-                }
-                canvas.restoreToCount(restoreCount);
-            }
-            if (!mEdgeGlowRight.isFinished()) {
-                final int restoreCount = canvas.save();
-                canvas.rotate(90, width, 0);
-                canvas.translate(width, -(Math.max(mMaxScroll, getScrollX())));
+        // Stretch overscroll disabled: using translation overscroll instead
+    }
 
-                mEdgeGlowRight.setSize(height, width);
-                if (mEdgeGlowRight.draw(canvas)) {
+    protected float getUndampedOverScrollShift() {
+        final int width = getWidth();
+        final int height = getHeight();
+        int primarySize = mOrientationHandler.getPrimaryValue(width, height);
+        int secondarySize = mOrientationHandler.getSecondaryValue(width, height);
+
+        float effectiveShift = 0;
+        if (!mEdgeGlowLeft.isFinished()) {
+            mEdgeGlowLeft.setSize(secondarySize, primarySize);
+            if (mEdgeGlowLeft instanceof TranslateEdgeEffect) {
+                boolean animating = ((TranslateEdgeEffect) mEdgeGlowLeft).getTranslationShift(mTempFloat);
+                effectiveShift = mTempFloat[0];
+                if (animating) {
                     postInvalidateOnAnimation();
                 }
-                canvas.restoreToCount(restoreCount);
             }
         }
+        if (!mEdgeGlowRight.isFinished()) {
+            mEdgeGlowRight.setSize(secondarySize, primarySize);
+            if (mEdgeGlowRight instanceof TranslateEdgeEffect) {
+                boolean animating = ((TranslateEdgeEffect) mEdgeGlowRight).getTranslationShift(mTempFloat);
+                effectiveShift -= mTempFloat[0];
+                if (animating) {
+                    postInvalidateOnAnimation();
+                }
+            }
+        }
+
+        return effectiveShift * primarySize;
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        // ponytail: translation overscroll for homescreen, folders, and recents; no stretch
+        if (mAllowOverScroll && (!mEdgeGlowRight.isFinished() || !mEdgeGlowLeft.isFinished())) {
+            final int restoreCount = canvas.save();
+
+            int primarySize = mOrientationHandler.getPrimaryValue(getWidth(), getHeight());
+            int scroll = OverScroll.dampedScroll(getUndampedOverScrollShift(), primarySize, 0.22f);
+            mOrientationHandler.setPrimary(canvas, CANVAS_TRANSLATE, scroll);
+
+            if (mOverScrollShift != scroll) {
+                mOverScrollShift = scroll;
+                onOverScrollChanged();
+            }
+
+            super.dispatchDraw(canvas);
+            canvas.restoreToCount(restoreCount);
+        } else {
+            if (mOverScrollShift != 0) {
+                mOverScrollShift = 0;
+                onOverScrollChanged();
+            }
+            super.dispatchDraw(canvas);
+        }
+    }
+
+    public int getOverScrollShift() {
+        return mOverScrollShift;
+    }
+
+    protected void onOverScrollChanged() {
     }
 }

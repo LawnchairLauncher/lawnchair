@@ -518,8 +518,14 @@ class WorkspaceItemProcessor(
         c.applyCommonProperties(collection)
         // Do not trim the folder label, as is was set by the user.
         collection.title = c.getString(c.mTitleIndex)
-        collection.spanX = 1
-        collection.spanY = 1
+        // Sora: a folder is no longer always one cell, so its span is read back
+        // rather than assumed. Pinned at 1x1 here, every resize survived only
+        // until the next time the model was loaded -- the size was written to
+        // the database and then thrown away on the way out of it. App pairs
+        // have no resize gesture, so they simply stay at the 1x1 the column
+        // holds for them.
+        collection.spanX = c.spanX.coerceAtLeast(1)
+        collection.spanY = c.spanY.coerceAtLeast(1)
         if (collection is FolderInfo) {
             collection.options = c.options
         } else {

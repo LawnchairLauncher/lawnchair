@@ -61,7 +61,7 @@
     <string name="time_weeks_ago">%dhəf</string>
     <string name="time_months_ago">%day</string>
     <string name="time_years_ago">%dil</string>
-    <string name="managed_by_lawnchair">Lawnchair tərəfindən idarə olunur</string>
+    <string name="managed_by_lawnchair">Sora Launcher tərəfindən idarə olunur</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Tənzimləmələr</string>
     <string name="settings_button_text">Əsas ekran tənzimləmələri</string>
@@ -69,7 +69,7 @@
     <string name="title_change_settings">Tənzimləmələri dəyişdir</string>
     <!--
 
-    General "words" used throughout Lawnchair
+    General "words" used throughout Sora Launcher
 
     -->
     <string name="others_category_label">Digərləri</string>
@@ -117,7 +117,7 @@
     <string name="my_folder_label">Mənim qovluğum</string>
     <string name="sort_active_items_action">Aktiv elementləri sırala</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Telefonunuzu kilidləmək kimi bəzi əməliyyatları jestlər vasitəsilə yerinə yetirmək üçün Lawnchair əlçatanlıq girişinə ehtiyac duyur.\n\nBütün əlçatanlıq xidmətləri bu icazəni tələb etsə də, Lawnchair sizin fəaliyyətlərinizi izləmir. Lawnchair sistem tərəfindən göndərilən bütün hadisələri rədd edir.\n\nTelefonunuzu kilidləmək və ya Son Tətbiqlər ekranını açmaq üçün Lawnchair performGlobalAction əlçatanlıq xidmətindən istifadə edir.</string>
+    <string name="accessibility_service_description">Telefonunuzu kilidləmək kimi bəzi əməliyyatları jestlər vasitəsilə yerinə yetirmək üçün Sora Launcher əlçatanlıq girişinə ehtiyac duyur.\n\nBütün əlçatanlıq xidmətləri bu icazəni tələb etsə də, Sora Launcher sizin fəaliyyətlərinizi izləmir. Sora Launcher sistem tərəfindən göndərilən bütün hadisələri rədd edir.\n\nTelefonunuzu kilidləmək və ya Son Tətbiqlər ekranını açmaq üçün Sora Launcher performGlobalAction əlçatanlıq xidmətindən istifadə edir.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -156,7 +156,7 @@
     <string name="backup_and_restore_description">Cari quruluşu saxla, yedəkləri bərpa et</string>
     <string name="about_label">Haqqında</string>
     <string name="app_info_drop_target_label">Tətbiq məlumatı</string>
-    <string name="debug_restart_launcher">Lawnchair-i yenidən başlat</string>
+    <string name="debug_restart_launcher">Sora Launcher-i yenidən başlat</string>
     <string name="experimental_features_label">Eksperimental funksiyalar</string>
     <!-- Experimental features -->
     <string name="workspace_label">İş sahəsi</string>
@@ -211,13 +211,13 @@
     <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
     <string name="prediction_system_settings">Manage system suggestions</string>
     <string name="missing_usage_access_label">Usage access needed</string>
-    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Sora Launcher">%1$s</xliff:g></string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">Qısayollardan və əlavə funksiyalardan istifadə etmək üçün Lawnchair-i standart başlatıcı kimi təyin edin</string>
+    <string name="set_default_launcher_tip">Qısayollardan və əlavə funksiyalardan istifadə etmək üçün Sora Launcher-i standart başlatıcı kimi təyin edin</string>
     <string name="notification_dots">Bildiriş nöqtələri</string>
     <string name="show_notification_count">Bildiriş sayğacını göstər</string>
     <string name="notification_dots_color">Bildiriş nöqtəsinin rəngi</string>
@@ -410,11 +410,11 @@
     <string name="torch_status_on">Fənər aktivdir</string>
     <string name="torch_action_off">Söndürmək üçün toxunun</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Lawnchair-i qurun</string>
+    <string name="onboarding_open_settings_title">Sora Launcher-i qurun</string>
     <string name="onboarding_open_settings_subtitle">Parametrləri açmaq üçün əsas ekrana uzun toxunun</string>
-    <string name="onboarding_major_upgrade_title">Yeni Lawnchair ilə tanış olun</string>
+    <string name="onboarding_major_upgrade_title">Yeni Sora Launcher ilə tanış olun</string>
     <string name="onboarding_major_upgrade_subtitle">Yeniliklərə baxın</string>
-    <string name="onboarding_welcome">Lawnchair-ə xoş gəlmisiniz!</string>
+    <string name="onboarding_welcome">Sora Launcher-ə xoş gəlmisiniz!</string>
     <string name="onboarding_swipe_up">Tətbiq siyirməsini açmaq üçün yuxarı sürüşdürün</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maksimum hədəf sayı</string>
@@ -425,7 +425,7 @@
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> istifadə etmək üçün bildiriş nöqtələrini aktivləşdirin</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Əsas ekranda göstər</string>
-    <string name="smartspace_widget_toggle_description">At a Glance Lawnchair vidceti vasitəsilə əsas ekrana əlavə edilə bilər</string>
+    <string name="smartspace_widget_toggle_description">At a Glance Sora Launcher vidceti vasitəsilə əsas ekrana əlavə edilə bilər</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">At a Glance provayderi</string>
     <string name="smartspace_mode_google">Google</string>
@@ -517,15 +517,15 @@
     <string name="gesture_handler_open_assistant">Köməkçini aç</string>
     <string name="pick_app_for_gesture">Tətbiq seç</string>
     <string name="dt2s_admin_hint_title">Administrator icazələri tələb olunur</string>
-    <string name="dt2s_admin_hint">Cihazı yuxu rejiminə keçirmək üçün Lawnchair-i cihaz administratoru tətbiqi kimi təyin edin. \"Parametrləri aç\" seçiminə, sonra isə \"Bu cihaz administratoru tətbiqini aktivləşdir\" seçiminə toxunun.</string>
+    <string name="dt2s_admin_hint">Cihazı yuxu rejiminə keçirmək üçün Sora Launcher-i cihaz administratoru tətbiqi kimi təyin edin. \"Parametrləri aç\" seçiminə, sonra isə \"Bu cihaz administratoru tətbiqini aktivləşdir\" seçiminə toxunun.</string>
     <string name="dt2s_admin_warning">Cihazı yuxu rejiminə keçirmək üçün istifadə olunan jestlər söndürüləcək.</string>
     <string name="d2ts_recents_a11y_hint_title">Əlçatanlıq xidmətini aktivləşdirin</string>
     <string name="sleep_a11y_hint">cihazı yuxu rejiminə keçirmək</string>
     <string name="notifications_fallback_a11y_hint">bildiriş panelini açmaq</string>
     <string name="quick_settings_a11y_hint">Sürətli Parametrlər panelini açmaq</string>
     <string name="recents_screen_a11y_hint">Son tətbiqlər ekranını açmaq</string>
-    <string name="generic_a11y_hint">%1$s üçün Lawnchair əlçatanlıq xidmətini aktivləşdirin. \"Parametrləri aç\" seçiminə toxunun, \"Lawnchair\" seçin və \"Lawnchair-dən istifadə et\" funksiyasını aktivləşdirin.</string>
-    <string name="generic_a11y_disclaimer">Lawnchair bu əməliyyatı yerinə yetirmək üçün Accessibility xidmətinin `performGlobalAction` metodundan istifadə edir. Bu, digər tətbiqləri izləməyə imkan verən həssas bir icazədir. Bununla belə, Lawnchair bu funksionallıq üçün konfiqurasiya edilməyib və heç bir hadisə qəbul etmir.</string>
+    <string name="generic_a11y_hint">%1$s üçün Sora Launcher əlçatanlıq xidmətini aktivləşdirin. \"Parametrləri aç\" seçiminə toxunun, \"Sora Launcher\" seçin və \"Sora Launcher-dən istifadə et\" funksiyasını aktivləşdirin.</string>
+    <string name="generic_a11y_disclaimer">Sora Launcher bu əməliyyatı yerinə yetirmək üçün Accessibility xidmətinin `performGlobalAction` metodundan istifadə edir. Bu, digər tətbiqləri izləməyə imkan verən həssas bir icazədir. Bununla belə, Sora Launcher bu funksionallıq üçün konfiqurasiya edilməyib və heç bir hadisə qəbul etmir.</string>
     <string name="sleep_mode_label">Yuxu rejimi</string>
     <string name="sleep_mode_auto">Avtomatik</string>
     <string name="sleep_mode_root">Root</string>
@@ -536,7 +536,7 @@
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair xəta hesabatı</string>
+    <string name="lawnchair_bug_report">Sora Launcher xəta hesabatı</string>
     <string name="crash_report_notif_title">%1$s çökdü</string>
     <string name="action_upload_crash_report">Çökmə jurnalını yüklə</string>
     <string name="action_upload_error">Yükləmə uğursuz oldu</string>
@@ -650,14 +650,14 @@
     <string name="unfolded_label">Açılmış</string>
     <string name="when_folded_label">Qatlanmış vəziyyətdə</string>
     <string name="when_unfolded_label">Açılmış vəziyyətdə</string>
-    <string name="unfolded_grid_description">Lawnchair böyük ekranı doldurmaq üçün iki səhifəni cütləşdirir</string>
+    <string name="unfolded_grid_description">Sora Launcher böyük ekranı doldurmaq üçün iki səhifəni cütləşdirir</string>
     <string name="foldable_columns_error">Qatlanmış vəziyyət üçün dəyər açılmış vəziyyət üçün dəyərdən kiçik və ya ona bərabər olmalıdır. Lazım gələrsə, avtomatik tənzimlənəcək.</string>
     <string name="hotseat_bottom_space_label">Aşağı boşluq</string>
     <string name="page_indicator_height">Səhifə göstəricisinin hündürlüyü</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Tətbiq axtarışı</string>
     <string name="search_provider_custom">Fərdi</string>
-    <string name="search_provider_sponsored_description">%1$s və Lawnchair arasında gəlir paylaşımı razılaşması mövcuddur.\n\n%1$s vasitəsilə axtarış etmək Lawnchair-ə dəstək olmağa kömək edir.</string>
+    <string name="search_provider_sponsored_description">%1$s və Sora Launcher arasında gəlir paylaşımı razılaşması mövcuddur.\n\n%1$s vasitəsilə axtarış etmək Sora Launcher-ə dəstək olmağa kömək edir.</string>
     <string name="app_label">Tətbiq</string>
     <string name="website_label">Veb sayt</string>
     <string name="qsb_search_provider_app_required">Tətbiq tələb olunur</string>
@@ -694,7 +694,7 @@
     <string name="max_folder_columns">Maksimum qovluq sütunları</string>
     <string name="max_folder_rows">Maksimum qovluq sətirləri</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Lawnchair Son tətbiqlər ekranı provayderi kimi təyin edilmədiyi üçün bu parametrlər nəzərə alınmayacaq</string>
+    <string name="quickswitch_ignored_warning">Sora Launcher Son tətbiqlər ekranı provayderi kimi təyin edilmədiyi üçün bu parametrlər nəzərə alınmayacaq</string>
     <string name="quickstep_incompatible">Uyğunsuz sistem inteqrasiyası</string>
     <string name="quickstep_incompatible_description">Cihazınız Quickstep kimi tanınan sistem jestlərinin %1$s tərəfindən təmin ediləcəyi şəkildə konfiqurasiya edilib, lakin %1$s proqramının bu versiyası Android versiyanız ilə uyğun deyil. Cihazınızdan istifadə etməyə davam etmək üçün %1$s yeniləmələrini silin və ya %1$s proqramını sistem jestləri provayderi kimi deaktiv edin.</string>
     <string name="translucent_background">Yarımşəffaf fon</string>

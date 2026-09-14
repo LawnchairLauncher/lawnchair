@@ -24,7 +24,9 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.EdgeEffectFactory;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.touch.OverScroll;
+import com.android.launcher3.util.EdgeEffectCompat;
+import com.android.launcher3.util.TranslateEdgeEffect;
 
 /**
  * View group to allow rendering overscroll effect in a child at the parent level
@@ -32,8 +34,10 @@ import com.android.launcher3.Utilities;
 public class SpringRelativeLayout extends RelativeLayout {
 
     // fixed edge at the time force is applied
-    private final EdgeEffect mEdgeGlowTop;
-    private final EdgeEffect mEdgeGlowBottom;
+    private final TranslateEdgeEffect mEdgeGlowTop;
+    private final TranslateEdgeEffect mEdgeGlowBottom;
+    private final float[] mTempFloat = new float[1];
+    private int mOverScrollShift = 0;
 
     public SpringRelativeLayout(Context context) {
         this(context, null);
@@ -45,42 +49,68 @@ public class SpringRelativeLayout extends RelativeLayout {
 
     public SpringRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if (Utilities.ATLEAST_S) {
-            mEdgeGlowTop = new EdgeEffect(context, attrs);
-            mEdgeGlowBottom = new EdgeEffect(context, attrs);
-        } else {
-            mEdgeGlowTop = new EdgeEffect(context);
-            mEdgeGlowBottom = new EdgeEffect(context);
-        }
+        mEdgeGlowTop = new TranslateEdgeEffect(context);
+        mEdgeGlowBottom = new TranslateEdgeEffect(context);
         setWillNotDraw(false);
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+    }
+
+    private float getUndampedOverScrollShift() {
+        int height = getHeight();
+        int width = getWidth();
+        float effectiveShift = 0;
         if (!mEdgeGlowTop.isFinished()) {
-            final int restoreCount = canvas.save();
-            canvas.translate(0, 0);
-            mEdgeGlowTop.setSize(getWidth(), getHeight());
-            if (mEdgeGlowTop.draw(canvas)) {
+            mEdgeGlowTop.setSize(width, height);
+            boolean animating = mEdgeGlowTop.getTranslationShift(mTempFloat);
+            effectiveShift = mTempFloat[0];
+            if (animating) {
                 postInvalidateOnAnimation();
             }
-            canvas.restoreToCount(restoreCount);
         }
         if (!mEdgeGlowBottom.isFinished()) {
-            final int restoreCount = canvas.save();
-            final int width = getWidth();
-            final int height = getHeight();
-            canvas.translate(-width, height);
-            canvas.rotate(180, width, 0);
             mEdgeGlowBottom.setSize(width, height);
-            if (mEdgeGlowBottom.draw(canvas)) {
+            boolean animating = mEdgeGlowBottom.getTranslationShift(mTempFloat);
+            effectiveShift -= mTempFloat[0];
+            if (animating) {
                 postInvalidateOnAnimation();
             }
+        }
+        return effectiveShift * height;
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        // ponytail: translation overscroll for app drawer and bottom sheets; no stretch
+        if (!mEdgeGlowTop.isFinished() || !mEdgeGlowBottom.isFinished()) {
+            final int restoreCount = canvas.save();
+            int height = getHeight();
+            int scroll = OverScroll.dampedScroll(getUndampedOverScrollShift(), height, 0.15f);
+            if (mOverScrollShift != scroll) {
+                mOverScrollShift = scroll;
+                onOverScrollChanged();
+            }
+            canvas.translate(0, scroll);
+            super.dispatchDraw(canvas);
             canvas.restoreToCount(restoreCount);
+        } else {
+            if (mOverScrollShift != 0) {
+                mOverScrollShift = 0;
+                onOverScrollChanged();
+            }
+            super.dispatchDraw(canvas);
         }
     }
 
+    public int getOverScrollShift() {
+        return mOverScrollShift;
+    }
+
+    protected void onOverScrollChanged() {
+    }
 
     /**
      * Absorbs the velocity as a result for swipe-up fling
@@ -109,6 +139,8 @@ public class SpringRelativeLayout extends RelativeLayout {
         protected EdgeEffect createEdgeEffect(RecyclerView view, int direction) {
             if (direction == DIRECTION_TOP) {
                 return new EdgeEffectProxy(getContext(), mEdgeGlowTop);
+            } else if (direction == DIRECTION_BOTTOM) {
+                return new EdgeEffectProxy(getContext(), mEdgeGlowBottom);
             }
             return super.createEdgeEffect(view, direction);
         }
@@ -116,9 +148,9 @@ public class SpringRelativeLayout extends RelativeLayout {
 
     private class EdgeEffectProxy extends EdgeEffect {
 
-        private final EdgeEffect mParent;
+        private final EdgeEffectCompat mParent;
 
-        EdgeEffectProxy(Context context, EdgeEffect parent) {
+        EdgeEffectProxy(Context context, EdgeEffectCompat parent) {
             super(context);
             mParent = parent;
         }
@@ -150,6 +182,18 @@ public class SpringRelativeLayout extends RelativeLayout {
         public void onPull(float deltaDistance, float displacement) {
             mParent.onPull(deltaDistance, displacement);
             invalidateParentScrollEffect();
+        }
+
+        @Override
+        public float onPullDistance(float deltaDistance, float displacement) {
+            float consumed = mParent.onPullDistance(deltaDistance, displacement);
+            invalidateParentScrollEffect();
+            return consumed;
+        }
+
+        @Override
+        public float getDistance() {
+            return mParent.getDistance();
         }
 
         @Override

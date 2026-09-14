@@ -16,22 +16,28 @@
 
 package app.lawnchair.ui.preferences.destinations
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import app.lawnchair.folder.Aosp
+import app.lawnchair.folder.FolderOpenMode
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
-import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.navigation.GeneralIconShape
 import com.android.launcher3.R
 
 @Composable
@@ -43,68 +49,82 @@ fun FolderPreferences(
         backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
-        val context = LocalContext.current
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
-        val folderIconShapeAdapter = prefs2.folderShape.getAdapter()
-        val folderIconShapeSubtitle = iconShapeEntries(context)
-            .firstOrNull { it.value == folderIconShapeAdapter.state.value }
-            ?.label?.invoke()
-            ?: stringResource(id = R.string.custom)
+        val folderOpenModeAdapter = prefs2.folderOpenMode.getAdapter()
+        val isAosp = folderOpenModeAdapter.state.value == Aosp
+        // The folder's shape is the icon shape; it is set once, with the icons.
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
-            NavigationActionPreference(
-                label = stringResource(id = R.string.folder_shape_label),
-                destination = GeneralIconShape(ShapeRoute.FOLDER_SHAPE),
-                subtitle = folderIconShapeSubtitle,
-                endWidget = {
-                    IconShapePreview(iconShape = folderIconShapeAdapter.state.value)
-                },
+            val folderOpenModeEntries = remember {
+                FolderOpenMode.values().map { mode ->
+                    ListPreferenceEntry(
+                        value = mode,
+                        label = { stringResource(id = mode.nameResourceId) },
+                    )
+                }
+            }
+            ListPreference(
+                adapter = folderOpenModeAdapter,
+                entries = folderOpenModeEntries,
+                label = stringResource(id = R.string.folder_open_mode_label),
             )
-            ColorPreference(preference = prefs2.folderColor)
-            SliderPreference(
-                label = stringResource(id = R.string.folder_preview_bg_opacity_label),
-                adapter = prefs2.folderPreviewBackgroundOpacity.getAdapter(),
-                step = 0.1F,
-                valueRange = 0F..1F,
-                showAsPercentage = true,
-            )
-            SliderPreference(
-                label = stringResource(id = R.string.folder_bg_opacity_label),
-                adapter = prefs2.folderBackgroundOpacity.getAdapter(),
-                step = 0.1F,
-                valueRange = 0F..1F,
-                showAsPercentage = true,
-            )
+            ExpandAndShrink(visible = isAosp) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
+                ) {
+                    ColorPreference(preference = prefs2.folderColor)
+                    SliderPreference(
+                        label = stringResource(id = R.string.folder_preview_bg_opacity_label),
+                        adapter = prefs2.folderPreviewBackgroundOpacity.getAdapter(),
+                        step = 0.1F,
+                        valueRange = 0F..1F,
+                        showAsPercentage = true,
+                    )
+                    SliderPreference(
+                        label = stringResource(id = R.string.folder_bg_opacity_label),
+                        adapter = prefs2.folderBackgroundOpacity.getAdapter(),
+                        step = 0.1F,
+                        valueRange = 0F..1F,
+                        showAsPercentage = true,
+                    )
+                }
+            }
         }
-        PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-            SliderPreference(
-                label = stringResource(id = R.string.max_folder_columns),
-                adapter = prefs2.folderColumns.getAdapter(),
-                step = 1,
-                valueRange = 2..5,
-            )
-            SliderPreference(
-                label = stringResource(id = R.string.max_folder_rows),
-                adapter = prefs.folderRows.getAdapter(),
-                step = 1,
-                valueRange = 2..5,
-            )
-        }
+        ExpandAndShrink(visible = isAosp) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                PreferenceGroup(heading = stringResource(id = R.string.grid)) {
+                    SliderPreference(
+                        label = stringResource(id = R.string.max_folder_columns),
+                        adapter = prefs2.folderColumns.getAdapter(),
+                        step = 1,
+                        valueRange = 2..5,
+                    )
+                    SliderPreference(
+                        label = stringResource(id = R.string.max_folder_rows),
+                        adapter = prefs.folderRows.getAdapter(),
+                        step = 1,
+                        valueRange = 2..5,
+                    )
+                }
 
-        val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreenFolder.getAdapter()
-        PreferenceGroup(heading = stringResource(id = R.string.icons)) {
-            SwitchPreference(
-                adapter = homeScreenLabelsAdapter,
-                label = stringResource(id = R.string.show_labels),
-            )
-            ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.label_size),
-                    adapter = prefs2.homeIconLabelFolderSizeFactor.getAdapter(),
-                    step = 0.1f,
-                    valueRange = 0.5F..1.5F,
-                    showAsPercentage = true,
-                )
+                val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreenFolder.getAdapter()
+                PreferenceGroup(heading = stringResource(id = R.string.icons)) {
+                    SwitchPreference(
+                        adapter = homeScreenLabelsAdapter,
+                        label = stringResource(id = R.string.show_labels),
+                    )
+                    ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
+                        SliderPreference(
+                            label = stringResource(id = R.string.label_size),
+                            adapter = prefs2.homeIconLabelFolderSizeFactor.getAdapter(),
+                            step = 0.1f,
+                            valueRange = 0.5F..1.5F,
+                            showAsPercentage = true,
+                        )
+                    }
+                }
             }
         }
     }

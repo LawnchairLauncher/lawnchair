@@ -15,11 +15,13 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnGlobalFocusChangeListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -54,8 +56,11 @@ import app.lawnchair.qsb.rememberAllAppsQsbState
 import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.theme.color.tokens.ColorTokens
+import app.lawnchair.ui.liquid.LiquidGlassPanel
 import app.lawnchair.ui.theme.LawnchairTheme
+import app.lawnchair.util.DRAWER_GLASS_WASH
 import app.lawnchair.util.ProvideLifecycleState
+import app.lawnchair.views.LawnchairScrimView
 import com.android.launcher3.Insettable
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.LauncherState
@@ -68,6 +73,8 @@ import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
+import com.android.launcher3.views.BaseDragLayer
+import com.android.launcher3.views.SpringRelativeLayout
 import com.android.systemui.shared.system.BlurUtils
 import java.util.Locale
 import kotlin.math.max
@@ -115,6 +122,45 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private val suggestionsRecent = SearchRecentSuggestions(launcher, LawnchairRecentSuggestionProvider.AUTHORITY, LawnchairRecentSuggestionProvider.MODE)
     private val prefs = PreferenceManager.getInstance(launcher)
     private val prefs2 = PreferenceManager2.getInstance(launcher)
+
+    /**
+     * The glass capsule the search bar sits on.
+     *
+     * It lives in the drag layer rather than in this view so the image it
+     * refracts can stay fixed to the screen while the drawer slides across it.
+     * Moving the glass with the bar would drag its reflection along, which is
+     * precisely what stops a still image reading as glass.
+     *
+     * It is slotted in directly above the scrim: above, so it has the frosted
+     * home screen to refract; below the drawer, so the label and the input draw
+     * on top of it rather than behind it.
+     */
+    private var searchGlass: LiquidGlassPanel? = null
+
+    /**
+     * Whether the capsule below is the search bar's background.
+     *
+     * The bar had two backgrounds and only one of them was glass. The Compose
+     * shell paints its own capsule from [ColorTokens.SearchboxHighlight] at
+     * alpha 100, and that capsule is inside the drawer, which the drag layer
+     * draws after the pane -- so the flat fill landed on top of the glass and
+     * the lens, the rim and the refraction underneath it were simply not
+     * visible. The one moment they showed was a dark/light switch, when the
+     * shell is disposed and rebuilt and the fill is briefly absent.
+     *
+     * State rather than a read of [searchGlass], because the shell has to
+     * recompose when it changes and a plain field would not tell it to.
+     */
+    private var searchGlassActive by mutableStateOf(false)
+    private var searchGlassScene: android.graphics.Bitmap? = null
+    private var searchGlassPending = false
+    private val glassPaneLocation = IntArray(2)
+    private val glassOverlayLocation = IntArray(2)
+
+    private val glassPreDrawListener = ViewTreeObserver.OnPreDrawListener {
+        updateSearchGlass()
+        true
+    }
 
     private var initialPaddingLeft: Int = 0
     private var initialPaddingRight: Int = 0
@@ -187,7 +233,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 }
 
                 val backgroundAlpha by animateIntAsState(
-                    if (isFocused || !queryEmpty) 0 else 100,
+                    if (isFocused || !queryEmpty || searchGlassActive) 0 else 100,
                 )
 
                 // Ignore other theme attributes to preserve existing behavior
@@ -238,11 +284,24 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
                 LawnchairTheme {
                     ProvideLifecycleState {
-                        LawnQsbUi(
-                            state = state,
-                            style = style,
-                            actions = actions,
-                        )
+                        // Two different things share this bar: a label naming what
+                        // is below it, and a search field. Crossfading rather than
+                        // swapping keeps the changeover from reading as a flicker
+                        // as the keyboard comes up.
+                        Crossfade(
+                            targetState = !isFocused && queryEmpty,
+                            label = "sora_search_bar",
+                        ) { atRest ->
+                            if (atRest) {
+                                SoraAppLibraryLabel(onClick = actions.onQsbClick)
+                            } else {
+                                LawnQsbUi(
+                                    state = state,
+                                    style = style,
+                                    actions = actions,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -425,6 +484,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             appsView.appsStore?.addUpdateListener(this)
         }
         input.viewTreeObserver.addOnGlobalLayoutListener(this)
+        viewTreeObserver.addOnPreDrawListener(glassPreDrawListener)
     }
 
     override fun onDetachedFromWindow() {
@@ -434,7 +494,178 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             appsView.appsStore?.removeUpdateListener(this)
         }
         input.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        viewTreeObserver.removeOnPreDrawListener(glassPreDrawListener)
+        releaseSearchGlass()
         setDirectFocus(false)
+    }
+
+    /**
+     * How far the drawer has travelled: 0 on the workspace, 1 fully open.
+     *
+     * The glass has nothing to show until the drawer is on its way, because the
+     * frosted backdrop it refracts is not being drawn before then.
+     */
+    private fun drawerOpenness(): Float {
+        if (launcher.isMergeAppDrawerToWorkspace()) {
+            val scrim = launcher.scrimView as? LawnchairScrimView
+            return scrim?.drawerOpenness() ?: 0f
+        }
+        val controller = launcher.allAppsController ?: return 0f
+        return (1f - controller.progress).coerceIn(0f, 1f)
+    }
+
+    /** Creates or tears down the glass as the drawer comes and goes. */
+    private fun updateSearchGlass() {
+        if (hideSearchBar || drawerOpenness() <= 0f) {
+            releaseSearchGlass()
+            return
+        }
+
+        val panel = searchGlass ?: run {
+            // Never created straight from here: this runs in the pre-draw pass,
+            // and adding a view to the drag layer there forces another layout
+            // before the frame is drawn -- which can reach a drawer
+            // RecyclerView that is not ready to be laid out. Queued instead, and
+            // picked up on the next frame.
+            if (!searchGlassPending) {
+                searchGlassPending = true
+                post {
+                    searchGlassPending = false
+                    if (isAttachedToWindow && drawerOpenness() > 0f) createSearchGlass()
+                }
+            }
+            return
+        }
+
+        // The same frosted scene the drawer itself is drawn on. The pill is a
+        // pane set into that surface, not a window cut through it, so what shows
+        // inside has to look like what surrounds it -- the glass comes from the
+        // lens bending it at the rim and the light running along the edge, not
+        // from showing something different.
+        //
+        // Never swapped for null. The wallpaper cache is dropped whenever the
+        // wallpaper is replaced -- which a dark/light switch also reports, with
+        // the wallpaper unchanged -- and a panel with no scene falls back to a
+        // flat colour of its own, which is what turned the pill into a solid
+        // grey capsule the moment the theme was switched.
+        val scene = (launcher.scrimView as? LawnchairScrimView)?.drawerBackdrop
+        if (scene != null && scene !== searchGlassScene) {
+            searchGlassScene = scene
+            // Mapped onto the screen, not onto the drag layer.
+            //
+            // The drag layer is inset by the system bars, so laying the scene
+            // into its rect stretched the same bitmap over a shorter box than
+            // the folder tiles lay it over -- and the pill ended up showing a
+            // different part of the wallpaper from everything around it. Both
+            // now state the screen, so both sample the same pixel at the same
+            // place.
+            val display = context.resources.displayMetrics
+            panel.setScene(scene, 0, 0, display.widthPixels, display.heightPixels)
+        }
+    }
+
+    private fun createSearchGlass(): LiquidGlassPanel? {
+        val dragLayer = launcher.dragLayer ?: return null
+        val panel = LiquidGlassPanel(context)
+        // BaseDragLayer accepts only its own LayoutParams. Handed the
+        // InsettableFrameLayout ones it inherits from, it quietly converts them,
+        // and the conversion drops ignoreInsets -- after which onViewAdded lays
+        // the system-bar inset on as a margin. The overlay then sits lower and
+        // shorter than the layer it is addressed in, and what it draws near the
+        // top falls outside its own bounds.
+        val params = BaseDragLayer.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+        )
+        params.ignoreInsets = true
+        panel.layoutParams = params
+        panel.touchThrough = true
+        // The wash the folder tiles wear, so the pill and the tiles below it are
+        // finally the one material. Without it the pill kept the full stretch
+        // the pane's vibrancy and lens put on the scene, and sat there as a warm
+        // copper capsule in a drawer that is mostly grey.
+        panel.setTintColor(DRAWER_GLASS_WASH)
+        panel.onSyncFrame = Runnable { syncSearchGlass() }
+
+        // Handed its scene before it is added, the way a folder tile's pane is.
+        //
+        // Not a tidiness point. A panel with no scene of its own draws the bare
+        // wallpaper over a rectangle of nothing, which is the sharp, misplaced
+        // image the pill was showing; the frosted backdrop was being set a frame
+        // later, on the first pre-draw, and by then the pane had been recorded
+        // into a graphics layer that nothing was asking to record again. Setting
+        // it first means the very first composition already has the right scene.
+        val frosted = (launcher.scrimView as? LawnchairScrimView)?.drawerBackdrop
+        if (frosted != null) {
+            val display = context.resources.displayMetrics
+            panel.setScene(frosted, 0, 0, display.widthPixels, display.heightPixels)
+            searchGlassScene = frosted
+        }
+
+        // Straight above the scrim, so the home screen and workspace icons are
+        // behind the glass and the drawer -- search bar included -- is in front of it.
+        val scrimView = launcher.scrimView
+        val index = dragLayer.indexOfChild(scrimView)
+        dragLayer.addView(panel, if (index >= 0) index + 1 else -1)
+
+        searchGlass = panel
+        searchGlassActive = true
+        syncSearchGlass()
+        return panel
+    }
+
+    private fun releaseSearchGlass() {
+        val panel = searchGlass ?: return
+        searchGlass = null
+        searchGlassScene = null
+        searchGlassActive = false
+        panel.onSyncFrame = null
+        panel.visibility = GONE
+
+        // Posted rather than done here: this can run while the hierarchy is
+        // being torn down, and removing a view from a parent that is midway
+        // through walking its own children leaves a hole in the array it is
+        // iterating over.
+        panel.post {
+            (panel.parent as? ViewGroup)?.removeView(panel)
+        }
+    }
+
+    /**
+     * Puts the capsule where the search bar currently is, once per frame.
+     *
+     * The bar travels with the drawer, so this is the only part that moves: the
+     * scene behind stays pinned to the screen and the capsule slides over it.
+     */
+    private fun syncSearchGlass() {
+        val panel = searchGlass ?: return
+        val openness = drawerOpenness()
+        val height = qsbShell.height.toFloat()
+        if (openness <= 0f || height <= 0f) {
+            panel.visibility = GONE
+            return
+        }
+
+        panel.visibility = VISIBLE
+        panel.screenLocation(glassOverlayLocation)
+        qsbShell.getLocationOnScreen(glassPaneLocation)
+
+        val overScrollY = (launcher.appsView as? SpringRelativeLayout)?.overScrollShift ?: 0
+
+        panel.setCornerRadius(height / 2f)
+        // No tint, the same as the folder tiles beside it. The pill refracts the
+        // frosted home screen and so does the drawer around it; there is no flat
+        // colour between the two for the pill to wear. What separates it from
+        // its surroundings is the lens bending the image at the rim and the
+        // light running along the edge, not a different shade.
+        panel.setTinted(false)
+        panel.setPaneBounds(
+            (glassPaneLocation[0] - glassOverlayLocation[0]).toFloat(),
+            (glassPaneLocation[1] - glassOverlayLocation[1] + overScrollY).toFloat(),
+            qsbShell.width.toFloat(),
+            height,
+            openness,
+        )
     }
 
     override fun onAppsUpdated() {
@@ -508,7 +739,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     override fun setInsets(insets: Rect) {
         (layoutParams as MarginLayoutParams).apply {
             topMargin = when {
-                hideSearchBar -> 0
+                hideSearchBar || launcher.isMergeAppDrawerToWorkspace() -> 0
 
                 // Sheet mode already pads the container with status-bar insets; only clear the
                 // drag handle. Re-applying insets.top here created the large empty band under it.

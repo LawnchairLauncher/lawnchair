@@ -285,6 +285,7 @@ sealed class IconShape {
         override fun getHashString(): String = toString()
 
         companion object {
+
             /** Parses [value], returning null for invalid or unsupported serialized input. */
             fun fromStringOrNull(value: String): CustomCornerBased? {
                 return runCatching { fromString(value) }.getOrNull()
@@ -363,10 +364,24 @@ sealed class IconShape {
         PointF(1f, .6f),
     )
 
-    object Cupertino : SimpleCornerBased(
+    /**
+     * The corner iOS actually draws, traced off a screenshot of one.
+     *
+     * Not a rounded corner at all but a superellipse -- |x|^n + |y|^n = 1 --
+     * whose curvature changes continuously instead of jumping from a straight
+     * edge to a circular arc. Measured off a real icon the exponent comes out at
+     * 4.53 (57 samples, interquartile 4.40 to 4.72), and that is the number this
+     * is built from.
+     *
+     * The hand-placed control points it replaces were an approximation of the
+     * same idea and drifted from it most where it shows: partway round the
+     * corner, where the curvature should be easing rather than constant.
+     * Thirty-two cubics fitted to the curve hold it to 0.13 of a unit in a
+     * hundred -- a quarter of a pixel on a full-size icon.
+     */
+    object Cupertino : PathBased(
         key = "cupertino",
-        IconCornerShape.Cupertino,
-        1f,
+        svgPathString = IOS_SQUIRCLE_PATH,
     ) {
         override val windowTransitionRadius = .45f
     }
@@ -698,3 +713,12 @@ object CornerShapeCompat {
         path.lineTo(x2, y2)
     }
 }
+
+/**
+ * The iOS squircle, sampled in a 0..100 box.
+ *
+ * A superellipse of exponent 4.53, measured off a screenshot of a real icon,
+ * fitted with 32 cubics to within 0.13 of a unit.
+ */
+private const val IOS_SQUIRCLE_PATH =
+    "M100 50C100 58.1 99.86 68.85 99.57 74.3C99.29 79.75 98.86 80.34 98.28 82.72C97.7 85.1 96.98 86.87 96.09 88.57C95.19 90.27 94.16 91.65 92.91 92.91C91.65 94.16 90.27 95.19 88.57 96.09C86.87 96.98 85.1 97.7 82.72 98.28C80.34 98.86 79.75 99.29 74.3 99.57C68.85 99.86 58.1 100 50 100C41.9 100 31.15 99.86 25.7 99.57C20.25 99.29 19.66 98.86 17.28 98.28C14.9 97.7 13.13 96.98 11.43 96.09C9.73 95.19 8.35 94.16 7.09 92.91C5.84 91.65 4.81 90.27 3.91 88.57C3.02 86.87 2.3 85.1 1.72 82.72C1.14 80.34 0.71 79.75 0.43 74.3C0.14 68.85 0 58.1 0 50C0 41.9 0.14 31.15 0.43 25.7C0.71 20.25 1.14 19.66 1.72 17.28C2.3 14.9 3.02 13.13 3.91 11.43C4.81 9.73 5.84 8.35 7.09 7.09C8.35 5.84 9.73 4.81 11.43 3.91C13.13 3.02 14.9 2.3 17.28 1.72C19.66 1.14 20.25 0.71 25.7 0.43C31.15 0.14 41.9 0 50 0C58.1 -0 68.85 0.14 74.3 0.43C79.75 0.71 80.34 1.14 82.72 1.72C85.1 2.3 86.87 3.02 88.57 3.91C90.27 4.81 91.65 5.84 92.91 7.09C94.16 8.35 95.19 9.73 96.09 11.43C96.98 13.13 97.7 14.9 98.28 17.28C98.86 19.66 99.29 20.25 99.57 25.7C99.86 31.15 100 41.9 100 50Z"

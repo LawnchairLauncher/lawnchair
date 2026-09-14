@@ -41,6 +41,7 @@ import app.lawnchair.ui.preferences.destinations.GeneralPreferences
 import app.lawnchair.ui.preferences.destinations.GesturePreferences
 import app.lawnchair.ui.preferences.destinations.HiddenAppsPreferences
 import app.lawnchair.ui.preferences.destinations.HomeScreenGridPreferences
+import app.lawnchair.ui.preferences.destinations.HomeScreenIconPreferences
 import app.lawnchair.ui.preferences.destinations.HomeScreenPreferences
 import app.lawnchair.ui.preferences.destinations.IconPackPreferences
 import app.lawnchair.ui.preferences.destinations.IconPickerPreference
@@ -135,6 +136,9 @@ fun PreferenceNavigation(
         composable<HomeScreen>(
             deepLinks = getDeepLink(HomeScreen),
         ) { HomeScreenPreferences() }
+        composable<HomeScreenIcons>(
+            deepLinks = getDeepLink(HomeScreenIcons),
+        ) { HomeScreenIconPreferences() }
         composable<HomeScreenGrid>(
             deepLinks = getDeepLink(HomeScreenGrid),
         ) { HomeScreenGridPreferences() }

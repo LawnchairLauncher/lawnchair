@@ -220,6 +220,11 @@ public interface ActivityContext extends SavedStateRegistryOwner {
         return false;
     }
 
+    /** @return {@code true} if app drawer is merged to workspace as last page */
+    default boolean isMergeAppDrawerToWorkspace() {
+        return false;
+    }
+
     /** @return {@code true} if overview background blur is enabled */
     default boolean isOverviewBackgroundBlurEnabled() {
         return false;

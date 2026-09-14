@@ -40,6 +40,9 @@ public class EdgeEffectCompat extends EdgeEffect {
     }
 
     public float onPullDistance(float deltaDistance, float displacement, MotionEvent ev) {
+        if (this instanceof StretchEdgeEffect) {
+            return onPullDistance(deltaDistance, displacement);
+        }
         if (Utilities.ATLEAST_S) {
             return super.onPullDistance(deltaDistance, displacement);
         } else {
@@ -55,12 +58,8 @@ public class EdgeEffectCompat extends EdgeEffect {
     }
 
     public static EdgeEffectCompat create(Context context, View view) {
-        if (Utilities.ATLEAST_S) {
-            return new EdgeEffectCompat(context);
-        } else {
-            StretchEdgeEffect effect = new StretchEdgeEffect(context);
-            effect.setPostInvalidateOnAnimation(view::postInvalidateOnAnimation);
-            return effect;
-        }
+        TranslateEdgeEffect effect = new TranslateEdgeEffect(context);
+        effect.setPostInvalidateOnAnimation(view::postInvalidateOnAnimation);
+        return effect;
     }
 }

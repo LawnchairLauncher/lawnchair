@@ -55,12 +55,14 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
     public DoubleShadowBubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mShadowInfo = ShadowInfo.Companion.fromContext(context, attrs, defStyle);
-        setShadowLayer(
-                mShadowInfo.getAmbientShadowBlur(),
-                0,
-                0,
-                mShadowInfo.getAmbientShadowColor()
-        );
+        if (mShadowInfo.getAmbientShadowColor() != 0 || mShadowInfo.getKeyShadowColor() != 0) {
+            setShadowLayer(
+                    mShadowInfo.getAmbientShadowBlur(),
+                    0,
+                    0,
+                    mShadowInfo.getAmbientShadowColor()
+            );
+        }
     }
 
     @Override
@@ -139,8 +141,10 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
         int textAlpha = Color.alpha(getCurrentTextColor());
         int keyShadowAlpha = Color.alpha(mShadowInfo.getKeyShadowColor());
         int ambientShadowAlpha = Color.alpha(mShadowInfo.getAmbientShadowColor());
-        if (textAlpha == 0 || (keyShadowAlpha == 0 && ambientShadowAlpha == 0)) {
+        if (textAlpha == 0) {
             getPaint().clearShadowLayer();
+            return true;
+        } else if (keyShadowAlpha == 0 && ambientShadowAlpha == 0) {
             return true;
         } else if (ambientShadowAlpha > 0 && keyShadowAlpha == 0) {
             getPaint().setShadowLayer(mShadowInfo.getAmbientShadowBlur(), 0, 0,

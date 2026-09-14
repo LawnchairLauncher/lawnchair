@@ -59,18 +59,20 @@ class FolderOpenCloseAnimationListener(val folder: Folder, val isOpening: Boolea
     override fun onAnimationEnd(animation: Animator) {
         super.onAnimationEnd(animation)
         with(folder) {
-            translationX = 0.0f
-            translationY = 0.0f
-            translationZ = 0.0f
-            content.scaleX = 1f
-            content.scaleY = 1f
-            mFooter.scaleX = 1f
-            mFooter.scaleY = 1f
-            mFooter.translationX = 0f
-            mFooter.translationY = 0f
-            folderName.alpha = 1f
-            content.setClipPath(null)
-            setClipPath(null)
+            if (isOpening) {
+                translationX = 0.0f
+                translationY = 0.0f
+                translationZ = 0.0f
+                content.scaleX = 1f
+                content.scaleY = 1f
+                mFooter.scaleX = 1f
+                mFooter.scaleY = 1f
+                mFooter.translationX = 0f
+                mFooter.translationY = 0f
+                folderName.alpha = 1f
+                content.setClipPath(null)
+                setClipPath(null)
+            }
             clipChildren = folderClipChildren
             clipToPadding = folderClipToPadding
             content.clipChildren = contentClipChildren

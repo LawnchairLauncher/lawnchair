@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -78,6 +79,7 @@ public class PredictionRowView<T extends Context & ActivityContext>
     private boolean mPredictionUiUpdatePaused = false;
 
     private final PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
+    private final PreferenceManager prefs = PreferenceManager.getInstance(getContext());
 
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
@@ -122,7 +124,13 @@ public class PredictionRowView<T extends Context & ActivityContext>
     }
 
     private void updateVisibility() {
-        boolean enabled = mPredictionsEnabled && PreferenceCacheExtensionsKt.firstCached(prefs2.getShowSuggestedAppsInDrawer());
+        // Caddy shows the suggestions as the first folder of the grid instead of
+        // as a strip above it, so this row stands down there -- otherwise the
+        // same apps would be on screen twice.
+        // LC-Note: see LawnchairAlphabeticalAppsList#suggestionsFolder.
+        boolean caddy = !prefs.getDrawerList().get();
+        boolean enabled = !caddy && mPredictionsEnabled
+                && PreferenceCacheExtensionsKt.firstCached(prefs2.getShowSuggestedAppsInDrawer());
         setVisibility(enabled ? VISIBLE : GONE);
         if (mActivityContext.getAppsView() != null) {
             if (enabled) {

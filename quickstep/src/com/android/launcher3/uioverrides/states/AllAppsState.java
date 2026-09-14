@@ -116,8 +116,15 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(launcher.getDeviceProfile().workspaceContentScale, NO_OFFSET,
-                NO_OFFSET);
+        // Sora: the home screen holds still while the drawer comes over it.
+        //
+        // Shrinking it away was the old way of saying "this is behind now", and
+        // it fights what the drawer's own glass already says far better: the
+        // blur is pulled up over the workspace like a sheet, and a sheet does
+        // not push what it covers backwards. Left scaling, the icons drift
+        // inwards underneath the glass while the glass itself stays put, and the
+        // two motions read as two unrelated things happening at once.
+        return new ScaleAndTranslation(NO_SCALE, NO_OFFSET, NO_OFFSET);
     }
 
     @Override
@@ -125,10 +132,12 @@ public class AllAppsState extends LauncherState {
         if (launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
             return getWorkspaceScaleAndTranslation(launcher);
         } else {
+            // The hotseat holds still with the rest of the home screen; only the
+            // translation the drawer needs is kept.
             ScaleAndTranslation overviewScaleAndTranslation = LauncherState.OVERVIEW
                     .getWorkspaceScaleAndTranslation(launcher);
             return new ScaleAndTranslation(
-                    launcher.getDeviceProfile().workspaceContentScale,
+                    NO_SCALE,
                     overviewScaleAndTranslation.translationX,
                     overviewScaleAndTranslation.translationY);
         }
@@ -208,17 +217,29 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
-        int backgroundColor;
+        // Sora: every branch goes through the drawer's own tint, which is none.
+        //
+        // Two of these used to hand back AllAppsScrimColor as it stands -- a 40%
+        // grey -- and that was the flat layer still sitting over the drawer's
+        // frosted wallpaper. DRAWER_TINT_ALPHA has said for a while that the
+        // drawer is blurred wallpaper and nothing else; it was simply never
+        // asked on this path, so the constant described a design the launcher
+        // was not actually following. Routing all three through
+        // getAllAppsBackgroundColor makes that one number true everywhere, and
+        // leaves it as the single place to put a wash back if one is ever
+        // wanted. Contrast for the labels comes from their shadow now -- see
+        // overrideAllAppsTextColor -- rather than from a colour laid over the
+        // whole screen to give them something to sit on.
+        int defaultColor;
         if (!launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
-            // Always use an opaque scrim if there's no sheet.
-            backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
+            defaultColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
         } else if (!Flags.allAppsBlur()) {
             // If there's a sheet but no blur, use the old scrim color.
-            backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, 
-                ColorTokens.WidgetsPickerScrim.resolveColor(launcher));
+            defaultColor = ColorTokens.WidgetsPickerScrim.resolveColor(launcher);
         } else {
-            backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
+            defaultColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
         }
+        int backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, defaultColor);
         return new ScrimColors(backgroundColor, /* foregroundColor */ Color.TRANSPARENT);
     }
 }

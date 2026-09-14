@@ -151,6 +151,9 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
             return false;
         }
+        if (mLauncher.isInState(NORMAL) && mLauncher.isMergeAppDrawerToWorkspace()) {
+            return false;
+        }
         if (!mLauncher.isInState(NORMAL) && !mLauncher.isInState(ALL_APPS)) {
             // Don't listen for the swipe gesture if we are already in some other state.
             return false;

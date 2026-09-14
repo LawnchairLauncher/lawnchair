@@ -6,7 +6,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MenuDefaults
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.predictions.LawnchairPredictionManager
 import app.lawnchair.predictions.PredictionAppKey
 import app.lawnchair.ui.OverflowMenuGrouped
+import app.lawnchair.ui.liquid.SoraLiquidToggle
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.AppItemPlaceholder
@@ -103,9 +103,11 @@ fun DismissedPredictionAppsPreferences(
                             app = app,
                             onClick = toggleDismissedApp,
                         ) {
-                            Checkbox(
-                                checked = app.key in dismissedComponentKeys,
-                                onCheckedChange = null,
+                            // Sora: liquid glass toggle in place of Material 3's
+                            // Checkbox, matching every other on/off row in settings.
+                            SoraLiquidToggle(
+                                checked = { app.key in dismissedComponentKeys },
+                                onCheckedChange = { toggleDismissedApp(app) },
                             )
                         }
                     }

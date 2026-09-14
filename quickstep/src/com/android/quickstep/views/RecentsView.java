@@ -549,7 +549,6 @@ public abstract class RecentsView<
     protected final RectF mTempRectF = new RectF();
     private final PointF mTempPointF = new PointF();
     private final Matrix mTempMatrix = new Matrix();
-    private final float[] mTempFloat = new float[1];
     private final ArraySet<OnScrollChangedListener> mScrollListeners = new ArraySet<>();
 
     // The threshold at which we update the SystemUI flags when animating from the task into the app
@@ -624,7 +623,6 @@ public abstract class RecentsView<
     @Nullable
     private ObjectAnimator mTintingAnimator;
 
-    private int mOverScrollShift = 0;
     private long mScrollLastHapticTimestamp;
 
     private int mKeyboardTaskFocusSnapAnimationDuration;
@@ -1101,62 +1099,22 @@ public abstract class RecentsView<
     }
 
     @Override
+    protected void onOverScrollChanged() {
+        dispatchScrollChanged();
+    }
+
+    @Override
     protected void dispatchDraw(Canvas canvas) {
-        // Draw overscroll
-        if (mAllowOverScroll && (!mEdgeGlowRight.isFinished() || !mEdgeGlowLeft.isFinished())) {
-            final int restoreCount = canvas.save();
-
-            int primarySize = getPagedOrientationHandler().getPrimaryValue(getWidth(), getHeight());
-            int scroll = OverScroll.dampedScroll(getUndampedOverScrollShift(), primarySize);
-            getPagedOrientationHandler().setPrimary(canvas, CANVAS_TRANSLATE, scroll);
-
-            if (mOverScrollShift != scroll) {
-                mOverScrollShift = scroll;
-                dispatchScrollChanged();
-            }
-
-            super.dispatchDraw(canvas);
-            canvas.restoreToCount(restoreCount);
-        } else {
-            if (mOverScrollShift != 0) {
-                mOverScrollShift = 0;
-                dispatchScrollChanged();
-            }
-            super.dispatchDraw(canvas);
-        }
+        super.dispatchDraw(canvas);
         if (mEnableDrawingLiveTile && mRemoteTargetHandles != null) {
             redrawLiveTile();
         }
     }
 
-    private float getUndampedOverScrollShift() {
-        final int width = getWidth();
-        final int height = getHeight();
-        int primarySize = getPagedOrientationHandler().getPrimaryValue(width, height);
-        int secondarySize = getPagedOrientationHandler().getSecondaryValue(width, height);
-
-        float effectiveShift = 0;
-        if (!mEdgeGlowLeft.isFinished()) {
-            mEdgeGlowLeft.setSize(secondarySize, primarySize);
-            if (((TranslateEdgeEffect) mEdgeGlowLeft).getTranslationShift(mTempFloat)) {
-                effectiveShift = mTempFloat[0];
-                postInvalidateOnAnimation();
-            }
-        }
-        if (!mEdgeGlowRight.isFinished()) {
-            mEdgeGlowRight.setSize(secondarySize, primarySize);
-            if (((TranslateEdgeEffect) mEdgeGlowRight).getTranslationShift(mTempFloat)) {
-                effectiveShift -= mTempFloat[0];
-                postInvalidateOnAnimation();
-            }
-        }
-
-        return effectiveShift * primarySize;
-    }
-
     /**
      * Returns the view shift due to overscroll
      */
+    @Override
     public int getOverScrollShift() {
         return mOverScrollShift;
     }

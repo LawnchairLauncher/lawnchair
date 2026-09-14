@@ -209,6 +209,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     @ViewDebug.ExportedProperty(category = "launcher")
     private float mTextAlpha = 1;
 
+    private float mBaseShadowRadius;
+    private float mBaseShadowDx;
+    private float mBaseShadowDy;
+    private int mBaseShadowColor;
+    private boolean mConstructorFinished = false;
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private DotInfo mDotInfo;
     private DotRenderer mDotRenderer;
@@ -287,6 +293,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
             defaultIconSize = mDeviceProfile.iconSizePx;
             setCenterVertically(mDeviceProfile.iconCenterVertically);
+            LawnchairUtilsKt.overrideAllAppsTextColor(this);
         } else if (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW
                 || mDisplay == DISPLAY_SEARCH_RESULT_APP_ROW || mDisplay == DISPLAY_DRAWER_FOLDER) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -299,6 +306,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mDeviceProfile.folderChildTextSizePx);
             setCompoundDrawablePadding(mDeviceProfile.folderChildDrawablePaddingPx);
             defaultIconSize = mDeviceProfile.folderChildIconSizePx;
+            LawnchairUtilsKt.overrideAllAppsTextColor(this);
         } else if (mDisplay == DISPLAY_SEARCH_RESULT) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     mDeviceProfile.getAllAppsProfile().getIconTextSizePx());
@@ -331,6 +339,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
         setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
+        mConstructorFinished = true;
         setTextAlpha(1f);
     }
 
@@ -1218,6 +1227,62 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         } else {
             super.setTextColor(getModifiedColor());
         }
+        updateShadowLayer();
+    }
+
+    @Override
+    public void setShadowLayer(float radius, float dx, float dy, int color) {
+        mBaseShadowRadius = radius;
+        mBaseShadowDx = dx;
+        mBaseShadowDy = dy;
+        mBaseShadowColor = color;
+        if (!mConstructorFinished) {
+            super.setShadowLayer(radius, dx, dy, color);
+            return;
+        }
+        updateShadowLayer();
+    }
+
+    @Override
+    public float getShadowRadius() {
+        return mBaseShadowRadius;
+    }
+
+    @Override
+    public float getShadowDx() {
+        return mBaseShadowDx;
+    }
+
+    @Override
+    public float getShadowDy() {
+        return mBaseShadowDy;
+    }
+
+    @Override
+    public int getShadowColor() {
+        return mBaseShadowColor;
+    }
+
+    private void updateShadowLayer() {
+        if (!mConstructorFinished) {
+            return;
+        }
+        if (mBaseShadowRadius <= 0 || mBaseShadowColor == 0 || mTextAlpha <= 0) {
+            super.setShadowLayer(0, 0, 0, 0);
+            return;
+        }
+        int baseAlpha = Color.alpha(mBaseShadowColor);
+        if (baseAlpha == 0) {
+            super.setShadowLayer(0, 0, 0, 0);
+            return;
+        }
+        int newAlpha = Math.round(baseAlpha * mTextAlpha);
+        if (newAlpha <= 0) {
+            super.setShadowLayer(0, 0, 0, 0);
+            return;
+        }
+        int modifiedShadowColor = setColorAlphaBound(mBaseShadowColor, newAlpha);
+        super.setShadowLayer(mBaseShadowRadius, mBaseShadowDx, mBaseShadowDy, modifiedShadowColor);
     }
 
     private int getModifiedColor() {

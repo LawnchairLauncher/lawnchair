@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
+import app.lawnchair.ui.liquid.SoraLiquidButton
 import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
@@ -108,12 +109,12 @@ fun TextPreferenceDialog(
                 Text(text = stringResource(id = android.R.string.cancel))
             }
             Spacer(modifier = Modifier.requiredWidth(8.dp))
-            Button(
+            // Sora: liquid glass confirm button.
+            SoraLiquidButton(
                 onClick = {
                     onDismissRequest()
                     onConfirm(value)
                 },
-                shapes = ButtonDefaults.shapes(),
             ) {
                 Text(text = stringResource(id = android.R.string.ok))
             }

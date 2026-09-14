@@ -45,6 +45,7 @@ constructor(
 ) {
     private val statePrefs1 = listOf(
         prefs1.wrapAdaptiveIcons,
+        prefs1.maskOnlyIcons,
         prefs1.transparentIconBackground,
         prefs1.shadowBGIcons,
         prefs1.coloredBackgroundLightness,
@@ -93,17 +94,17 @@ constructor(
             IconShape.Circle
         }
 
-        val currentFolderShape: IconShape = try {
-            prefs2.folderShape.firstCached()
-        } catch (e: Exception) {
-            Log.d(TAG, "Error getting folder shape", e)
-            IconShape.Circle
-        }
+        // Sora: folders wear the icon shape, full stop. Unified where the shape
+        // is read rather than by copying one setting into the other on write:
+        // a copy can only ever be as reliable as the order the two writes land
+        // in, and it leaves every existing install still carrying whatever
+        // mismatched folder shape it had already saved.
+        val currentFolderShape: IconShape = currentAppShape
 
         val currentPrefs1State = prefs1State()
         val appShapeKey = currentAppShape.getHashString() + currentPrefs1State
         val folderShapeKey = currentFolderShape.getHashString() + currentPrefs1State
-        val combinedKey = "$appShapeKey:$folderShapeKey"
+        val combinedKey = "$appShapeKey:$folderShapeKey:$ICON_GENERATION"
 
         val appShape =
             if (oldState != null && (oldState.iconShape as? PathShapeDelegate)?.iconShape == currentAppShape) {
@@ -142,3 +143,14 @@ constructor(
 private val MONO_THEME_CONTROLLER = MonoIconThemeController()
 private val FORCED_MONO_THEME_CONTROLLER = MonoIconThemeController(shouldForceThemeIcon = true)
 private const val TAG = "LawnchairThemeManager"
+
+/**
+ * Sora: bumped whenever the way an icon bitmap is *drawn* changes.
+ *
+ * Icon bitmaps are cached and keyed on the state this builds. A change to how
+ * they are generated leaves that key untouched, so the cache goes on serving
+ * bitmaps made by the old code and the change appears only on icons that happen
+ * to be regenerated for some other reason. Baking the rim light in first showed
+ * up on exactly one icon for that reason: the app that had just been reinstalled.
+ */
+private const val ICON_GENERATION = "rim8"

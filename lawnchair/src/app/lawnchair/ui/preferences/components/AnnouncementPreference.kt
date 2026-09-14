@@ -289,7 +289,7 @@ private fun InfoPreferenceWithoutLinkPreview() {
 private fun InfoPreferenceWithLinkPreview() {
     AnnouncementPreferenceItemContent(
         text = "Very important announcement with a very important link",
-        url = "https://lawnchair.app/",
+        url = "https://example.com/",
         icon = Icons.Rounded.NewReleases,
     )
 }

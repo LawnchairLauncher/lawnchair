@@ -15,14 +15,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedListItem
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.liquid.SoraLiquidToggle
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.theme.LawnchairTheme
@@ -126,29 +125,15 @@ fun MainSwitchPreference(
             ),
             enabled = enabled,
             trailingContent = {
-                Switch(
+                // Sora: liquid glass toggle in place of Material 3's Switch. It
+                // carries no thumb icon, so the check/close glyphs are dropped.
+                SoraLiquidToggle(
+                    checked = { checked },
+                    onCheckedChange = wrappedOnCheckedChange,
                     modifier = Modifier
                         .padding(top = contentPadding, bottom = contentPadding, start = contentPadding)
                         .height(24.dp),
-                    checked = checked,
-                    onCheckedChange = wrappedOnCheckedChange,
                     enabled = enabled,
-                    interactionSource = interactionSource,
-                    thumbContent = {
-                        if (checked) {
-                            Icon(
-                                imageVector = Icons.Filled.Check,
-                                contentDescription = null,
-                                modifier = Modifier.size(SwitchDefaults.IconSize),
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Filled.Close,
-                                contentDescription = null,
-                                modifier = Modifier.size(SwitchDefaults.IconSize),
-                            )
-                        }
-                    },
                 )
             },
             colors = ListItemDefaults.colors(

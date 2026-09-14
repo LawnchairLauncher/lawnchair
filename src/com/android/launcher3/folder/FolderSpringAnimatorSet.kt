@@ -22,13 +22,18 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Path
 import android.graphics.drawable.GradientDrawable
 import android.util.FloatProperty
 import android.util.Property
 import android.view.View
+import android.view.ViewGroup
 import androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_ALPHA
 import androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS
 import androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_SCALE
+import app.lawnchair.folder.Centered
+import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherAnimUtils
 import com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY
@@ -68,7 +73,8 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             iconAnimData: List<IconAnimationData>,
         ): FolderSpringAnimatorSet {
             val animatorSet = AnimatorSet()
-            setupFolder(folder, folderAnimData)
+            setupFolder(folder, folderAnimData, clipRevealData)
+            letContentOverflowWhileAnimating(folder, animatorSet)
             addFolderScaleAndTranslateAnimators(folder, animatorSet, folderAnimData)
             addClipRevealAnimators(folder, animatorSet, clipRevealData)
             addAlphaAndColorAnimators(folder, animatorSet, folderAnimData)
@@ -78,7 +84,14 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                 folderAnimData.isOpening,
                 launcherDelegate,
             )
-            iconAnimData.forEach { addContentIconAnimators(folder.context, animatorSet, it) }
+            iconAnimData.forEach {
+                addContentIconAnimators(
+                    folder.context,
+                    animatorSet,
+                    it,
+                    folderAnimData.defaultDuration,
+                )
+            }
             return FolderSpringAnimatorSet(animatorSet)
         }
 
@@ -110,11 +123,83 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             animatorSet.play(animator)
         }
 
-        private fun setupFolder(folder: Folder, folderAnimationData: FolderAnimationData) {
+        /**
+         * Lets a flying app leave the container it is a child of.
+         *
+         * An item in a folder is a view the size of a whole cell, label and all,
+         * far larger than the icon it shows. Putting that icon near the edge of
+         * the plate puts most of the view outside the container, which clips it.
+         *
+         * [FolderOpenCloseAnimationListener] already unclips the folder, the
+         * content and the cell layout for the length of the animation, and stops
+         * there -- enough while every preview kept its apps in the middle of a
+         * cell. A preview laid out on a grid puts them at the plate's edges on
+         * purpose, so the one container it does not reach, the apps' actual
+         * parent one below the cell layout, finally shows. This covers only that
+         * one: doing the other three over again would have each listener restore
+         * what it saw at its own start, and the one that ran second would put
+         * back the flags the first had already turned off, leaving them off for
+         * good.
+         *
+         * What an app should be cut to is the reveal path, which is set on the
+         * content and stays in charge throughout.
+         */
+        private fun letContentOverflowWhileAnimating(folder: Folder, animatorSet: AnimatorSet) {
+            animatorSet.addListener(
+                object : AnimatorListenerAdapter() {
+                    private var items: ViewGroup? = null
+                    private var itemsClipChildren = true
+                    private var itemsClipToPadding = true
+
+                    override fun onAnimationStart(animation: Animator) {
+                        super.onAnimationStart(animation)
+                        val group =
+                            folder.content.currentCellLayout?.shortcutsAndWidgets ?: return
+                        items = group
+                        itemsClipChildren = group.clipChildren
+                        itemsClipToPadding = group.clipToPadding
+                        group.clipChildren = false
+                        group.clipToPadding = false
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        super.onAnimationEnd(animation)
+                        items?.let {
+                            it.clipChildren = itemsClipChildren
+                            it.clipToPadding = itemsClipToPadding
+                        }
+                        items = null
+                    }
+                }
+            )
+        }
+
+        private fun setupFolder(
+            folder: Folder,
+            folderAnimationData: FolderAnimationData,
+            clipRevealData: ClipRevealData,
+        ) {
             folder.folderIcon.previewItemManager.recomputePreviewDrawingParams()
             folder.apply {
                 pivotX = 0f
                 pivotY = 0f
+                if (folderAnimationData.isOpening) {
+                    translationX = folderAnimationData.xDistance
+                    translationY = folderAnimationData.yDistance
+                    val path = Path()
+                    val startRadius = (clipRevealData.backgroundStartRect.width() / 2f) *
+                        folder.folderIcon.mBackground.radius / folder.folderIcon.mBackground.plateWidth
+                    path.addRoundRect(
+                        clipRevealData.backgroundStartRect.left.toFloat(),
+                        clipRevealData.backgroundStartRect.top.toFloat(),
+                        clipRevealData.backgroundStartRect.right.toFloat(),
+                        clipRevealData.backgroundStartRect.bottom.toFloat(),
+                        startRadius,
+                        startRadius,
+                        Path.Direction.CW,
+                    )
+                    folder.setClipPath(path)
+                }
             }
             folder.content.apply {
                 scaleX = folderAnimationData.startScale
@@ -230,23 +315,27 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             animationData: FolderAnimationData,
         ) {
             with(folder) {
-                val folderBackground = folder.background as GradientDrawable
-                // Set up the Folder background (respects Lawnchair folder color pref).
+                // Sora: the folder background is liquid glass, which has no single
+                // colour to set or tween. The colour animation below only applies
+                // to the original GradientDrawable background.
+                val folderBackground = folder.background as? GradientDrawable
                 val isOpening = animationData.isOpening
                 val initialColor = app.lawnchair.util.resolveFolderPreviewColor(context)
                 val finalColor = app.lawnchair.util.resolveFolderBackgroundColor(context)
-                folderBackground.mutate()
-                folderBackground.setColor(if (isOpening) initialColor else finalColor)
-                // TODO: convert to spring animation?
-                animatorSet.play(
-                    ObjectAnimator.ofArgb(
-                            folderBackground,
-                            "color",
-                            if (isOpening) initialColor else finalColor,
-                            if (isOpening) finalColor else initialColor,
-                        )
-                        .apply { duration = animationData.defaultDuration.toLong() }
-                )
+                if (folderBackground != null) {
+                    folderBackground.mutate()
+                    folderBackground.setColor(if (isOpening) initialColor else finalColor)
+                    // TODO: convert to spring animation?
+                    animatorSet.play(
+                        ObjectAnimator.ofArgb(
+                                folderBackground,
+                                "color",
+                                if (isOpening) initialColor else finalColor,
+                                if (isOpening) finalColor else initialColor,
+                            )
+                            .apply { duration = animationData.defaultDuration.toLong() }
+                    )
+                }
 
                 val footerAlphaDuration: Int
                 var footerStartDelay = 0
@@ -335,6 +424,12 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             val scrimView = launcher.scrimView
             val workspace = launcher.workspace
             val hotseat = launcher.hotseat
+
+            // ponytail: full-screen blur is handled by a dedicated LiquidGlassPanel overlay
+            // created in Folder.animateOpen(); no dimming or workspace scale needed.
+            animatorSet.addListener(FolderScrimAnimationListener(scrimView, isOpening, launcher))
+            return
+
             val finalScrimAlpha = if (isDarkTheme(context)) 0.32f else 0.2f
             scrimView.setBackgroundColor(Color.BLACK)
             playSpringAnimation(
@@ -392,6 +487,7 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             context: Context,
             animatorSet: AnimatorSet,
             iconData: IconAnimationData,
+            defaultDuration: Int,
         ) {
             with(iconData) {
                 val titleText = getBubbleTextView(icon)
@@ -400,6 +496,7 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                 }
                 val anim =
                     titleText.createTextAlphaAnimator(isOpening).apply {
+                        duration = defaultDuration.toLong()
                         startDelay = (if (isOpening) iconDelay + 100 else iconDelay).toLong()
                     }
                 animatorSet.play(anim)
@@ -502,6 +599,7 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                     if (!itemsInPreview.contains(icon)) {
                         icon.alpha = 1f
                     }
+                    getBubbleTextView(icon).setTextVisibility(true)
                 }
             }
     }

@@ -88,6 +88,7 @@ import com.android.launcher3.allapps.search.AllAppsSearchUiDelegate;
 import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.StringCache;
@@ -315,6 +316,14 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mBottomSheetBackground = findViewById(R.id.bottom_sheet_background);
         mBottomSheetHandleArea = findViewById(R.id.bottom_sheet_handle_area);
         mBottomSheetHandle = findViewById(R.id.bottom_sheet_handle);
+        if (mActivityContext.isMergeAppDrawerToWorkspace()) {
+            if (mBottomSheetHandle != null) {
+                mBottomSheetHandle.setVisibility(GONE);
+            }
+            if (mBottomSheetHandleArea != null) {
+                mBottomSheetHandleArea.setVisibility(GONE);
+            }
+        }
         mSearchRecyclerView = findViewById(R.id.search_results_list_view);
         mFastScroller = findViewById(R.id.fast_scroller);
         mFastScroller.setPopupView(findViewById(R.id.fast_scroller_popup));
@@ -520,7 +529,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
         // If the MotionEvent is inside the handle area, and the container keeps on receiving touch
         // input, container should move down.
-        if (dragLayer.isEventOverView(mBottomSheetHandleArea, ev)) {
+        if (!mActivityContext.isMergeAppDrawerToWorkspace()
+                && dragLayer.isEventOverView(mBottomSheetHandleArea, ev)) {
             return true;
         }
         AllAppsRecyclerView rv = getActiveRecyclerView();
@@ -944,7 +954,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             var showHeaderBackground = PreferenceCacheExtensionsKt.firstCached(
                 pref2.getAppDrawerSearchBarBackground(), pref2);
             if (showHeaderBackground) {
-                opacity = pref.getDrawerOpacity().get();
+                opacity = LawnchairUtilsKt.DRAWER_TINT_ALPHA;
             }
             opacity = MathUtils.clamp(opacity, 0f, 1f);
             return ColorUtils.setAlphaComponent(
@@ -962,7 +972,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     // LC-Note: Hey! We cache this! see updateBottomSheetBackgroundColor() for more details.
-    int getBottomSheetBackgroundColor() {
+    // Sora: public so a glass surface inside the drawer can wear the same wash.
+    public int getBottomSheetBackgroundColor() {
         return mCachedBottomSheetBgColor;
     }
 
@@ -1106,7 +1117,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         RelativeLayout.LayoutParams layoutParams = (LayoutParams) v.getLayoutParams();
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         int topMargin = 0;
-        if (mActivityContext.getDeviceProfile().shouldShowAllAppsOnSheet()) {
+        if (mActivityContext.getDeviceProfile().shouldShowAllAppsOnSheet()
+                && !mActivityContext.isMergeAppDrawerToWorkspace()) {
             // Clear the bottom-sheet drag handle when search is not reserving that space.
             topMargin = getContext().getResources().getDimensionPixelSize(
                     R.dimen.bottom_sheet_handle_area_height);
@@ -1373,6 +1385,15 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mInsets.set(insets);
         DeviceProfile grid = mActivityContext.getDeviceProfile();
 
+        if (mActivityContext.isMergeAppDrawerToWorkspace()) {
+            if (mBottomSheetHandle != null) {
+                mBottomSheetHandle.setVisibility(GONE);
+            }
+            if (mBottomSheetHandleArea != null) {
+                mBottomSheetHandleArea.setVisibility(GONE);
+            }
+        }
+
         applyAdapterSideAndBottomPaddings(grid);
 
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
@@ -1448,13 +1469,30 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     private void applyAdapterSideAndBottomPaddings(DeviceProfile grid) {
         int bottomPadding = Math.max(mInsets.bottom, mNavBarScrimHeight);
+        // Sora: Caddy insets the grid, and only the grid. The margin the App
+        // Library leaves at the screen's edge is wider than half the gap between
+        // its tiles, so centring a plate in its tile cannot produce it on its
+        // own -- the rest has to come from padding the grid. Put on the whole
+        // container instead it would take the search bar in with it, and that
+        // already sits where the reference puts it.
+        // Replacing the grid's own padding rather than adding to it: the ratio
+        // states the whole distance from the screen's edge, so laying it on top
+        // of the several pixels already there put the tiles out by that much and
+        // took the same amount out of the gap between them.
+        boolean caddy = BaseAllAppsAdapter.isCaddy(getContext());
+        int caddyPadding = Math.round(
+                getResources().getDisplayMetrics().widthPixels
+                        * PreviewBackground.CADDY_GRID_PADDING_RATIO);
+        int leftPadding = caddy ? caddyPadding : grid.allAppsPadding.left;
+        int rightPadding = caddy ? caddyPadding : grid.allAppsPadding.right;
         mAH.forEach(adapterHolder -> {
             adapterHolder.mPadding.bottom = bottomPadding;
-            adapterHolder.mPadding.left = grid.allAppsPadding.left;
-            adapterHolder.mPadding.right = grid.allAppsPadding.right;
+            adapterHolder.mPadding.left = leftPadding;
+            adapterHolder.mPadding.right = rightPadding;
             adapterHolder.applyPadding();
         });
     }
+
 
     private void setDeviceManagementResources() {
         if (mActivityContext.getStringCache() != null) {
@@ -1626,6 +1664,13 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     public void setScrimView(ScrimView scrimView) {
         mScrimView = scrimView;
+    }
+
+    @Override
+    protected void onOverScrollChanged() {
+        if (mScrimView != null) {
+            mScrimView.invalidate();
+        }
     }
 
     @Override

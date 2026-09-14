@@ -15,8 +15,10 @@ import retrofit2.create
 
 private const val TAG = "LiveInformationRequest"
 
+// Every call passes an absolute @Url, so this base is only here because
+// Retrofit requires one. It is never resolved against.
 private val retrofit = Retrofit.Builder()
-    .baseUrl("https://lawnchair.app/")
+    .baseUrl("https://invalid.localhost/")
     .addConverterFactory(kotlinxJson.asConverterFactory("application/json".toMediaType()))
     .build()
 

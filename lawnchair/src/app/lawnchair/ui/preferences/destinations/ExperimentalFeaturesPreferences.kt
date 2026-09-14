@@ -50,12 +50,6 @@ fun ExperimentalFeaturesPreferences(
         val hasPermission = wallpaperAccessState != FileAccessState.Denied
         var showPermissionDialog by remember { mutableStateOf(false) }
 
-        val folderIconShapeAdapter = prefs2.folderShape.getAdapter()
-        val folderIconShapeSubtitle = iconShapeEntries(context)
-            .firstOrNull { it.value == folderIconShapeAdapter.state.value }
-            ?.label?.invoke()
-            ?: stringResource(id = R.string.custom)
-
         PreferenceGroup(
             modifier = Modifier,
             heading = stringResource(R.string.workspace_label),

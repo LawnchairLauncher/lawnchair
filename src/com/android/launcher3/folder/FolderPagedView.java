@@ -134,6 +134,9 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
 
     public void setFolder(Folder folder) {
         mFolder = folder;
+        if (folder.isCentered()) {
+            mOrganizer.setMinGridSize(3, 3);
+        }
         mPageIndicator = folder.findViewById(R.id.folder_page_indicator);
         initParentViews(folder);
     }
@@ -143,6 +146,11 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
      */
     private void setupContentDimensions(int count) {
         mAllocatedContentSize = count;
+        if (mFolder != null && mFolder.isCentered()) {
+            mOrganizer.setMinGridSize(3, 3);
+        } else {
+            mOrganizer.setMinGridSize(0, 0);
+        }
         mOrganizer.setContentSize(count);
         mGridCountX = mOrganizer.getCountX();
         mGridCountY = mOrganizer.getCountY();
@@ -493,13 +501,19 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         setEnableOverscroll(getPageCount() > 1);
 
         // Update footer
-        mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
-        if (enableLauncherVisualRefresh()) {
-            mFolder.onIndicatorVisibilityChanged();
+        boolean hasMultiplePages = getPageCount() > 1;
+        mPageIndicator.setVisibility(hasMultiplePages ? View.VISIBLE : View.GONE);
+        if (mFolder != null) {
+            mFolder.onPageCountChanged(hasMultiplePages);
         }
         // Set the gravity as LEFT or RIGHT instead of START, as START depends on the actual text.
-        int horizontalGravity = getPageCount() > 1
-                ? (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL;
+        int horizontalGravity;
+        if (mFolder != null && mFolder.isCentered()) {
+            horizontalGravity = mIsRtl ? Gravity.RIGHT : Gravity.LEFT;
+        } else {
+            horizontalGravity = hasMultiplePages
+                    ? (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL;
+        }
         mFolder.getFolderName().setGravity(horizontalGravity | Gravity.CENTER_VERTICAL);
     }
 
@@ -513,8 +527,12 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             return 0;
         }
         int maxPageHeight = 0;
+        boolean forceFullGrid = mFolder != null && mFolder.isCentered();
         for (int i = 0; i < getPageCount(); i++) {
-            maxPageHeight = Math.max(maxPageHeight, getPageAt(i).getDesiredHeightForOccupiedRows());
+            int pageHeight = forceFullGrid
+                    ? getPageAt(i).getDesiredHeight()
+                    : getPageAt(i).getDesiredHeightForOccupiedRows();
+            maxPageHeight = Math.max(maxPageHeight, pageHeight);
         }
         return maxPageHeight + getPaddingTop() + getPaddingBottom();
     }

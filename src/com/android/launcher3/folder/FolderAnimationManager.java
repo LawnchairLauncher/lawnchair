@@ -31,7 +31,10 @@ import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+
+import app.lawnchair.ui.liquid.LiquidGlassDrawable;
 import android.util.Property;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -71,7 +74,7 @@ public class FolderAnimationManager implements FolderAnimationCreator {
 
     private Folder mFolder;
     private FolderPagedView mContent;
-    private GradientDrawable mFolderBackground;
+    private Drawable mFolderBackground;
 
     private FolderIcon mFolderIcon;
     private PreviewBackground mPreviewBackground;
@@ -98,7 +101,7 @@ public class FolderAnimationManager implements FolderAnimationCreator {
     public FolderAnimationManager(Folder folder) {
         mFolder = folder;
         mContent = folder.mContent;
-        mFolderBackground = (GradientDrawable) mFolder.getBackground();
+        mFolderBackground = mFolder.getBackground();
 
         mFolderIcon = folder.mFolderIcon;
         mPreviewBackground = mFolderIcon.mBackground;
@@ -186,13 +189,23 @@ public class FolderAnimationManager implements FolderAnimationCreator {
                 - paddingOffsetY;
         final float xDistance = initialX - lp.x;
         final float yDistance = initialY - lp.y;
+        if (mIsOpening) {
+            mFolder.setTranslationX(xDistance);
+            mFolder.setTranslationY(yDistance);
+        }
 
         // Set up the Folder background (respects Lawnchair folder color pref).
         int initialColor = LawnchairUtilsKt.resolveFolderPreviewColor(mContext);
         int finalColor = LawnchairUtilsKt.resolveFolderBackgroundColor(mContext);
 
         mFolderBackground.mutate();
-        mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
+        // Sora: liquid glass has no single colour to set or tween. Only the old
+        // GradientDrawable background takes part in the colour animation.
+        boolean tintableBackground = mFolderBackground instanceof GradientDrawable;
+        if (tintableBackground) {
+            ((GradientDrawable) mFolderBackground).setColor(
+                    mIsOpening ? initialColor : finalColor);
+        }
 
         // Set up the reveal animation that clips the Folder.
         int totalOffsetX = paddingOffsetX + previewItemOffsetX;
@@ -201,7 +214,15 @@ public class FolderAnimationManager implements FolderAnimationCreator {
                 Math.round((totalOffsetX + initialSize)),
                 Math.round((paddingOffsetY + initialSize)));
         Rect endRect = new Rect(0, 0, lp.width, lp.height);
-        float finalRadius = mFolderBackground.getCornerRadius();
+        float finalRadius;
+        if (mFolderBackground instanceof LiquidGlassDrawable) {
+            finalRadius = ((LiquidGlassDrawable) mFolderBackground).getCornerRadiusPx();
+        } else if (tintableBackground) {
+            finalRadius = ((GradientDrawable) mFolderBackground).getCornerRadius();
+        } else {
+            finalRadius = Folder.FOLDER_GLASS_CORNER_RADIUS_DP
+                    * mContext.getResources().getDisplayMetrics().density;
+        }
 
         // Create the animators.
         AnimatorSet a = new AnimatorSet();
@@ -219,8 +240,11 @@ public class FolderAnimationManager implements FolderAnimationCreator {
             play(a, anim);
         }
 
-        mBgColorAnimator = getAnimator(mFolderBackground, "color", initialColor, finalColor);
-        play(a, mBgColorAnimator);
+        if (tintableBackground) {
+            mBgColorAnimator = getAnimator((GradientDrawable) mFolderBackground, "color",
+                    initialColor, finalColor);
+            play(a, mBgColorAnimator);
+        }
         play(a, getAnimator(mFolder, View.TRANSLATION_X, xDistance, 0f));
         play(a, getAnimator(mFolder, View.TRANSLATION_Y, yDistance, 0f));
         play(a, getAnimator(mFolder.mContent, SCALE_PROPERTY, initialScale, finalScale));

@@ -156,14 +156,6 @@ fun PreferencesDashboard(
                 isSelected = currentRoute is Smartspace,
             )
 
-            PreferenceCategory(
-                label = stringResource(R.string.dock_label),
-                description = stringResource(R.string.dock_description),
-                iconResource = R.drawable.ic_dock,
-                onNavigate = { onNavigate(Dock) },
-                isSelected = currentRoute is Dock,
-            )
-
             ExpandAndShrink(
                 visible = !deckLayout.state.value,
             ) {

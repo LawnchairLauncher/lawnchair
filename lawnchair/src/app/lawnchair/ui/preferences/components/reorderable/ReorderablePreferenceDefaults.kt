@@ -17,8 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -27,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.liquid.SoraLiquidToggle
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.preferenceGroupColor
 import com.android.launcher3.util.MSDLPlayerWrapper
@@ -95,28 +94,15 @@ fun ReorderableSwitchPreference(
             dragHandle()
         },
         endWidget = {
-            Switch(
+            // Sora: liquid glass toggle in place of Material 3's Switch. It
+            // carries no thumb icon, so the check/close glyphs are dropped.
+            SoraLiquidToggle(
+                checked = { checked },
+                onCheckedChange = wrappedOnCheckedChange,
                 modifier = Modifier
                     .padding(start = 12.dp, top = 12.dp, bottom = 12.dp)
                     .height(24.dp),
-                checked = checked,
-                onCheckedChange = wrappedOnCheckedChange,
                 enabled = enabled,
-                thumbContent = {
-                    if (checked) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null,
-                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = null,
-                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                        )
-                    }
-                },
             )
         },
         enabled = enabled,

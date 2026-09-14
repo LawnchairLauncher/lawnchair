@@ -150,6 +150,7 @@ import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.taskbar.TaskbarUIController;
+import com.android.launcher3.touch.MergedAppDrawerTouchController;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
@@ -746,6 +747,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(getDragController());
+        list.add(new MergedAppDrawerTouchController(this));
         BiConsumer<AnimatorSet, Long> splitAnimator = (animatorSet, duration) ->
                 animatorSet.play(mSplitSelectStateController.getSplitAnimationController()
                         .createPlaceholderDismissAnim(this, LAUNCHER_SPLIT_SELECTION_EXIT_HOME,

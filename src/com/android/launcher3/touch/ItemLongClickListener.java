@@ -31,6 +31,8 @@ import android.view.View.OnLongClickListener;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import app.lawnchair.folder.FolderResizeHint;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.celllayout.CellInfo;
 import com.android.launcher3.config.FeatureFlags;
@@ -38,6 +40,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PrivateSpaceInstallAppButtonInfo;
 import com.android.launcher3.testing.TestLogging;
@@ -76,7 +79,18 @@ public class ItemLongClickListener {
         if (!(v.getTag() instanceof ItemInfo)) return false;
 
         launcher.setWaitingForResult(null);
-        beginDrag(v, launcher, (ItemInfo) v.getTag(), new DragOptions());
+
+        // Sora: a folder held on the workspace offers its resize handle first.
+        // The drag is armed but held back, so carrying on moving still drags the
+        // folder and a press that goes nowhere leaves the handle up.
+        DragOptions options = new DragOptions();
+        if (v instanceof FolderIcon folderIcon && !folderIcon.isInAppDrawer()) {
+            FolderResizeHint hint = FolderResizeHint.show(launcher, folderIcon);
+            if (hint != null) {
+                options.preDragCondition = hint.preDragCondition();
+            }
+        }
+        beginDrag(v, launcher, (ItemInfo) v.getTag(), options);
         return true;
     }
 

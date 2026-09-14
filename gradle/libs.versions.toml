@@ -65,6 +65,10 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.0"
 androidx-window = "androidx.window:window:1.5.1"
 
+# Liquid Glass (Backdrop) -- Apache-2.0, https://github.com/Kyant0/AndroidLiquidGlass
+kyant-backdrop = "io.github.kyant0:backdrop:2.0.1"
+kyant-shapes = "io.github.kyant0:shapes:1.2.1"
+
 # Compose
 compose-bom = "androidx.compose:compose-bom:2026.08.00"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }

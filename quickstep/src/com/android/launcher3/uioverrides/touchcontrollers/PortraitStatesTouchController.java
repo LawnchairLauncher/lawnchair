@@ -67,6 +67,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                     return false;
                 }
         }
+        if (mLauncher.isInState(NORMAL) && mLauncher.isMergeAppDrawerToWorkspace()) {
+            return false;
+        }
         // If we are swiping to all apps instead of overview, allow it from anywhere.
         boolean interceptAnywhere = mLauncher.isInState(NORMAL);
         if (mCurrentAnimation != null) {

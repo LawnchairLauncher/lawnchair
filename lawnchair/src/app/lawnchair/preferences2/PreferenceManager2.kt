@@ -33,6 +33,9 @@ import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
 import app.lawnchair.gestures.type.GestureType
+import app.lawnchair.folder.Centered
+import app.lawnchair.folder.FolderOpenMode
+import app.lawnchair.hotseat.DisabledHotseat
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
@@ -125,10 +128,10 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_dark_status_bar),
     )
 
-    val hotseatMode = preference(
+    val hotseatMode = preference<HotseatMode, String>(
         key = stringPreferencesKey("hotseat_mode"),
-        defaultValue = HotseatMode.fromString(context.getString(R.string.config_default_hotseat_mode)),
-        parse = { HotseatMode.fromString(it) },
+        defaultValue = DisabledHotseat,
+        parse = { DisabledHotseat },
         save = { it.toString() },
     )
 
@@ -438,6 +441,12 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_app_drawer_haptic_feedback),
     )
 
+    val mergeAppDrawerToWorkspace = preference(
+        key = booleanPreferencesKey(name = "merge_app_drawer_to_workspace"),
+        defaultValue = false,
+        onSet = { reloadHelper.recreate() },
+    )
+
     val hiddenAppsInSearch = preference(
         key = stringPreferencesKey(name = "hidden_apps_in_search"),
         defaultValue = HiddenAppsInSearch.NEVER,
@@ -496,6 +505,14 @@ class PreferenceManager2 @Inject constructor(
         key = floatPreferencesKey(name = "folder_background_opacity"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_background_opacity),
         onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val folderOpenMode = preference<FolderOpenMode, String>(
+        key = stringPreferencesKey("folder_open_mode"),
+        defaultValue = Centered,
+        parse = FolderOpenMode::fromString,
+        save = FolderOpenMode::toString,
+        onSet = { reloadHelper.recreate() },
     )
 
     val showIconLabelsOnHomeScreen = preference(

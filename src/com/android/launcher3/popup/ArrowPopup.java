@@ -39,6 +39,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
@@ -53,6 +54,8 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Themes;
+
+import app.lawnchair.ui.liquid.LiquidGlassPanel;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -147,7 +150,9 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         // Initialize arrow view
         final Resources resources = getResources();
         mArrowColor = ColorTokens.PopupArrow.resolveColor(context);
-        mChildContainerMargin = resources.getDimensionPixelSize(R.dimen.popup_margin);
+        // Sora: groups sit flush so the popup reads as a single sheet of glass
+        // rather than a stack of separate plates.
+        mChildContainerMargin = 0;
         mArrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
         mArrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
         mArrow = new View(context);
@@ -257,9 +262,14 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                 MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
                 mlp.bottomMargin = 0;
 
-                if (colors != null && isShortcutContainer(view)) {
-                    setChildColor(view, colors[0], colorAnimator);
-                    mArrowColor = colors[0];
+                // Sora: nothing inside the popup paints a background of its own.
+                // A single sheet of liquid glass is drawn behind the whole thing by
+                // mGlassPanel, so any opaque plate here would simply hide it.
+                if (isShortcutContainer(view)) {
+                    view.setBackground(null);
+                    if (colors != null) {
+                        mArrowColor = colors[0];
+                    }
                 }
 
                 if (view instanceof ViewGroup && isShortcutContainer(view)) {
@@ -268,27 +278,88 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                 }
 
                 if (isShortcutOrWrapper(view)) {
-                    if (totalVisibleShortcuts == 1) {
-                        // Lawnchair-TODO-High: view.setBackgroundResource is use instead
-                        view.setBackground(DrawableTokens.SingleItemPrimary.resolve(getContext()));
-                    } else if (totalVisibleShortcuts > 1) {
-                        if (numVisibleShortcut == 0) {
-                            view.setBackground(mRoundedTop.getConstantState().newDrawable());
-                        } else if (numVisibleShortcut == (totalVisibleShortcuts - 1)) {
-                            view.setBackground(mRoundedBottom.getConstantState().newDrawable());
-                        } else {
-                            view.setBackground(DrawableTokens.MiddleItemPrimary.resolve(getContext()));
-                        }
+                    view.setBackground(null);
+                    if (totalVisibleShortcuts > 1) {
                         numVisibleShortcut++;
                     }
                 }
-
-                setChildColor(view, backgroundColor, colorAnimator);
             }
         }
 
         colorAnimator.setDuration(0).start();
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+    }
+
+    /**
+     * The sheet of liquid glass drawn behind this popup.
+     *
+     * It is a sibling in the drag layer rather than a child, because ArrowPopup is
+     * a vertical LinearLayout: a child would take a row of its own instead of
+     * sitting behind the others. Keeping it a sibling also means the popup's own
+     * views, gestures and accessibility are untouched -- only what is behind them
+     * changes.
+     */
+    private LiquidGlassPanel mGlassPanel;
+
+
+    @Override
+    protected void dispatchDraw(android.graphics.Canvas canvas) {
+        // Sora: driven from the draw pass rather than an OnPreDrawListener.
+        // getViewTreeObserver() hands back a temporary observer while a view is
+        // still detached, so a listener registered as the popup is being added
+        // could be dropped when it actually attached -- leaving the glass with a
+        // zero-sized pane and nothing to draw.
+        super.dispatchDraw(canvas);
+    }
+
+    /** Points the fixed overlay at this popup's current visual rectangle. */
+    private void syncGlassPanel() {
+        if (mGlassPanel == null) {
+            return;
+        }
+        mGlassPanel.setCornerRadius(mOutlineRadius);
+        mGlassPanel.setTinted(true);
+        // A few dp, the amount Backdrop's own sheet uses. Enough to keep menu
+        // text off a busy wallpaper, little enough that the lens still has
+        // something to bend.
+        mGlassPanel.setBlurRadiusDp(4f);
+        // Follow visibility: a popup can be hidden without being removed during a
+        // drag, and the sheet must not be left floating on screen on its own.
+        mGlassPanel.setVisibility(getVisibility());
+
+        // clipChildren is off here, so rows may draw outside this container -- the
+        // system-shortcut row does. The union of the children is what the sheet
+        // has to cover, not just getHeight().
+        int contentTop = 0;
+        int contentBottom = getHeight();
+        for (int i = getChildCount() - 1; i >= 0; --i) {
+            View child = getChildAt(i);
+            if (child.getVisibility() != VISIBLE) {
+                continue;
+            }
+            contentTop = Math.min(contentTop, child.getTop());
+            contentBottom = Math.max(contentBottom, child.getBottom());
+        }
+
+        // Placement is measured, not derived. The overlay's own origin is not
+        // necessarily the drag layer's -- insets and padding can move it -- so
+        // taking the difference of the two on-screen positions is the only way to
+        // land the pane on the popup regardless of what the parent does to either.
+        int[] popupLocation = new int[2];
+        getLocationOnScreen(popupLocation);
+        int[] overlayLocation = new int[2];
+        mGlassPanel.screenLocation(overlayLocation);
+
+        float scaleX = getScaleX();
+        float scaleY = getScaleY();
+        float paneLeft = popupLocation[0] - overlayLocation[0];
+        float paneTop = popupLocation[1] - overlayLocation[1] + contentTop * scaleY;
+        mGlassPanel.setPaneBounds(
+                paneLeft,
+                paneTop,
+                getWidth() * scaleX,
+                (contentBottom - contentTop) * scaleY,
+                getAlpha());
     }
 
     /**
@@ -336,6 +407,25 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
     protected void setupForDisplay() {
         setVisibility(View.INVISIBLE);
         mIsOpen = true;
+        mGlassPanel = new LiquidGlassPanel(getContext());
+        // BaseDragLayer accepts only its own LayoutParams. Handed the
+        // InsettableFrameLayout ones it inherits from, it quietly converts them,
+        // and the conversion drops ignoreInsets -- after which onViewAdded lays
+        // the system-bar inset on as a margin. The overlay then sits lower and
+        // shorter than the layer it is addressed in, and what it draws near the
+        // top falls outside its own bounds.
+        BaseDragLayer.LayoutParams glassLp = new BaseDragLayer.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        glassLp.ignoreInsets = true;
+        mGlassPanel.setLayoutParams(glassLp);
+        // Grab the scene first: right now the drag layer holds exactly what will be
+        // behind this popup, so the glass refracts the real icons rather than only
+        // the wallpaper.
+        mGlassPanel.setOnSyncFrame(this::syncGlassPanel);
+        mGlassPanel.captureBehind(getPopupContainer());
+        // Added first so it sits behind the popup in the drag layer.
+        getPopupContainer().addView(mGlassPanel);
         getPopupContainer().addView(this);
         orientAboutObject();
     }
@@ -724,6 +814,10 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mDeferContainerRemoval = false;
         getPopupContainer().removeView(this);
         getPopupContainer().removeView(mArrow);
+        if (mGlassPanel != null) {
+            getPopupContainer().removeView(mGlassPanel);
+            mGlassPanel = null;
+        }
         mOnCloseCallbacks.executeAllAndClear();
     }
 

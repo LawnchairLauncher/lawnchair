@@ -206,6 +206,16 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
                 totalSpans *= itemPerRow;
             }
         }
+        // Sora: the same trick, for Caddy's two-cell-wide folders. A drawer of
+        // five columns fits two of them, and five spans cannot be halved -- so
+        // the span count is multiplied until it can, and the row comes out with
+        // its folders evenly spread instead of two of them squeezed left and a
+        // column of nothing on the right.
+        if (isCaddy(mActivityContext)) {
+            if (totalSpans % CADDY_FOLDERS_PER_ROW != 0) {
+                totalSpans *= CADDY_FOLDERS_PER_ROW;
+            }
+        }
         mGridLayoutMgr.setSpanCount(totalSpans);
     }
 
@@ -227,6 +237,12 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
                 return totalSpans;
             }
             int viewType = items.get(position).viewType;
+            // A Caddy folder takes two columns. Only the folder: a search result
+            // is still a single app in a single cell, and Caddy does not change
+            // that.
+            if (viewType == VIEW_TYPE_FOLDER && isCaddy(mActivityContext)) {
+                return totalSpans / CADDY_FOLDERS_PER_ROW;
+            }
             if (isIconViewType(viewType)) {
                 return totalSpans / mAppsPerRow;
             } else {

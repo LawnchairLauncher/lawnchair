@@ -11,9 +11,12 @@ import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
 import app.lawnchair.util.observeOnce
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
+import com.android.launcher3.R
+import com.android.launcher3.appprediction.PredictionRowView
 import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
@@ -98,16 +101,25 @@ class LawnchairAlphabeticalAppsList<T>(
             val validApps = appList.mapNotNull { it }
             val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
 
+            // Caddy is folders and nothing else, so the suggestions get a folder
+            // of their own rather than the strip above the grid they used to
+            // have. First, because that is where the eye lands and what they are
+            // for; the categories follow behind in the order they always had.
+            suggestionsFolder()?.let {
+                mAdapterItems.add(AdapterItem.asFolder(it))
+                position++
+            }
+
             finalCategorizedApps.forEach { (category, apps) ->
-                if (apps.size == 1) {
-                    mAdapterItems.add(AdapterItem.asApp(apps.first()))
-                } else {
-                    val folderInfo = FolderInfo().apply {
-                        title = category
-                        apps.forEach { add(it) }
-                    }
-                    mAdapterItems.add(AdapterItem.asFolder(folderInfo))
+                // A category holding one app is still a category. Drawn as a
+                // bare app it was the one tile in Caddy that was not a folder,
+                // and it broke the grid the moment every other tile grew to two
+                // cells by two.
+                val folderInfo = FolderInfo().apply {
+                    title = category
+                    apps.forEach { add(it) }
                 }
+                mAdapterItems.add(AdapterItem.asFolder(folderInfo))
                 position++
             }
         } else {
@@ -136,6 +148,30 @@ class LawnchairAlphabeticalAppsList<T>(
         }
 
         return position
+    }
+
+    /**
+     * The suggested apps, as a folder, or null when there are none to show.
+     *
+     * Read off the prediction row rather than kept here: that row is already the
+     * one thing the launcher hands new predictions to, and it is the thing that
+     * knows to hold still while an app it just launched settles. Asking it means
+     * the folder says the same as the strip did, whatever order it arrives in.
+     * The row itself stays hidden in Caddy -- see [PredictionRowView] -- so the
+     * apps are shown once, here.
+     */
+    private fun suggestionsFolder(): FolderInfo? {
+        if (!prefs2.showSuggestedAppsInDrawer.firstCached(prefs2)) return null
+        val predictions = context.appsView
+            ?.floatingHeaderView
+            ?.findFixedRowByType(PredictionRowView::class.java)
+            ?.predictedApps
+            .orEmpty()
+        if (predictions.isEmpty()) return null
+        return FolderInfo().apply {
+            title = context.getString(R.string.suggested_apps_folder_title)
+            predictions.forEach { add(it) }
+        }
     }
 
     override fun onIdpChanged(modelPropertiesChanged: Boolean) {

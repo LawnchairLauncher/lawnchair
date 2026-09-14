@@ -61,7 +61,7 @@
     <string name="time_weeks_ago">%dmg</string>
     <string name="time_months_ago">%dbln</string>
     <string name="time_years_ago">%dthn</string>
-    <string name="managed_by_lawnchair">Dikelola oleh Lawnchair</string>
+    <string name="managed_by_lawnchair">Dikelola oleh Sora Launcher</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferensi</string>
     <string name="settings_button_text">Pengaturan beranda</string>
@@ -69,7 +69,7 @@
     <string name="title_change_settings">Ubah pengaturan</string>
     <!--
 
-    General "words" used throughout Lawnchair
+    General "words" used throughout Sora Launcher
 
     -->
     <string name="others_category_label">Lainnya</string>
@@ -100,6 +100,8 @@
     <string name="wallpapers">Wallpaper</string>
     <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">Caddy</string>
+    <string name="drawer_mode_aosp">AOSP</string>
+    <string name="drawer_mode_default">Default</string>
     <string name="app_drawer_folder">Folder untuk laci aplikasi</string>
     <string name="selected_apps">Aplikasi yang dipilih</string>
     <string name="add_apps">Tambahkan aplikasi</string>
@@ -117,7 +119,7 @@
     <string name="my_folder_label">Folder saya</string>
     <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Sora Launcher requires accessibility access.\n\nSora Launcher doesn\'t watch your actions, though all accessibility services require this privilege. Sora Launcher discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Sora Launcher uses the performGlobalAction accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -144,6 +146,8 @@
     <string name="dock_description">Bilah pencarian, jumlah lambang</string>
     <string name="app_drawer_label">Laci aplikasi</string>
     <string name="app_drawer_description">Aplikasi tersembunyi, jumlah kolom, lambang</string>
+    <string name="merge_app_drawer_to_workspace_label">Gabungkan di layar beranda</string>
+    <string name="merge_app_drawer_to_workspace_description">Integrasikan laci aplikasi sebagai halaman terakhir di layar beranda</string>
     <string name="drawer_search_label">Pencarian laci</string>
     <string name="drawer_search_description">Saran jaring, pencarian global</string>
     <string name="folders_label">Folder</string>
@@ -156,7 +160,7 @@
     <string name="backup_and_restore_description">Simpan pengaturan saat ini, pulihkan cadangan</string>
     <string name="about_label">Tentang</string>
     <string name="app_info_drop_target_label">Info aplikasi</string>
-    <string name="debug_restart_launcher">Muat ulang Lawnchair</string>
+    <string name="debug_restart_launcher">Muat ulang Sora Launcher</string>
     <string name="experimental_features_label">Masa datang eksperimental</string>
     <!-- Experimental features -->
     <string name="workspace_label">Ruang kerja</string>
@@ -211,13 +215,13 @@
     <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
     <string name="prediction_system_settings">Manage system suggestions</string>
     <string name="missing_usage_access_label">Usage access needed</string>
-    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Sora Launcher">%1$s</xliff:g></string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">Untuk mengakses pintasan dan kelebihan tambahan, atur Lawnchair sebagai peluncur bawaan Anda</string>
+    <string name="set_default_launcher_tip">Untuk mengakses pintasan dan kelebihan tambahan, atur Sora Launcher sebagai peluncur bawaan Anda</string>
     <string name="notification_dots">Titik notifikasi</string>
     <string name="show_notification_count">Tampilkan jumlah notifikasi</string>
     <string name="notification_dots_color">Warna titik notifikasi</string>
@@ -410,11 +414,11 @@
     <string name="torch_status_on">Flashlight on</string>
     <string name="torch_action_off">Tap to turn off</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Set up Lawnchair</string>
+    <string name="onboarding_open_settings_title">Set up Sora Launcher</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
-    <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
+    <string name="onboarding_major_upgrade_title">Meet the new Sora Launcher</string>
     <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
-    <string name="onboarding_welcome">Selamat datang di Lawnchair!</string>
+    <string name="onboarding_welcome">Selamat datang di Sora Launcher!</string>
     <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Jumlah target maksimum</string>
@@ -425,7 +429,7 @@
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Tampilkan di layar beranda</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Sora Launcher widget</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">Penyedia Sekilas</string>
     <string name="smartspace_mode_google">Google</string>
@@ -517,15 +521,15 @@
     <string name="gesture_handler_open_assistant">Buka asisten</string>
     <string name="pick_app_for_gesture">Pilih apli</string>
     <string name="dt2s_admin_hint_title">Izin admin diperlukan</string>
-    <string name="dt2s_admin_hint">Untuk membuat perangkat dalam mode tidur, atur Lawnchair sebagai aplikasi admin perangkat. Ketuk \"Buka pengaturan\", lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
+    <string name="dt2s_admin_hint">Untuk membuat perangkat dalam mode tidur, atur Sora Launcher sebagai aplikasi admin perangkat. Ketuk \"Buka pengaturan\", lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
     <string name="dt2s_admin_warning">Gerakan untuk membuat perangkat masuk ke mode tidur akan dimatikan.</string>
     <string name="d2ts_recents_a11y_hint_title">Aktifkan layanan aksesibilitas</string>
     <string name="sleep_a11y_hint">letakkan perangkat tersebut ke tidur</string>
     <string name="notifications_fallback_a11y_hint">buka panel pemberitahuan</string>
     <string name="quick_settings_a11y_hint">buka panel Pengaturan Cepat</string>
     <string name="recents_screen_a11y_hint">buka layar Terbaru</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair menggunakan metode `performGlobalAction` dari Aksesibilitas untuk melakukan tindakan ini. Ini adalah izin sensitif yang memungkinkan pemantauan aplikasi lain. Namun, Lawnchair tidak dikonfigurasi untuk fungsi tersebut.</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Sora Launcher accessibility service. Tap \"Open settings\", choose \"Sora Launcher\" and turn on \"Use Sora Launcher.\"</string>
+    <string name="generic_a11y_disclaimer">Sora Launcher menggunakan metode `performGlobalAction` dari Aksesibilitas untuk melakukan tindakan ini. Ini adalah izin sensitif yang memungkinkan pemantauan aplikasi lain. Namun, Sora Launcher tidak dikonfigurasi untuk fungsi tersebut.</string>
     <string name="sleep_mode_label">Sleep mode</string>
     <string name="sleep_mode_auto">Otomatis</string>
     <string name="sleep_mode_root">Root</string>
@@ -536,7 +540,7 @@
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Laporan bug Lawnchair</string>
+    <string name="lawnchair_bug_report">Laporan bug Sora Launcher</string>
     <string name="crash_report_notif_title">%1$s mogok</string>
     <string name="action_upload_crash_report">Unggah laporan mogok</string>
     <string name="action_upload_error">Gagal mengunggah</string>
@@ -650,14 +654,14 @@
     <string name="unfolded_label">Unfolded</string>
     <string name="when_folded_label">When folded</string>
     <string name="when_unfolded_label">When unfolded</string>
-    <string name="unfolded_grid_description">Lawnchair pairs two pages together to fill the larger display</string>
+    <string name="unfolded_grid_description">Sora Launcher pairs two pages together to fill the larger display</string>
     <string name="foldable_columns_error">The folded value must be less than or equal to the unfolded value. It will be automatically adjusted if needed.</string>
     <string name="hotseat_bottom_space_label">Padding bawah</string>
     <string name="page_indicator_height">Ketinggian indikator halaman</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Pencarian apli</string>
     <string name="search_provider_custom">Kustom</string>
-    <string name="search_provider_sponsored_description">%1$s dan Lawnchair memiliki persetujuan pembagian hasil.\n\nMencari dengan %1$s membantu mendukung Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s dan Sora Launcher memiliki persetujuan pembagian hasil.\n\nMencari dengan %1$s membantu mendukung Sora Launcher.</string>
     <string name="app_label">Aplikasi</string>
     <string name="website_label">Website</string>
     <string name="qsb_search_provider_app_required">Aplikasi diperlukan</string>
@@ -693,7 +697,7 @@
     <string name="max_folder_columns">Kolom folder maksimum</string>
     <string name="max_folder_rows">Baris folder maksimum</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored because Sora Launcher isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Integrasi sistem tidak kompatibel</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
     <string name="translucent_background">Latar belakang transparan</string>
@@ -823,4 +827,6 @@
     <string name="lawnchair_actions">Aksi</string>
     <string name="lawnchair_action_failed">Gagal untuk memicu aksi</string>
     <string name="please_wait">Mohon tunggu…</string>
+    <string name="sora_app_library">Perpustakaan Aplikasi</string>
+    <string name="sora_folder_resize">Ubah ukuran folder</string>
 </resources>

@@ -137,55 +137,6 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
                 )
             }
         }
-        val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
-        val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
-
-        PreferenceGroup(
-            modifier = Modifier,
-            heading = stringResource(id = R.string.icons),
-            description = stringResource(id = (R.string.adaptive_icon_background_description)),
-            showDescription = wrapAdaptiveIcons.state.value,
-        ) {
-            NavigationActionPreference(
-                label = stringResource(id = R.string.icon_style_label),
-                destination = GeneralIconPack,
-                subtitle = iconStyleSubtitle,
-            )
-            ExpandAndShrink(visible = themedIconsEnabled) {
-                SwitchPreference(
-                    adapter = transparentIconBackground,
-                    label = stringResource(id = R.string.transparent_background_icons_label),
-                    description = stringResource(id = R.string.transparent_background_icons_description),
-                )
-            }
-            NavigationActionPreference(
-                label = stringResource(id = R.string.icon_shape_label),
-                destination = GeneralIconShape(ShapeRoute.APP_SHAPE),
-                subtitle = iconShapeSubtitle,
-                endWidget = {
-                    IconShapePreview(iconShape = iconShapeAdapter.state.value)
-                },
-            )
-            SwitchPreference(
-                adapter = wrapAdaptiveIcons,
-                label = stringResource(id = R.string.auto_adaptive_icons_label),
-                description = stringResource(id = R.string.auto_adaptive_icons_description),
-            )
-            SwitchPreference(
-                adapter = prefs.shadowBGIcons.getAdapter(),
-                label = stringResource(id = R.string.shadow_bg_icons_label),
-            )
-            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value && !transparentIconBackground.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.background_lightness_label),
-                    adapter = prefs.coloredBackgroundLightness.getAdapter(),
-                    valueRange = 0F..1F,
-                    step = 0.1f,
-                    showAsPercentage = true,
-                )
-            }
-        }
-
         val accentColorAdapter = prefs2.accentColor.getAdapter()
         val showColorStyle = !(Utilities.ATLEAST_S && accentColorAdapter.state.value == ColorOption.SystemAccent) ||
             !Utilities.ATLEAST_S

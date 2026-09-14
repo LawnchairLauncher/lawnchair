@@ -28,7 +28,7 @@ develocity {
     }
 }
 
-rootProject.name = "lawnchair"
+rootProject.name = "sora-launcher"
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)

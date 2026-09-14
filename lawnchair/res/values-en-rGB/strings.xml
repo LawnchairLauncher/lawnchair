@@ -46,7 +46,7 @@
 
     <string name="loading">Loading…</string>
 
-    <string name="managed_by_lawnchair">Managed by Lawnchair</string>
+    <string name="managed_by_lawnchair">Managed by Sora Launcher</string>
 
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferences</string>
@@ -56,7 +56,7 @@
 
     <!--
 
-    General "words" used throughout Lawnchair
+    General "words" used throughout Sora Launcher
 
     -->
 
@@ -87,7 +87,7 @@
     <string name="what_to_show">What to show</string>
 
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Sora Launcher requires accessibility access.\n\nSora Launcher doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Sora Launcher discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Sora Launcher uses the performGlobalAction Accessibility service.</string>
 
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -125,7 +125,7 @@
     <string name="about_label">About</string>
 
     <string name="app_info_drop_target_label">App info</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Restart Sora Launcher</string>
     <string name="experimental_features_label">Experimental features</string>
 
     <!-- Experimental features -->
@@ -150,7 +150,7 @@
 
     -->
 
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
+    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Sora Launcher as your default launcher</string>
 
     <string name="notification_dots">Notification dots</string>
     <string name="show_notification_count">Show notification counter</string>
@@ -357,7 +357,7 @@
 
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Show on home screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Sora Launcher widget</string>
 
     <!-- List of available providers -->
     <string name="smartspace_mode_label">At a Glance provider</string>
@@ -429,22 +429,22 @@
     <string name="pick_app_for_gesture">Pick app</string>
 
     <string name="dt2s_admin_hint_title">Admin permissions required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Sora Launcher as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
 
 
     <string name="d2ts_recents_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Sora Launcher accessibility service. Tap \"Open settings\", select \"Sora Launcher\" and turn on \"Use Sora Launcher.\"\n\nSora Launcher uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Sora Launcher is not configured for that functionality and receives no events.</string>
     <string name="dt2s_recents_warning_open_settings">Open settings</string>
 
-<string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+<string name="recents_a11y_hint">To use Open Recents, turn on the Sora Launcher accessibility service. Tap \"Open settings\", select \"Sora Launcher\" and turn on \"Use Sora Launcher.\"\n\nSora Launcher uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Sora Launcher is not configured for that functionality and receives no events.</string>
 
     <!--
 
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair bug report</string>
+    <string name="lawnchair_bug_report">Sora Launcher bug report</string>
     <string name="crash_report_notif_title">%1$s crashed</string>
     <string name="action_upload_crash_report">Upload crash log</string>
 
@@ -536,7 +536,7 @@
     <!-- Search providers -->
     <string name="search_provider_app_search">App search</string>
 
-    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s and Sora Launcher have a revenue share agreement.\n\nSearching with %1$s helps support Sora Launcher.</string>
 
     <string name="app_label">App</string>
     <string name="website_label">Website</string>
@@ -579,7 +579,7 @@
     <string name="max_folder_rows">Maximum folder rows</string>
 
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Sora Launcher isn\'t set as the Recents provider</string>
 
     <string name="quickstep_incompatible">Incompatible system integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
@@ -673,8 +673,8 @@
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
 
     <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
-    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Sora Launcher</string>
+    <string name="warn_files_permission_content">To search your files, grant storage permissions to Sora Launcher</string>
     <string name="grant_requested_permissions">Grant permissions</string>
 
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>

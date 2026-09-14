@@ -41,9 +41,18 @@ class PreviewItemDrawingParams {
     public void update(float transX, float transY, float scale) {
         // We ensure the update will not interfere with an animation on the layout params
         // If the final values differ, we cancel the animation.
+        //
+        // Every component has to match, not merely one of them. Sora: while every
+        // app in a preview was drawn at one size, a single matching component
+        // meant the others matched too, and skipping was free. A folder given
+        // more than one cell draws its apps at two sizes, so the shared one
+        // matches on its own and the skip throws away a real change -- the app
+        // keeps the position and size it had under the folder's previous shape.
+        // Which apps that hits depends on which happen to be mid-animation when
+        // the folder is resized, which is why it looked arbitrary.
         if (anim != null) {
-            if (anim.finalState[1] == transX || anim.finalState[2] == transY
-                    || anim.finalState[0] == scale) {
+            if (anim.finalState[1] == transX && anim.finalState[2] == transY
+                    && anim.finalState[0] == scale) {
                 return;
             }
             anim.cancel();

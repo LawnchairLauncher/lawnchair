@@ -25,7 +25,7 @@ import com.android.launcher3.LauncherPrefs
 import java.util.concurrent.CopyOnWriteArraySet
 import org.json.JSONObject
 
-sealed class BasePreferenceManager(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
+sealed class BasePreferenceManager(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
     val sp: SharedPreferences = LauncherPrefs.getPrefs(context)
     val prefsMap = mutableMapOf<String, BasePref<*>>()
 
@@ -85,7 +85,7 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
         }
     }
 
-    private inline fun editSp(crossinline block: SharedPreferences.Editor.() -> Unit) {
+    fun editSp(block: SharedPreferences.Editor.() -> Unit) {
         if (inBatchMode) {
             block(editor!!)
         } else {
@@ -93,7 +93,43 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
         }
     }
 
-    abstract inner class BasePref<T>(override val key: String, private val primaryListener: ChangeListener?) : PrefEntry<T> {
+    fun StringPref(key: String, defaultValue: String, primaryListener: ChangeListener? = null) =
+        StringPref(this, key, defaultValue, primaryListener)
+
+    fun BoolPref(key: String, defaultValue: Boolean, primaryListener: ChangeListener? = null) =
+        BoolPref(this, key, defaultValue, primaryListener)
+
+    fun IntPref(key: String, defaultValue: Int, primaryListener: ChangeListener? = null) =
+        IntPref(this, key, defaultValue, primaryListener)
+
+    fun FloatPref(key: String, defaultValue: Float, primaryListener: ChangeListener? = null) =
+        FloatPref(this, key, defaultValue, primaryListener)
+
+    fun StringSetPref(key: String, defaultValue: Set<String>, primaryListener: ChangeListener? = null) =
+        StringSetPref(this, key, defaultValue, primaryListener)
+
+    fun FontPref(key: String, defaultValue: FontCache.Font, primaryListener: ChangeListener? = null) =
+        FontPref(this, key, defaultValue, primaryListener)
+
+    fun <T> ObjectPref(
+        key: String,
+        defaultValue: T,
+        parseFunc: (stringValue: String) -> T,
+        stringifyFunc: (value: T) -> String,
+        primaryListener: ChangeListener? = null,
+    ) = ObjectPref(this, key, defaultValue, parseFunc, stringifyFunc, primaryListener)
+
+    fun IdpIntPref(
+        key: String,
+        selectDefaultValue: InvariantDeviceProfile.GridOption.() -> Int,
+        primaryListener: ChangeListener? = null,
+    ) = IdpIntPref(this, key, selectDefaultValue, primaryListener)
+
+    abstract class BasePref<T>(
+        val manager: BasePreferenceManager,
+        override val key: String,
+        private val primaryListener: ChangeListener?,
+    ) : PrefEntry<T> {
         protected var loaded = false
         private val listeners = CopyOnWriteArraySet<PreferenceChangeListener>()
 
@@ -118,23 +154,24 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
         }
     }
 
-    abstract inner class StringBasedPref<T>(
+    abstract class StringBasedPref<T>(
+        manager: BasePreferenceManager,
         key: String,
         override val defaultValue: T,
         primaryListener: ChangeListener? = null,
-    ) : BasePref<T>(key, primaryListener) {
+    ) : BasePref<T>(manager, key, primaryListener) {
         private var currentValue: T? = null
 
         init {
             @Suppress("LeakingThis")
-            prefsMap[key] = this
+            manager.prefsMap[key] = this
         }
 
         @Suppress("UNCHECKED_CAST")
         override fun get(): T {
             if (!loaded) {
-                currentValue = if (sp.contains(key)) {
-                    parse(sp.getString(key, null)!!)
+                currentValue = if (manager.sp.contains(key)) {
+                    parse(manager.sp.getString(key, null)!!)
                 } else {
                     defaultValue
                 }
@@ -145,36 +182,38 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
 
         override fun set(newValue: T) {
             currentValue = newValue
-            editSp { putString(key, stringify(newValue)) }
+            manager.editSp { putString(key, stringify(newValue)) }
         }
 
         protected abstract fun parse(stringValue: String): T
         protected abstract fun stringify(value: T): String
     }
 
-    inner class StringPref(
+    open class StringPref(
+        manager: BasePreferenceManager,
         key: String,
         defaultValue: String,
         primaryListener: ChangeListener? = null,
-    ) : StringBasedPref<String>(key, defaultValue, primaryListener) {
+    ) : StringBasedPref<String>(manager, key, defaultValue, primaryListener) {
         override fun parse(stringValue: String) = stringValue
         override fun stringify(value: String) = value
     }
 
-    inner class BoolPref(
+    open class BoolPref(
+        manager: BasePreferenceManager,
         key: String,
         override val defaultValue: Boolean,
         primaryListener: ChangeListener? = null,
-    ) : BasePref<Boolean>(key, primaryListener) {
+    ) : BasePref<Boolean>(manager, key, primaryListener) {
         private var currentValue = false
 
         init {
-            prefsMap[key] = this
+            manager.prefsMap[key] = this
         }
 
         override fun get(): Boolean {
             if (!loaded) {
-                currentValue = sp.getBoolean(key, defaultValue)
+                currentValue = manager.sp.getBoolean(key, defaultValue)
                 loaded = true
             }
             return currentValue
@@ -182,29 +221,30 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
 
         override fun set(newValue: Boolean) {
             currentValue = newValue
-            editSp { putBoolean(key, newValue) }
+            manager.editSp { putBoolean(key, newValue) }
         }
     }
 
-    open inner class IntPref(
+    open class IntPref(
+        manager: BasePreferenceManager,
         key: String,
         private val defaultValueInternal: Int,
         primaryListener: ChangeListener? = null,
-    ) : BasePref<Int>(key, primaryListener) {
+    ) : BasePref<Int>(manager, key, primaryListener) {
         override val defaultValue = defaultValueInternal
         private var currentValue = 0
 
         init {
             @Suppress("LeakingThis")
-            prefsMap[key] = this
+            manager.prefsMap[key] = this
         }
 
         override fun get(): Int {
             if (!loaded) {
                 currentValue = try {
-                    sp.getInt(key, defaultValueInternal)
+                    manager.sp.getInt(key, defaultValueInternal)
                 } catch (_: ClassCastException) {
-                    sp.getFloat(key, defaultValueInternal.toFloat()).toInt()
+                    manager.sp.getFloat(key, defaultValueInternal.toFloat()).toInt()
                 }
                 loaded = true
             }
@@ -213,15 +253,16 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
 
         override fun set(newValue: Int) {
             currentValue = newValue
-            editSp { putInt(key, newValue) }
+            manager.editSp { putInt(key, newValue) }
         }
     }
 
-    inner class IdpIntPref(
+    open class IdpIntPref(
+        manager: BasePreferenceManager,
         key: String,
         private val selectDefaultValue: InvariantDeviceProfile.GridOption.() -> Int,
         primaryListener: ChangeListener? = null,
-    ) : IntPref(key, -1, primaryListener) {
+    ) : IntPref(manager, key, -1, primaryListener) {
         override val defaultValue: Int
             get() = error("unsupported")
 
@@ -255,20 +296,21 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
         }
     }
 
-    inner class FloatPref(
+    open class FloatPref(
+        manager: BasePreferenceManager,
         key: String,
         override val defaultValue: Float,
         primaryListener: ChangeListener? = null,
-    ) : BasePref<Float>(key, primaryListener) {
+    ) : BasePref<Float>(manager, key, primaryListener) {
         private var currentValue = 0f
 
         init {
-            prefsMap[key] = this
+            manager.prefsMap[key] = this
         }
 
         override fun get(): Float {
             if (!loaded) {
-                currentValue = sp.getFloat(key, defaultValue)
+                currentValue = manager.sp.getFloat(key, defaultValue)
                 loaded = true
             }
             return currentValue
@@ -276,24 +318,25 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
 
         override fun set(newValue: Float) {
             currentValue = newValue
-            editSp { putFloat(key, newValue) }
+            manager.editSp { putFloat(key, newValue) }
         }
     }
 
-    inner class StringSetPref(
+    open class StringSetPref(
+        manager: BasePreferenceManager,
         key: String,
         override val defaultValue: Set<String>,
         primaryListener: ChangeListener? = null,
-    ) : BasePref<Set<String>>(key, primaryListener) {
+    ) : BasePref<Set<String>>(manager, key, primaryListener) {
         private var currentValue = setOf<String>()
 
         init {
-            prefsMap[key] = this
+            manager.prefsMap[key] = this
         }
 
         override fun get(): Set<String> {
             if (!loaded) {
-                currentValue = sp.getStringSet(key, defaultValue)!!
+                currentValue = manager.sp.getStringSet(key, defaultValue)!!
                 loaded = true
             }
             return currentValue
@@ -301,51 +344,54 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
 
         override fun set(newValue: Set<String>) {
             currentValue = newValue
-            editSp { putStringSet(key, newValue) }
+            manager.editSp { putStringSet(key, newValue) }
         }
     }
 
-    inner class FontPref(
+    open class FontPref(
+        manager: BasePreferenceManager,
         key: String,
         defaultValue: FontCache.Font,
         primaryListener: ChangeListener? = null,
-    ) : StringBasedPref<FontCache.Font>(key, defaultValue, primaryListener) {
+    ) : StringBasedPref<FontCache.Font>(manager, key, defaultValue, primaryListener) {
 
         override fun parse(stringValue: String): FontCache.Font = runCatching {
-            FontCache.Font.fromJsonString(context, stringValue)
+            FontCache.Font.fromJsonString(manager.context, stringValue)
         }.getOrDefault(defaultValue)
 
         override fun stringify(value: FontCache.Font) = value.toJsonString()
     }
 
-    inner class ObjectPref<T>(
+    open class ObjectPref<T>(
+        manager: BasePreferenceManager,
         key: String,
         defaultValue: T,
         private val parseFunc: (stringValue: String) -> T,
         private val stringifyFunc: (value: T) -> String,
         primaryListener: ChangeListener? = null,
-    ) : StringBasedPref<T>(key, defaultValue, primaryListener) {
+    ) : StringBasedPref<T>(manager, key, defaultValue, primaryListener) {
 
         override fun parse(stringValue: String) = parseFunc(stringValue)
 
         override fun stringify(value: T) = stringifyFunc(value)
     }
 
-    abstract inner class MutableMapPref<K, V>(
+    abstract class MutableMapPref<K, V>(
+        manager: BasePreferenceManager,
         key: String,
         primaryListener: ChangeListener? = null,
-    ) : BasePref<Map<K, V>>(key, primaryListener) {
+    ) : BasePref<Map<K, V>>(manager, key, primaryListener) {
 
         override val defaultValue = mapOf<K, V>()
         private val valueMap = mutableMapOf<K, V>()
 
         init {
-            val obj = JSONObject(sp.getString(key, "{}")!!)
+            val obj = JSONObject(manager.sp.getString(key, "{}")!!)
             obj.keys().forEach {
                 valueMap[unflattenKey(it)] = unflattenValue(obj.getString(it))
             }
             @Suppress("LeakingThis")
-            prefsMap[key] = this
+            manager.prefsMap[key] = this
         }
 
         override fun get() = HashMap(valueMap)
@@ -372,7 +418,7 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
         private fun saveChanges() {
             val obj = JSONObject()
             valueMap.entries.forEach { obj.put(flattenKey(it.key), flattenValue(it.value)) }
-            editSp { putString(key, obj.toString()) }
+            manager.editSp { putString(key, obj.toString()) }
         }
 
         operator fun get(key: K): V? {

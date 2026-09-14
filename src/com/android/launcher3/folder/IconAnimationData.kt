@@ -73,9 +73,22 @@ data class IconAnimationData(
                 iconLayoutParams.isLockedToGrid = true
                 shortcutsAndWidgets?.setupLp(currentIcon)
 
+                val pageLayoutCount =
+                    if (numItemsOnPage < MAX_NUM_ITEMS_IN_PREVIEW && page > 0) {
+                        // If not on first page, we don't want preview items to position in a
+                        // circle.
+                        MAX_NUM_ITEMS_IN_PREVIEW
+                    } else {
+                        numItemsOnPage
+                    }
+                // Match positions of the icons in the folder with their positions in the preview.
+                // Asked first, because the scale below is read from the very same
+                // params: taken from scaleForItem instead, the apps flew out of
+                // the grid's places at the huddle's size.
+                layoutRule.computeSpringAnimationItemParams(i, pageLayoutCount, page, mTmpParams)
+
                 // Match scale of icons in the preview of the items on the first page.
-                val previewIconScale = layoutRule.scaleForItem(numItemsOnPage, page)
-                val previewIconSize = layoutRule.iconSize * previewIconScale
+                val previewIconSize = layoutRule.iconSize * mTmpParams.scale
                 val baseIconSize = getBubbleTextView(currentIcon).iconSize.toFloat()
                 val iconScale = previewIconSize / baseIconSize
 
@@ -88,30 +101,38 @@ data class IconAnimationData(
                 currentIcon.scaleX = startScale
                 currentIcon.scaleY = startScale
 
-                val pageLayoutCount =
-                    if (numItemsOnPage < MAX_NUM_ITEMS_IN_PREVIEW && page > 0) {
-                        // If not on first page, we don't want preview items to position in a
-                        // circle.
-                        MAX_NUM_ITEMS_IN_PREVIEW
-                    } else {
-                        numItemsOnPage
-                    }
-                // Match positions of the icons in the folder with their positions in the preview
-                layoutRule.computeSpringAnimationItemParams(i, pageLayoutCount, page, mTmpParams)
-
-                // The PreviewLayoutRule assumes that the icon size takes up the entire width so we
-                // offset by the actual size.
-                val iconOffsetX = ((iconLayoutParams.width - baseIconSize) * iconScale).toInt() / 2
+                // Where the app sits inside its own view once both scales have
+                // been applied: the folder's, about its top-left corner, and the
+                // view's own, about its centre.
+                //
+                // That centre is the part this has to say out loud. Every app in
+                // a folder used to be drawn at exactly the scale the folder
+                // itself was, so initialIconScale came out at 1 and scaling
+                // about the centre moved nothing -- which let the offset be
+                // written as though the view scaled about its corner. The block
+                // of four is the first thing here drawn smaller than its
+                // neighbours, and at 0.45 the centre it pivots around throws the
+                // app about seventy pixels off in each direction: the folder
+                // closed and its four small apps landed nowhere near the places
+                // the preview had drawn them.
+                //
+                // Both offsets below still collapse to the old ones when an app
+                // is drawn at the folder's own scale, which is every app but
+                // those four.
+                val folderScale = folderAnimationData.folderScale
+                val iconOffsetX = (folderScale * iconLayoutParams.width - previewIconSize) / 2f
+                val iconOffsetY =
+                    (folderScale - iconScale) * iconLayoutParams.height / 2f +
+                        iconScale * currentIcon.paddingTop
 
                 // Calculate positions for each icon
                 val iconPositionX =
                     ((mTmpParams.transX - iconOffsetX + folderAnimationData.scaledPreviewOffsetX) /
-                            folderAnimationData.folderScale)
+                            folderScale)
                         .toInt()
-                val paddingTop = currentIcon.paddingTop * iconScale
                 val iconPositionY =
-                    ((mTmpParams.transY + folderAnimationData.folderRadiusDifference - paddingTop) /
-                            folderAnimationData.folderScale)
+                    ((mTmpParams.transY + folderAnimationData.folderRadiusDifference -
+                            iconOffsetY) / folderScale)
                         .toInt()
                 val xDistance = (iconPositionX - iconLayoutParams.x).toFloat()
                 val yDistance = (iconPositionY - iconLayoutParams.y).toFloat()

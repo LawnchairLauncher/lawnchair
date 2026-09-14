@@ -20,7 +20,6 @@ import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
 import static com.android.launcher3.LauncherSettings.Favorites.DESKTOP_ICON_FLAG;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
-import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderIcon.DROP_IN_ANIMATION_DURATION;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
@@ -75,6 +74,19 @@ public class PreviewItemManager {
     private float mIntrinsicIconSize = -1;
     private int mTotalWidth = -1;
     private int mPrevTopPadding = -1;
+    /**
+     * The span the plate was last built for.
+     *
+     * Growing a folder sideways changes the view's width and growing it
+     * downwards used to change its top padding, so the checks below caught both
+     * without being told about spans at all. Now that a second row leaves the
+     * padding alone -- which is what keeps the plate from dropping half a row --
+     * a vertical resize changes none of them, and the plate would never be
+     * rebuilt at its new height.
+     */
+    private int mPrevSpanX = -1;
+    private int mPrevSpanY = -1;
+    private Boolean mPrevDefaultMode = null;
     private Drawable mReferenceDrawable = null;
 
     private int mNumOfPrevItems = 0;
@@ -124,19 +136,42 @@ public class PreviewItemManager {
     }
 
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
+        int spanX = mIcon.mInfo == null ? 1 : Math.max(1, mIcon.mInfo.spanX);
+        int spanY = mIcon.mInfo == null ? 1 : Math.max(1, mIcon.mInfo.spanY);
+        boolean defaultMode = mIcon.isDefaultMode();
+        // The plate not being resolved is a reason to ask again even when every
+        // key below is unchanged: what went stale is something none of them
+        // describe. It settles on the first draw after the icon is parented,
+        // and the answer is memoised from then on.
         if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize ||
-                mPrevTopPadding != mIcon.getPaddingTop()) {
+                mPrevTopPadding != mIcon.getPaddingTop()
+                || mPrevSpanX != spanX || mPrevSpanY != spanY
+                || mPrevDefaultMode == null || mPrevDefaultMode != defaultMode
+                || !mIcon.mBackground.isPlateResolved()) {
             mIntrinsicIconSize = drawableSize;
             mTotalWidth = totalSize;
             mPrevTopPadding = mIcon.getPaddingTop();
+            mPrevSpanX = spanX;
+            mPrevSpanY = spanY;
+            mPrevDefaultMode = defaultMode;
 
             mIcon.mBackground.setup(mIcon.getContext(), mIcon.mActivity, mIcon, mTotalWidth,
                     mIcon.getPaddingTop());
+            // After the plate is sized, never before: the title is placed
+            // relative to the height the plate ended up with, and asking first
+            // would place it against the height it had before the resize.
+            mIcon.alignLabelBelowPlate();
             mIcon.mPreviewLayoutRule.init(
                     mIcon.mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()),
                     mIcon.mActivity.getDeviceProfile().numFolderColumns
             );
+            // init only ever hears about one cell. This is where the rule finds
+            // out the plate is bigger than that and swaps the huddle for a grid.
+            mIcon.mPreviewLayoutRule.initPlate(
+                    mIcon.mBackground.previewWidth, mIcon.mBackground.previewHeight,
+                    mIcon.mBackground.previewSize,
+                    defaultMode);
             updatePreviewItems(false);
         }
     }
@@ -184,9 +219,117 @@ public class PreviewItemManager {
         PreviewBackground bg = mIcon.getFolderBackground();
         Path clipPath = bg.getClipPath();
         PointF firstPageOffset = new PointF(bg.basePreviewOffsetX, bg.basePreviewOffsetY);
+        reportIfPreviewEscapedPlate(bg);
         drawParams(canvas, mFirstPageParams, firstPageOffset, /* shouldClipPath */ false, clipPath);
         canvas.restoreToCount(saveCount);
     }
+
+    /**
+     * Shouts when an app is about to be drawn outside the plate it belongs to.
+     *
+     * Sora: the preview and the plate are laid out from the same numbers, so an
+     * app landing outside means those numbers disagree with each other -- and
+     * the disagreement has so far only been caught by eye, at random, long after
+     * whatever caused it. This states the invariant where it can be checked on
+     * every frame and prints the whole of the state behind it the first time it
+     * fails, so the next occurrence names its own cause instead of being
+     * described.
+     *
+     * Only the failing case costs anything: a handful of comparisons otherwise,
+     * and one line per distinct failure rather than one per frame.
+     */
+    private void reportIfPreviewEscapedPlate(PreviewBackground bg) {
+        int plateWidth = bg.getPlateWidth();
+        int plateHeight = bg.getPlateHeight();
+        if (plateWidth <= 0 || plateHeight <= 0 || mIntrinsicIconSize <= 0) {
+            return;
+        }
+        // Only while the plate is sitting at its settled size. A plate part way
+        // through a resize, or swollen by the accept-drop scale, is meant to
+        // disagree with apps laid out for the size it is heading to, and saying
+        // so every frame of every animation would bury the one report worth
+        // reading.
+        if (plateWidth != bg.previewWidth || plateHeight != bg.previewHeight) {
+            mEscapeSignature = null;
+            return;
+        }
+        // The plate's own corner can shave a pixel or two off an app sitting in
+        // it, and an app is allowed to overhang a one-cell plate by design.
+        float slack = bg.isSingleCellPlate() ? mIntrinsicIconSize : mIntrinsicIconSize * 0.25f;
+        float plateLeft = bg.getOffsetX();
+        float plateTop = bg.getOffsetY();
+
+        int escaped = -1;
+        for (int i = 0; i < mFirstPageParams.size(); i++) {
+            PreviewItemDrawingParams p = mFirstPageParams.get(i);
+            if (p.hidden || p.index == EXIT_INDEX || p.index == ENTER_INDEX) {
+                continue;
+            }
+            float left = bg.basePreviewOffsetX + p.transX;
+            float top = bg.basePreviewOffsetY + p.transY;
+            float size = mIntrinsicIconSize * p.scale;
+            if (left < plateLeft - slack || top < plateTop - slack
+                    || left + size > plateLeft + plateWidth + slack
+                    || top + size > plateTop + plateHeight + slack) {
+                escaped = i;
+                break;
+            }
+        }
+        if (escaped < 0) {
+            mEscapeSignature = null;
+            return;
+        }
+
+        PreviewItemDrawingParams bad = mFirstPageParams.get(escaped);
+        String signature = escaped + "/" + mFirstPageParams.size() + "@"
+                + Math.round(bad.transX) + "," + Math.round(bad.transY) + "," + bad.scale
+                + "/" + plateWidth + "x" + plateHeight;
+        if (signature.equals(mEscapeSignature)) {
+            return;
+        }
+        mEscapeSignature = signature;
+
+        int[] onScreen = new int[2];
+        mIcon.getLocationOnScreen(onScreen);
+        StringBuilder items = new StringBuilder();
+        for (int i = 0; i < mFirstPageParams.size(); i++) {
+            PreviewItemDrawingParams p = mFirstPageParams.get(i);
+            items.append(" [").append(i).append(" idx=").append(p.index)
+                    .append(p.hidden ? " hidden" : "")
+                    .append(p.anim != null ? " anim" : "")
+                    .append(" t=").append(Math.round(p.transX)).append(',')
+                    .append(Math.round(p.transY))
+                    .append(" s=").append(p.scale).append(']');
+        }
+        android.util.Log.w("SoraPlate", "preview escaped plate: item " + escaped
+                + " of " + mFirstPageParams.size()
+                + " | plate " + plateWidth + "x" + plateHeight
+                + " at " + plateLeft + "," + plateTop
+                + " previewWH=" + bg.previewWidth + "x" + bg.previewHeight
+                + " previewSize=" + bg.previewSize
+                + " baseOff=" + bg.basePreviewOffsetX + "," + bg.basePreviewOffsetY
+                + " resolved=" + bg.isPlateResolved()
+                + " singleCell=" + bg.isSingleCellPlate()
+                + " | rule grid=" + mIcon.mPreviewLayoutRule.isPlateGrid()
+                + " slots=" + mIcon.mPreviewLayoutRule.getSlotCount()
+                + " limit=" + mIcon.mPreviewLayoutRule.getPreviewItemLimit()
+                + " | icon span=" + (mIcon.mInfo == null ? "?" : mIcon.mInfo.spanX + "x"
+                        + mIcon.mInfo.spanY)
+                + " memoSpan=" + mPrevSpanX + "x" + mPrevSpanY
+                + " view=" + mIcon.getWidth() + "x" + mIcon.getHeight()
+                + "@" + onScreen[0] + "," + onScreen[1]
+                + " padTop=" + mIcon.getPaddingTop() + " memoPadTop=" + mPrevTopPadding
+                + " totalWidth=" + mTotalWidth + " intrinsic=" + mIntrinsicIconSize
+                + " parent=" + (mIcon.getParent() == null ? "null"
+                        : mIcon.getParent().getClass().getSimpleName())
+                + " grandparent=" + (mIcon.getParent() == null
+                        || mIcon.getParent().getParent() == null ? "null"
+                        : mIcon.getParent().getParent().getClass().getSimpleName())
+                + " |" + items);
+    }
+
+    /** The last escape reported, so a stuck one is not reported every frame. */
+    private String mEscapeSignature = null;
 
     public void onParamsChanged() {
         mIcon.invalidate();
@@ -225,7 +368,8 @@ public class PreviewItemManager {
         // enter/exit
         // animation purposes and they were added to the front of the list.
         // To index the params properly, we need to skip these params.
-        index = index + Math.max(mFirstPageParams.size() - MAX_NUM_ITEMS_IN_PREVIEW, 0);
+        index = index + Math.max(
+                mFirstPageParams.size() - mIcon.mPreviewLayoutRule.getPreviewItemLimit(), 0);
 
         PreviewItemDrawingParams params = index < mFirstPageParams.size() ? mFirstPageParams.get(index) : null;
         if (params != null) {
@@ -244,7 +388,9 @@ public class PreviewItemManager {
             params.add(new PreviewItemDrawingParams(0, 0, 0));
         }
 
-        int numItemsInFirstPagePreview = page == 0 ? items.size() : MAX_NUM_ITEMS_IN_PREVIEW;
+        int numItemsInFirstPagePreview = page == 0
+                ? items.size()
+                : mIcon.mPreviewLayoutRule.getPreviewItemLimit();
         for (int i = 0; i < params.size(); i++) {
             PreviewItemDrawingParams p = params.get(i);
             setDrawable(p, items.get(i));

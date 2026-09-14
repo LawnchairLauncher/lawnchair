@@ -20,3 +20,10 @@ __pycache__
 .vscode
 .fleet
 lawnWithQuickstep/release
+
+# Scratch files
+*.png
+*.log
+*.bak
+last_chat.txt
+.claude/

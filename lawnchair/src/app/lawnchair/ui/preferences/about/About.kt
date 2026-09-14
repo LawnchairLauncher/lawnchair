@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import app.lawnchair.SoraBranding
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -150,9 +151,9 @@ fun About(
                         .combinedClickable(
                             onClick = {},
                             onLongClick = {
-                                val commitUrl =
-                                    "https://github.com/LawnchairLauncher/lawnchair/commit/${BuildConfig.COMMIT_HASH}"
-                                context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
+                                SoraBranding.commitUrl(BuildConfig.COMMIT_HASH)?.let { commitUrl ->
+                                    context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
+                                }
                             },
                         ),
                 )
@@ -251,24 +252,25 @@ fun About(
         item {
             Spacer(Modifier.height(3.dp))
         }
-        item {
-            PreferenceGroupItem(
-                cutTop = true,
-                cutBottom = false,
-            ) {
-                ClickablePreference(
-                    label = stringResource(id = R.string.privacy_policy),
-                    onClick = {
-                        val webpage = PRIVACY_POLICY.toUri()
-                        val intent = Intent(Intent.ACTION_VIEW, webpage)
-                        if (intent.resolveActivity(context.packageManager) != null) {
-                            context.startActivity(intent)
-                        }
-                    },
-                )
+        if (SoraBranding.PRIVACY_POLICY_URL.isNotEmpty()) {
+            item {
+                PreferenceGroupItem(
+                    cutTop = true,
+                    cutBottom = false,
+                ) {
+                    ClickablePreference(
+                        label = stringResource(id = R.string.privacy_policy),
+                        onClick = {
+                            val webpage = SoraBranding.PRIVACY_POLICY_URL.toUri()
+                            val intent = Intent(Intent.ACTION_VIEW, webpage)
+                            if (intent.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(intent)
+                            }
+                        },
+                    )
+                }
             }
         }
     }
 }
 
-private const val PRIVACY_POLICY = "https://lawnchair.app/privacy_policy"

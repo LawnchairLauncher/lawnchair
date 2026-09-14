@@ -20,7 +20,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY
-import com.android.launcher3.Utilities
 import com.android.launcher3.views.ScrimView
 
 /**
@@ -57,8 +56,5 @@ class FolderScrimAnimationListener(
         // Folder.closeComplete's restore path, leaving workspace/hotseat visually dimmed/scaled.
         SCALE_PROPERTY.set(launcher.workspace, 1f)
         SCALE_PROPERTY.set(launcher.hotseat, 1f)
-        if (Utilities.ATLEAST_S && launcher.stateManager.state.getDepth(launcher) == 0f) {
-            launcher.depthBlurTargets.forEach { it.setRenderEffect(null) }
-        }
     }
 }

@@ -40,6 +40,16 @@ public class OverScroll {
      * @return The dampened overscroll amount.
      */
     public static int dampedScroll(float amount, int max) {
+        return dampedScroll(amount, max, OVERSCROLL_DAMP_FACTOR);
+    }
+
+    /**
+     * @param amount The original amount overscrolled.
+     * @param max The maximum amount that the View can overscroll.
+     * @param dampFactor Custom damp factor to control maximum overscroll distance.
+     * @return The dampened overscroll amount.
+     */
+    public static int dampedScroll(float amount, int max, float dampFactor) {
         if (Float.compare(amount, 0) == 0) return 0;
 
         float f = amount / max;
@@ -50,6 +60,6 @@ public class OverScroll {
             f /= Math.abs(f);
         }
 
-        return Math.round(OVERSCROLL_DAMP_FACTOR * f * max);
+        return Math.round(dampFactor * f * max);
     }
 }

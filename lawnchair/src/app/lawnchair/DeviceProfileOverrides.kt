@@ -1,6 +1,7 @@
 package app.lawnchair
 
 import android.content.Context
+import app.lawnchair.folder.Centered
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
@@ -118,8 +119,8 @@ class DeviceProfileOverrides @Inject constructor(
             previewOverrides: PreviewOverrides,
         ) : this(
             numAllAppsColumns = prefs2.drawerColumns.firstCached(gridOption = defaultGrid),
-            numFolderRows = prefs.folderRows.get(defaultGrid),
-            numFolderColumns = prefs2.folderColumns.firstCached(gridOption = defaultGrid),
+            numFolderRows = if (prefs2.folderOpenMode.firstCached() is Centered) 3 else prefs.folderRows.get(defaultGrid),
+            numFolderColumns = if (prefs2.folderOpenMode.firstCached() is Centered) 3 else prefs2.folderColumns.firstCached(gridOption = defaultGrid),
 
             iconSizeFactor = prefs2.homeIconSizeFactor.firstCached(),
             allAppsIconSizeFactor = prefs2.drawerIconSizeFactor.firstCached(),
@@ -208,8 +209,8 @@ class DeviceProfileOverrides @Inject constructor(
         ) : this(
             enableIconText = prefs2.showIconLabelsOnHomeScreen.firstCached(),
             iconTextSizeFactor = prefs2.homeIconLabelSizeFactor.firstCached(),
-            enableIconTextFolder = prefs2.showIconLabelsOnHomeScreenFolder.firstCached(),
-            iconFolderTextSizeFactor = prefs2.homeIconLabelFolderSizeFactor.firstCached(),
+            enableIconTextFolder = if (prefs2.folderOpenMode.firstCached() is Centered) true else prefs2.showIconLabelsOnHomeScreenFolder.firstCached(),
+            iconFolderTextSizeFactor = if (prefs2.folderOpenMode.firstCached() is Centered) 1f else prefs2.homeIconLabelFolderSizeFactor.firstCached(),
             enableAllAppsIconText = prefs2.showIconLabelsInDrawer.firstCached(),
             allAppsIconTextSizeFactor = prefs2.drawerIconLabelSizeFactor.firstCached(),
         )

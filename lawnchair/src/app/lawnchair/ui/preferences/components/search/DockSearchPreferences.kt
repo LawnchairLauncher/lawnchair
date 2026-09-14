@@ -75,11 +75,6 @@ fun DockSearchPreference(
         val isLawnchairHotseat = hotseatModeAdapter.state.value == LawnchairHotseat
         if (hotseatEnabled) {
             Column {
-                PreferenceGroup {
-                    HotseatModePreference(
-                        adapter = hotseatModeAdapter,
-                    )
-                }
                 ExpandAndShrink(visible = hotseatModeAdapter.state.value != DisabledHotseat) {
                     Column {
                         DockSearchBarPreview(

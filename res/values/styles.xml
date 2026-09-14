@@ -415,14 +415,15 @@
 
     <!-- Icon displayed on the workspace -->
     <style name="BaseIcon.Workspace.Shadows" parent="BaseIcon">
-        <item name="android:shadowRadius">2.0</item>
-        <item name="android:shadowColor">?attr/workspaceShadowColor</item>
-        <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
-        <item name="ambientShadowBlur">1.5dp</item>
-        <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
-        <item name="keyShadowBlur">.5dp</item>
-        <item name="keyShadowOffsetX">.5dp</item>
-        <item name="keyShadowOffsetY">.5dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="android:shadowColor">@android:color/transparent</item>
+        <item name="ambientShadowColor">@android:color/transparent</item>
+        <item name="ambientShadowBlur">0dp</item>
+        <item name="keyShadowColor">@android:color/transparent</item>
+        <item name="keyShadowBlur">0dp</item>
+        <item name="keyShadowOffsetX">0dp</item>
+        <item name="keyShadowOffsetY">0dp</item>
     </style>
 
     <!-- Intentionally empty so we can override -->

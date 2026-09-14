@@ -43,6 +43,9 @@ public interface WorkspaceLayoutManager {
     IntSet EXTRA_EMPTY_SCREEN_IDS =
             IntSet.wrap(EXTRA_EMPTY_SCREEN_ID, EXTRA_EMPTY_SCREEN_SECOND_ID);
 
+    // Screen id used for the merged app drawer screen.
+    int MERGED_APP_DRAWER_SCREEN_ID = -300;
+
     // The is the first screen. It is always present, even if its empty.
     int FIRST_SCREEN_ID = 0;
 

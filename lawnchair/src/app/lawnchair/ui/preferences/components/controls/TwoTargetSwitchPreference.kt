@@ -25,8 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -37,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.liquid.SoraLiquidToggle
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
@@ -104,29 +103,15 @@ fun TwoTargetSwitchPreference(
                         modifier = Modifier.height(32.dp),
                     )
                 }
-                Switch(
+                // Sora: liquid glass toggle in place of Material 3's Switch. It
+                // carries no thumb icon, so the check/close glyphs are dropped.
+                SoraLiquidToggle(
+                    checked = { checked },
+                    onCheckedChange = wrappedOnCheckedChange,
                     modifier = Modifier
                         .padding(start = 12.dp)
                         .height(24.dp),
-                    checked = checked,
-                    onCheckedChange = wrappedOnCheckedChange,
                     enabled = switchEnabled,
-                    interactionSource = interactionSource,
-                    thumbContent = {
-                        if (checked) {
-                            Icon(
-                                imageVector = Icons.Filled.Check,
-                                contentDescription = null,
-                                modifier = Modifier.size(SwitchDefaults.IconSize),
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Filled.Close,
-                                contentDescription = null,
-                                modifier = Modifier.size(SwitchDefaults.IconSize),
-                            )
-                        }
-                    },
                 )
             }
         },

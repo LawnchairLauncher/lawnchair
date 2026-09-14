@@ -32,7 +32,17 @@ public class TranslateEdgeEffect extends StretchEdgeEffect {
 
     public TranslateEdgeEffect(Context context) {
         super(context);
-        setPostInvalidateOnAnimation(() -> mInvalidated = true);
+        setPostInvalidateOnAnimation(null);
+    }
+
+    @Override
+    public void setPostInvalidateOnAnimation(Runnable postInvalidateOnAnimation) {
+        super.setPostInvalidateOnAnimation(() -> {
+            mInvalidated = true;
+            if (postInvalidateOnAnimation != null) {
+                postInvalidateOnAnimation.run();
+            }
+        });
     }
 
     @Override

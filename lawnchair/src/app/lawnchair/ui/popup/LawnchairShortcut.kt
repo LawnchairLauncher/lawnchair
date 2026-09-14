@@ -32,11 +32,14 @@ import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.CellLayout
+import com.android.launcher3.celllayout.CellLayoutLayoutParams
 import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.AppInfo as ModelAppInfo
+import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.ApplicationInfoWrapper
@@ -142,6 +145,26 @@ class LawnchairShortcut {
                     .getAppInstallerPackage(packageName) ?: return@Factory null
                 if (installer !in SUPPORTED_STORES) return@Factory null
                 OpenInStore(activity, itemInfo, originalView, packageName, installer)
+            }
+
+        /**
+         * Sora: cycles a workspace folder through the sizes it may occupy.
+         *
+         * A stand-in for the drag hint, and the smallest thing that makes the
+         * feature reachable: the geometry, the plate, the glass and the
+         * persistence are all exercised by it, so they can be tested before the
+         * gesture that will eventually replace this entry exists.
+         */
+        val RESIZE_FOLDER =
+            SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo: ItemInfo, originalView: View ->
+                if (itemInfo !is FolderInfo) return@Factory null
+                if (originalView !is FolderIcon || originalView.isInAppDrawer) return@Factory null
+                if (PreferenceManager2.INSTANCE.get(activity.asContext())
+                        .lockHomeScreen.firstCached()
+                ) {
+                    return@Factory null
+                }
+                ResizeFolder(activity, itemInfo, originalView)
             }
 
         val PAUSE_APPS = SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo: ItemInfo, originalView: View ->
@@ -253,6 +276,61 @@ class LawnchairShortcut {
                 }
                 .show()
             AbstractFloatingView.closeAllOpenViews(mTarget)
+        }
+    }
+
+    class ResizeFolder(
+        private val launcher: LawnchairLauncher,
+        private val folderInfo: FolderInfo,
+        private val folderIcon: FolderIcon,
+    ) : SystemShortcut<LawnchairLauncher>(
+        R.drawable.ic_widget,
+        R.string.sora_folder_resize,
+        launcher,
+        folderInfo,
+        folderIcon,
+    ) {
+
+        override fun onClick(v: View) {
+            AbstractFloatingView.closeAllOpenViews(launcher)
+
+            // Reached through the view tree rather than through Workspace,
+            // whose lookup for this is package-private.
+            val cellLayout = folderIcon.parent?.parent as? CellLayout ?: return
+            val params = folderIcon.layoutParams as? CellLayoutLayoutParams ?: return
+
+            val current = folderInfo.spanX.coerceAtLeast(1) to folderInfo.spanY.coerceAtLeast(1)
+            val next = SIZES[(SIZES.indexOf(current).coerceAtLeast(0) + 1) % SIZES.size]
+
+            // Its own cells have to come off the map first, or a folder can
+            // never grow: it would always be blocked by itself.
+            cellLayout.markCellsAsUnoccupiedForView(folderIcon)
+            if (!cellLayout.isRegionVacant(params.cellX, params.cellY, next.first, next.second)) {
+                cellLayout.markCellsAsOccupiedForView(folderIcon)
+                Toast.makeText(launcher, R.string.out_of_space, Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            params.cellHSpan = next.first
+            params.cellVSpan = next.second
+            folderInfo.spanX = next.first
+            folderInfo.spanY = next.second
+            cellLayout.markCellsAsOccupiedForView(folderIcon)
+
+            launcher.modelWriter.modifyItemInDatabase(
+                folderInfo, folderInfo.container, folderInfo.screenId,
+                params.cellX, params.cellY, next.first, next.second,
+            )
+
+            // The plate's size is worked out while the preview is laid out, so
+            // the preview is what has to be told the folder changed shape.
+            folderIcon.requestLayout()
+            folderIcon.onItemsChanged(false)
+        }
+
+        private companion object {
+            /** One cell, two across, two down, four. */
+            val SIZES = listOf(1 to 1, 2 to 1, 1 to 2, 2 to 2)
         }
     }
 

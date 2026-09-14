@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MenuDefaults
@@ -36,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenuGrouped
+import app.lawnchair.ui.liquid.SoraLiquidToggle
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.AppItemPlaceholder
@@ -105,9 +105,16 @@ fun HiddenAppsPreferences(
                                 toggleHiddenApp(app)
                             },
                         ) {
-                            Checkbox(
-                                checked = hiddenApps.contains(app.key.toString()),
-                                onCheckedChange = null,
+                            // Sora: liquid glass toggle in place of Material 3's
+                            // Checkbox. Hiding an app is an on/off setting per row,
+                            // which is what a switch states outright and a checkbox
+                            // only implies.
+                            SoraLiquidToggle(
+                                checked = { hiddenApps.contains(app.key.toString()) },
+                                onCheckedChange = {
+                                    mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+                                    toggleHiddenApp(app)
+                                },
                             )
                         }
                     }

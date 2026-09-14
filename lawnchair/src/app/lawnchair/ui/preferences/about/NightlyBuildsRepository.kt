@@ -6,6 +6,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import app.lawnchair.SoraBranding
 import app.lawnchair.util.getApkVersionComparison
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
@@ -39,7 +40,7 @@ class NightlyBuildsRepository(
         coroutineScope.launch(Dispatchers.Default) {
             updateState.update { UpdateState.Checking }
             try {
-                val releases = api.getReleases()
+                val releases = api.getReleases(SoraBranding.GITHUB_OWNER, SoraBranding.GITHUB_REPO)
                 val nightly = releases.firstOrNull { it.tagName == "nightly" }
                 val asset = nightly?.assets?.firstOrNull()
 
@@ -155,7 +156,7 @@ class NightlyBuildsRepository(
             val branch = "$majorVersion-dev"
 
             // Get the latest commits (last 100)
-            val commits = api.getRepositoryCommits("LawnchairLauncher", "lawnchair", branch)
+            val commits = api.getRepositoryCommits(SoraBranding.GITHUB_OWNER, SoraBranding.GITHUB_REPO, branch)
 
             // Find the index of current commit
             val currentIndex = commits.indexOfFirst { it.sha.startsWith(currentCommitHash) }
@@ -177,7 +178,7 @@ class NightlyBuildsRepository(
         return try {
             val cacheDir = applicationContext.cacheDir
             val apkDirPath = cacheDir.toPath().resolve("updates").createDirectories()
-            val apkFilePath = apkDirPath.resolve("Lawnchair-update.apk").apply { deleteIfExists() }
+            val apkFilePath = apkDirPath.resolve("SoraLauncher-update.apk").apply { deleteIfExists() }
 
             val responseBody = api.downloadFile(url)
             val totalBytes = responseBody.contentLength().toFloat()

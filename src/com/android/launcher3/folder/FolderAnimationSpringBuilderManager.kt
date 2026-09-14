@@ -74,8 +74,12 @@ class FolderAnimationSpringBuilderManager(
     companion object {
         /** Returns the list of "preview items" on {@param page}. */
         fun getPreviewIconsOnPage(folder: Folder, page: Int): List<View> {
+            // The same budget the icon's own preview asked for. A fresh
+            // organizer starts back at four, so a folder showing seven would
+            // have animated four of them and left the other three to appear.
             return createFolderGridOrganizer(folder.mActivityContext.deviceProfile)
                 .setFolderInfo(folder.mInfo)
+                .setPreviewLimit(folder.folderIcon.layoutRule.previewItemLimit)
                 .previewItemsForPage(page, folder.iconsInReadingOrder)
         }
 

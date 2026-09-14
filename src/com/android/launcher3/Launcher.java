@@ -227,6 +227,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.touch.MergedAppDrawerTouchController;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.BackPressHandler;
 import com.android.launcher3.util.CannedAnimationCoordinator;
@@ -469,6 +470,24 @@ public class Launcher extends StatefulActivity<LauncherState>
                 appWidgetId -> getWorkspace().removeWidget(appWidgetId));
 
         setupViews();
+        addBackAnimationCallback(new BackPressHandler() {
+            @Override
+            public boolean canHandleBack() {
+                return isMergeAppDrawerToWorkspace()
+                        && mWorkspace != null
+                        && mWorkspace.getNextPage() == mWorkspace.getMergedAppDrawerPageIndex();
+            }
+
+            @Override
+            public void onBackInvoked() {
+                if (mWorkspace != null) {
+                    int prevPage = mWorkspace.getMergedAppDrawerPageIndex() - 1;
+                    if (prevPage >= 0) {
+                        mWorkspace.snapToPage(prevPage);
+                    }
+                }
+            }
+        });
         updateDisallowBack();
 
         mAppWidgetHolder.startListening();
@@ -2350,6 +2369,9 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     public void finishBindingItems(IntSet pagesBoundFirst) {
         TestEventEmitter.sendEvent(TestEvent.WORKSPACE_FINISH_LOADING);
+        if (mWorkspace != null) {
+            mWorkspace.ensureMergedAppDrawerScreen();
+        }
     }
 
     private boolean canAnimatePageChange() {
@@ -2433,7 +2455,9 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Informs us that the page transition has ended, so that we can react to the newly selected
      * page if we want to.
      */
-    public void onPageEndTransition() {}
+    public void onPageEndTransition() {
+        updateDisallowBack();
+    }
 
     /**
      * See {@code LauncherBindingDelegate}
@@ -2655,7 +2679,11 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     public TouchController[] createTouchControllers() {
-        return new TouchController[] {getDragController(), new AllAppsSwipeController(this)};
+        return new TouchController[] {
+                getDragController(),
+                new AllAppsSwipeController(this),
+                new MergedAppDrawerTouchController(this)
+        };
     }
 
     public void onDragLayerHierarchyChanged() {
@@ -2685,9 +2713,13 @@ public class Launcher extends StatefulActivity<LauncherState>
         LauncherRootView rv = getRootView();
         if (rv != null) {
             boolean isSplitSelectionEnabled = isSplitSelectionActive();
+            boolean isMergedDrawerActive = isMergeAppDrawerToWorkspace()
+                    && mWorkspace != null
+                    && mWorkspace.getNextPage() == mWorkspace.getMergedAppDrawerPageIndex();
             boolean disableBack = getStateManager().getState() == NORMAL
                     && AbstractFloatingView.getTopOpenView(this) == null
-                    && !isSplitSelectionEnabled;
+                    && !isSplitSelectionEnabled
+                    && !isMergedDrawerActive;
             rv.setDisallowBackGesture(disableBack);
         }
     }
@@ -2729,6 +2761,16 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     public boolean supportsAdaptiveIconAnimation(View clickedView) {
         return false;
+    }
+
+    public boolean isMergeAppDrawerToWorkspace() {
+        app.lawnchair.preferences2.PreferenceManager2 prefs2 =
+                app.lawnchair.preferences2.PreferenceManager2.getInstance(this);
+        app.lawnchair.preferences.PreferenceManager prefs =
+                app.lawnchair.preferences.PreferenceManager.getInstance(this);
+        return app.lawnchair.preferences2.PreferenceCacheExtensionsKt.firstCached(
+                prefs2.getMergeAppDrawerToWorkspace())
+                && !prefs.getDrawerList().get();
     }
 
     /**

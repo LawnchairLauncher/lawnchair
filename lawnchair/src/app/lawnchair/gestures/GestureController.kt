@@ -18,6 +18,8 @@ package app.lawnchair.gestures
 
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairApp
+import app.lawnchair.folder.TYPE_FOLDER_RESIZE_HINT
+import com.android.launcher3.AbstractFloatingView
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.GestureHandler
@@ -81,6 +83,15 @@ class GestureController(private val launcher: LawnchairLauncher) {
     }
 
     private fun triggerHandler(handlerFlow: Flow<GestureHandler>, withHaptic: Boolean = true) {
+        // Sora: a folder being resized owns the whole gesture. Dragging its
+        // handle downwards is otherwise read as the swipe-down gesture and pulls
+        // the notification shade over the top of what is being resized.
+        if (AbstractFloatingView.getOpenView<AbstractFloatingView>(
+                launcher, TYPE_FOLDER_RESIZE_HINT,
+            ) != null
+        ) {
+            return
+        }
         launcher.lifecycleScope.launch {
             val handler = handlerFlow.first()
             if (handler is NoOpGestureHandler) {

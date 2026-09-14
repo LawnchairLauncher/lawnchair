@@ -44,7 +44,7 @@ import javax.inject.Inject
 
 @LauncherAppSingleton
 class PreferenceManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @ApplicationContext context: Context,
 ) : BasePreferenceManager(context),
     SafeCloseable {
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
@@ -70,7 +70,8 @@ class PreferenceManager @Inject constructor(
     val themedIconPackPackage = StringPref("pref_themedIconPackPackage", "", reloadIcons)
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", true)
-    val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false)
+    val maskOnlyIcons = BoolPref("prefs_maskOnlyIcons", true)
+    val transparentIconBackground = BoolPref("prefs_transparentIconBackground", true)
     val shadowBGIcons = BoolPref("pref_shadowBGIcons", true)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
 
@@ -109,7 +110,6 @@ class PreferenceManager @Inject constructor(
     val workspaceIncreaseMaxGridSize = BoolPref("pref_workspace_increase_max_grid_size", false)
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows[INDEX_DEFAULT] }, reloadGrid)
 
-    val drawerOpacity = FloatPref("pref_drawerOpacity", .5f, recreate)
     val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 1F)
     val feedProvider = StringPref("pref_feedProvider", "")
     val ignoreFeedWhitelist = BoolPref("pref_ignoreFeedWhitelist", false)
@@ -126,7 +126,7 @@ class PreferenceManager @Inject constructor(
     ) {
         normalizeVibrationFeedbackLevel()
     }
-    val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
+    val customAppName = object : MutableMapPref<ComponentKey, String>(this, "pref_appNameMap", reloadGrid) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey.fromString(key)!!
         override fun flattenValue(value: String) = value
@@ -178,7 +178,7 @@ class PreferenceManager @Inject constructor(
     val wallpaperBlur = IntPref("pref_wallpaperBlur", 25, recreate)
     val wallpaperBlurFactorThreshold = FloatPref("pref_wallpaperBlurFactor", 3.0F, recreate)
 
-    val drawerList = BoolPref("pref_drawerList", true, recreate)
+    val drawerList = BoolPref("pref_drawerList", false, recreate)
     val folderApps = BoolPref("pref_hideFolderApps", true, reloadGrid)
 
     val recentsActionScreenshot = BoolPref("pref_recentsActionScreenshot", !isOnePlusStock)

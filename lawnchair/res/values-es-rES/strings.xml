@@ -61,7 +61,7 @@
     <string name="time_weeks_ago">%ds</string>
     <string name="time_months_ago">%dmes</string>
     <string name="time_years_ago">%daño</string>
-    <string name="managed_by_lawnchair">Gestionado por Lawnchair</string>
+    <string name="managed_by_lawnchair">Gestionado por Sora Launcher</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferencias</string>
     <string name="settings_button_text">Ajustes del lanzador</string>
@@ -69,7 +69,7 @@
     <string name="title_change_settings">Cambiar ajustes</string>
     <!--
 
-    General "words" used throughout Lawnchair
+    General "words" used throughout Sora Launcher
 
     -->
     <string name="others_category_label">Otros</string>
@@ -117,7 +117,7 @@
     <string name="my_folder_label">Mi carpeta</string>
     <string name="sort_active_items_action">Ordenar elementos activos</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Sora Launcher requires accessibility access.\n\nSora Launcher doesn\'t watch your actions, though all accessibility services require this privilege. Sora Launcher discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Sora Launcher uses the performGlobalAction accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -156,7 +156,7 @@
     <string name="backup_and_restore_description">Guardar configuración actual, restaurar copias de seguridad</string>
     <string name="about_label">Acerca de</string>
     <string name="app_info_drop_target_label">Información de la aplicación</string>
-    <string name="debug_restart_launcher">Reiniciar Lawnchair</string>
+    <string name="debug_restart_launcher">Reiniciar Sora Launcher</string>
     <string name="experimental_features_label">Funciones experimentales</string>
     <!-- Experimental features -->
     <string name="workspace_label">Espacio de trabajo</string>
@@ -211,13 +211,13 @@
     <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
     <string name="prediction_system_settings">Manage system suggestions</string>
     <string name="missing_usage_access_label">Usage access needed</string>
-    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Sora Launcher">%1$s</xliff:g></string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">Para acceder a atajos y más cosas pon a Lawnchair como tu lanzador de aplicaciones predeterminado</string>
+    <string name="set_default_launcher_tip">Para acceder a atajos y más cosas pon a Sora Launcher como tu lanzador de aplicaciones predeterminado</string>
     <string name="notification_dots">Burbujas de notificación</string>
     <string name="show_notification_count">Mostrar el contador de notificaciones</string>
     <string name="notification_dots_color">Color del contador de notificaciones</string>
@@ -410,11 +410,11 @@
     <string name="torch_status_on">Linterna encendida</string>
     <string name="torch_action_off">Toque para apagarla</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Configurar Lawnchair</string>
+    <string name="onboarding_open_settings_title">Configurar Sora Launcher</string>
     <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
-    <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
+    <string name="onboarding_major_upgrade_title">Meet the new Sora Launcher</string>
     <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
-    <string name="onboarding_welcome">¡Bienvenido a Lawnchair!</string>
+    <string name="onboarding_welcome">¡Bienvenido a Sora Launcher!</string>
     <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Cantidad máxima de objetivos</string>
@@ -425,7 +425,7 @@
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Mostrar en la pantalla de inicio</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Sora Launcher widget</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">Proveedor de contenido para «de un vistazo»</string>
     <string name="smartspace_mode_google">Google</string>
@@ -517,15 +517,15 @@
     <string name="gesture_handler_open_assistant">Abrir asistente</string>
     <string name="pick_app_for_gesture">Elegir aplicación</string>
     <string name="dt2s_admin_hint_title">Se necesitan permisos de administrador</string>
-    <string name="dt2s_admin_hint">Para poner el dispositivo en reposo, configure Lawnchair como aplicación de administración. Pulse \"Abrir configuración\" y luego \"Activar esta aplicación de administración\".</string>
+    <string name="dt2s_admin_hint">Para poner el dispositivo en reposo, configure Sora Launcher como aplicación de administración. Pulse \"Abrir configuración\" y luego \"Activar esta aplicación de administración\".</string>
     <string name="dt2s_admin_warning">Se desactivarán los gestos para poner el dispositivo en reposo.</string>
     <string name="d2ts_recents_a11y_hint_title">Activar el servicio de accesibilidad</string>
     <string name="sleep_a11y_hint">Poner el dispositivo en reposo</string>
     <string name="notifications_fallback_a11y_hint">abrir el panel de notificaciones</string>
     <string name="quick_settings_a11y_hint">Abra el panel de Configuración rápida</string>
     <string name="recents_screen_a11y_hint">abrir la pantalla Recientes</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair utiliza el método `performGlobalAction` de Accesibilidad para realizar esta acción. Este es un permiso confidencial que permite supervisar otras aplicaciones. Sin embargo, Lawnchair no está configurado para esa función.</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Sora Launcher accessibility service. Tap \"Open settings\", choose \"Sora Launcher\" and turn on \"Use Sora Launcher.\"</string>
+    <string name="generic_a11y_disclaimer">Sora Launcher utiliza el método `performGlobalAction` de Accesibilidad para realizar esta acción. Este es un permiso confidencial que permite supervisar otras aplicaciones. Sin embargo, Sora Launcher no está configurado para esa función.</string>
     <string name="sleep_mode_label">Modo de suspensión</string>
     <string name="sleep_mode_auto">Automático</string>
     <string name="sleep_mode_root">Root</string>
@@ -536,7 +536,7 @@
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Informar de fallos de Lawnchair</string>
+    <string name="lawnchair_bug_report">Informar de fallos de Sora Launcher</string>
     <string name="crash_report_notif_title">%1$s ha dejado de funcionar</string>
     <string name="action_upload_crash_report">Subir registro de fallos</string>
     <string name="action_upload_error">No se pudo subir el archivo</string>
@@ -650,14 +650,14 @@
     <string name="unfolded_label">Unfolded</string>
     <string name="when_folded_label">When folded</string>
     <string name="when_unfolded_label">When unfolded</string>
-    <string name="unfolded_grid_description">Lawnchair pairs two pages together to fill the larger display</string>
+    <string name="unfolded_grid_description">Sora Launcher pairs two pages together to fill the larger display</string>
     <string name="foldable_columns_error">The folded value must be less than or equal to the unfolded value. It will be automatically adjusted if needed.</string>
     <string name="hotseat_bottom_space_label">Relleno inferior</string>
     <string name="page_indicator_height">Altura del indicador de página</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Búsqueda de aplicaciones</string>
     <string name="search_provider_custom">Personalizado</string>
-    <string name="search_provider_sponsored_description">%1$s Lawnchair tienen un acuerdo de reparto de ingresos.\n\nPor lo que al buscar con %1$s nos ayudas económicamente.</string>
+    <string name="search_provider_sponsored_description">%1$s Sora Launcher tienen un acuerdo de reparto de ingresos.\n\nPor lo que al buscar con %1$s nos ayudas económicamente.</string>
     <string name="app_label">Aplicación</string>
     <string name="website_label">Página web</string>
     <string name="qsb_search_provider_app_required">Aplicación necesaria</string>
@@ -694,7 +694,7 @@
     <string name="max_folder_columns">Columnas en carpeta</string>
     <string name="max_folder_rows">Filas en carpeta</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored because Sora Launcher isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">La integración del sistema es incompatible</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
     <string name="translucent_background">Fondo translúcido</string>

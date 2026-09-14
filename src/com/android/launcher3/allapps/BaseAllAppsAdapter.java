@@ -26,6 +26,8 @@ import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_ENABLED;
 
 import android.content.Context;
+
+import app.lawnchair.preferences.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +46,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.views.ActivityContext;
@@ -85,6 +88,36 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER;
 
     protected final SearchAdapterProvider<?> mAdapterProvider;
+
+    /**
+     * Whether the drawer is laid out as Caddy rather than as a plain A-Z list.
+     *
+     * Sora: Caddy holds nothing but folders, and every one of them covers two
+     * cells by two. Both of those are decided here rather than at each call site
+     * so the span and the row height cannot end up disagreeing about which
+     * layout is on screen.
+     * LC-Note: `pref_drawerList` is true for the default list, false for Caddy.
+     */
+    public static boolean isCaddy(Context context) {
+        return !PreferenceManager.getInstance(context).getDrawerList().get();
+    }
+
+    /**
+     * How many folder tiles Caddy puts across a row: two, whatever the drawer's
+     * column setting says.
+     *
+     * Caddy is a fixed layout copied from elsewhere, and its tile is sized off
+     * the screen rather than off a cell. Letting the column count in would put a
+     * third tile on a row it was never measured for.
+     */
+    public static final int CADDY_FOLDERS_PER_ROW = 2;
+
+    /** The height of one Caddy row: its square plate, plus room for the label. */
+    public static int caddyRowHeight(Context context) {
+        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        return Math.round(screenWidth
+                * (PreviewBackground.CADDY_PLATE_RATIO + PreviewBackground.CADDY_ROW_GAP_RATIO));
+    }
 
     /**
      * ViewHolder for each icon.
@@ -264,9 +297,15 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_FOLDER:
                 // LC-Feature: Folder support in All Apps
                 FrameLayout fl = new FrameLayout(mActivityContext);
+                // Sora: Caddy's row is as tall as its own plate plus the label
+                // under it, measured off the screen rather than off the drawer's
+                // cell height -- the same place its width comes from, so the
+                // tile stays square however the drawer's rows are configured.
+                int rowHeight = isCaddy(mActivityContext)
+                        ? caddyRowHeight(mActivityContext)
+                        : mActivityContext.getDeviceProfile().getAllAppsProfile().getCellHeightPx();
                 fl.setLayoutParams(new RecyclerView.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        mActivityContext.getDeviceProfile().getAllAppsProfile().getCellHeightPx()));
+                        ViewGroup.LayoutParams.MATCH_PARENT, rowHeight));
                 return new ViewHolder(fl);
             default:
                 if (mAdapterProvider.isViewSupported(viewType)) {

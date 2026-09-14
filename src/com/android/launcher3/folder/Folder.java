@@ -44,9 +44,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Insets;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+
+import app.lawnchair.ui.liquid.LiquidGlassPanel;
+import app.lawnchair.util.LawnchairUtilsKt;
 import android.graphics.drawable.GradientDrawable;
 import android.hardware.input.InputManager;
 import android.os.Looper;
@@ -83,6 +87,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -138,6 +143,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
 import app.lawnchair.theme.color.tokens.ColorTokens;
@@ -294,7 +300,34 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Nullable
     private KeyboardInsetAnimationCallback mKeyboardInsetAnimationCallback;
 
-    private @NonNull GradientDrawable mBackground;
+    private @NonNull Drawable mBackground;
+    /**
+     * Sora: the open folder's glass.
+     *
+     * A sibling in the drag layer rather than this view's background, because the
+     * effect comes from Backdrop's own Compose `drawBackdrop` -- vibrancy, the
+     * specular highlight and the lens all live behind that API, and a Drawable
+     * cannot host it. Driving only the refraction shader by hand, as this used to,
+     * left out most of what makes the effect read as glass.
+     */
+    public static final float FOLDER_GLASS_CORNER_RADIUS_DP = 32f;
+
+    private LiquidGlassPanel mFolderGlass;
+
+    // ponytail: full-screen blur overlay for Centered folder mode.
+    // Separate from mFolderGlass (the folder-shaped glass pane) so the
+    // background blurs independently while the folder plate keeps its own effect.
+    private LiquidGlassPanel mBlurOverlay;
+    private android.animation.ValueAnimator mBlurAnimator;
+
+    public LiquidGlassPanel getFolderGlass() {
+        return mFolderGlass;
+    }
+
+    public LiquidGlassPanel getBlurOverlay() {
+        return mBlurOverlay;
+    }
+
 
     PreferenceManager2 preferenceManager2;
 
@@ -319,7 +352,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // click).
         setFocusableInTouchMode(true);
 
-        mBackground = (GradientDrawable) Objects.requireNonNull(
+        mBackground = Objects.requireNonNull(
                 ResourcesCompat.getDrawable(getResources(),
                         R.drawable.round_rect_folder, getContext().getTheme()));
         mBackground.setCallback(this);
@@ -337,10 +370,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         final DeviceProfile dp = mActivityContext.getDeviceProfile();
         final int paddingLeftRight = dp.folderContentPaddingLeftRight;
 
-        mBackground = DrawableTokens.RoundRectFolder.resolve(getContext());
-        mBackground.setColor(LawnchairUtilsKt.resolveFolderBackgroundColor(getContext()));
-        var alpha = LawnchairUtilsKt.getFolderBackgroundAlpha(getContext());
-        mBackground.setAlpha(alpha);
+        // Sora: the sheet of glass behind the folder is a separate view (see
+        // mFolderGlass), so this background only has to stay out of its way.
+        mBackground = new android.graphics.drawable.ColorDrawable(
+                android.graphics.Color.TRANSPARENT);
 
         mContent = findViewById(R.id.folder_content);
         mContent.setPadding(paddingLeftRight, dp.folderContentPaddingTop, paddingLeftRight, 0);
@@ -376,6 +409,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             mKeyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);
             setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
         }
+        LawnchairUtilsKt.overrideAllAppsTextColor(mFolderName);
         
         if (enableLauncherVisualRefresh()) {
             mLeftArrow = findViewById(R.id.left_indicator_arrow);
@@ -390,6 +424,61 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         mContent.getCurrentPage() - 1));
             }
         }
+        if (isCentered()) {
+            int titlePaddingStart = paddingLeftRight + (int) (4 * getResources().getDisplayMetrics().density);
+            mFolderName.setPaddingRelative(titlePaddingStart, 0, paddingLeftRight, 0);
+            int horizontalGravity = Utilities.isRtl(getResources()) ? Gravity.RIGHT : Gravity.LEFT;
+            mFolderName.setGravity(horizontalGravity | Gravity.CENTER_VERTICAL);
+            mContent.setPadding(paddingLeftRight, dp.folderContentPaddingTop, paddingLeftRight, dp.folderContentPaddingTop);
+            mFooter.setVisibility(GONE);
+        } else {
+            mContent.setPadding(paddingLeftRight, dp.folderContentPaddingTop, paddingLeftRight, 0);
+        }
+    }
+
+    public boolean isCentered() {
+        if (mFolderName != null) {
+            return mFolderName.getParent() == this;
+        }
+        return preferenceManager2 != null && PreferenceCacheExtensionsKt.firstCached(
+                preferenceManager2.getFolderOpenMode())
+                instanceof app.lawnchair.folder.Centered;
+    }
+
+    public int getCardTop() {
+        if (!isCentered()) {
+            return 0;
+        }
+        int headerH = mFolderName.getMeasuredHeight();
+        if (headerH == 0) {
+            int contentWidth = getContentAreaWidth();
+            mFolderName.measure(
+                    MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            headerH = mFolderName.getMeasuredHeight();
+        }
+        MarginLayoutParams mlp = (MarginLayoutParams) mFolderName.getLayoutParams();
+        int margin = mlp != null ? mlp.topMargin + mlp.bottomMargin : 0;
+        return headerH + margin;
+    }
+
+    public int getCardHeight() {
+        if (!isCentered()) {
+            return getHeight();
+        }
+        return getContentAreaHeight() + (mFooter.getVisibility() == VISIBLE ? getFooterHeight() : 0);
+    }
+
+    public void onPageCountChanged(boolean hasMultiplePages) {
+        if (isCentered()) {
+            mFooter.setVisibility(hasMultiplePages ? VISIBLE : GONE);
+            DeviceProfile dp = mActivityContext.getDeviceProfile();
+            int paddingBottom = hasMultiplePages ? 0 : dp.folderContentPaddingTop;
+            mContent.setPadding(dp.folderContentPaddingLeftRight, dp.folderContentPaddingTop,
+                    dp.folderContentPaddingLeftRight, paddingBottom);
+        } else if (enableLauncherVisualRefresh()) {
+            onIndicatorVisibilityChanged();
+        }
     }
 
     /**
@@ -397,6 +486,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * arrows if pointer is enabled and indicator is visible.
      */
     public void onIndicatorVisibilityChanged() {
+        if (isCentered()) {
+            return;
+        }
         if (mPageIndicator.getVisibility() == View.VISIBLE) {
             ((MarginLayoutParams) mFolderName.getLayoutParams()).setMarginEnd(
                     getResources().getDimensionPixelSize(R.dimen.folder_footer_horiz_padding));
@@ -689,7 +781,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (lp == null) {
             lp = new BaseDragLayer.LayoutParams(0, 0);
             lp.customPosition = true;
+            lp.ignoreInsets = true;
             setLayoutParams(lp);
+        } else {
+            lp.customPosition = true;
+            lp.ignoreInsets = true;
         }
         reapplyItemInfo();
         // In case any children didn't come across during loading, clean up the folder accordingly
@@ -710,6 +806,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             mFolderName.setText("");
             mFolderName.setHint(R.string.folder_hint_text);
         }
+        LawnchairUtilsKt.overrideAllAppsTextColor(mFolderName);
     }
 
     /**
@@ -749,8 +846,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      */
     @SuppressLint("InflateParams")
     static <T extends Context & ActivityContext> Folder fromXml(T activityContext) {
+        PreferenceManager2 prefs2 = PreferenceManager2.INSTANCE.get(activityContext);
+        boolean isCentered = PreferenceCacheExtensionsKt.firstCached(prefs2.getFolderOpenMode())
+                instanceof app.lawnchair.folder.Centered;
+        int layoutId = isCentered
+                ? R.layout.user_folder_centered
+                : R.layout.user_folder_icon_normalized;
         return (Folder) LayoutInflater.from(activityContext).cloneInContext(activityContext)
-                .inflate(R.layout.user_folder_icon_normalized, null);
+                .inflate(layoutId, null);
     }
 
     private void addAnimationStartListeners(AnimatorSet a) {
@@ -856,6 +959,102 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // Just verify that the folder hasn't already been added to the DragLayer.
         // There was a one-off crash where the folder had a parent already.
         if (getParent() == null) {
+            mFolderGlass = new LiquidGlassPanel(getContext());
+            // BaseDragLayer accepts only its own LayoutParams. Handed anything
+            // else -- including the InsettableFrameLayout ones it inherits from
+            // -- it quietly converts them, and the conversion drops ignoreInsets.
+            // onViewAdded then lays the system-bar inset on as a margin, and does
+            // so again on every add: the panel ends up lower and shorter than the
+            // layer whose coordinates it is addressed in, so whatever it draws
+            // near the top falls outside its own bounds and is clipped away.
+            BaseDragLayer.LayoutParams glassLp = new BaseDragLayer.LayoutParams(
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT);
+            glassLp.ignoreInsets = true;
+            mFolderGlass.setLayoutParams(glassLp);
+            mFolderGlass.setBlurRadiusDp(4f);
+            // A folder opened in the drawer wears exactly what its closed tile
+            // was wearing.
+            //
+            // The stock tint is a different colour in light and in dark, so the
+            // drawer's one surface that must not follow the theme did -- and
+            // because the tile beside it is washed with the drawer's own value,
+            // the two never matched: the folder changed shade the instant it
+            // began to open, which is the jolt. On the workspace the stock tint
+            // is right, because there the folder is over bare wallpaper and has
+            // its own contrast to find.
+            boolean glassInDrawer = mFolderIcon != null && mFolderIcon.isInsideAllApps();
+            mFolderGlass.setTinted(!glassInDrawer);
+            if (glassInDrawer) {
+                mFolderGlass.setTintColor(app.lawnchair.util.LawnchairUtilsKt.DRAWER_GLASS_WASH);
+            }
+            mFolderGlass.setOnSyncFrame(this::syncFolderGlass);
+            // Grab the scene first: the drag layer currently holds exactly what
+            // will sit behind this folder, so the glass refracts the real icons
+            // rather than only the wallpaper.
+            // Everything behind this folder except the folder's own icon, whose
+            // patch of the scene is filled in instead. The capture happens while
+            // that icon is still on screen, and a surface that refracts itself
+            // shows its own preview icons smeared through its glass.
+            mFolderGlass.captureBehind(dragLayer, mFolderIcon, selfPatchTint(),
+                    mFolderIcon != null && mFolderIcon.isInsideAllApps());
+            // Added first so it sits behind the folder.
+            dragLayer.addView(mFolderGlass);
+
+            // ponytail: full-screen blur overlay instead of dimming.
+            // Captures the same scene as mFolderGlass and covers the entire screen,
+            // blurring from 0 → max during the open animation.
+            if (!glassInDrawer) {
+                mBlurOverlay = new LiquidGlassPanel(getContext());
+                BaseDragLayer.LayoutParams blurLp = new BaseDragLayer.LayoutParams(
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT);
+                blurLp.ignoreInsets = true;
+                mBlurOverlay.setLayoutParams(blurLp);
+                mBlurOverlay.setBlurRadiusDp(0f);
+                mBlurOverlay.setBlurOnly(true);
+                mBlurOverlay.setRimEnabled(false);
+                mBlurOverlay.setTinted(false);
+                mBlurOverlay.setCornerRadius(0f);
+                mBlurOverlay.copySceneFrom(mFolderGlass);
+                // Full-screen pane — covers the entire drag layer.
+                mBlurOverlay.setPaneBounds(0, 0,
+                        dragLayer.getWidth(), dragLayer.getHeight(), 1f);
+                mBlurOverlay.setOnSyncFrame(() -> {
+                    if (mBlurOverlay == null) return;
+                    mBlurOverlay.setPaneBounds(0, 0,
+                            dragLayer.getWidth(), dragLayer.getHeight(), 1f);
+                });
+                // Insert behind mFolderGlass so the blur sits behind the folder glass.
+                int glassIndex = dragLayer.indexOfChild(mFolderGlass);
+                dragLayer.addView(mBlurOverlay, glassIndex);
+
+                float maxBlurDp = 15f;
+                int duration = 300;
+                try {
+                    duration = getResources().getInteger(
+                            com.android.launcher3.R.integer.config_materialFolderExpandDuration);
+                } catch (Exception ignored) {
+                }
+                final float targetBgBlur = maxBlurDp;
+                final float startFolderBlur = mFolderGlass.getBlurRadiusDp(); // rest blur (4dp)
+                final float targetFolderBlur = maxBlurDp + 4f;
+                mBlurAnimator = android.animation.ValueAnimator.ofFloat(0f, 1f);
+                mBlurAnimator.setDuration(duration);
+                mBlurAnimator.setInterpolator(
+                        com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN);
+                mBlurAnimator.addUpdateListener(va -> {
+                    float fraction = (float) va.getAnimatedValue();
+                    if (mBlurOverlay != null) {
+                        mBlurOverlay.setBlurRadiusDp(fraction * targetBgBlur);
+                    }
+                    if (mFolderGlass != null) {
+                        mFolderGlass.setBlurRadiusDp(startFolderBlur
+                                + fraction * (targetFolderBlur - startFolderBlur));
+                    }
+                });
+            }
+
             dragLayer.addView(this);
             mActivityContext.getDragController().addDropTarget(this);
         } else {
@@ -870,9 +1069,15 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         mContent.completePendingPageChanges();
         mContent.setCurrentPage(pageNo);
+        centerAboutIcon();
 
         Log.d("b/383526431", "animateOpen: content child count after pending page"
                 + " changes: " + mContent.getTotalChildCount());
+
+        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) getLayoutParams();
+        measure(MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY));
+        layout(lp.x, lp.y, lp.x + lp.width, lp.y + lp.height);
 
         // This is set to true in close(), but isn't reset to false until onDropCompleted(). This
         // leads to an inconsistent state if you drag out of the folder and drag back in without
@@ -885,6 +1090,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         AnimatorSet animatorSet = getFolderAnimationManager()
                 .createAnimatorSet(/* isOpening */ true);
+        if (!isCentered()) {
+            syncFolderGlass();
+        }
 
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -905,7 +1113,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         });
 
         // Footer animation
-        if (mContent.getPageCount() > 1 && !mInfo.hasOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION)) {
+        if (mContent.getPageCount() > 1 && !mInfo.hasOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION) && !isCentered()) {
             int footerWidth = mContent.getDesiredWidth()
                     - mFooter.getPaddingLeft() - mFooter.getPaddingRight();
 
@@ -940,6 +1148,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         mPageIndicator.stopAllAnimations();
 
+        if (!isCentered() && mBlurAnimator != null) {
+            animatorSet.play(mBlurAnimator);
+        }
+
         // b/282158620 because setCurrentPlayTime() below will start animator, we need to register
         // {@link AnimatorListener} before it so that {@link AnimatorListener#onAnimationStart} can
         // be called to register mCurrentAnimator, which will be used to cancel animator
@@ -947,8 +1159,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // Because t=0 has the folder match the folder icon, we can skip the
         // first frame and have the same movement one frame earlier.
         Log.d("b/311077782", "Folder.animateOpen");
-        animatorSet.setCurrentPlayTime(Math.min(
-                getSingleFrameMs(getContext()), animatorSet.getTotalDuration()));
+        if (!isCentered()) {
+            animatorSet.setCurrentPlayTime(Math.min(
+                    getSingleFrameMs(getContext()), animatorSet.getTotalDuration()));
+        }
         animatorSet.start();
 
 
@@ -971,6 +1185,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private FolderAnimationCreator getFolderAnimationManager() {
+        if (isCentered()) {
+            return new FolderCenteredAnimationManager(this);
+        }
         boolean shouldUseSpringMotion = Flags.enableLauncherIconShapes()
                 && Flags.enableExpressiveFolderExpansion();
         if (shouldUseSpringMotion) {
@@ -1057,6 +1274,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         cancelRunningAnimations();
         AnimatorSet animatorSet = getFolderAnimationManager()
                 .createAnimatorSet(/* isOpening */ false);
+        if (!isCentered()) {
+            syncFolderGlass();
+        }
 
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -1079,6 +1299,39 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mIsAnimatingClosed = false;
             }
         });
+        // Reverse the full-screen blur overlay on close.
+        if (mBlurOverlay != null && !isCentered()) {
+            if (mBlurAnimator != null) {
+                mBlurAnimator.cancel();
+            }
+            float currentBgBlur = mBlurOverlay.getBlurRadiusDp();
+            float currentFolderBlur = mFolderGlass != null ? mFolderGlass.getBlurRadiusDp() : 4f;
+            float endFolderBlur = 4f;
+            int duration = 300;
+            try {
+                duration = getResources().getInteger(
+                        com.android.launcher3.R.integer.config_materialFolderExpandDuration);
+            } catch (Exception ignored) {
+            }
+            mBlurAnimator = android.animation.ValueAnimator.ofFloat(1f, 0f);
+            mBlurAnimator.setDuration(duration);
+            mBlurAnimator.setInterpolator(
+                    com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN);
+            mBlurAnimator.addUpdateListener(va -> {
+                float fraction = (float) va.getAnimatedValue();
+                if (mBlurOverlay != null) {
+                    mBlurOverlay.setBlurRadiusDp(currentBgBlur * fraction);
+                    float bgAlpha = Math.min(1f, fraction / 0.18f);
+                    mBlurOverlay.setAlpha(bgAlpha);
+                }
+                if (mFolderGlass != null) {
+                    mFolderGlass.setBlurRadiusDp(endFolderBlur
+                            + fraction * (currentFolderBlur - endFolderBlur));
+                }
+            });
+            animatorSet.play(mBlurAnimator);
+        }
+
         addAnimationStartListeners(animatorSet);
         animatorSet.start();
     }
@@ -1099,7 +1352,38 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // TODO: Clear all active animations.
         BaseDragLayer parent = (BaseDragLayer) getParent();
         if (parent != null) {
+            if (mBlurOverlay != null) {
+                if (mBlurAnimator != null) {
+                    mBlurAnimator.cancel();
+                    mBlurAnimator = null;
+                }
+                mBlurOverlay.setOnSyncFrame(null);
+                parent.removeView(mBlurOverlay);
+                mBlurOverlay = null;
+            }
+            if (mFolderGlass != null) {
+                mFolderGlass.setOnSyncFrame(null);
+                parent.removeView(mFolderGlass);
+                mFolderGlass = null;
+            }
             parent.removeView(this);
+        }
+        setTranslationX(0f);
+        setTranslationY(0f);
+        setScaleX(1f);
+        setScaleY(1f);
+        setClipPath(null);
+        if (mContent != null) {
+            mContent.setScaleX(1f);
+            mContent.setScaleY(1f);
+            mContent.setClipPath(null);
+        }
+        if (mContent != null) {
+            for (View icon : getItemsOnPage(mContent.getCurrentPage())) {
+                if (icon instanceof BubbleTextView bTv) {
+                    bTv.setTextVisibility(true);
+                }
+            }
         }
         mActivityContext.getDragController().removeDropTarget(this);
         clearFocus();
@@ -1159,13 +1443,18 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
         SCALE_PROPERTY.set(launcher.getWorkspace(), 1f);
         SCALE_PROPERTY.set(launcher.getHotseat(), 1f);
-        // Clear any stuck workspace/hotseat RenderEffect if we are not in a depth-blur state.
-        // Expressive folder open/close can race with All Apps depth blur and leave icons blurred.
-        if (Utilities.ATLEAST_S
-                && launcher.getStateManager().getState().getDepth(launcher) == 0f) {
-            for (View target : launcher.getDepthBlurTargets()) {
-                target.setRenderEffect(null);
+        // Clean up the full-screen blur overlay if it was not already removed by closeComplete.
+        if (mBlurOverlay != null) {
+            if (mBlurAnimator != null) {
+                mBlurAnimator.cancel();
+                mBlurAnimator = null;
             }
+            mBlurOverlay.setOnSyncFrame(null);
+            BaseDragLayer dragLayer = launcher.getDragLayer();
+            if (mBlurOverlay.getParent() == dragLayer) {
+                dragLayer.removeView(mBlurOverlay);
+            }
+            mBlurOverlay = null;
         }
     }
 
@@ -1418,16 +1707,33 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         parent.getDescendantRectRelativeToSelf(mFolderIcon, sTempRect);
         int centerX = sTempRect.centerX();
         int centerY = sTempRect.centerY();
-        int centeredLeft = centerX - width / 2;
-        int centeredTop = centerY - height / 2;
+
+        boolean centered = isCentered();
+        int centeredLeft;
+        int centeredTop;
+        if (centered) {
+            centeredLeft = (parent.getWidth() - width) / 2;
+            int cardCenterY = parent.getHeight() / 2;
+            centeredTop = cardCenterY - getCardHeight() / 2 - getCardTop();
+        } else {
+            centeredLeft = centerX - width / 2;
+            centeredTop = centerY - height / 2;
+        }
 
         sTempRect.set(mActivityContext.getFolderBoundingBox());
-        int left = Utilities.boundToRange(centeredLeft, sTempRect.left, sTempRect.right - width);
-        int top = Utilities.boundToRange(centeredTop, sTempRect.top, sTempRect.bottom - height);
-        int[] inOutPosition = new int[]{left, top};
-        mActivityContext.updateOpenFolderPosition(inOutPosition, sTempRect, width, height);
-        left = inOutPosition[0];
-        top = inOutPosition[1];
+        int left;
+        int top;
+        if (centered) {
+            left = centeredLeft;
+            top = centeredTop;
+        } else {
+            left = Utilities.boundToRange(centeredLeft, sTempRect.left, sTempRect.right - width);
+            top = Utilities.boundToRange(centeredTop, sTempRect.top, sTempRect.bottom - height);
+            int[] inOutPosition = new int[]{left, top};
+            mActivityContext.updateOpenFolderPosition(inOutPosition, sTempRect, width, height);
+            left = inOutPosition[0];
+            top = inOutPosition[1];
+        }
 
         int folderPivotX = width / 2 + (centeredLeft - left);
         int folderPivotY = height / 2 + (centeredTop - top);
@@ -1438,11 +1744,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         lp.height = height;
         lp.x = left;
         lp.y = top;
+        lp.customPosition = true;
+        lp.ignoreInsets = true;
 
         mBackground.setBounds(0, 0, width, height);
     }
 
-    protected int getContentAreaHeight() {
+    public int getContentAreaHeight() {
         int height = Math.min(getMaxContentAreaHeight(),
                 mContent.getDesiredHeight());
         return Math.max(height, MIN_CONTENT_DIMEN);
@@ -1461,22 +1769,29 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     @VisibleForTesting
-    int getFolderWidth() {
+    public int getFolderWidth() {
         return getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
     }
 
     @VisibleForTesting
-    int getFolderHeight() {
+    public int getFolderHeight() {
         return getFolderHeight(getContentAreaHeight());
     }
 
     @VisibleForTesting
-    int getFolderHeight(int contentAreaHeight) {
-        return getPaddingTop() + getPaddingBottom() + contentAreaHeight + getFooterHeight();
+    public int getFolderHeight(int contentAreaHeight) {
+        int height = getPaddingTop() + getPaddingBottom() + contentAreaHeight;
+        if (isCentered()) {
+            height += getCardTop();
+        }
+        if (mFooter.getVisibility() == VISIBLE) {
+            height += getFooterHeight();
+        }
+        return height;
     }
 
     @VisibleForTesting
-    int getFooterHeight() {
+    public int getFooterHeight() {
         return mFooterHeight;
     }
 
@@ -1487,11 +1802,18 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         int contentAreaWidthSpec = MeasureSpec.makeMeasureSpec(contentWidth, MeasureSpec.EXACTLY);
         int contentAreaHeightSpec = MeasureSpec.makeMeasureSpec(contentHeight, MeasureSpec.EXACTLY);
 
+        if (isCentered()) {
+            mFolderName.measure(contentAreaWidthSpec,
+                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        }
+
         mContent.setFixedSize(contentWidth, contentHeight);
         mContent.measure(contentAreaWidthSpec, contentAreaHeightSpec);
 
-        mFooter.measure(contentAreaWidthSpec,
-                MeasureSpec.makeMeasureSpec(mFooterHeight, MeasureSpec.EXACTLY));
+        if (mFooter.getVisibility() == VISIBLE) {
+            mFooter.measure(contentAreaWidthSpec,
+                    MeasureSpec.makeMeasureSpec(mFooterHeight, MeasureSpec.EXACTLY));
+        }
 
         int folderWidth = getPaddingLeft() + getPaddingRight() + contentWidth;
         int folderHeight = getFolderHeight(contentHeight);
@@ -1534,6 +1856,16 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     void replaceFolderWithFinalItem() {
+        // Sora: the workspace's rule, and the workspace's alone. A folder there
+        // holding one item is really that item, so it is dissolved back into the
+        // cell it came from. A folder in the app drawer has no such cell -- it
+        // is built for display out of a category, and in Caddy a category of one
+        // app is still a category. Run here, this looked up a workspace screen
+        // that does not exist for it and took the launcher down the moment the
+        // drawer was opened.
+        if (isInAppDrawer()) {
+            return;
+        }
         mDestroyed = mLauncherDelegate.replaceFolderWithFinalItem(this);
     }
 
@@ -2044,8 +2376,94 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         invalidate();
     }
 
+    /**
+     * What is laid over the wallpaper in the patch where this folder's icon was.
+     *
+     * On the workspace, nothing: the wallpaper is the whole of what lies behind
+     * an icon there. In the app drawer it is not -- the scrim washes the frosted
+     * backdrop with one colour and the sheet with another, and both sit between
+     * the wallpaper and the icon. Filling the patch with bare wallpaper there
+     * would leave a bright hole punched through to the desktop.
+     */
+    private int selfPatchTint() {
+        if (mFolderIcon == null || !mFolderIcon.isInsideAllApps()) {
+            return android.graphics.Color.TRANSPARENT;
+        }
+        if (!(mActivityContext instanceof Launcher launcher)) {
+            return android.graphics.Color.TRANSPARENT;
+        }
+        return app.lawnchair.util.LawnchairUtilsKt.drawerWash(launcher);
+    }
+
+    /** Points the fixed overlay at this folder's current visual rectangle. */
+    private void syncFolderGlass() {
+        if (mFolderGlass == null || (isCentered() && (mState == STATE_ANIMATING || mIsAnimatingClosed))) {
+            return;
+        }
+        mFolderGlass.setVisibility(getVisibility());
+
+        // Measured rather than derived: the overlay's origin is not necessarily
+        // the drag layer's, so the difference of the two on-screen positions is
+        // what reliably lands the pane on the folder.
+        int[] folderLocation = new int[2];
+        getLocationOnScreen(folderLocation);
+        int[] overlayLocation = new int[2];
+        mFolderGlass.screenLocation(overlayLocation);
+
+        float paneLeft = folderLocation[0] - overlayLocation[0];
+        float paneTop = folderLocation[1] - overlayLocation[1];
+        float paneWidth = getWidth();
+        float paneHeight = getHeight();
+
+        // A folder opens by growing a clip path, not by scaling: its scale stays 1
+        // throughout, so reading the scale would hand the glass the same rectangle
+        // at the start and the end of the animation.
+        if (mClipPath != null) {
+            RectF clip = new RectF();
+            mClipPath.computeBounds(clip, true);
+            if (!clip.isEmpty()) {
+                paneLeft += clip.left;
+                paneTop += clip.top;
+                paneWidth = clip.width();
+                paneHeight = clip.height();
+            }
+        } else {
+            paneTop += getCardTop();
+            paneHeight = getCardHeight();
+        }
+
+        // The corner travels with the size, and lands exactly on the icon's.
+        // Held at the folder's own radius all the way down, it outgrows half the
+        // icon's edge near the end of the close and is clamped to a circle --
+        // which is why the folder always finished round, whatever shape was set.
+        float folderRadius =
+                FOLDER_GLASS_CORNER_RADIUS_DP * getResources().getDisplayMetrics().density;
+        float radius = folderRadius;
+        if (mFolderIcon != null) {
+            float restSize = mFolderIcon.getGlassRestSize();
+            float cardHeight = getCardHeight();
+            float targetSize = Math.min(getWidth(), cardHeight);
+            float travel = targetSize - restSize;
+            if (travel > 1f) {
+                float currentSize = Math.min(paneWidth, paneHeight);
+                float t = Math.max(0f, Math.min(1f, (currentSize - restSize) / travel));
+                float restRadius = mFolderIcon.getGlassRestCornerRadius();
+                radius = restRadius + (folderRadius - restRadius) * t;
+            }
+        }
+        mFolderGlass.setCornerRadius(radius);
+
+        mFolderGlass.setPaneBounds(paneLeft, paneTop, paneWidth, paneHeight, getAlpha());
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        // Sora: driven from the draw pass rather than an OnPreDrawListener.
+        // getViewTreeObserver() hands back a temporary observer while a view is
+        // still detached, so a listener registered as the folder is being added
+        // could be dropped when it actually attached -- leaving the glass with a
+        // zero-sized pane and nothing to draw.
+
         if (mClipPath != null) {
             int count = canvas.save();
             canvas.clipPath(mClipPath);
@@ -2126,7 +2544,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderName = value;
     }
 
-    FolderNameEditText getFolderName() {
+    public FolderNameEditText getFolderName() {
         return mFolderName;
     }
 

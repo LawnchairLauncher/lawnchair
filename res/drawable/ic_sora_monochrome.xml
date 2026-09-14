@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026, Renns Project - Sora Launcher -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M67.5,41.5 C67.5,34 60.5,30 53.5,30 C45,30 39.5,35.5 39.5,42.5 C39.5,56 69,53 69,66.5 C69,74.5 62,79 54,79 C46,79 40,74.5 39.5,67"
+        android:strokeColor="#FF000000"
+        android:strokeWidth="9"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"/>
+</vector>

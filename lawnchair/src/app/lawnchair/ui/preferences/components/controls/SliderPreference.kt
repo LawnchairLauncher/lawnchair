@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -42,6 +41,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
+import app.lawnchair.ui.liquid.SoraLiquidSlider
 import app.lawnchair.preferences.rememberTransformAdapter
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
@@ -175,8 +175,9 @@ private fun SliderPreference(
         },
         modifier = modifier,
         description = {
-            Slider(
-                value = sliderValue,
+            SoraLiquidSlider(
+                // Reads the state on every call so the thumb tracks the drag.
+                value = { sliderValue },
                 onValueChange = { newValue ->
                     sliderValue = newValue
                     val threshold = when {
@@ -210,12 +211,17 @@ private fun SliderPreference(
                         }
                     }
                 },
-                onValueChangeFinished = { onValueChangeFinished(sliderValue) },
+                // Material 3's Slider snapped to `steps` itself; the liquid one is
+                // continuous, so snap here before the value is committed.
+                onValueChangeFinished = { newValue ->
+                    val snapped = snapSliderValue(valueRange.start, newValue, step)
+                    sliderValue = snapped
+                    onValueChangeFinished(snapped)
+                },
                 valueRange = valueRange,
-                steps = getSteps(valueRange, step),
                 modifier = Modifier
                     .padding(top = 2.dp, bottom = 8.dp)
-                    .height(24.dp),
+                    .height(28.dp),
                 enabled = enabled,
             )
         },

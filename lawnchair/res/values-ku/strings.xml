@@ -72,10 +72,10 @@
         <item quantity="other">%1$d Apps</item>
     </plurals>
     <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Sora Launcher as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
     <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Sora Launcher accessibility service. Tap Open Settings, then select Sora Launcher and turn on Use Sora Launcher.</string>
     <string name="dt2s_warning_open_settings">Open Settings</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">No feed installed.</string>
@@ -105,7 +105,7 @@
     <string name="missing_notification_access_description">Notification access needed.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Change Settings</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Restart Sora Launcher</string>
     <string name="pref_fonts_missing_font">Font not found.</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
@@ -144,7 +144,7 @@
     <string name="dynamic">Dynamic</string>
     <string name="all_apps_search_market_message">Search for More Apps</string>
     <string name="show_app_search_bar">Show Search Bar</string>
-    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
+    <string name="lawnchair_bug_report">Sora Launcher Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
     <string name="action_copy_link">Copy Link</string>
     <string name="action_copy">Copy</string>

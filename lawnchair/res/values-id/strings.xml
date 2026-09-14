@@ -28,6 +28,8 @@
     <string name="dock_description">Bilah pencarian, Jumlah Ikon</string>
     <string name="app_drawer_label">Halaman Aplikasi</string>
     <string name="app_drawer_description">Aplikasi Tersembunyi, Jumlah Kolom, Ikon</string>
+    <string name="merge_app_drawer_to_workspace_label">Gabungkan di layar beranda</string>
+    <string name="merge_app_drawer_to_workspace_description">Integrasikan laci aplikasi sebagai halaman terakhir di layar beranda</string>
     <string name="folders_label">Map</string>
     <string name="folders_description">Jumlah Baris dan Kolom</string>
     <string name="app_drawer_columns">Kolom Halaman Aplikasi</string>
@@ -71,10 +73,10 @@
         <item quantity="other">%1$d Aplikasi</item>
     </plurals>
     <string name="dt2s_admin_hint_title">Izin Admin Dibutuhkan</string>
-    <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai aplikasi admin perangkat. Ketuk \"Buka Pengaturan,\" lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
+    <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Sora Launcher sebagai aplikasi admin perangkat. Ketuk \"Buka Pengaturan,\" lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
     <string name="dt2s_admin_warning">Ketuk Dua Kali untuk Tidur akan dimatikan.</string>
     <string name="dt2s_a11y_hint_title">Aktifkan Layanan Aksesibilitas</string>
-    <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, aktifkan layanan aksesibilitas Lawnchair. Ketuk \"Buka Pengaturan,\" lalu pilih \"Lawnchair\" dan aktifkan \"Gunakan Lawnchair\".</string>
+    <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, aktifkan layanan aksesibilitas Sora Launcher. Ketuk \"Buka Pengaturan,\" lalu pilih \"Sora Launcher\" dan aktifkan \"Gunakan Sora Launcher\".</string>
     <string name="dt2s_warning_open_settings">Buka Pengaturan</string>
     <string name="minus_one_enable">Umpan</string>
     <string name="minus_one_unavailable">Tidak ada umpan terpasang.</string>
@@ -104,7 +106,7 @@
     <string name="missing_notification_access_description">Akses notifikasi diperlukan.</string>
     <string name="msg_missing_notification_access">Untuk menggunakan Titik Notifikasi, berikan <xliff:g id="name" example="Aplikasi Saya">%1$s</xliff:g> akses ke notifikasi.</string>
     <string name="title_change_settings">Ubah Pengaturan</string>
-    <string name="debug_restart_launcher">Muat ulang Lawnchair</string>
+    <string name="debug_restart_launcher">Muat ulang Sora Launcher</string>
     <string name="pref_fonts_missing_font">Font tidak ditemukan.</string>
     <string name="font_variant_italic">Miring</string>
     <string name="font_weight_thin">Tipis</string>
@@ -143,7 +145,7 @@
     <string name="dynamic">Dinamis</string>
     <string name="all_apps_search_market_message">Cari Aplikasi Lainnya</string>
     <string name="show_app_search_bar">Tampilkan Bilah Pencarian</string>
-    <string name="lawnchair_bug_report">Laporan Bug Lawnchair</string>
+    <string name="lawnchair_bug_report">Laporan Bug Sora Launcher</string>
     <string name="crash_report_notif_title">%1$s berhenti</string>
     <string name="action_copy_link">Salin Tautan</string>
     <string name="action_copy">Salin</string>
@@ -167,4 +169,6 @@
     <string name="all_apps_device_search_hint">Pencarian</string>
     <string name="dark_status_bar_label">Tingkat Kegelapan Bar Status</string>
     <string name="lawnicons_not_installed_description">Lawnicons tidak terpasang.</string>
+    <string name="sora_app_library">Perpustakaan Aplikasi</string>
+    <string name="sora_folder_resize">Ubah ukuran folder</string>
 </resources>

@@ -61,7 +61,7 @@
     <string name="time_weeks_ago">%d週間</string>
     <string name="time_months_ago">%d月</string>
     <string name="time_years_ago">%d年</string>
-    <string name="managed_by_lawnchair">Lawnchair に管理されています</string>
+    <string name="managed_by_lawnchair">Sora Launcher に管理されています</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">設定</string>
     <string name="settings_button_text">ホーム設定</string>
@@ -69,7 +69,7 @@
     <string name="title_change_settings">設定を変更</string>
     <!--
 
-    General "words" used throughout Lawnchair
+    General "words" used throughout Sora Launcher
 
     -->
     <string name="others_category_label">その他</string>
@@ -117,7 +117,7 @@
     <string name="my_folder_label">自分のフォルダー</string>
     <string name="sort_active_items_action">アクティブなアイテムを整理</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">ジェスチャー操作時に特定の操作、例えばスマートフォンのロックなどをするにはLawnchairにユーザー補助機能へのアクセスを許可する必要があります。\n\nLawnchairはユーザーの操作を監視しませんが、全てのユーザー補助機能にはこの機能を要求します。Lawnchairはシステムから送信された全てのイベントを削除します。\n\nLawnchairはスマートフォンをロックしたり、最近使ったアプリを管理したりするために、performGlobalActionユーザー補助機能を使用します。</string>
+    <string name="accessibility_service_description">ジェスチャー操作時に特定の操作、例えばスマートフォンのロックなどをするにはSora Launcherにユーザー補助機能へのアクセスを許可する必要があります。\n\nSora Launcherはユーザーの操作を監視しませんが、全てのユーザー補助機能にはこの機能を要求します。Sora Launcherはシステムから送信された全てのイベントを削除します。\n\nSora Launcherはスマートフォンをロックしたり、最近使ったアプリを管理したりするために、performGlobalActionユーザー補助機能を使用します。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -156,7 +156,7 @@
     <string name="backup_and_restore_description">現在の設定を保存し、バックアップを復元</string>
     <string name="about_label">このアプリについて</string>
     <string name="app_info_drop_target_label">アプリ情報</string>
-    <string name="debug_restart_launcher">Lawnchair を再起動</string>
+    <string name="debug_restart_launcher">Sora Launcher を再起動</string>
     <string name="experimental_features_label">実験的機能</string>
     <!-- Experimental features -->
     <string name="workspace_label">ワークスペース</string>
@@ -211,13 +211,13 @@
     <string name="dismissed_prediction_apps_label_with_count">ブロックしたアプリ (%1$d)</string>
     <string name="prediction_system_settings">システム管理の提案</string>
     <string name="missing_usage_access_label">使用状況へのアクセスが必要です</string>
-    <string name="missing_usage_access_desc">アプリの提案を改善するには、 <xliff:g id="name" example="Lawnchair">%1$s</xliff:g> の使用状況へのアクセスをオンにしてください</string>
+    <string name="missing_usage_access_desc">アプリの提案を改善するには、 <xliff:g id="name" example="Sora Launcher">%1$s</xliff:g> の使用状況へのアクセスをオンにしてください</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">ショートカットと追加機能にアクセスするには、Lawnchair をデフォルトのランチャーとして設定してください。</string>
+    <string name="set_default_launcher_tip">ショートカットと追加機能にアクセスするには、Sora Launcher をデフォルトのランチャーとして設定してください。</string>
     <string name="notification_dots">通知ドット</string>
     <string name="show_notification_count">通知の数を表示</string>
     <string name="notification_dots_color">通知ドットの色</string>
@@ -410,11 +410,11 @@
     <string name="torch_status_on">ライトをオン</string>
     <string name="torch_action_off">タップしてオフにする</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Lawnchairをセットアップする</string>
+    <string name="onboarding_open_settings_title">Sora Launcherをセットアップする</string>
     <string name="onboarding_open_settings_subtitle">ホーム画面を長押しして設定を開きます</string>
-    <string name="onboarding_major_upgrade_title">新しいLawnchairを使おう</string>
+    <string name="onboarding_major_upgrade_title">新しいSora Launcherを使おう</string>
     <string name="onboarding_major_upgrade_subtitle">最新情報を見る</string>
-    <string name="onboarding_welcome">Lawnchair へようこそ！</string>
+    <string name="onboarding_welcome">Sora Launcher へようこそ！</string>
     <string name="onboarding_swipe_up">上にスワイプしてアプリドロワーを開く</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">ターゲットの最大数</string>
@@ -425,7 +425,7 @@
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>を使用するには、通知ドットの機能をオンにします</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">ホーム画面に表示します</string>
-    <string name="smartspace_widget_toggle_description">Lawnchair ウィジェットで At a Glance を追加できます</string>
+    <string name="smartspace_widget_toggle_description">Sora Launcher ウィジェットで At a Glance を追加できます</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">At a Glance のプロバイダー</string>
     <string name="smartspace_mode_google">Google</string>
@@ -517,15 +517,15 @@
     <string name="gesture_handler_open_assistant">アシスタントを起動する</string>
     <string name="pick_app_for_gesture">アプリを選択</string>
     <string name="dt2s_admin_hint_title">管理者権限が必要です</string>
-    <string name="dt2s_admin_hint">端末をスリープ状態にするには、Lawnchair をデバイス管理アプリに設定する必要があります。「設定を開く」をタップし、「このデバイス管理アプリを有効にする」をタップしてください。</string>
+    <string name="dt2s_admin_hint">端末をスリープ状態にするには、Sora Launcher をデバイス管理アプリに設定する必要があります。「設定を開く」をタップし、「このデバイス管理アプリを有効にする」をタップしてください。</string>
     <string name="dt2s_admin_warning">端末をスリープ状態にするジェスチャーが無効になります。</string>
     <string name="d2ts_recents_a11y_hint_title">ユーザー補助サービスを有効にする</string>
     <string name="sleep_a11y_hint">デバイスを置いてスリープ</string>
     <string name="notifications_fallback_a11y_hint">通知パネルを開く</string>
     <string name="quick_settings_a11y_hint">クイック設定パネルを開く</string>
     <string name="recents_screen_a11y_hint">タスク管理画面を開く</string>
-    <string name="generic_a11y_hint">%1$s を行うには、Lawnchair のユーザー補助サービスを有効にしてください。「設定を開く」をタップし、「Lawnchair」を選択して「Lawnchair の使用」をオンにしてください。</string>
-    <string name="generic_a11y_disclaimer">Lawnchair はこの操作を実行するために、ユーザー補助の performGlobalAction メソッドを使用します。これは他のアプリの監視を許可する機密性の高い権限ですが、Lawnchair にはその機能は実装されておらず、いかなるイベントも受信しません。</string>
+    <string name="generic_a11y_hint">%1$s を行うには、Sora Launcher のユーザー補助サービスを有効にしてください。「設定を開く」をタップし、「Sora Launcher」を選択して「Sora Launcher の使用」をオンにしてください。</string>
+    <string name="generic_a11y_disclaimer">Sora Launcher はこの操作を実行するために、ユーザー補助の performGlobalAction メソッドを使用します。これは他のアプリの監視を許可する機密性の高い権限ですが、Sora Launcher にはその機能は実装されておらず、いかなるイベントも受信しません。</string>
     <string name="sleep_mode_label">スリープモード</string>
     <string name="sleep_mode_auto">自動</string>
     <string name="sleep_mode_root">Root</string>
@@ -536,7 +536,7 @@
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair のバグレポート</string>
+    <string name="lawnchair_bug_report">Sora Launcher のバグレポート</string>
     <string name="crash_report_notif_title">%1$s がクラッシュしました</string>
     <string name="action_upload_crash_report">クラッシュログをアップロード</string>
     <string name="action_upload_error">アップロードに失敗しました</string>
@@ -650,14 +650,14 @@
     <string name="unfolded_label">展開</string>
     <string name="when_folded_label">折りたたまれた時</string>
     <string name="when_unfolded_label">展開された時</string>
-    <string name="unfolded_grid_description">Lawnchairは２つのページを使い大きなディスプレイに対応させます</string>
+    <string name="unfolded_grid_description">Sora Launcherは２つのページを使い大きなディスプレイに対応させます</string>
     <string name="foldable_columns_error">折り畳まれた値は展開した値以下である必要があります。必要に応じて自動的に調整されます。</string>
     <string name="hotseat_bottom_space_label">下の余白</string>
     <string name="page_indicator_height">ページインジケーターの高さ</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">アプリ検索</string>
     <string name="search_provider_custom">カスタム</string>
-    <string name="search_provider_sponsored_description">%1$s と Lawnchair は収益分配契約を持っています。\n\n %1$s で検索するとLawnchair をサポートすることができます。</string>
+    <string name="search_provider_sponsored_description">%1$s と Sora Launcher は収益分配契約を持っています。\n\n %1$s で検索するとSora Launcher をサポートすることができます。</string>
     <string name="app_label">アプリ</string>
     <string name="website_label">ウェブサイト</string>
     <string name="qsb_search_provider_app_required">アプリが必要</string>
@@ -693,7 +693,7 @@
     <string name="max_folder_columns">最大のフォルダー列数</string>
     <string name="max_folder_rows">フォルダーの行の最大値</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Lawnchairが最近使ったアプリを表示するプロバイダーとして設定されていないため、これらの機能は無視されます</string>
+    <string name="quickswitch_ignored_warning">Sora Launcherが最近使ったアプリを表示するプロバイダーとして設定されていないため、これらの機能は無視されます</string>
     <string name="quickstep_incompatible">互換性のないシステム統合</string>
     <string name="quickstep_incompatible_description">お使いのデバイスは %1$s が提供する Quickstep として知られているシステムジェスチャーが設定されていますが、 %1$s のこのバージョンはお使いの Android のバージョンと互換性がありません。デバイスを引き続き使用するには、%1$s の更新をアンインストールするか、システムジェスチャープロバイダとして %1$s を無効にしてください。</string>
     <string name="translucent_background">半透明の背景</string>

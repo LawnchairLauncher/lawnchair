@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import app.lawnchair.SoraBranding
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupItem
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import com.android.launcher3.R
@@ -170,7 +171,7 @@ private fun CommitItem(
 }
 
 private fun openCommitInBrowser(context: Context, commitSha: String) {
-    val commitUrl = "https://github.com/LawnchairLauncher/lawnchair/commit/$commitSha"
+    val commitUrl = SoraBranding.commitUrl(commitSha) ?: return
     val intent = Intent(Intent.ACTION_VIEW, commitUrl.toUri())
     context.startActivity(intent)
 }

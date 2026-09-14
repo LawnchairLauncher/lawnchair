@@ -46,6 +46,7 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.HomeScreenGrid
+import app.lawnchair.ui.preferences.navigation.HomeScreenIcons
 import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings
@@ -79,6 +80,20 @@ fun HomeScreenPreferences(
             HomeLayoutSettings()
         }
 
+        PreferenceGroup {
+            val iconShapeAdapter = prefs2.iconShape.getAdapter()
+            NavigationActionPreference(
+                label = stringResource(id = R.string.icons),
+                destination = HomeScreenIcons,
+                subtitle = iconShapeEntries(LocalContext.current)
+                    .firstOrNull { it.value == iconShapeAdapter.state.value }
+                    ?.label?.invoke()
+                    ?: stringResource(id = R.string.custom),
+                endWidget = {
+                    IconShapePreview(iconShape = iconShapeAdapter.state.value)
+                },
+            )
+        }
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             val addIconToHomeAdapter = prefs.addIconToHome.getAdapter()
             val isDeckLayoutAdapter = prefs2.deckLayout.getAdapter()
@@ -197,40 +212,6 @@ fun HomeScreenPreferences(
                     adapter = prefs2.statusBarClock.getAdapter(),
                     label = stringResource(id = R.string.status_bar_clock_label),
                     description = stringResource(id = R.string.status_bar_clock_description),
-                )
-            }
-        }
-        val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreen.getAdapter()
-        PreferenceGroup(heading = stringResource(id = R.string.icons)) {
-            SliderPreference(
-                label = stringResource(id = R.string.icon_sizes),
-                adapter = prefs2.homeIconSizeFactor.getAdapter(),
-                step = 0.1f,
-                valueRange = 0.5F..1.5F,
-                showAsPercentage = true,
-            )
-            SwitchPreference(
-                adapter = homeScreenLabelsAdapter,
-                label = stringResource(id = R.string.show_labels),
-            )
-            ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.label_size),
-                    adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
-                    step = 0.1f,
-                    valueRange = 0.5F..1.5F,
-                    showAsPercentage = true,
-                )
-            }
-        }
-        val overrideRepo = IconOverrideRepository.INSTANCE.get(LocalContext.current)
-        val customIconsCount by remember { overrideRepo.observeCount() }.collectAsStateBlocking()
-        if (customIconsCount > 0) {
-            PreferenceGroup {
-                ClickablePreference(
-                    label = stringResource(id = R.string.reset_custom_icons),
-                    confirmationText = stringResource(id = R.string.reset_custom_icons_confirmation),
-                    onClick = { scope.launch { overrideRepo.deleteAll() } },
                 )
             }
         }
