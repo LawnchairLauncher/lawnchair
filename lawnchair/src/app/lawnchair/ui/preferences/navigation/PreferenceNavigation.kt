@@ -190,7 +190,6 @@ fun PreferenceNavigation(
             deepLinks = getDeepLink(Gestures),
         ) { GesturePreferences() }
         composable<GesturesPickApp> { PickAppForGesture() }
-
         composable<Quickstep>(
             deepLinks = getDeepLink(Quickstep),
         ) { QuickstepPreferences() }
