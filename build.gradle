@@ -140,21 +140,21 @@ final def isReleaseBuild = ciBuild
 final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 
 final def version = "16"
-final def releaseName = "Development 5.1"
+final def releaseName = "Beta 1"
 final def versionDisplayName = "${version}.${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
-final def quickstepMinSdk = "29"
+final def quickstepMinSdk = "35"
 final def quickstepMaxSdk = "36"
 
 android {
     namespace "com.android.launcher3"
     defaultConfig {
         /*
-         * Lawnchair Launcher 16.0 Development 5.1
-         * see CONTRIBUTING.md#versioning-scheme
+         * Lawnchair Launcher 16.0 Beta 1.0
+         * see https://docs.lawnchair.app/developers/standards/development-workflow#versioning-scheme
          */
-        versionCode 16_00_01_05_01
+        versionCode 16_00_02_01_00
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
