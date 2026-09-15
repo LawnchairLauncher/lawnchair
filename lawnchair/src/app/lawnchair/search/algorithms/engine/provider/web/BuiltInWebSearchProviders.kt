@@ -421,6 +421,20 @@ object KagiWebSearchProvider : WebSearchProvider {
     override fun toString(): String = id
 }
 
+object PresearchWebSearchProvider : WebSearchProvider {
+    override val label = R.string.search_provider_presearch
+    override val iconRes = R.drawable.ic_qsb_search
+    override val id: String = "presearch"
+    override fun getSuggestions(query: String): Flow<List<String>> = flow {
+        emit(emptyList<String>())
+    }.flowOn(Dispatchers.IO)
+    override fun getSearchUrl(query: String): String {
+        val encodedQuery = Uri.encode(query)
+        return "https://presearch.com/search?q=$encodedQuery"
+    }
+    override fun toString(): String = id
+}
+
 private class StringConverterFactory : Converter.Factory() {
     override fun responseBodyConverter(
         type: Type,
