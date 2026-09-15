@@ -106,7 +106,10 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     private boolean mViewsBound = false;
 
     private boolean mCanAnnouncePageDescription;
-    private boolean mDisallowPagedViewInterceptForIconSwipe; // Lawnchair: Icon swipe gesture feature
+    private boolean mStartedOnIconWithHorizontalGesture; // Lawnchair: Icon swipe gesture feature
+    private boolean mHandlingPagedViewIconSwipe;
+    private float mIconSwipeDownX;
+    private float mIconSwipeDownY;
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         this(
@@ -180,21 +183,29 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     private boolean shouldSkipPagedViewInterceptionForIconSwipe(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                mDisallowPagedViewInterceptForIconSwipe = isTouchOnIconWithHorizontalSwipeGesture(
+                mStartedOnIconWithHorizontalGesture = isTouchOnIconWithHorizontalSwipeGesture(
                         ev.getX(), ev.getY());
-                if (mDisallowPagedViewInterceptForIconSwipe) {
-                    resetTouchState();
-                    return true;
+                if (mStartedOnIconWithHorizontalGesture) {
+                    mHandlingPagedViewIconSwipe = false;
+                    mIconSwipeDownX = ev.getX();
+                    mIconSwipeDownY = ev.getY();
                 }
                 return false;
 
             case MotionEvent.ACTION_MOVE:
-                return mDisallowPagedViewInterceptForIconSwipe;
+                if (!mStartedOnIconWithHorizontalGesture) {
+                    return false;
+                }
+                if (!mHandlingPagedViewIconSwipe) {
+                    mHandlingPagedViewIconSwipe = isMovingTowardConfiguredHorizontalIconGesture(ev);
+                }
+                return mHandlingPagedViewIconSwipe;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                boolean shouldSkip = mDisallowPagedViewInterceptForIconSwipe;
-                mDisallowPagedViewInterceptForIconSwipe = false;
+                boolean shouldSkip = mHandlingPagedViewIconSwipe;
+                mStartedOnIconWithHorizontalGesture = false;
+                mHandlingPagedViewIconSwipe = false;
                 if (shouldSkip) {
                     resetTouchState();
                 }
@@ -203,6 +214,17 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             default:
                 return false;
         }
+    }
+
+    private boolean isMovingTowardConfiguredHorizontalIconGesture(MotionEvent ev) {
+        float diffX = ev.getX() - mIconSwipeDownX;
+        float diffY = ev.getY() - mIconSwipeDownY;
+        if (Math.abs(diffX) <= Math.abs(diffY)) {
+            return false;
+        }
+        BubbleTextView touchedIcon = findIconAtPosition(mIconSwipeDownX, mIconSwipeDownY);
+        return touchedIcon != null
+                && touchedIcon.hasConfiguredIconSwipeGestureForDirection(diffX, diffY);
     }
 
     // Lawnchair: Icon swipe gesture feature
