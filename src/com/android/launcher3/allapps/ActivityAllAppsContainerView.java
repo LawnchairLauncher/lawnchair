@@ -1320,6 +1320,15 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
     }
 
+    /** Rebinds all-apps lists so folder preview icons pick up preference changes. */
+    public void rebindAdaptersForFolderPreviewChange() {
+        forAllRecyclerViews(rv -> {
+            if (rv.getAdapter() != null) {
+                rv.getAdapter().notifyDataSetChanged();
+            }
+        });
+    }
+
     /** The current focus change listener in the search container. */
     public OnFocusChangeListener getSearchFocusChangeListener() {
         return mAH.get(AdapterHolder.SEARCH).mOnFocusChangeListener;
