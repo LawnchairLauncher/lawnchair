@@ -35,6 +35,8 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.icu.text.DateFormat
+import android.icu.text.DisplayContext
 import android.net.Uri
 import android.os.Build
 import android.os.Looper
@@ -450,8 +452,8 @@ inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>
     }
 }
 
-fun String.toTitleCase(): String = splitToSequence(" ")
-    .map { word -> word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }
+fun String.toTitleCase(locale: Locale = Locale.getDefault()): String = splitToSequence(" ")
+    .map { word -> word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() } }
     .joinToString(" ")
 
 /**
@@ -481,4 +483,23 @@ fun decodeSampledBitmapFromFile(path: String, reqWidth: Int, reqHeight: Int): Bi
         inSampleSize = calculateInSampleSize(bounds.outWidth, bounds.outHeight, reqWidth, reqHeight)
     }
     return BitmapFactory.decodeFile(path, options)
+}
+
+/**
+ * Create a custom [DateFormat] based on the given [skeleton] and optional [localeTag]. If
+ * [localeTag] is blank, the default locale is used.
+ *
+ * @return [DateFormat] based on the given information
+ * @see [DateFormat.getInstanceForSkeleton]
+ */
+fun createCustomDateTimeFormat(skeleton: String, localeTag: String = ""): DateFormat {
+    val locale = if (localeTag.isBlank()) {
+        Locale.getDefault()
+    } else {
+        val parsed = Locale.forLanguageTag(localeTag)
+        if (parsed.language.isEmpty()) Locale.getDefault() else parsed
+    }
+    val formatter = DateFormat.getInstanceForSkeleton(skeleton, locale)
+    formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
+    return formatter
 }
