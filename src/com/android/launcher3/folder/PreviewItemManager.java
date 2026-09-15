@@ -57,6 +57,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Manages the drawing and animations of {@link PreviewItemDrawingParams} for a
@@ -124,8 +126,13 @@ public class PreviewItemManager {
     }
 
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
+        // LC-Note: Optional 2x2 grid for 3-item folder previews (Folders > General).
+        boolean useGridForThreeItems = PreferenceCacheExtensionsKt.firstCached(
+                PreferenceManager2.INSTANCE.get(mIcon.getContext())
+                        .getFolderPreviewGridForThreeItems());
         if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize ||
-                mPrevTopPadding != mIcon.getPaddingTop()) {
+                mPrevTopPadding != mIcon.getPaddingTop() ||
+                mIcon.mPreviewLayoutRule.useGridForThreeItems() != useGridForThreeItems) {
             mIntrinsicIconSize = drawableSize;
             mTotalWidth = totalSize;
             mPrevTopPadding = mIcon.getPaddingTop();
@@ -135,7 +142,8 @@ public class PreviewItemManager {
             mIcon.mPreviewLayoutRule.init(
                     mIcon.mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()),
-                    mIcon.mActivity.getDeviceProfile().numFolderColumns
+                    mIcon.mActivity.getDeviceProfile().numFolderColumns,
+                    useGridForThreeItems
             );
             updatePreviewItems(false);
         }
