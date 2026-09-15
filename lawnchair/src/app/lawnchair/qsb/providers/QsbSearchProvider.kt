@@ -132,6 +132,7 @@ sealed class QsbSearchProvider(
             Presearch,
             Bing,
             Brave,
+            BraveSearch,
             Yandex,
             Fennec,
             Firefox,
