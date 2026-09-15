@@ -54,6 +54,7 @@ interface WebSearchProvider {
             StartPageWebSearchProvider,
             StartPageEUWebSearchProvider,
             KagiWebSearchProvider,
+            YouComWebSearchProvider,
             CustomWebSearchProvider,
         )
 
@@ -63,6 +64,7 @@ interface WebSearchProvider {
             "startpage" -> StartPageWebSearchProvider
             "startpage-eu" -> StartPageEUWebSearchProvider
             "kagi" -> KagiWebSearchProvider
+            "youcom" -> YouComWebSearchProvider
             "custom" -> CustomWebSearchProvider
             else -> GoogleWebSearchProvider
         }
