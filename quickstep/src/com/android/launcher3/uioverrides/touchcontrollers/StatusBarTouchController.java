@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2025, Lawnchair
+ * Modifications copyright 2025, Mica
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
@@ -51,8 +51,8 @@ import com.google.android.msdl.data.model.MSDLToken;
 import java.util.function.Supplier;
 import java.lang.reflect.InvocationTargetException;
 
-import app.lawnchair.LawnchairAppKt;
-import app.lawnchair.util.CompatibilityKt;
+import app.mica.MicaAppKt;
+import app.mica.util.CompatibilityKt;
 
 /**
  * TouchController for handling touch events that get sent to the StatusBar. Once the
@@ -122,7 +122,7 @@ public class StatusBarTouchController implements TouchController {
 
     private void vibrate() {
         // LC-Note: For pulling down on notification panel (default gesture config)
-        if (!LawnchairAppKt.getLawnchairApp(mLauncher).isVibrateOnIconAnimation()) {
+        if (!MicaAppKt.getMicaApp(mLauncher).isVibrateOnIconAnimation()) {
             if (Flags.msdlFeedback()) {
                 MSDLPlayerWrapper.INSTANCE.get(mLauncher).playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR);
             } else {
@@ -210,7 +210,7 @@ public class StatusBarTouchController implements TouchController {
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
-        // Lawnchair: Icon Swipe Gestures (For vertical down gestures)
+        // Mica: Icon Swipe Gestures (For vertical down gestures)
         if (mLauncher instanceof Launcher launcher) {
             if (launcher.getWorkspace() != null && launcher.getDragLayer() != null) {
                 float[] coord = new float[]{ev.getX(), ev.getY()};

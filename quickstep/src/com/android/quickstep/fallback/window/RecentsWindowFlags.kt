@@ -19,7 +19,7 @@ package com.android.quickstep.fallback.window
 //import android.window.DesktopExperienceFlags.DesktopExperienceFlag
 import com.android.launcher3.Flags
 
-// Lawnchair-TODO-Flags:     @JvmField
+// Mica-TODO-Flags:     @JvmField
 //    val enableLauncherOverviewInWindow: DesktopExperienceFlag =
 //        DesktopExperienceFlag(
 //            Flags::enableLauncherOverviewInWindow,

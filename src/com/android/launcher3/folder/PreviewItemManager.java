@@ -56,7 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import app.lawnchair.preferences.PreferenceManager;
+import app.mica.preferences.PreferenceManager;
 
 /**
  * Manages the drawing and animations of {@link PreviewItemDrawingParams} for a
@@ -386,7 +386,7 @@ public class PreviewItemManager {
         p.anim = anim;
     }
 
-    /** Lawnchair: Find the correct folder size depending on which parent owned them 
+    /** Mica: Find the correct folder size depending on which parent owned them 
      * @return Icon size that's typically use for workspace or size that's for allapps page */
     private int getChildIconSize() {
         if (mIcon.isInAppDrawer()) {
@@ -397,7 +397,7 @@ public class PreviewItemManager {
 
     @VisibleForTesting
     public void setDrawable(PreviewItemDrawingParams p, ItemInfo item) {
-        // Lawnchair: Find the correct folder size depending on which parent owned them
+        // Mica: Find the correct folder size depending on which parent owned them
         int iconSize = getChildIconSize();
         if (item instanceof WorkspaceItemInfo wii) {
             if (isActivePendingIcon(wii)) {

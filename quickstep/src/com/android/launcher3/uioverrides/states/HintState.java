@@ -28,7 +28,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimColors;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.mica.theme.color.tokens.ColorTokens;
 
 /**
  * Scale down workspace/hotseat to hint at going to either overview (on pause) or first home screen.

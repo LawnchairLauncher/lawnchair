@@ -56,8 +56,8 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
-import app.lawnchair.theme.drawable.DrawableTokens;
+import app.mica.theme.color.tokens.ColorTokens;
+import app.mica.theme.drawable.DrawableTokens;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
@@ -269,7 +269,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
                 if (isShortcutOrWrapper(view)) {
                     if (totalVisibleShortcuts == 1) {
-                        // Lawnchair-TODO-High: view.setBackgroundResource is use instead
+                        // Mica-TODO-High: view.setBackgroundResource is use instead
                         view.setBackground(DrawableTokens.SingleItemPrimary.resolve(getContext()));
                     } else if (totalVisibleShortcuts > 1) {
                         if (numVisibleShortcut == 0) {

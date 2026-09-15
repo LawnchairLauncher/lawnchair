@@ -33,7 +33,7 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimColors;
 import com.android.quickstep.views.RecentsViewContainer;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.mica.theme.color.tokens.ColorTokens;
 
 /**
  * State definition for Fallback recents
@@ -169,7 +169,7 @@ public class RecentsState implements BaseState<RecentsState> {
      * For this state, what color scrim should be drawn behind overview.
      */
     public ScrimColors getScrimColor(Context context) {
-        // Lawnchair-TODO-Colour: Check R.attr.overviewScrimColor
+        // Mica-TODO-Colour: Check R.attr.overviewScrimColor
         return new ScrimColors(
                 /* backgroundColor */ hasFlag(FLAG_SCRIM)
                 ? ColorTokens.OverviewScrim.resolveColor(context)

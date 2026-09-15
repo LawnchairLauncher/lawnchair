@@ -24,7 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import app.lawnchair.LawnchairAppWidgetHostView;
+import app.mica.MicaAppWidgetHostView;
 
 /**
  * Specific {@link AppWidgetHost} that creates our {@link LauncherAppWidgetHostView}

@@ -127,7 +127,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.function.IntConsumer;
 
-import app.lawnchair.LawnchairApp;
+import app.mica.MicaApp;
 
 /**
  * Class to manage taskbar lifecycle
@@ -1177,13 +1177,13 @@ public class TaskbarManagerImpl implements DisplayDecorationListener {
 
         removeRecreationListener(mPrimaryDisplayId);
 
-        if (LawnchairApp.isRecentsEnabled()) {
+        if (MicaApp.isRecentsEnabled()) {
             SettingsCache.INSTANCE.get(mPrimaryWindowContext)
                 .unregister(USER_SETUP_COMPLETE_URI, mOnSettingsChangeListener);
             SettingsCache.INSTANCE.get(mPrimaryWindowContext)
                 .unregister(NAV_BAR_KIDS_MODE, mOnSettingsChangeListener);
         }
-        // Lawnchair-TODO: DesktopExperienceFlags.ENABLE_SYS_DECORS_CALLBACKS_VIA_WM.isTrue()
+        // Mica-TODO: DesktopExperienceFlags.ENABLE_SYS_DECORS_CALLBACKS_VIA_WM.isTrue()
         //                && DesktopExperienceFlags.ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT.isTrue()
         if (false) {
             mDisplaysWithDecorationsRepositoryCompat.unregisterDisplayDecorationListener(this);
@@ -1211,7 +1211,7 @@ public class TaskbarManagerImpl implements DisplayDecorationListener {
         // - isAndroidPC is set per device (in this case, desktop devices)
         // - supportsFreeformWindowsManagement is dynamic, and is to be used for the use-case where
         // user plugs in their device to external displays
-        // Lawnchair-TODO: AM Flags, perceptibleTasks
+        // Mica-TODO: AM Flags, perceptibleTasks
         //return Flags.perceptibleTasks()
         //        && (mIsAndroidPC || mSupportsFreeformWindowsManagement);
         return false;

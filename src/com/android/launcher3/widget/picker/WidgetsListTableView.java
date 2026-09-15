@@ -25,7 +25,7 @@ import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.R;
 
-import app.lawnchair.theme.drawable.DrawableTokens;
+import app.mica.theme.drawable.DrawableTokens;
 
 /**
  * Extension of {@link TableLayout} to support the drawable states used by

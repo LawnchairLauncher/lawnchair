@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
 
 /**
  * Contains the logic of a reorder.
@@ -133,7 +133,7 @@ public class ReorderAlgorithm {
         ArrayList<View> intersectingViews = new ArrayList<>();
         Rect occupiedRect = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
 
-        // Lawnchair: Widget overlap
+        // Mica: Widget overlap
         if (PreferenceCacheExtensionsKt.firstCached(mCellLayout.pref.getAllowWidgetOverlap(), mCellLayout.pref)) {
             solution.intersectingViews = new ArrayList<>(intersectingViews);
             return true;

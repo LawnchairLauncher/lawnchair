@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2025, Lawnchair
+ * Modifications copyright 2025, Mica
  */
 package com.android.launcher3.touch;
 
@@ -54,7 +54,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.TouchUtil;
 
-import app.lawnchair.LawnchairLauncher;
+import app.mica.MicaLauncher;
 
 /**
  * Helper class to handle touch on empty space in workspace and show options popup on long press
@@ -198,7 +198,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             cancelLongPress();
         }
         if (action == ACTION_UP && isInAllAppsBottomSheet) {
-            // NORMAL has no FLAG_CLOSE_POPUPS, so drawer folders (Lawnchair) would stay open
+            // NORMAL has no FLAG_CLOSE_POPUPS, so drawer folders (Mica) would stay open
             // on the workspace after dismissing All Apps via the sheet's upper edge.
             AbstractFloatingView.closeOpenViews(
                     mLauncher, true /* animate */, AbstractFloatingView.TYPE_FOLDER);
@@ -261,7 +261,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
     public boolean onDoubleTap(MotionEvent event) {
         mDoubleTapPending = true;
         Context context = mWorkspace.getContext();
-        LawnchairLauncher launcher = Launcher.fromContext(context);
+        MicaLauncher launcher = Launcher.fromContext(context);
         launcher.getGestureController().onDoubleTap();
         return true;
     }

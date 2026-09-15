@@ -238,8 +238,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import app.lawnchair.LawnchairApp;
-import app.lawnchair.compat.LawnchairQuickstepCompat;
+import app.mica.MicaApp;
+import app.mica.compat.MicaQuickstepCompat;
 
 public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         SystemShortcut.BubbleActivityStarter {
@@ -251,7 +251,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
     protected static final String RING_APPEAR_ANIMATION_PREFIX = "RingAppearAnimation\t";
 
     private PredictedContainerInfo mAllAppsPredictions;
-    // LC-Note: Lawnchair Prediction
+    // LC-Note: Mica Prediction
     private PredictedContainerInfo mHotseatPredictions;
     private HotseatPredictionController mHotseatPredictionController;
     private DepthController mDepthController;
@@ -330,9 +330,9 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                         getDepthController(), getStatsLogManager(),
                         systemUiProxy, RecentsModel.INSTANCE.get(this),
                         () -> onStateBack());
-        if (DesktopModeStatus.canEnterDesktopMode(this) && LawnchairApp.isRecentsEnabled()) {
+        if (DesktopModeStatus.canEnterDesktopMode(this) && MicaApp.isRecentsEnabled()) {
             mDesktopRecentsTransitionController = new DesktopRecentsTransitionController(
-                    getStateManager(), systemUiProxy, LawnchairApp.getInstance().getIApplicationThread(),
+                    getStateManager(), systemUiProxy, MicaApp.getInstance().getIApplicationThread(),
                     getDepthController());
         }
         overviewPanel.init(mActionsView, mSplitSelectStateController,
@@ -344,7 +344,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         mActionsView.updateDimension(getDeviceProfile(), overviewPanel.getLastComputedTaskSize());
         mActionsView.updateVerticalMargin(DisplayController.getNavigationMode(this));
 
-        if (LawnchairApp.isRecentsEnabled()) {
+        if (MicaApp.isRecentsEnabled()) {
             mAppTransitionManager = buildAppTransitionManager();
             mAppTransitionManager.registerRemoteAnimations();
             mAppTransitionManager.registerRemoteTransitions();
@@ -357,7 +357,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         }
         mHotseatPredictionController = new HotseatPredictionController(this);
 
-        mEnableWidgetDepth = LawnchairApp.isRecentsEnabled() ? SystemProperties.getBoolean("ro.launcher.depth.widget", true) : false;
+        mEnableWidgetDepth = MicaApp.isRecentsEnabled() ? SystemProperties.getBoolean("ro.launcher.depth.widget", true) : false;
         getWorkspace().addOverlayCallback(progress ->
                 onTaskbarInAppDisplayProgressUpdate(progress, MINUS_ONE_PAGE_PROGRESS_INDEX));
         if (Utilities.ATLEAST_U) {
@@ -439,7 +439,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
 
     @Override
     public RunnableList startActivitySafely(View v, Intent intent, ItemInfo item) {
-        // LC-Note: There are Lawnchair Prediction changes here.
+        // LC-Note: There are Mica Prediction changes here.
         
         PredictionRowView<?> predictionRowView = getPredictionRowView();
         // Pause the prediction row updates until the transition (if it exists) ends.
@@ -455,7 +455,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         return result;
     }
 
-    // LC-Note: Lawnchair Prediction
+    // LC-Note: Mica Prediction
     @Nullable
     private PredictionRowView<?> getPredictionRowView() {
         return getAppsView() == null
@@ -463,7 +463,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                 : getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class);
     }
 
-    // LC-Note: Lawnchair Prediction
+    // LC-Note: Mica Prediction
     private void reapplyPredictionUi() {
         PredictionRowView<?> predictionRowView = getPredictionRowView();
         if (predictionRowView != null) {
@@ -544,7 +544,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         List<SystemShortcut.Factory> shortcuts = new ArrayList(Arrays.asList(
                 APP_INFO, WellbeingModel.SHORTCUT_FACTORY, mHotseatPredictionController));
 
-        if (LawnchairApp.isRecentsEnabled()) {
+        if (MicaApp.isRecentsEnabled()) {
             shortcuts.addAll(getSplitShortcuts());
         }
         shortcuts.add(WIDGETS);
@@ -611,7 +611,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
 
     @Override
     public void bindPredictedContainerInfo(PredictedContainerInfo info) {
-        // LC-Note: There are Lawnchair Prediction changes here.
+        // LC-Note: There are Mica Prediction changes here.
         super.bindPredictedContainerInfo(info);
         switch (info.id) {
             case Favorites.CONTAINER_ALL_APPS_PREDICTION:
@@ -1015,7 +1015,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
     public void onUiChangedWhileSleeping() {
         // Remove the snapshot because the content view may have obvious changes.
         UI_HELPER_EXECUTOR.execute(
-                () -> LawnchairQuickstepCompat.getActivityManagerCompat().invalidateHomeTaskSnapshot(this));
+                () -> MicaQuickstepCompat.getActivityManagerCompat().invalidateHomeTaskSnapshot(this));
     }
 
     @Override
@@ -1664,7 +1664,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
         // ClockEventDelegate / setClockEventDelegate were added in Android 15 (API 35); on older
         // platforms we must fall back to the framework default to avoid loading classes that do
-        // not exist on the device (b/353166316, lawnchair issue #6781).
+        // not exist on the device (b/353166316, mica issue #6781).
         if (Utilities.ATLEAST_V) {
             switch (name) {
                 case "TextClock", "android.widget.TextClock" -> {

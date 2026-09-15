@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2025, Lawnchair
+ * Modifications copyright 2025, Mica
  */
 
 package com.android.launcher3;
@@ -211,6 +211,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PredictedContainerInfo;
+import com.android.launcher3.model.data.WidgetStackInfo;
 import com.android.launcher3.model.data.WorkspaceData;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
@@ -255,7 +256,7 @@ import com.android.launcher3.util.WallpaperThemeManager;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingSurfaceView;
 import com.android.launcher3.views.OptionsPopupView;
-import app.lawnchair.views.EditModePageStrip;
+import app.mica.views.EditModePageStrip;
 import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
@@ -291,7 +292,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import app.lawnchair.LawnchairApp;
+import app.mica.MicaApp;
 
 /**
  * Default launcher application.
@@ -1631,7 +1632,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                     // Only change state, if not already the same. This prevents cancelling any
                     // animations running as part of resume
                     boolean animate = mStateManager.shouldAnimateStateChange();
-                    if (!LawnchairApp.isRecentsEnabled()) {
+                    if (!MicaApp.isRecentsEnabled()) {
                         animate &= alreadyOnHome;
                     }
                     mStateManager.goToState(NORMAL, animate);
@@ -1988,6 +1989,50 @@ public class Launcher extends StatefulActivity<LauncherState>
         CellLayout parent = mWorkspace.getParentCellLayoutForView(newFolder);
         parent.getShortcutsAndWidgets().measureChild(newFolder);
         return newFolder;
+    }
+
+    /**
+     * Combines two already-placed widgets into a new {@link WidgetStackInfo} occupying
+     * {@code first}'s former cell. Both widgets' individual Favorites rows are deleted; their
+     * data is preserved inside the new stack's own row.
+     */
+    public View addWidgetStack(CellLayout layout, int container, final int screenId, int cellX,
+            int cellY, LauncherAppWidgetInfo first, LauncherAppWidgetInfo second) {
+        final WidgetStackInfo stackInfo = new WidgetStackInfo();
+        stackInfo.spanX = first.spanX;
+        stackInfo.spanY = first.spanY;
+        stackInfo.user = first.user;
+        stackInfo.addMember(first.appWidgetId, first.providerName);
+        stackInfo.addMember(second.appWidgetId, second.providerName);
+
+        getModelWriter().deleteItemFromDatabase(first, "combined into widget stack");
+        getModelWriter().deleteItemFromDatabase(second, "combined into widget stack");
+        getModelWriter().addItemToDatabase(stackInfo, container, screenId, cellX, cellY);
+
+        View newStack = mItemInflater.inflateItem(stackInfo, layout);
+        mWorkspace.addInScreen(newStack, stackInfo);
+        CellLayout parent = mWorkspace.getParentCellLayoutForView(newStack);
+        parent.getShortcutsAndWidgets().measureChild(newStack);
+        return newStack;
+    }
+
+    /**
+     * Folds an already-placed widget into an existing {@link WidgetStackInfo}, deleting the
+     * widget's own Favorites row. The stack's view is re-inflated so the new member is bound.
+     */
+    public View addToWidgetStack(CellLayout layout, View existingStackView,
+            WidgetStackInfo stackInfo, LauncherAppWidgetInfo newMember) {
+        stackInfo.addMember(newMember.appWidgetId, newMember.providerName);
+
+        getModelWriter().deleteItemFromDatabase(newMember, "combined into widget stack");
+        getModelWriter().updateItemInDatabase(stackInfo);
+
+        layout.removeView(existingStackView);
+        View newStackView = mItemInflater.inflateItem(stackInfo, layout);
+        mWorkspace.addInScreen(newStackView, stackInfo);
+        CellLayout parent = mWorkspace.getParentCellLayoutForView(newStackView);
+        parent.getShortcutsAndWidgets().measureChild(newStackView);
+        return newStackView;
     }
 
     @Override

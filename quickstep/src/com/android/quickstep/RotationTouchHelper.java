@@ -56,7 +56,7 @@ import java.io.PrintWriter;
 
 import javax.inject.Inject;
 
-import app.lawnchair.util.LawnchairUtilsKt;
+import app.mica.util.MicaUtilsKt;
 
 /**
  * Helper class for transforming touch events
@@ -152,7 +152,7 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
 
         Resources resources = mWindowContext.getResources();
         mOrientationTouchTransformer = new OrientationTouchTransformer(resources, mMode,
-                () -> LawnchairUtilsKt.getWindowCornerRadius(mWindowContext));
+                () -> MicaUtilsKt.getWindowCornerRadius(mWindowContext));
 
         // Register for navigation mode and rotation changes
         mDisplayController.addChangeListenerForDisplay(this, mDisplayId);

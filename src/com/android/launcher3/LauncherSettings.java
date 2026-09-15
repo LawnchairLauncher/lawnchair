@@ -121,6 +121,13 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
 
         /**
+         * The favorite is a stack of app widgets occupying a single cell region, with only one
+         * member visible at a time. Member widgets are not separate Favorites rows; they are
+         * serialized into this row's {@link #INTENT} column.
+         */
+        public static final int ITEM_TYPE_WIDGET_STACK = 12;
+
+        /**
          * The gesture is an application created deep shortcut
          */
         public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;

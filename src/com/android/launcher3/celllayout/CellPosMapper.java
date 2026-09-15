@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2026 Lawnchair
+ * Modifications copyright 2026 Mica
  */
 package com.android.launcher3.celllayout;
 

@@ -53,7 +53,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import androidx.core.content.res.ResourcesCompat;
-import app.lawnchair.DeviceProfileOverrides.TextFactors;
+import app.mica.DeviceProfileOverrides.TextFactors;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.DevicePaddings.DevicePadding;
 import com.android.launcher3.InvariantDeviceProfile.DisplayOptionSpec;
@@ -88,14 +88,14 @@ import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
-import app.lawnchair.DeviceProfileOverrides;
-import app.lawnchair.LawnchairApp;
-import app.lawnchair.LawnchairAppKt;
-import app.lawnchair.hotseat.HotseatMode;
-import app.lawnchair.preferences.PreferenceManager;
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.color.ColorOption;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.DeviceProfileOverrides;
+import app.mica.MicaApp;
+import app.mica.MicaAppKt;
+import app.mica.hotseat.HotseatMode;
+import app.mica.preferences.PreferenceManager;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.theme.color.ColorOption;
 
 @SuppressLint("NewApi")
 public class DeviceProfile {
@@ -365,7 +365,7 @@ public class DeviceProfile {
         preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
         allAppsCellHeightMultiplier = PreferenceCacheExtensionsKt
                 .firstCached(preferenceManager2.getDrawerCellHeightFactor());
-        // Lawnchair: clamp the user padding factors to their slider ranges so a restored or
+        // Mica: clamp the user padding factors to their slider ranges so a restored or
         // manually edited preference can't feed out-of-range values into the layout math.
         workspacePaddingHorizontalFactor = Utilities.boundToRange(PreferenceCacheExtensionsKt
                 .firstCached(preferenceManager2.getWorkspacePaddingHorizontalFactor()), 0f, 2f);
@@ -667,7 +667,7 @@ public class DeviceProfile {
         }
 
         desiredWorkspaceHorizontalMarginPx = getHorizontalMarginPx(inv, res);
-        // Lawnchair: scale the horizontal workspace margin at the source so the cell layout
+        // Mica: scale the horizontal workspace margin at the source so the cell layout
         // width calculation uses the scaled value too. Otherwise cells keep their original
         // width and get centered, leaving a visible side gap even at factor 0.
         desiredWorkspaceHorizontalMarginPx =
@@ -720,7 +720,7 @@ public class DeviceProfile {
             allAppsShiftRange =
                     res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
         }
-        // Lawnchair: extra user-configurable app drawer top padding. The factor is additive
+        // Mica: extra user-configurable app drawer top padding. The factor is additive
         // and slider-ranged 100%-200% (default 100%), so subtract 1f to keep 100% as no change.
         allAppsPadding.top += Math.round(iconSizePx * (drawerPaddingTopFactor - 1f));
         allAppsOpenDuration = res.getInteger(R.integer.config_allAppsOpenDuration);
@@ -806,7 +806,7 @@ public class DeviceProfile {
         return renderer;
     }
 
-    // Lawnchair
+    // Mica
     private static DotRenderer createDotRenderer(
         @NonNull ThemeManager themeManager, int size, @NonNull SparseArray<DotRenderer> cache, boolean showNotificationCount, Typeface typeface, int dotColor, int countColor) {
         DotRenderer renderer = cache.get(size);
@@ -1231,7 +1231,7 @@ public class DeviceProfile {
         final boolean isVerticalLayout = isVerticalBarLayout();
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv, scale);
 
-        // Lawnchair: Get initial text size before calculating layout
+        // Mica: Get initial text size before calculating layout
         // This scales offset with text sizing, all the way down to zero
         iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
 
@@ -1404,7 +1404,7 @@ public class DeviceProfile {
         } else {
             widgetPadding.setEmpty();
         }
-        // Lawnchair: scale widget padding by user factor (0 = remove, 1 = default).
+        // Mica: scale widget padding by user factor (0 = remove, 1 = default).
         widgetPadding.left = Math.round(widgetPadding.left * widgetPaddingFactor);
         widgetPadding.right = Math.round(widgetPadding.right * widgetPaddingFactor);
         widgetPadding.top = Math.round(widgetPadding.top * widgetPaddingFactor);
@@ -1778,7 +1778,7 @@ public class DeviceProfile {
                 paddingRight = isSeascape() ? 0 : desiredWorkspaceHorizontalMarginPx;
             }
 
-            // Lawnchair: scale vertical workspace padding by user factor.
+            // Mica: scale vertical workspace padding by user factor.
             // (Horizontal is applied at the source margin so the cells fill the freed space.)
             // The dock (hotseatBarSizePx) reservation in the bottom padding must be preserved,
             // otherwise reducing the factor pulls the last row into the dock and clips it.

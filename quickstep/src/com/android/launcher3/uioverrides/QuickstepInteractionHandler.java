@@ -38,7 +38,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import java.util.function.Consumer;
 
 import dev.rikka.tools.refine.Refine;
-import app.lawnchair.LawnchairApp;
+import app.mica.MicaApp;
 
 /** Provides a Quickstep specific animation when launching an activity from an app widget. */
 class QuickstepInteractionHandler implements RemoteViews.InteractionHandler,

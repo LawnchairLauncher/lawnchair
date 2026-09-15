@@ -16,7 +16,7 @@
 
 package com.android.launcher3.dagger
 
-import app.lawnchair.predictions.LawnchairModelDelegate
+import app.mica.predictions.MicaModelDelegate
 import com.android.launcher3.model.ModelDelegate
 import dagger.Binds
 import dagger.Module
@@ -28,5 +28,5 @@ import dagger.Module
 @Module
 abstract class AppModule {
 
-    @Binds abstract fun bindModelDelegate(impl: LawnchairModelDelegate): ModelDelegate
+    @Binds abstract fun bindModelDelegate(impl: MicaModelDelegate): ModelDelegate
 }

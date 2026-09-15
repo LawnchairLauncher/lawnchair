@@ -39,14 +39,14 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 
-import app.lawnchair.factory.LawnchairWidgetHolder
-import app.lawnchair.util.LawnchairWindowManagerProxy
+import app.mica.factory.MicaWidgetHolder
+import app.mica.util.MicaWindowManagerProxy
 
 private object Modules {}
 
 @Module
 abstract class WindowManagerProxyModule {
-    @Binds abstract fun bindWindowManagerProxy(proxy: LawnchairWindowManagerProxy): WindowManagerProxy
+    @Binds abstract fun bindWindowManagerProxy(proxy: MicaWindowManagerProxy): WindowManagerProxy
 }
 
 @Module
@@ -73,7 +73,7 @@ abstract class ApiWrapperModule {
 abstract class WidgetModule {
 
     @Binds
-    abstract fun bindWidgetHolderFactory(factor: LawnchairWidgetHolder.Factory): WidgetHolderFactory
+    abstract fun bindWidgetHolderFactory(factor: MicaWidgetHolder.Factory): WidgetHolderFactory
 }
 
 @Module

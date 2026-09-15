@@ -17,7 +17,7 @@ strings = extract_strings(apk_path)
 
 p = Path(__file__)
 project_root = p.parent.parent.parent
-res_root = project_root / 'lawnchair' / 'res'
+res_root = project_root / 'mica' / 'res'
 
 def add_to_xml(locale, string_name, string):
   folder_name = 'values' if locale == '' else f'values-{locale}'

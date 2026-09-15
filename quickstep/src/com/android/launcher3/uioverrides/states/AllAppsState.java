@@ -22,7 +22,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAP
 import android.content.Context;
 import android.graphics.Color;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.mica.theme.color.tokens.ColorTokens;
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
@@ -36,7 +36,7 @@ import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 import java.util.concurrent.TimeUnit;
 
-import app.lawnchair.util.LawnchairUtilsKt;
+import app.mica.util.MicaUtilsKt;
 
 /**
  * Definition for AllApps state
@@ -214,7 +214,7 @@ public class AllAppsState extends LauncherState {
             backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
         } else if (!Flags.allAppsBlur()) {
             // If there's a sheet but no blur, use the old scrim color.
-            backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, 
+            backgroundColor = MicaUtilsKt.getAllAppsBackgroundColor(launcher, 
                 ColorTokens.WidgetsPickerScrim.resolveColor(launcher));
         } else {
             backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);

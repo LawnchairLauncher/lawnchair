@@ -92,7 +92,7 @@ import dagger.assisted.AssistedInject;
 
 import java.io.PrintWriter;
 
-import app.lawnchair.LawnchairApp;
+import app.mica.MicaApp;
 
 /**
  * Manages the state of the system during a swipe up gesture.
@@ -164,7 +164,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
         mContextualSearchStateManager = contextualSearchStateManager;
         mRotationTouchHelper = rotationTouchHelper;
         mIsOneHandedModeSupported =
-            LawnchairApp.isRecentsEnabled() && SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE,
+            MicaApp.isRecentsEnabled() && SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE,
                 false);
 
         if (Utilities.ATLEAST_Q) {
@@ -182,7 +182,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
             SettingsCache.OnChangeListener onChangeListener =
                     enabled -> mIsOneHandedModeEnabled = enabled;
             settingsCache.register(oneHandedUri, onChangeListener);
-            mIsOneHandedModeEnabled = LawnchairApp.isRecentsEnabled() && settingsCache.getValue(oneHandedUri);
+            mIsOneHandedModeEnabled = MicaApp.isRecentsEnabled() && settingsCache.getValue(oneHandedUri);
             lifeCycle.addCloseable(() -> settingsCache.unregister(oneHandedUri, onChangeListener));
         } else {
             mIsOneHandedModeEnabled = false;
@@ -193,12 +193,12 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
         SettingsCache.OnChangeListener onChangeListener =
                 enabled -> mIsSwipeToNotificationEnabled = enabled;
         settingsCache.register(swipeBottomNotificationUri, onChangeListener);
-        mIsSwipeToNotificationEnabled = LawnchairApp.isRecentsEnabled() && settingsCache.getValue(swipeBottomNotificationUri);
+        mIsSwipeToNotificationEnabled = MicaApp.isRecentsEnabled() && settingsCache.getValue(swipeBottomNotificationUri);
         lifeCycle.addCloseable(
                 () -> settingsCache.unregister(swipeBottomNotificationUri, onChangeListener));
 
         Uri setupCompleteUri = Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE);
-        mIsUserSetupComplete = LawnchairApp.isRecentsEnabled() && settingsCache.getValue(setupCompleteUri, 0);
+        mIsUserSetupComplete = MicaApp.isRecentsEnabled() && settingsCache.getValue(setupCompleteUri, 0);
         if (!mIsUserSetupComplete) {
             SettingsCache.OnChangeListener userSetupChangeListener = e -> mIsUserSetupComplete = e;
             settingsCache.register(setupCompleteUri, userSetupChangeListener);
@@ -207,7 +207,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
         }
 
         try {
-            mPipIsActive = LawnchairApp.isRecentsEnabled() && Utilities.ATLEAST_S && ActivityTaskManager.getService().getRootTaskInfo(
+            mPipIsActive = MicaApp.isRecentsEnabled() && Utilities.ATLEAST_S && ActivityTaskManager.getService().getRootTaskInfo(
                     WINDOWING_MODE_PINNED, ACTIVITY_TYPE_UNDEFINED) != null;
         } catch (RemoteException e) {
             // Do nothing

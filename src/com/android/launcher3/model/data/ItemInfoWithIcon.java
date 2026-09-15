@@ -36,7 +36,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.ApiWrapper;
 
-import app.lawnchair.preferences.PreferenceManager;
+import app.mica.preferences.PreferenceManager;
 
 /**
  * Represents an ItemInfo which also holds an icon.

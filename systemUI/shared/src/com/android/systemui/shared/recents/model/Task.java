@@ -39,7 +39,7 @@ import androidx.annotation.Nullable;
 
 import com.android.internal.util.ArrayUtils;
 
-import app.lawnchair.compat.LawnchairQuickstepCompat;
+import app.mica.compat.MicaQuickstepCompat;
 
 import java.io.PrintWriter;
 import java.util.Objects;
@@ -113,7 +113,7 @@ public class Task {
             this.displayId = t.displayId;
             this.baseActivity = t.baseActivity;
             this.numActivities = t.numActivities;
-            if (LawnchairQuickstepCompat.ATLEAST_BAKLAVA) { // LC-Note: QuickSwitch compatibility!
+            if (MicaQuickstepCompat.ATLEAST_BAKLAVA) { // LC-Note: QuickSwitch compatibility!
                 this.isTopActivityNoDisplay = t.isTopActivityNoDisplay;
                 this.isActivityStackTransparent = t.isActivityStackTransparent;
             }

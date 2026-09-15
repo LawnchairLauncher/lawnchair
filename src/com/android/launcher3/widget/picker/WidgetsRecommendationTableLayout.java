@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import app.lawnchair.theme.drawable.DrawableTokens;
+import app.mica.theme.drawable.DrawableTokens;
 
 /** A {@link TableLayout} for showing recommended widgets. */
 public final class WidgetsRecommendationTableLayout extends TableLayout {

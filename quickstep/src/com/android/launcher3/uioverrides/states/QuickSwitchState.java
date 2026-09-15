@@ -19,7 +19,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKG
 
 import android.graphics.Color;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.mica.theme.color.tokens.ColorTokens;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 

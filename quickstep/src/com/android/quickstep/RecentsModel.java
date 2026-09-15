@@ -75,8 +75,8 @@ import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
-import app.lawnchair.LawnchairApp;
-import app.lawnchair.compat.LawnchairQuickstepCompat;
+import app.mica.MicaApp;
+import app.mica.compat.MicaQuickstepCompat;
 
 /**
  * Singleton class to load and manage recents model.
@@ -183,7 +183,7 @@ public class RecentsModel implements RecentTasksDataSource, TaskStackChangeListe
             tracker.addCloseable(() -> context.unregisterComponentCallbacks(componentCallbacks));
         }
 
-        if (LawnchairApp.isRecentsEnabled()) {
+        if (MicaApp.isRecentsEnabled()) {
             TaskStackChangeListeners.getInstance().registerTaskStackListener(this);
         }
         SafeCloseable iconChangeCloseable = iconProvider.registerIconChangeListener(
@@ -193,7 +193,7 @@ public class RecentsModel implements RecentTasksDataSource, TaskStackChangeListe
         lockedUserState.runOnUserUnlocked(unlockCallback);
 
         tracker.addCloseable(() -> {
-            if (LawnchairApp.isRecentsEnabled()) {
+            if (MicaApp.isRecentsEnabled()) {
                 TaskStackChangeListeners.getInstance().unregisterTaskStackListener(this);
                 mTaskList.unregisterRecentTasksChangedListener();
             }
@@ -307,7 +307,7 @@ public class RecentsModel implements RecentTasksDataSource, TaskStackChangeListe
 
         // Keep the cache up to date with the latest thumbnails
         ActivityManager.RunningTaskInfo runningTask =
-                LawnchairQuickstepCompat.getActivityManagerCompat().getRunningTask(true);
+                MicaQuickstepCompat.getActivityManagerCompat().getRunningTask(true);
         int runningTaskId = runningTask != null ? runningTask.id : -1;
         mTaskList.getTaskKeys(mThumbnailCache.getCacheSize(), taskGroups -> {
             for (GroupTask group : taskGroups) {

@@ -268,13 +268,13 @@ object LauncherDbUtils {
                 )
             }
         } catch (ignored: SQLiteException) {
-            // Compat users upgrade from Lawnchair 13, see https://github.com/LawnchairLauncher/lawnchair/issues/3881.
+            // Compat users upgrade from Mica 13, see https://github.com/LawnchairLauncher/lawnchair/issues/3881.
             removeColumn(db, TABLE_NAME, "iconPackage")
             removeColumn(db, TABLE_NAME, "iconResource")
         }
     }
 
-    // Compat users upgrade from Lawnchair 13, see https://github.com/LawnchairLauncher/lawnchair/issues/3881.
+    // Compat users upgrade from Mica 13, see https://github.com/LawnchairLauncher/lawnchair/issues/3881.
     private fun removeColumn(db: SQLiteDatabase, tableName: String, columnName: String) {
         val columns = ArrayList<String>()
 

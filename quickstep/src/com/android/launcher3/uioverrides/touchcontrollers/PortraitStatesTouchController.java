@@ -58,7 +58,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
-        // Lawnchair: Icon Swipe Gestures (For vertical up gestures)
+        // Mica: Icon Swipe Gestures (For vertical up gestures)
         if (mLauncher.getWorkspace() != null && mLauncher.getDragLayer() != null) {
             float[] coord = new float[]{ev.getX(), ev.getY()};
             mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getWorkspace(), coord);

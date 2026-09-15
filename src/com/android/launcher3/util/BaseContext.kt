@@ -86,7 +86,7 @@ constructor(base: Context, themeResId: Int, private val destroyOnDetach: Boolean
             object : OnAttachStateChangeListener {
 
                 override fun onViewAttachedToWindow(_view: View) {
-                    // Lawnchair: Leave the settings window alone!!
+                    // Mica: Leave the settings window alone!!
                     view.setViewTreeLifecycleOwner(this@BaseContext)
                     view.setViewTreeSavedStateRegistryOwner(this@BaseContext)
                     lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)

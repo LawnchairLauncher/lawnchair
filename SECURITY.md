@@ -3,9 +3,9 @@
 ## Supported versions
 
 > [!WARNING]
-> [Lawnchair Legacy](https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah) is **unsupported**. Use the newer versions instead.
+> [Mica Legacy](https://play.google.com/store/apps/details?id=ch.deletescape.mica.plah) is **unsupported**. Use the newer versions instead.
 
-The latest version of Lawnchair is the only supported version.
+The latest version of Mica is the only supported version.
 
 | Version        | Supported          |
 |----------------|--------------------|
@@ -24,6 +24,6 @@ The latest version of Lawnchair is the only supported version.
 We appreciate your efforts to responsibly disclose your findings and will make every effort to
 acknowledge your contributions.
 
-To report an issue, please file a [security advisory on GitHub](https://github.com/LawnchairLauncher/lawnchair/security/advisories/new).
+To report an issue, please file a [security advisory on GitHub](https://github.com/arcbaseproject/Mica-Launcher/security/advisories/new).
 
 We'll endeavor to respond quickly, and will keep you updated throughout the process.

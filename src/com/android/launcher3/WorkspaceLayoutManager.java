@@ -27,8 +27,8 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.touch.ItemLongClickListener;
 
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
 import com.android.launcher3.util.IntSet;
 
 public interface WorkspaceLayoutManager {

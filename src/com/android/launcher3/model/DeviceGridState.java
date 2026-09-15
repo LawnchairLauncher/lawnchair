@@ -28,7 +28,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import app.lawnchair.LawnchairProto;
+import app.mica.MicaProto;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
@@ -70,9 +70,9 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
         mGridType = idp.gridType;
     }
 
-    // Lawnchair@2038c6722c1ebd977290492881023675e1cddecd: Backup creation
+    // Mica@2038c6722c1ebd977290492881023675e1cddecd: Backup creation
     @SuppressLint("WrongConstant")
-    public DeviceGridState(LawnchairProto.GridState protoGridState) {
+    public DeviceGridState(MicaProto.GridState protoGridState) {
         mGridSizeString = protoGridState.getGridSize();
         mNumHotseat = protoGridState.getHotseatCount();
         mDeviceType = protoGridState.getDeviceType();
@@ -144,8 +144,8 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
         }
     }
 
-    public LawnchairProto.GridState toProtoMessage() {
-        return LawnchairProto.GridState.newBuilder()
+    public MicaProto.GridState toProtoMessage() {
+        return MicaProto.GridState.newBuilder()
                 .setGridSize(mGridSizeString)
                 .setHotseatCount(mNumHotseat)
                 .setDeviceType(mDeviceType)

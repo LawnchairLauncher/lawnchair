@@ -49,7 +49,7 @@ import com.android.launcher3.widget.DatabaseWidgetPreviewLoader.WidgetPreviewInf
 
 import java.util.Objects;
 
-import app.lawnchair.LawnchairAppWidgetHostView;
+import app.mica.MicaAppWidgetHostView;
 
 /**
  * Extension of {@link DragPreviewProvider} with logic specific to pending widgets/shortcuts
@@ -96,8 +96,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     public void setAppWidgetHostViewPreview(
             @Nullable NavigableAppWidgetHostView appWidgetHostViewPreview) {
         mAppWidgetHostViewPreview = appWidgetHostViewPreview;
-        if (appWidgetHostViewPreview instanceof LawnchairAppWidgetHostView) {
-            ((LawnchairAppWidgetHostView) appWidgetHostViewPreview).disablePreviewMode();
+        if (appWidgetHostViewPreview instanceof MicaAppWidgetHostView) {
+            ((MicaAppWidgetHostView) appWidgetHostViewPreview).disablePreviewMode();
         }
     }
 
@@ -142,7 +142,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                         previewSizeBeforeScale[0] = drawable.getIntrinsicWidth();
                     }
                 } else {
-                    mAppWidgetHostViewPreview = new LawnchairAppWidgetHostView(launcher);
+                    mAppWidgetHostViewPreview = new MicaAppWidgetHostView(launcher);
                     mAppWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1,
                             mWidgetPreviewInfo.providerInfo);
                     mAppWidgetHostViewPreview.setClipChildren(false);
@@ -156,7 +156,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                     measureAndUpdateAppWidgetHostViewScale(widgetSizes);
                 }
             } else if (mRemoteViewsPreview != null) {
-                mAppWidgetHostViewPreview = new LawnchairAppWidgetHostView(launcher);
+                mAppWidgetHostViewPreview = new MicaAppWidgetHostView(launcher);
                 mAppWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1,
                         ((PendingAddWidgetInfo) mAddInfo).info);
                 DeviceProfile deviceProfile = launcher.getDeviceProfile();

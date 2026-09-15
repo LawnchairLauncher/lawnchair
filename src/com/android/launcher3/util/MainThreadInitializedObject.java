@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Utility class for defining singletons which are initiated on main thread.
  * <p> 
- * Lawnchair: This class has moved to Launcher3 Go variant.
+ * Mica: This class has moved to Launcher3 Go variant.
  */
 public class MainThreadInitializedObject<T extends SafeCloseable> {
 

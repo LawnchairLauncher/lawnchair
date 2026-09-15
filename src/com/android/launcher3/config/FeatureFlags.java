@@ -31,7 +31,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Flags;
 
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceManager2;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.

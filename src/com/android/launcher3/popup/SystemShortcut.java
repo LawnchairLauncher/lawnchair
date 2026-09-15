@@ -52,8 +52,8 @@ import com.android.launcher3.widget.picker.model.data.WidgetPickerData;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceManager2;
 
 /**
  * Represents a system shortcut for a given app. The shortcut should have a label and icon, and an

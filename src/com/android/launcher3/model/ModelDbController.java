@@ -72,8 +72,8 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import app.lawnchair.LawnchairApp;
-import app.lawnchair.LawnchairAppKt;
+import app.mica.MicaApp;
+import app.mica.MicaAppKt;
 
 /**
  * Utility class which maintains an instance of Launcher database and provides utility methods
@@ -109,7 +109,7 @@ public class ModelDbController {
         mLayoutParserFactory = layoutParserFactory;
     }
 
-    // Lawnchair: ModelDbController
+    // Mica: ModelDbController
     public ModelDbController(Context context) {
         mContext = context;
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
@@ -137,7 +137,7 @@ public class ModelDbController {
 
         try {
             if (!forMigration && dbName != null) {
-                LawnchairApp app = LawnchairAppKt.getLawnchairApp(mContext);
+                MicaApp app = MicaAppKt.getMicaApp(mContext);
                 app.renameRestoredDb(dbName);
                 app.migrateDbName(dbName);
             }
@@ -622,7 +622,7 @@ public class ModelDbController {
         createDbIfNotExists();
 
         if (!(mContext instanceof PreviewContext)) {
-            LawnchairAppKt.getLawnchairApp(mContext).cleanUpDatabases();
+            MicaAppKt.getMicaApp(mContext).cleanUpDatabases();
         }
 
         if (mPrefs.get(getEmptyDbCreatedKey())) {

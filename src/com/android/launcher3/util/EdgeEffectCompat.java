@@ -22,7 +22,7 @@ import android.widget.EdgeEffect;
 
 import com.android.launcher3.Utilities;
 
-import app.lawnchair.ui.StretchEdgeEffect;
+import app.mica.ui.StretchEdgeEffect;
 
 /**
  * Extension of {@link EdgeEffect} to allow backwards compatibility
@@ -33,7 +33,7 @@ public class EdgeEffectCompat extends EdgeEffect {
         super(context);
     }
 
-    // Lawnchair: Override getDistance so that we return 0 for not atleast android 12
+    // Mica: Override getDistance so that we return 0 for not atleast android 12
     @Override
     public float getDistance() {
         return Utilities.ATLEAST_S ? super.getDistance() : 0;

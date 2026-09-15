@@ -20,7 +20,7 @@ import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 import android.content.Context;
 import android.util.LongSparseArray;
 
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceManager2;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.BuildConfigs;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -31,8 +31,8 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceManager2;
 import java.util.ArrayList;
 
 import javax.inject.Inject;

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<app.lawnchair.qsb.LawnQsbLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/qsb_widget_height"
-    android:layout_alignParentTop="true"
-    android:layout_centerHorizontal="true"
-    android:layout_gravity="center|top"
-    android:contentDescription="@string/label_search"
-    android:paddingVertical="@dimen/qsb_widget_vertical_padding" />

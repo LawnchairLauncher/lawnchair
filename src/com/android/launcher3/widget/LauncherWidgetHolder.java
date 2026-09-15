@@ -66,7 +66,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
-import app.lawnchair.LawnchairAppWidgetHostView;
+import app.mica.MicaAppWidgetHostView;
 
 /**
  * A wrapper for LauncherAppWidgetHost. This class is created so the AppWidgetHost could run in

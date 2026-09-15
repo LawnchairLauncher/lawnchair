@@ -106,7 +106,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     private boolean mViewsBound = false;
 
     private boolean mCanAnnouncePageDescription;
-    private boolean mDisallowPagedViewInterceptForIconSwipe; // Lawnchair: Icon swipe gesture feature
+    private boolean mDisallowPagedViewInterceptForIconSwipe; // Mica: Icon swipe gesture feature
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         this(
@@ -167,7 +167,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         }
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    // Mica: Icon swipe gesture feature
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (shouldSkipPagedViewInterceptionForIconSwipe(ev)) {
@@ -176,7 +176,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         return super.onInterceptTouchEvent(ev);
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    // Mica: Icon swipe gesture feature
     private boolean shouldSkipPagedViewInterceptionForIconSwipe(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -205,13 +205,13 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         }
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    // Mica: Icon swipe gesture feature
     private boolean isTouchOnIconWithHorizontalSwipeGesture(float x, float y) {
         BubbleTextView touchedIcon = findIconAtPosition(x, y);
         return touchedIcon != null && touchedIcon.hasConfiguredHorizontalIconSwipeGesture();
     }
 
-    /** Lawnchair: Find icon at specific position */
+    /** Mica: Find icon at specific position */
     private BubbleTextView findIconAtPosition(float x, float y) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View page = getChildAt(i);
@@ -231,7 +231,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         return null;
     }
 
-    /** Lawnchair: Find icon in cell layout */
+    /** Mica: Find icon in cell layout */
     private BubbleTextView findIconInCellLayout(CellLayout cellLayout, float x, float y) {
         ShortcutAndWidgetContainer container = cellLayout.getShortcutsAndWidgets();
         float containerX = x - container.getLeft();
@@ -389,7 +389,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     private CellLayout createAndAddNewPage() {
         DeviceProfile grid = mFolder.mActivityContext.getDeviceProfile();
         CellLayout page = mViewCache.getView(R.layout.folder_page, getContext(), this);
-        // Lawnchair: Find the correct folder size depending on which parent owned them
+        // Mica: Find the correct folder size depending on which parent owned them
         if (mFolder.isInAppDrawer()) {
             page.setCellDimensions(grid.getAllAppsProfile().getCellWidthPx(), grid.getAllAppsProfile().getCellHeightPx());
         } else {

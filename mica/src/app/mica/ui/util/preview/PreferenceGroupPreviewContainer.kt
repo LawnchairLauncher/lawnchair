@@ -1,0 +1,27 @@
+package app.mica.ui.util.preview
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import app.mica.ui.preferences.components.layout.PreferenceGroup
+
+@Composable
+fun PreferenceGroupPreviewContainer(
+    modifier: Modifier = Modifier,
+    content: @Composable (() -> Unit),
+) {
+    Box(
+        modifier = modifier.background(MaterialTheme.colorScheme.surfaceDim),
+    ) {
+        PreferenceGroup(
+            modifier = Modifier.padding(vertical = 16.dp),
+            heading = "Group Heading",
+            description = "Group description",
+            content = content,
+        )
+    }
+}

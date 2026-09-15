@@ -4,10 +4,6 @@
     <option name="links">
       <list>
         <IssueNavigationLink>
-          <option name="issueRegexp" value="#(\d+)" />
-          <option name="linkRegexp" value="https://github.com/LawnchairLauncher/lawnchair/pull/$1" />
-        </IssueNavigationLink>
-        <IssueNavigationLink>
           <option name="issueRegexp" value="b/(\d+)" />
           <option name="linkRegexp" value="https://issuetracker.google.com/issues/$1" />
         </IssueNavigationLink>

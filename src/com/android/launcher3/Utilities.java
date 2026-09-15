@@ -108,7 +108,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import app.lawnchair.icons.ExtendedBitmapDrawable;
-import app.lawnchair.preferences.PreferenceManager;
+import app.mica.preferences.PreferenceManager;
 
 /**
  * Various utilities shared amongst the Launcher's classes.

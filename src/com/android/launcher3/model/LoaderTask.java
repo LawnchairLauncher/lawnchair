@@ -620,7 +620,7 @@ public class LoaderTask implements Runnable {
             try {
                 apps = mLauncherApps.getActivityList(null, user);
             } catch (SecurityException e) {
-                // Lawnchair-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
+                // Mica-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
                 // Ref: https://issuetracker.google.com/issues/547643926
                 Log.e("LC-LoaderTask", "Failed to get activity list for user " + user, e);
                 apps = Collections.emptyList();

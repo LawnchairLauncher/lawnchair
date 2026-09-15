@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceManager2;
 
 /**
  * Utility class to filter out components from various lists

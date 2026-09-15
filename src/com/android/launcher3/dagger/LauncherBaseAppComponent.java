@@ -57,26 +57,26 @@ import com.android.launcher3.widget.util.WidgetSizeHandler;
 
 import javax.inject.Named;
 
-import app.lawnchair.DeviceProfileOverrides;
-import app.lawnchair.HeadlessWidgetsManager;
-import app.lawnchair.LawnchairActivityCachingLogic;
-import app.lawnchair.NotificationManager;
-import app.lawnchair.data.folder.service.FolderService;
-import app.lawnchair.data.iconoverride.IconOverrideRepository;
-import app.lawnchair.data.wallpaper.service.WallpaperService;
-import app.lawnchair.font.FontCache;
-import app.lawnchair.font.FontManager;
-import app.lawnchair.font.googlefonts.GoogleFontsListing;
-import app.lawnchair.icons.iconpack.IconPackProvider;
-import app.lawnchair.icons.shape.IconShapeManager;
-import app.lawnchair.preferences.PreferenceManager;
-import app.lawnchair.predictions.LawnchairPredictionManager;
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.smartspace.provider.SmartspaceProvider;
-import app.lawnchair.theme.ThemeProvider;
-import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceModelList;
-import app.lawnchair.ui.preferences.data.liveinfo.LiveInformationManager;
-import app.lawnchair.util.LawnchairWindowManagerProxy;
+import app.mica.DeviceProfileOverrides;
+import app.mica.HeadlessWidgetsManager;
+import app.mica.MicaActivityCachingLogic;
+import app.mica.NotificationManager;
+import app.mica.data.folder.service.FolderService;
+import app.mica.data.iconoverride.IconOverrideRepository;
+import app.mica.data.wallpaper.service.WallpaperService;
+import app.mica.font.FontCache;
+import app.mica.font.FontManager;
+import app.mica.font.googlefonts.GoogleFontsListing;
+import app.mica.icons.iconpack.IconPackProvider;
+import app.mica.icons.shape.IconShapeManager;
+import app.mica.preferences.PreferenceManager;
+import app.mica.predictions.MicaPredictionManager;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.smartspace.provider.SmartspaceProvider;
+import app.mica.theme.ThemeProvider;
+import app.mica.ui.preferences.components.colorpreference.ColorPreferenceModelList;
+import app.mica.ui.preferences.data.liveinfo.LiveInformationManager;
+import app.mica.util.MicaWindowManagerProxy;
 import dagger.BindsInstance;
 
 /**
@@ -127,9 +127,9 @@ public interface LauncherBaseAppComponent {
     WidgetSizeHandler getWidgetSizeHandler();
 
 
-    // Lawnchair-specific
+    // Mica-specific
     
-    LawnchairWindowManagerProxy getLWMP();
+    MicaWindowManagerProxy getLWMP();
     DeviceProfileOverrides getDPO();
     ThemeProvider getThemeProvider();
     SmartspaceProvider getSmartspaceProvider();
@@ -137,7 +137,7 @@ public interface LauncherBaseAppComponent {
     NotificationManager getNotificationManager();
     ColorPreferenceModelList getColorPreferenceModelList();
     LiveInformationManager getLiveInformationManager();
-    LawnchairPredictionManager getLawnchairPredictionManager();
+    MicaPredictionManager getMicaPredictionManager();
     PreferenceManager2 getPreferenceManager2();
     PreferenceManager getPreferenceManager();
     FontCache getFontCache();
@@ -148,7 +148,7 @@ public interface LauncherBaseAppComponent {
     WallpaperService getWallpaperService();
     IconOverrideRepository getIconOverrideRepository();
 
-    LawnchairActivityCachingLogic getLawnchairActivityCachingLogic();
+    MicaActivityCachingLogic getMicaActivityCachingLogic();
     FolderService getFolderService();
 
     /** Builder for LauncherBaseAppComponent. */

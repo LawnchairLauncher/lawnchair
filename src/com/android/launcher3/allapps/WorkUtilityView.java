@@ -59,9 +59,9 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 
-import app.lawnchair.font.FontManager;
-import app.lawnchair.theme.color.tokens.ColorTokens;
-import app.lawnchair.theme.drawable.DrawableTokens;
+import app.mica.font.FontManager;
+import app.mica.theme.color.tokens.ColorTokens;
+import app.mica.theme.drawable.DrawableTokens;
 
 import java.util.ArrayList;
 
@@ -142,7 +142,7 @@ public class WorkUtilityView extends LinearLayout implements Insettable,
         mWorkUtilityView = findViewById(R.id.work_utility_view);
         setSelected(true);
 
-        // LC-Note: Theme work FAB and scheduler button with Lawnchair tokens
+        // LC-Note: Theme work FAB and scheduler button with Mica tokens
         mWorkFAB.setBackground(DrawableTokens.WorkFabBackground.resolve(getContext()));
         int onPrimaryColor = ColorTokens.TextColorPrimaryInverse.resolveColor(getContext());
         mPauseText.setTextColor(onPrimaryColor);

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2025, Lawnchair
+ * Modifications copyright 2025, Mica
  */
 
 package com.android.launcher3;
@@ -110,7 +110,9 @@ import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WidgetStackInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.widget.WidgetStackHostView;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
@@ -145,19 +147,19 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import app.lawnchair.hotseat.HotseatPagedView;
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
-import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
-import app.lawnchair.LawnchairApp;
-import app.lawnchair.LawnchairAppKt;
-import app.lawnchair.preferences.PreferenceManager;
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.smartspace.DoubleShadowTextView;
-import app.lawnchair.smartspace.SmartspaceAppWidgetProvider;
-import app.lawnchair.smartspace.model.LawnchairSmartspace;
-import app.lawnchair.smartspace.model.SmartspaceMode;
-import app.lawnchair.theme.drawable.DrawableTokens;
-import app.lawnchair.util.LawnchairUtilsKt;
+import app.mica.hotseat.HotseatPagedView;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
+import static app.mica.util.MicaUtilsKt.toBitmap;
+import app.mica.MicaApp;
+import app.mica.MicaAppKt;
+import app.mica.preferences.PreferenceManager;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.smartspace.DoubleShadowTextView;
+import app.mica.smartspace.SmartspaceAppWidgetProvider;
+import app.mica.smartspace.model.MicaSmartspace;
+import app.mica.smartspace.model.SmartspaceMode;
+import app.mica.theme.drawable.DrawableTokens;
+import app.mica.util.MicaUtilsKt;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -614,9 +616,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public void updateStatusbarClock() {
         if (mCurrentPage == 0 && PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getStatusBarClock())) {
-            LawnchairAppKt.getLawnchairApp(mLauncher).hideClockInStatusBar();
+            MicaAppKt.getMicaApp(mLauncher).hideClockInStatusBar();
         } else {
-            LawnchairAppKt.getLawnchairApp(mLauncher).restoreClockInStatusBar();
+            MicaAppKt.getMicaApp(mLauncher).restoreClockInStatusBar();
         }
     }
 
@@ -673,7 +675,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (!smartspaceMode.isAvailable(this.mLauncher)) {
                 // The current smartspace mode is not available,
                 // setting the smartspace mode to one that is always available
-                smartspaceMode = LawnchairSmartspace.INSTANCE;
+                smartspaceMode = MicaSmartspace.INSTANCE;
                 com.patrykmichalik.opto.core.PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getSmartspaceMode(), smartspaceMode);
             }
             // In transposed layout, we add the first page pinned widget in the Grid.
@@ -1194,14 +1196,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (shouldSkipPagedViewInterceptionForIconSwipe(ev)) {
             return false;
-        } // Lawnchair: Icon swipe gesture feature
+        } // Mica: Icon swipe gesture feature
         if (isTrackpadMultiFingerSwipe(ev)) {
             return false;
         }
         return super.onInterceptTouchEvent(ev);
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    // Mica: Icon swipe gesture feature
     private boolean shouldSkipPagedViewInterceptionForIconSwipe(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -1230,7 +1232,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    // Mica: Icon swipe gesture feature
     public boolean isTouchOnIconWithSwipeGesture(float x, float y, boolean vertical) {
         boolean hasConfiguredIconSwipeGesture = false;
         BubbleTextView touchedIcon = findIconAtPosition(x, y);
@@ -1244,7 +1246,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return hasConfiguredIconSwipeGesture;
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    // Mica: Icon swipe gesture feature
     private BubbleTextView findIconAtPosition(float x, float y) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View child = getChildAt(i);
@@ -1264,7 +1266,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return null;
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    // Mica: Icon swipe gesture feature
     private BubbleTextView findIconInCellLayout(CellLayout cellLayout, float x, float y) {
         ShortcutAndWidgetContainer container = cellLayout.getShortcutsAndWidgets();
         float containerX = x - container.getLeft();
@@ -2228,6 +2230,87 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return false;
     }
 
+    private static boolean isWidgetItem(Object tag) {
+        if (!(tag instanceof ItemInfo)) return false;
+        int type = ((ItemInfo) tag).itemType;
+        return type == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
+                || type == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
+    }
+
+    /**
+     * Widget-stack analog of {@link #willCreateUserFolder}. Unlike the folder version, this has
+     * no hover-latched "drag mode" -- it's evaluated fresh at drop time only, so (unlike folders)
+     * there is no live preview while hovering before you release.
+     */
+    boolean willCreateWidgetStack(ItemInfo dragInfo, View dropOverView) {
+        if (dropOverView == null || dragInfo == null) return false;
+        if (!isWidgetItem(dragInfo) || !isWidgetItem(dropOverView.getTag())) return false;
+        return dropOverView.getTag() != dragInfo;
+    }
+
+    boolean willAddToExistingWidgetStack(ItemInfo dragInfo, View dropOverView) {
+        return dropOverView instanceof WidgetStackHostView && isWidgetItem(dragInfo);
+    }
+
+    /**
+     * Widget-stack analog of {@link #createUserFolderIfNecessary}.
+     */
+    boolean createWidgetStackIfNecessary(View newView, int container, CellLayout target,
+            int[] targetCell, float distance, boolean external, DragObject d) {
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
+        View v = target.getChildAt(targetCell[0], targetCell[1]);
+        if (v == null) return false;
+
+        boolean hasntMoved = false;
+        if (mDragInfo != null) {
+            CellLayout cellParent = getParentCellLayoutForView(mDragInfo.cell);
+            hasntMoved = (mDragInfo.cellX == targetCell[0] && mDragInfo.cellY == targetCell[1])
+                    && (cellParent == target);
+        }
+        if (hasntMoved) return false;
+
+        ItemInfo sourceInfo = (ItemInfo) newView.getTag();
+        if (!willCreateWidgetStack(sourceInfo, v)) return false;
+
+        LauncherAppWidgetInfo destWidget = (LauncherAppWidgetInfo) v.getTag();
+        LauncherAppWidgetInfo sourceWidget = (LauncherAppWidgetInfo) sourceInfo;
+
+        if (!external) {
+            getParentCellLayoutForView(mDragInfo.cell).removeView(mDragInfo.cell);
+        }
+        target.removeView(v);
+        mLauncher.addWidgetStack(target, container, getCellLayoutId(target), targetCell[0],
+                targetCell[1], destWidget, sourceWidget);
+        return true;
+    }
+
+    /**
+     * Widget-stack analog of {@link #addToExistingFolderIfNecessary}.
+     */
+    boolean addToExistingWidgetStackIfNecessary(View newView, CellLayout target, int[] targetCell,
+            float distance, DragObject d, boolean external) {
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
+        View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
+        ItemInfo sourceInfo = (ItemInfo) newView.getTag();
+        if (!willAddToExistingWidgetStack(sourceInfo, dropOverView)) return false;
+
+        boolean hasntMoved = false;
+        if (mDragInfo != null) {
+            CellLayout cellParent = getParentCellLayoutForView(mDragInfo.cell);
+            hasntMoved = (mDragInfo.cellX == targetCell[0] && mDragInfo.cellY == targetCell[1])
+                    && (cellParent == target);
+        }
+        if (hasntMoved) return false;
+
+        if (!external) {
+            getParentCellLayoutForView(mDragInfo.cell).removeView(mDragInfo.cell);
+        }
+        WidgetStackInfo stackInfo = (WidgetStackInfo) dropOverView.getTag();
+        mLauncher.addToWidgetStack(target, dropOverView, stackInfo,
+                (LauncherAppWidgetInfo) sourceInfo);
+        return true;
+    }
+
     @Override
     public void prepareAccessibilityDrop() {}
 
@@ -2277,6 +2360,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 if (createUserFolderIfNecessary(cell, container, dropTargetLayout, mTargetCell,
                         distance, false, d)
                         || addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
+                        distance, d, false)
+                        || createWidgetStackIfNecessary(cell, container, dropTargetLayout,
+                        mTargetCell, distance, false, d)
+                        || addToExistingWidgetStackIfNecessary(cell, dropTargetLayout, mTargetCell,
                         distance, d, false)) {
                     if (!mLauncher.isInState(EDIT_MODE)) {
                         mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
@@ -3160,6 +3247,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     return;
                 }
                 if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, distance, d,
+                        true)) {
+                    return;
+                }
+                if (createWidgetStackIfNecessary(view, container, cellLayout, mTargetCell,
+                        distance, true, d)) {
+                    return;
+                }
+                if (addToExistingWidgetStackIfNecessary(view, cellLayout, mTargetCell, distance, d,
                         true)) {
                     return;
                 }

@@ -79,7 +79,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
 
 import com.google.android.msdl.data.model.MSDLToken;
 
@@ -89,9 +89,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
 
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.color.tokens.ColorTokens;
-import app.lawnchair.theme.drawable.DrawableTokens;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.theme.color.tokens.ColorTokens;
+import app.mica.theme.drawable.DrawableTokens;
 
 public class CellLayout extends ViewGroup {
     private static final String TAG = "CellLayout";
@@ -787,7 +787,7 @@ public class CellLayout extends ViewGroup {
                                        CellLayoutLayoutParams params, boolean markCells) {
         final CellLayoutLayoutParams lp = params;
 
-        // Hotseat icons - modified by lawnchair
+        // Hotseat icons - modified by mica
         if (child instanceof BubbleTextView bubbleChild) {
             boolean enableLabel = mContainerType == HOTSEAT
                     ? PreferenceCacheExtensionsKt.firstCached(pref.getEnableLabelInDock())

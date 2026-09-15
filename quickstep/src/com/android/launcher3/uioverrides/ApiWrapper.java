@@ -30,7 +30,7 @@ import com.android.quickstep.util.FadeOutRemoteTransition;
 import java.util.Collections;
 import java.util.Map;
 
-import app.lawnchair.util.LawnchairUtilsKt;
+import app.mica.util.MicaUtilsKt;
 
 /**
  * A wrapper for the hidden API calls
@@ -47,7 +47,7 @@ public class ApiWrapper {
     }
 
     public static Map<String, LauncherActivityInfo> getActivityOverrides(Context context) {
-        return LawnchairUtilsKt.isDefaultLauncher(context)
+        return MicaUtilsKt.isDefaultLauncher(context)
                 && Utilities.ATLEAST_Q ?
                 getLauncherActivityOverrides(context)
                 : Collections.emptyMap();

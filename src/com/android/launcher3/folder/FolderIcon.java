@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2025 Lawnchair
+ * Modifications copyright 2025 Mica
  */
 
 package com.android.launcher3.folder;
@@ -383,7 +383,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
             center[0] = Math.round(scaleRelativeToDragLayer * center[0]);
             center[1] = Math.round(scaleRelativeToDragLayer * center[1]);
 
-            // Lawnchair-TODO: if to is null we skip immediately to place the item. destination can be null (or nowhere)
+            // Mica-TODO: if to is null we skip immediately to place the item. destination can be null (or nowhere)
             if (to != null) {
                 to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                         center[1] - animateView.getMeasuredHeight() / 2);

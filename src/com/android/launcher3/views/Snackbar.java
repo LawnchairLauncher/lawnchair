@@ -37,8 +37,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
-import app.lawnchair.theme.drawable.DrawableTokens;
+import app.mica.theme.color.tokens.ColorTokens;
+import app.mica.theme.drawable.DrawableTokens;
 
 /**
  * A toast-like UI at the bottom of the screen with a label, button action, and dismiss action.

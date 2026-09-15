@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.graphics.Point
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import app.lawnchair.preferences2.PreferenceManager2
+import app.mica.preferences2.PreferenceManager2
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.BuildConfigs
 import com.android.launcher3.Flags
@@ -44,7 +44,7 @@ import com.android.launcher3.provider.LauncherDbUtils.shiftWorkspaceByXCells
 import com.android.launcher3.util.CellAndSpan
 import com.android.launcher3.util.GridOccupancy
 import com.android.launcher3.util.IntArray
-import app.lawnchair.preferences2.firstCached
+import app.mica.preferences2.firstCached
 
 class GridSizeMigrationLogic {
     /**
@@ -532,7 +532,7 @@ class GridSizeMigrationLogic {
                 iterator.remove()
                 continue
             }
-            // Lawnchair: keep the user's existing layout when possible. Items are deferred to
+            // Mica: keep the user's existing layout when possible. Items are deferred to
             // their original screen and kept at their original cell and size if it still fits and
             // the spot is free; only items that no longer fit fall back to automatic placement.
             if (preserveOriginal) {
@@ -591,7 +591,7 @@ class GridSizeMigrationLogic {
     }
 
     /**
-     * Lawnchair: returns true if [entry] can stay at its original cell with its original size in
+     * Mica: returns true if [entry] can stay at its original cell with its original size in
      * the target grid — i.e. it fits within the grid bounds, sits below the reserved top rows
      * (e.g. the smartspace on the first screen), and its region is currently free.
      */

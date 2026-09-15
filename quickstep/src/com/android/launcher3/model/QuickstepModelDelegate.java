@@ -79,8 +79,8 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import app.lawnchair.LawnchairApp;
-import app.lawnchair.compat.LawnchairQuickstepCompat;
+import app.mica.MicaApp;
+import app.mica.compat.MicaQuickstepCompat;
 
 /**
  * Model delegate which loads prediction items
@@ -95,7 +95,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
     private static final ConstantItem<Long> LAST_SNAPSHOT_TIME_MILLIS =
             nonRestorableItem("LAST_SNAPSHOT_TIME_MILLIS", 0L, ENCRYPTED);
 
-    // LC-Note: There are Lawnchair Prediction changes here. Protected is intended.
+    // LC-Note: There are Mica Prediction changes here. Protected is intended.
     @VisibleForTesting
     protected final PredictorState mAllPredictionAppsState = new PredictorState(
             CONTAINER_ALL_APPS_PREDICTION, "all_apps_predictions", DEFAULT_LOOKUP_FLAG);
@@ -217,7 +217,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
      * Registers a callback to log launcher workspace layout using Statsd pulled atom.
      */
     private void registerSnapshotLoggingCallback() {
-        if (mStatsManager == null || !LawnchairQuickstepCompat.ATLEAST_R) {
+        if (mStatsManager == null || !MicaQuickstepCompat.ATLEAST_R) {
             Log.d(TAG, "Skipping snapshot logging");
             return;
         }
@@ -288,7 +288,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
         super.destroy();
         mActive = false;
         StatsLogCompatManager.LOGS_CONSUMER.remove(mAppEventProducer);
-        if (mStatsManager != null && LawnchairQuickstepCompat.ATLEAST_R) {
+        if (mStatsManager != null && MicaQuickstepCompat.ATLEAST_R) {
             try {
                 ((StatsManager) mStatsManager).clearPullAtomCallback(SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT);
             } catch (Throwable e) {

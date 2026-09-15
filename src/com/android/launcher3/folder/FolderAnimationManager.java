@@ -54,7 +54,7 @@ import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.List;
 
-import app.lawnchair.util.LawnchairUtilsKt;
+import app.mica.util.MicaUtilsKt;
 
 /**
  * Manages the opening and closing animations for a {@link Folder}.
@@ -187,9 +187,9 @@ public class FolderAnimationManager implements FolderAnimationCreator {
         final float xDistance = initialX - lp.x;
         final float yDistance = initialY - lp.y;
 
-        // Set up the Folder background (respects Lawnchair folder color pref).
-        int initialColor = LawnchairUtilsKt.resolveFolderPreviewColor(mContext);
-        int finalColor = LawnchairUtilsKt.resolveFolderBackgroundColor(mContext);
+        // Set up the Folder background (respects Mica folder color pref).
+        int initialColor = MicaUtilsKt.resolveFolderPreviewColor(mContext);
+        int finalColor = MicaUtilsKt.resolveFolderBackgroundColor(mContext);
 
         mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);

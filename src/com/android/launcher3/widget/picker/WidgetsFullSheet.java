@@ -93,9 +93,9 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-import app.lawnchair.font.FontManager;
-import app.lawnchair.theme.color.tokens.ColorTokens;
-import app.lawnchair.theme.drawable.DrawableTokens;
+import app.mica.font.FontManager;
+import app.mica.theme.color.tokens.ColorTokens;
+import app.mica.theme.drawable.DrawableTokens;
 
 /**
  * Popup for showing the full list of available widgets

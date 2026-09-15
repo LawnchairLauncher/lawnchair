@@ -59,7 +59,7 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceManager2;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.

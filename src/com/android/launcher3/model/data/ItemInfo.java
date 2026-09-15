@@ -73,7 +73,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import app.lawnchair.LawnchairApp;
+import app.mica.MicaApp;
 
 /**
  * Represents an item in the launcher.
@@ -439,7 +439,7 @@ public class ItemInfo {
     @NonNull
     protected LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder(Context context) {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
-        if (LawnchairApp.isRecentsEnabled()) {
+        if (MicaApp.isRecentsEnabled()) {
             itemBuilder.setIsKidsMode(
                 SettingsCache.INSTANCE.get(context).getValue(NAV_BAR_KIDS_MODE, 0));
         }

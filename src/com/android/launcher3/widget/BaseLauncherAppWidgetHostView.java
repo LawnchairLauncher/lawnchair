@@ -62,7 +62,7 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
 
     private boolean mIsCornerRadiusEnforced;
     
-    // Lawnchair: LocalColorExtractor
+    // Mica: LocalColorExtractor
     private final LocalColorExtractor mColorExtractor;
 
     public BaseLauncherAppWidgetHostView(Context context) {

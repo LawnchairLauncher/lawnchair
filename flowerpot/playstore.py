@@ -1,17 +1,17 @@
-#     This file is part of Lawnchair Launcher.
+#     This file is part of Mica Launcher.
 #
-#     Lawnchair Launcher is free software: you can redistribute it and/or modify
+#     Mica Launcher is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
 #     the Free Software Foundation, either version 3 of the License, or
 #     (at your option) any later version.
 #
-#     Lawnchair Launcher is distributed in the hope that it will be useful,
+#     Mica Launcher is distributed in the hope that it will be useful,
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
 #
 #     You should have received a copy of the GNU General Public License
-#     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+#     along with Mica Launcher.  If not, see <https://www.gnu.org/licenses/>.
 
 from pprint import pprint
 from requests_html import HTMLSession
@@ -195,7 +195,7 @@ ADDITIONAL_URLS = [
     BASE_URL,
     f"{BASE_URL}editors_choice",
     f"{BASE_URL}top",
-    f"{DETAIL_URL}ch.deletescape.lawnchair.plah",
+    f"{DETAIL_URL}ch.deletescape.mica.plah",
     f"{DETAIL_URL}amirz.rootless.nexuslauncher",
     f"{DETAIL_URL}com.edzondm.linebit",
     f"{DETAIL_URL}com.jndapp.line.x.iconpack",

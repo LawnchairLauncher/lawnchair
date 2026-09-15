@@ -13,7 +13,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.animation.Interpolator;
 
-import app.lawnchair.preferences.PreferenceManager;
+import app.mica.preferences.PreferenceManager;
 import androidx.annotation.AnyThread;
 
 import com.android.app.animation.Interpolators;

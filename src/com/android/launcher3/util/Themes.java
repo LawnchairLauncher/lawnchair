@@ -16,8 +16,8 @@
 
 package com.android.launcher3.util;
 
-import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT;
-import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME;
+import static app.mica.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT;
+import static app.mica.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -36,14 +36,14 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.views.ActivityContext;
 
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
-import app.lawnchair.preferences.PreferenceManager;
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.color.ColorMode;
-import app.lawnchair.theme.color.tokens.ColorTokens;
-import app.lawnchair.wallpaper.WallpaperColorsCompat;
-import app.lawnchair.wallpaper.WallpaperManagerCompat;
-import app.lawnchair.ui.theme.ColorKt;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences.PreferenceManager;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.theme.color.ColorMode;
+import app.mica.theme.color.tokens.ColorTokens;
+import app.mica.wallpaper.WallpaperColorsCompat;
+import app.mica.wallpaper.WallpaperManagerCompat;
+import app.mica.ui.theme.ColorKt;
 
 /**
  * Various utility methods associated with theming.
@@ -109,7 +109,7 @@ public class Themes {
     }
 
     public static float getDialogCornerRadius(Context context) {
-        return context.getResources().getDimension(R.dimen.lawnchair_dialog_corner_radius);
+        return context.getResources().getDimension(R.dimen.mica_dialog_corner_radius);
     }
 
     public static float getDimension(Context context, int attr, float defaultValue) {

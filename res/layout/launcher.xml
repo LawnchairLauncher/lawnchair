@@ -63,7 +63,7 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
-        <app.lawnchair.views.LawnchairScrimView
+        <app.mica.views.MicaScrimView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/scrim_view"

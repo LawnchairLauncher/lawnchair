@@ -54,7 +54,7 @@ import com.android.launcher3.util.Themes;
 
 import java.util.function.Consumer;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.mica.theme.color.tokens.ColorTokens;
 
 /**
  * {@link PageIndicator} which shows dots per page. The active page is shown with the current

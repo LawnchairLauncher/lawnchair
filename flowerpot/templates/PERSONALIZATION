@@ -5,7 +5,7 @@
 :com.gau.go.launcherex.theme
 :org.adw.launcher.THEMES
 :net.oneplus.launcher.icons.ACTION_PICK_ICON
-:ch.deletescape.lawnchair.ICONPACK
+:ch.deletescape.mica.ICONPACK
 # Launcher intent
 ;android.intent.category.HOME
 # Kustom intents

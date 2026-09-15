@@ -44,15 +44,15 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import app.lawnchair.LawnchairApp;
-import app.lawnchair.preferences.PreferenceManager;
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.MicaApp;
+import app.mica.preferences.PreferenceManager;
+import app.mica.preferences2.PreferenceManager2;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -135,7 +135,7 @@ public abstract class DragController<T extends ActivityContext>
      */
     public DragController(T activity) {
         mActivity = activity;
-        pref2 = PreferenceManager2.getInstance(LawnchairApp.getInstance());
+        pref2 = PreferenceManager2.getInstance(MicaApp.getInstance());
     }
 
     /**

@@ -54,10 +54,10 @@ import com.android.launcher3.widget.util.WidgetSizes;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.color.tokens.ColorTokens;
-import app.lawnchair.theme.drawable.DrawableTokens;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.theme.color.tokens.ColorTokens;
+import app.mica.theme.drawable.DrawableTokens;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION_MS = 150;
@@ -306,7 +306,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         // on font / display change, the dp/px size of a cell changes, which means, existing spans
         // may be invalid. User should be able to resize to the correct widget size.
         boolean isWidgetVSpanInvalid = widgetInfoOnView.spanY < mMinVSpan;
-        // Lawnchair: use the (possibly overridden) resizeMode so force/unlimited resize can
+        // Mica: use the (possibly overridden) resizeMode so force/unlimited resize can
         // show handles even for widgets whose provider declares limited/no resizing.
         mVerticalResizeActive = (resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0 && (
                 (mMinVSpan < idp.numRows && mMaxVSpan > 1 && mMinVSpan < mMaxVSpan)
@@ -319,7 +319,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         // on font / display change, the dp/px size of a cell changes, which means, existing spans
         // may be invalid. User should be able to resize to the correct widget size.
         boolean isWidgetHSpanInvalid = widgetInfoOnView.spanX < mMinHSpan;
-        // Lawnchair: use the (possibly overridden) resizeMode so force/unlimited resize can
+        // Mica: use the (possibly overridden) resizeMode so force/unlimited resize can
         // show handles even for widgets whose provider declares limited/no resizing.
         mHorizontalResizeActive =
                 (resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0 && (

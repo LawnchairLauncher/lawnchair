@@ -53,7 +53,7 @@ import com.android.launcher3.views.ScrimColors;
 
 import java.util.Arrays;
 
-import app.lawnchair.LawnchairLauncher;
+import app.mica.MicaLauncher;
 
 /**
  * Base state for various states used for the Launcher
@@ -132,8 +132,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
 
         @Override
         public void onBackPressed(Launcher launcher) {
-            if (launcher instanceof LawnchairLauncher) {
-                ((LawnchairLauncher) launcher).getGestureController().onBackPressed();
+            if (launcher instanceof MicaLauncher) {
+                ((MicaLauncher) launcher).getGestureController().onBackPressed();
             }
             super.onBackPressed(launcher);
         }

@@ -45,7 +45,7 @@ import android.util.Log;
 import android.view.Display;
 import android.window.TaskSnapshot;
 
-import app.lawnchair.compat.LawnchairQuickstepCompat;
+import app.mica.compat.MicaQuickstepCompat;
 import com.android.internal.app.IVoiceInteractionManagerService;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;

@@ -39,7 +39,7 @@ constructor(@ApplicationContext private val context: Context) : LauncherRestoreE
         try {
             BackupManager(context).delayedRestoreLogger
         } catch (e: NoSuchMethodError) {
-            // Lawnchair-TODO: pE-TODO: wtf?
+            // Mica-TODO: pE-TODO: wtf?
             null
         }
     } else {

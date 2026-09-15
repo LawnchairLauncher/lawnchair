@@ -39,7 +39,7 @@ import com.android.launcher3.popup.RoundedArrowDrawable
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 
-import app.lawnchair.theme.color.tokens.ColorTokens
+import app.mica.theme.color.tokens.ColorTokens
 
 private const val ENTER_DURATION_MS = 300L
 private const val EXIT_DURATION_MS = 150L
@@ -148,7 +148,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        // Lawnchair-TODO-Merge: This was disabled but enabled in 16r2, this function likely disable the gesture system during edu
+        // Mica-TODO-Merge: This was disabled but enabled in 16r2, this function likely disable the gesture system during edu
 //        findOnBackInvokedDispatcher()
 //            ?.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, this)
     }

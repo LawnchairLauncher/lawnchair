@@ -1,4 +1,4 @@
-// Lawnchair: Without this, IHomeTransitionListener.aidl would not compile
+// Mica: Without this, IHomeTransitionListener.aidl would not compile
 
 /**
  * Copyright (c) 2017, The Android Open Source Project

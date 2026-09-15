@@ -60,7 +60,7 @@ import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.mica.theme.color.tokens.ColorTokens;
 
 /**
  * A BubbleTextView with a ring around it's drawable

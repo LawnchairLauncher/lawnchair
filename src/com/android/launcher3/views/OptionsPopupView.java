@@ -59,9 +59,9 @@ import com.google.android.msdl.data.model.MSDLToken;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.ui.popup.LauncherOptionsPopup;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.ui.popup.LauncherOptionsPopup;
 
 /**
  * Popup shown on long pressing an empty space in launcher

@@ -54,12 +54,12 @@ import com.android.launcher3.graphics.ShapeDelegate;
 import com.android.launcher3.graphics.ThemeManager;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
 
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.color.ColorOption;
-import app.lawnchair.theme.color.tokens.ColorTokens;
-import app.lawnchair.util.LawnchairUtilsKt;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.theme.color.ColorOption;
+import app.mica.theme.color.tokens.ColorTokens;
+import app.mica.util.MicaUtilsKt;
 
 /**
  * This object represents a FolderIcon preview background. It stores drawing /
@@ -193,11 +193,11 @@ public class PreviewBackground extends DelegatedCellDrawing {
         ColorOption dotColorOption = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getNotificationDotColor());
         mDotColor = dotColorOption.getColorPreferenceEntry().getLightColor().invoke(context);
         mStrokeColor = ColorTokens.FolderIconBorderColor.resolveColor(context);
-        mBgColor = LawnchairUtilsKt.resolveFolderPreviewColor(context);
+        mBgColor = MicaUtilsKt.resolveFolderPreviewColor(context);
         ta.recycle();
 
         DeviceProfile grid = activity.getDeviceProfile();
-        // Lawnchair: Find the correct icon size depending on which parent owned them
+        // Mica: Find the correct icon size depending on which parent owned them
         if (invalidateDelegate instanceof FolderIcon && ((FolderIcon) invalidateDelegate).isInAppDrawer()) {
             int allAppsIconSize = grid.getAllAppsProfile().getIconSizePx();
             previewSize = Math.round(allAppsIconSize * ICON_VISIBLE_AREA_FACTOR);

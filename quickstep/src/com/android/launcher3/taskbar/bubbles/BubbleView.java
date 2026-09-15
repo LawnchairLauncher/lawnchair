@@ -40,9 +40,9 @@ import com.android.wm.shell.shared.animation.Interpolators;
 import com.android.wm.shell.shared.bubbles.BubbleBarLocation;
 import com.android.wm.shell.shared.bubbles.BubbleInfo;
 
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
-import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.color.ColorOption;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceManager2;
+import app.mica.theme.color.ColorOption;
 
 import java.util.EnumSet;
 

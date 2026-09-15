@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2025, Lawnchair
+ * Modifications copyright 2025, Mica
  */
 
 package com.android.launcher3;
@@ -39,7 +39,7 @@ import com.android.launcher3.util.ResourceBasedOverride;
 
 import org.chickenhook.restrictionbypass.Unseal;
 
-import app.lawnchair.preferences.PreferenceManager;
+import app.mica.preferences.PreferenceManager;
 
 /**
  * Utility class to handle one time initializations of the main process

@@ -42,13 +42,13 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 import com.android.systemui.plugins.AllAppsRow;
 import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
 import com.android.systemui.plugins.PluginListener;
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceManager2;
 
 public class FloatingHeaderView extends LinearLayout implements
         ValueAnimator.AnimatorUpdateListener, PluginListener<AllAppsRow>, Insettable,

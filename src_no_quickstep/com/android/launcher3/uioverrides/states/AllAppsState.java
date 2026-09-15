@@ -20,8 +20,8 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAP
 
 import android.graphics.Color;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
-import app.lawnchair.util.LawnchairUtilsKt;
+import app.mica.theme.color.tokens.ColorTokens;
+import app.mica.util.MicaUtilsKt;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -103,7 +103,7 @@ public class AllAppsState extends LauncherState {
     public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
         return new ScrimColors(
                 /* backgroundColor */ launcher.getDeviceProfile().getDeviceProperties().isTablet()
-                ? LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, 
+                ? MicaUtilsKt.getAllAppsBackgroundColor(launcher, 
                         ColorTokens.WidgetsPickerScrim.resolveColor(launcher))
                 : ColorTokens.AllAppsScrimColor.resolveColor(launcher),
                 /* foregroundColor */ Color.TRANSPARENT);

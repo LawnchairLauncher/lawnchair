@@ -46,6 +46,7 @@ import com.android.launcher3.model.data.IconRequestInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.model.data.WidgetStackInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.pm.PackageInstallInfo
 import com.android.launcher3.pm.UserCache
@@ -119,6 +120,7 @@ class WorkspaceItemProcessor(
                 Favorites.ITEM_TYPE_APP_PAIR -> processFolderOrAppPair()
                 Favorites.ITEM_TYPE_APPWIDGET,
                 Favorites.ITEM_TYPE_CUSTOM_APPWIDGET -> processWidget()
+                Favorites.ITEM_TYPE_WIDGET_STACK -> processWidgetStack()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Desktop items loading interrupted", e)
@@ -529,6 +531,27 @@ class WorkspaceItemProcessor(
 
         c.markRestored()
         c.checkAndAddItem(collection, loadedItems, memoryLogger)
+    }
+
+    /**
+     * Loads a [WidgetStackInfo] from its own Favorites row. Unlike folders, member widgets are not
+     * separate rows -- they're deserialized from this row's INTENT column -- so there is no
+     * per-member processing step here.
+     */
+    private fun processWidgetStack() {
+        val stack = WidgetStackInfo()
+        c.applyCommonProperties(stack)
+        stack.spanX = c.spanX
+        stack.spanY = c.spanY
+        stack.user = c.user
+        val serialized = c.getString(c.getColumnIndexOrThrow(Favorites.INTENT))
+        WidgetStackInfo.deserializeInto(stack, serialized)
+        if (stack.members.isEmpty()) {
+            c.markDeleted("processWidgetStack: stack has no members, id=${c.id}", RestoreError.INVALID_WIDGET_SIZE)
+            return
+        }
+        c.markRestored()
+        c.checkAndAddItem(stack, loadedItems, memoryLogger)
     }
 
     /**

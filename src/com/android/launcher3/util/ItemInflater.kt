@@ -34,12 +34,14 @@ import com.android.launcher3.model.data.AppPairInfo
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
+import com.android.launcher3.model.data.WidgetStackInfo
 import com.android.launcher3.model.data.WorkspaceItemFactory
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.widget.LauncherWidgetHolder
 import com.android.launcher3.widget.PendingAppWidgetHostView
 import com.android.launcher3.widget.WidgetInflater
+import com.android.launcher3.widget.WidgetStackHostView
 
 /** Utility class to inflate View for a model item */
 class ItemInflater<T>(
@@ -97,6 +99,7 @@ class ItemInflater<T>(
             Favorites.ITEM_TYPE_APPWIDGET,
             Favorites.ITEM_TYPE_CUSTOM_APPWIDGET ->
                 return inflateAppWidget(item as LauncherAppWidgetInfo, context.modelWriter)
+            Favorites.ITEM_TYPE_WIDGET_STACK -> return inflateWidgetStack(item as WidgetStackInfo)
             else -> throw RuntimeException("Invalid Item Type")
         }
     }
@@ -143,6 +146,55 @@ class ItemInflater<T>(
         } finally {
             TraceHelper.INSTANCE.endSection()
         }
+    }
+
+    /**
+     * Inflates the members of a widget stack. Members are not their own Favorites rows (see
+     * [WidgetStackInfo]), so this resolves each one via [WidgetInflater] directly rather than
+     * going through [inflateAppWidget], which assumes its item owns a row to add/update/delete.
+     */
+    private fun inflateWidgetStack(stack: WidgetStackInfo): View {
+        val hostView = WidgetStackHostView(context)
+        val memberViews = mutableListOf<View>()
+        var stackChanged = false
+
+        for (member in stack.members.toList()) {
+            val synthetic = LauncherAppWidgetInfo(member.appWidgetId, member.provider)
+            synthetic.container = stack.id
+            synthetic.spanX = stack.spanX
+            synthetic.spanY = stack.spanY
+            synthetic.user = stack.user
+
+            val result = widgetInflater.inflateAppWidget(synthetic)
+            if (result.type == WidgetInflater.TYPE_DELETE) {
+                stack.removeMember(member.appWidgetId)
+                stackChanged = true
+                continue
+            }
+            val view: AppWidgetHostView =
+                if (result.type == WidgetInflater.TYPE_PENDING || result.widgetInfo == null) {
+                    PendingAppWidgetHostView(context, widgetHolder, synthetic, result.widgetInfo)
+                } else {
+                    widgetHolder.createView(synthetic.appWidgetId, result.widgetInfo)
+                }
+            prepareAppWidget(view, synthetic)
+            memberViews.add(view)
+        }
+
+        if (memberViews.isEmpty()) {
+            context.modelWriter.deleteItemFromDatabase(stack, "widget stack has no remaining members")
+        } else if (stackChanged) {
+            context.modelWriter.updateItemInDatabase(stack)
+        }
+
+        hostView.tag = stack
+        hostView.onFocusChangeListener = focusListener
+        hostView.setMembers(memberViews, stack.activeIndex)
+        hostView.onActiveIndexChanged = { newIndex ->
+            stack.activeIndex = newIndex
+            context.modelWriter.updateItemInDatabase(stack)
+        }
+        return hostView
     }
 
     fun prepareAppWidget(hostView: AppWidgetHostView, item: LauncherAppWidgetInfo) {

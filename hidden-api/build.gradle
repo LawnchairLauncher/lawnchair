@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'app.lawnchair.hidden_api'
+    namespace 'app.mica.hidden_api'
     buildFeatures {
         aidl true
     }

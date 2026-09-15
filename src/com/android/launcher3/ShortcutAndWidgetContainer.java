@@ -43,9 +43,9 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
 
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceManager2;
 
 public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.FolderIconParent {
     static final String TAG = "ShortcutAndWidgetContainer";

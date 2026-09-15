@@ -183,7 +183,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import app.lawnchair.compat.LawnchairQuickstepCompat;
+import app.mica.compat.MicaQuickstepCompat;
 
 /**
  * Manages the opening and closing app transitions from Launcher
@@ -362,11 +362,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         long statusBarTransitionDelay = duration - STATUS_BAR_TRANSITION_DURATION
                 - STATUS_BAR_TRANSITION_PRE_DELAY;
-        ActivityOptions options = LawnchairQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
+        ActivityOptions options = MicaQuickstepCompat.getActivityOptionsCompat().makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
-                LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(runner.toRemoteTransition(),
+                MicaQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(runner.toRemoteTransition(),
                         mLauncher.getIApplicationThread(), "QuickstepLaunch"),
-                "Lawnchair");
+                "Mica");
         IRemoteCallback endCallback = completeRunnableListCallback(onEndCallback, mLauncher);
         options.setOnAnimationAbortListener(endCallback);
         options.setOnAnimationFinishedListener(endCallback);
@@ -1235,7 +1235,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         mWallpaperOpenTransitionRunner = new WallpaperOpenLauncherAnimationRunner();
-        mLauncherOpenTransition = LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(
+        mLauncherOpenTransition = MicaQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(
                 new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
                         false /* startAtFrontOfQueue */).toRemoteTransition(),
                 mLauncher.getIApplicationThread(), "QuickstepLaunchHome");

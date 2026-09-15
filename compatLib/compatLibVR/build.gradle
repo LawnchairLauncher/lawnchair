@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace "app.lawnchair.compatlib.eleven"
+    namespace "app.mica.compatlib.eleven"
 }
 
 addFrameworkJar('framework-11.jar')

@@ -26,7 +26,7 @@ import com.android.launcher3.Utilities;
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 
-import app.lawnchair.compat.LawnchairQuickstepCompat;
+import app.mica.compat.MicaQuickstepCompat;
 
 /**
  * Utility class for helpful methods related to {@link View} objects.
@@ -46,7 +46,7 @@ public class ViewUtils {
      */
     public static boolean postFrameDrawn(
             View view, Runnable onFinishRunnable, BooleanSupplier canceled) {
-        if (!LawnchairQuickstepCompat.ATLEAST_U) {
+        if (!MicaQuickstepCompat.ATLEAST_U) {
             return new FrameHandlerVR(view, onFinishRunnable, canceled).schedule();
         }
         return new FrameHandler(view, onFinishRunnable, canceled).schedule();

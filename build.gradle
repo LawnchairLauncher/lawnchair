@@ -151,7 +151,7 @@ android {
     namespace "com.android.launcher3"
     defaultConfig {
         /*
-         * Lawnchair Launcher 16.0 Development 5.1
+         * Mica Launcher 16.0 Development 5.1
          * see CONTRIBUTING.md#versioning-scheme
          */
         versionCode 16_00_01_05_01
@@ -227,7 +227,7 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            resValue("string", "derived_app_name", "Lawnchair (Debug)")
+            resValue("string", "derived_app_name", "Mica Launcher")
 
             manifestPlaceholders.quickstepMinSdk = "0"
             manifestPlaceholders.quickstepMaxSdk = "100000"
@@ -236,7 +236,7 @@ android {
         }
 
         release {
-            resValue("string", "derived_app_name", "Lawnchair")
+            resValue("string", "derived_app_name", "Mica Launcher")
             minifyEnabled true
             shrinkResources true
             pseudoLocalesEnabled false
@@ -267,23 +267,23 @@ android {
         }
 
         github {
-            applicationId 'app.lawnchair'
+            applicationId 'app.mica'
             dimension "channel"
         }
 
         nightly {
-            applicationId 'app.lawnchair.nightly'
+            applicationId 'app.mica.nightly'
             dimension "channel"
         }
 
         play {
-            applicationId "app.lawnchair.play"
+            applicationId "app.mica.play"
             dimension "channel"
             isDefault true
         }
 
         configureEach {
-            resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
+            resValue("string", "launcher_component", "${applicationId}/app.mica.MicaLauncher")
         }
     }
 
@@ -291,7 +291,7 @@ android {
         main {
             res.srcDirs = ['res']
 
-            // Lawnchair-TODO: Don't include Compose Disabled, but there's has to be another way of making this NOT long
+            // Mica-TODO: Don't include Compose Disabled, but there's has to be another way of making this NOT long
             java.srcDirs = ['src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features']
             kotlin.directories.addAll('src', 'src_plugins', 'compose/facade/core', 'compose/facade/enabled', 'compose/features')
 
@@ -302,16 +302,16 @@ android {
         }
 
         lawn {
-            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
-            kotlin.directories.addAll('src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared')
-            aidl.srcDirs = ['lawnchair/aidl']
-            res.srcDirs = ['lawnchair/res', 'platform_frameworks_libs_systemui/animationlib/res']
-            manifest.srcFile "lawnchair/AndroidManifest.xml"
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'mica/src', 'tests/shared']
+            kotlin.directories.addAll('src_flags', 'src_shortcuts_overrides', 'mica/src', 'tests/shared')
+            aidl.srcDirs = ['mica/aidl']
+            res.srcDirs = ['mica/res', 'platform_frameworks_libs_systemui/animationlib/res']
+            manifest.srcFile "mica/AndroidManifest.xml"
             assets {
-                srcDirs 'lawnchair/assets'
+                srcDirs 'mica/assets'
             }
             proto {
-                srcDirs = ['lawnchair/protos/']
+                srcDirs = ['mica/protos/']
             }
         }
 
@@ -349,10 +349,10 @@ androidComponents {
     onVariants(selector().all()) { variant ->
         def channel = variant.productFlavors.last().second
         variant.outputs.forEach { output ->
-            output.outputFileName.set("Lawnchair.${output.versionName.get()}.$channel.${variant.buildType}.apk")
+            output.outputFileName.set("Mica.${output.versionName.get()}.$channel.${variant.buildType}.apk")
         }
 
-        // Lawnchair-TODO: A better way to sync proto file to the IDE preventing missing or outdated result. Please remove if this is the best solution we have right now
+        // Mica-TODO: A better way to sync proto file to the IDE preventing missing or outdated result. Please remove if this is the best solution we have right now
         def capitalizedVariantName = variant.name.substring(0, 1).toUpperCase(java.util.Locale.ROOT) + variant.name.substring(1)
         def generatedProtoJavaDir = layout.buildDirectory
             .dir("generated/java/generate${capitalizedVariantName}Proto/java")
@@ -514,7 +514,7 @@ spotless {
         removeUnusedImports()
     }
     kotlin {
-        target("lawnchair/src/**/*.kt")
+        target("mica/src/**/*.kt")
         ktlint(libs.ktlint.get().version).customRuleSets([
             libs.composeRules.get().toString()
         ]).editorConfigOverride([

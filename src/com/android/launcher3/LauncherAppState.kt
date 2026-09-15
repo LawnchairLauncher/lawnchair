@@ -16,7 +16,7 @@
 package com.android.launcher3
 
 import android.content.Context
-import app.lawnchair.icons.LawnchairIconProvider
+import app.mica.icons.MicaIconProvider
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.icons.IconCache
 import com.android.launcher3.util.DaggerSingletonObject
@@ -29,7 +29,7 @@ data class LauncherAppState
 @Inject
 constructor(
     @ApplicationContext val context: Context,
-    val iconProvider: LawnchairIconProvider,
+    val iconProvider: MicaIconProvider,
     val iconCache: IconCache,
     val model: LauncherModel,
     val invariantDeviceProfile: InvariantDeviceProfile,

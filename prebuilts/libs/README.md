@@ -1,11 +1,11 @@
-# Lawnchair prebuilt libraries
+# Mica prebuilt libraries
 
 Launcher3 has some dependencies on internal AOSP modules. 
-To build Lawnchair, you have to build AOSP and obtain these JARs.
+To build Mica, you have to build AOSP and obtain these JARs.
 
 ## Usage
 
-Lawnchair relies on these JARs:
+Mica relies on these JARs:
 
 | File                       | Command                 | Android Tag                 | Target Configuration                               |
 |----------------------------|-------------------------|-----------------------------|----------------------------------------------------|

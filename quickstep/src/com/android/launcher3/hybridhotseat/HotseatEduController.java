@@ -41,8 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import app.lawnchair.ui.preferences.PreferenceActivity;
-import app.lawnchair.ui.preferences.navigation.Predictions;
+import app.mica.ui.preferences.PreferenceActivity;
+import app.mica.ui.preferences.navigation.Predictions;
 
 /**
  * Controller class for managing user onboaridng flow for hybrid hotseat
@@ -74,7 +74,7 @@ public class HotseatEduController {
         migrateHotseatWhole();
         Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_enabled,
                 R.string.hotseat_prediction_settings, null,
-                () -> mLauncher.startActivity(getLawnchairSettingsIntent(mLauncher)));
+                () -> mLauncher.startActivity(getMicaSettingsIntent(mLauncher)));
     }
 
     /**
@@ -162,8 +162,8 @@ public class HotseatEduController {
         if (childCount < mLauncher.getDeviceProfile().numShownHotseatIcons) {
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
-                    // LC-Note: Start Lawnchair prediction settings instead of AOSP
-                    () -> mLauncher.startActivity(getLawnchairSettingsIntent(mLauncher)));
+                    // LC-Note: Start Mica prediction settings instead of AOSP
+                    () -> mLauncher.startActivity(getMicaSettingsIntent(mLauncher)));
         } else {
             showHotseatArrowTip(true, mLauncher.getString(R.string.hotseat_tip_no_empty_slots));
         }
@@ -248,8 +248,8 @@ public class HotseatEduController {
         mActiveDialog.show(mPredictedApps);
     }
 
-    // LC-Note: Start Lawnchair prediction settings instead of AOSP
-    public static Intent getLawnchairSettingsIntent(Context context) {
+    // LC-Note: Start Mica prediction settings instead of AOSP
+    public static Intent getMicaSettingsIntent(Context context) {
         return PreferenceActivity.createIntent(context, Predictions.INSTANCE)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }

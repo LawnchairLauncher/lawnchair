@@ -110,18 +110,6 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
           ACTION: internal_notifications
 
-  crowdin-auto-merge:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'lawnchair-bot' && github.event.pull_request.title == 'New Crowdin translations by Github Action'
-    needs: build-debug-apk
-    steps:
-      - env:
-          GH_TOKEN: ${{ secrets.LAWNCHAIR_BOT_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-        run: |
-          gh pr comment $PR_URL --body "No issues found, auto-merging the Crowdin pull request."
-          gh pr merge $PR_URL --auto --squash --delete-branch
-
   # Status check that is required in branch protection rules.
   final-status:
     needs:
@@ -156,7 +144,7 @@ jobs:
           name: assembleLawnWithQuickstepNightlyRelease
       # Note the # and () symbols are not supported in GitHub Release filenames, even manually
       - name: Export APK_NAME for later use
-        run: echo "APK_NAME=Lawnchair.Debug.${{ github.ref_name }}.Nightly-CI_${{ github.run_number }}-$(echo ${{ github.sha }} | cut -c1-7).apk" >> $GITHUB_ENV
+        run: echo "APK_NAME=Mica.Debug.${{ github.ref_name }}.Nightly-CI_${{ github.run_number }}-$(echo ${{ github.sha }} | cut -c1-7).apk" >> $GITHUB_ENV
       - name: Rename .apk file
         run: mv "./lawnWithQuickstepNightly/release/"*.apk "./$APK_NAME"
       - name: Delete release if exist then create release
@@ -164,4 +152,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag
-          gh release create "nightly" "./$APK_NAME" -p -t "Lawnchair Nightly" --generate-notes
+          gh release create "nightly" "./$APK_NAME" -p -t "Mica Nightly" --generate-notes

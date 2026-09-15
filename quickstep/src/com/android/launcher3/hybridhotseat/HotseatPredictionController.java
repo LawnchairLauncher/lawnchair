@@ -18,7 +18,7 @@ package com.android.launcher3.hybridhotseat;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
-import static com.android.launcher3.hybridhotseat.HotseatEduController.getLawnchairSettingsIntent;
+import static com.android.launcher3.hybridhotseat.HotseatEduController.getMicaSettingsIntent;
 import static com.android.launcher3.hybridhotseat.HotseatEduController.getSettingsIntent;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_PREDICTION_PINNED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
@@ -38,7 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.mica.preferences2.PreferenceManager2;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -68,7 +68,7 @@ import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.views.Snackbar;
 
-import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.mica.preferences2.PreferenceCacheExtensionsKt;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,8 +112,8 @@ public class HotseatPredictionController implements DragController.DragListener,
         if (mEnableHotseatLongPressTipForTesting && !HOTSEAT_LONGPRESS_TIP_SEEN.get(mLauncher)) {
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
-                    // LC-Note: Start Lawnchair prediction settings instead of AOSP
-                    () -> mLauncher.startActivity(getLawnchairSettingsIntent(mLauncher)));
+                    // LC-Note: Start Mica prediction settings instead of AOSP
+                    () -> mLauncher.startActivity(getMicaSettingsIntent(mLauncher)));
             LauncherPrefs.get(mLauncher).put(HOTSEAT_LONGPRESS_TIP_SEEN, true);
             mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             return true;

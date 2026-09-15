@@ -19,7 +19,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.widget.EdgeEffect;
 
-import app.lawnchair.ui.StretchEdgeEffect;
+import app.mica.ui.StretchEdgeEffect;
 
 /**
  * Extension of {@link EdgeEffect} which translates the content instead of the default

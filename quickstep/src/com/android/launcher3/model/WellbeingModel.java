@@ -282,7 +282,7 @@ public final class WellbeingModel implements SafeCloseable {
         final LauncherApps mLauncherApps = mContext.getSystemService(LauncherApps.class);
         List<LauncherActivityInfo> apps;
         
-        // Lawnchair-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
+        // Mica-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
         // Ref: https://issuetracker.google.com/issues/547643926
         if (TextUtils.isEmpty(packageName)) {
             try {

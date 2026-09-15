@@ -21,7 +21,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.pm.LauncherApps.ArchiveCompatibilityParams
-import app.lawnchair.icons.LawnchairIconProvider
+import app.mica.icons.MicaIconProvider
 import com.android.launcher3.BuildConfigs
 import com.android.launcher3.Flags
 import com.android.launcher3.InvariantDeviceProfile
@@ -57,7 +57,7 @@ constructor(
     private val themeManager: ThemeManager,
     private val userCache: UserCache,
     private val settingsCache: SettingsCache,
-    private val iconProvider: LawnchairIconProvider,
+    private val iconProvider: MicaIconProvider,
     private val customWidgetManager: CustomWidgetManager,
     private val installSessionHelper: InstallSessionHelper,
     private val lifeCycle: DaggerSingletonTracker,
