@@ -100,12 +100,21 @@ class BatteryStatusProvider(context: Context) :
             if (voltageMilliVolts <= 0 || currentMicroAmps == Long.MIN_VALUE) return 0f
 
             // Some devices report negative current when charging
-            val currentAmps = abs(currentMicroAmps).toFloat() / 1_000_000f
+            val currentAmps = abs(currentMicroAmps).toFloat()
+
+            // If the ampere reading is suspiciously low, then the unit may be in milliampere
+            // instead of microampere.
+            val normalizedAmps = if (currentAmps < 10_000) {
+                currentAmps / 1_000f // Milliampere
+            } else {
+                currentAmps / 1_000_000f // Microampere
+            }
+
             val voltageVolts = voltageMilliVolts.toFloat() / 1000f
 
-            val powerWatts = currentAmps * voltageVolts
+            val powerWatts = normalizedAmps * voltageVolts
 
-            Log.d("BatteryStatusProvider", "Power: ${"%.2f".format(powerWatts)}W, Voltage:${voltageVolts}V, Amp: ${currentAmps}A")
+            Log.d("BatteryStatusProvider", "Power: ${"%.2f".format(powerWatts)}W, Voltage:${voltageVolts}V, Raw Amp: $currentAmps, Normalized Amp: ${normalizedAmps}A")
 
             return powerWatts
         }.getOrDefault(0f)
