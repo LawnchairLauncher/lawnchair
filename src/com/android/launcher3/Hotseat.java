@@ -58,6 +58,8 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import com.android.launcher3.folder.FolderIcon;
+
 import app.lawnchair.hotseat.DisabledHotseat;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.hotseat.HotseatPagedView;
@@ -270,6 +272,37 @@ public class Hotseat extends FrameLayout implements Insettable {
             return false;
         }
         return layout.getParent() == mPagedView;
+    }
+
+    /**
+     * Lawnchair: Icon swipe gesture feature -- mirrors
+     * {@link Workspace#isTouchOnIconWithSwipeGesture}, so touch controllers back off a dock
+     * icon's own swipe gesture (e.g. a cover-mode folder) the same way they already do for one
+     * on the workspace. {@code dragLayerX}/{@code dragLayerY} are in the activity's drag layer
+     * coordinate space.
+     */
+    public boolean isTouchOnIconWithSwipeGesture(float dragLayerX, float dragLayerY, boolean vertical) {
+        for (CellLayout page : getPageLayouts()) {
+            if (page == null) {
+                continue;
+            }
+            float[] coord = new float[]{dragLayerX, dragLayerY};
+            mActivity.getDragLayer().mapCoordInSelfToDescendant(page, coord);
+            if (!Utilities.pointInView(page, coord[0], coord[1], 0)) {
+                continue;
+            }
+            View touchedIcon = Workspace.findIconInCellLayout(page, coord[0], coord[1]);
+            if (touchedIcon instanceof BubbleTextView bubbleTextView) {
+                return vertical
+                        ? bubbleTextView.hasConfiguredVerticalIconSwipeGesture()
+                        : bubbleTextView.hasConfiguredHorizontalIconSwipeGesture();
+            }
+            if (touchedIcon instanceof FolderIcon folderIcon && vertical) {
+                return folderIcon.hasConfiguredVerticalIconSwipeGesture();
+            }
+            return false;
+        }
+        return false;
     }
 
     /**
