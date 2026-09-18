@@ -130,6 +130,8 @@ sealed class QsbSearchProvider(
             DuckDuckGo,
             Ecosia,
             Presearch,
+            Perplexity,
+            Yahoo,
             Bing,
             Brave,
             Yandex,
