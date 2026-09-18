@@ -130,6 +130,7 @@ sealed class QsbSearchProvider(
             DuckDuckGo,
             Ecosia,
             Presearch,
+            MetaGer,
             Bing,
             Brave,
             Yandex,
