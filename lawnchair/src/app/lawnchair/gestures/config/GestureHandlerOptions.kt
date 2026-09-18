@@ -2,6 +2,7 @@ package app.lawnchair.gestures.config
 
 import android.app.Activity
 import android.content.Context
+import android.os.ResultReceiver
 
 val gestureHandlerOptions = listOf(
     GestureHandlerOption.NoOp,
@@ -26,7 +27,10 @@ fun filterGestureHandlerOptions(deckLayoutEnabled: Boolean): List<GestureHandler
     return gestureHandlerOptions.filterNot { it in optionsDisabledInDeckLayout }
 }
 
-suspend fun GestureHandlerOption.buildConfigFrom(context: Context): GestureHandlerConfig? {
+suspend fun GestureHandlerOption.buildConfigFrom(
+    context: Context,
+    resultReceiver: ResultReceiver? = null,
+): GestureHandlerConfig? {
     val activity = context as? Activity ?: return null
-    return buildConfig(activity)
+    return buildConfig(activity, resultReceiver)
 }

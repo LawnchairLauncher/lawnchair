@@ -55,10 +55,20 @@ fun GestureHandlerPreference(
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
 
     val currentConfig = adapter.state.value
+    val selectionReceiver = remember(adapter) {
+        object : ResultReceiver(Handler(Looper.getMainLooper())) {
+            override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                if (resultCode != android.app.Activity.RESULT_OK) return
+
+                val configString = resultData?.getString(GestureHandlerOption.EXTRA_CONFIG) ?: return
+                adapter.onChange(GestureHandlerConfig.fromString(configString))
+            }
+        }
+    }
 
     fun onSelect(option: GestureHandlerOption) {
         scope.launch {
-            val config = option.buildConfigFrom(context) ?: return@launch
+            val config = option.buildConfigFrom(context, selectionReceiver) ?: return@launch
             adapter.onChange(config)
         }
     }
@@ -89,7 +99,7 @@ fun GestureHandlerPreference(
                             if (index > 0) {
                                 PreferenceDivider(startIndent = 40.dp)
                             }
-                            val selected = currentConfig::class.java == option.configClass
+                            val selected = option.isSelected(currentConfig)
                             PreferenceTemplate(
                                 title = { Text(option.getLabel(context)) },
                                 onClick = {
