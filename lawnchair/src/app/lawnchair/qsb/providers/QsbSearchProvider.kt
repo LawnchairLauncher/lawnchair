@@ -127,6 +127,7 @@ sealed class QsbSearchProvider(
             Sesame,
             Wikipedia,
             GitHub,
+            YouCom,
             DuckDuckGo,
             Ecosia,
             Presearch,
