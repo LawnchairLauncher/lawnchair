@@ -59,6 +59,12 @@ public class FolderInfo extends CollectionInfo {
     public static final int FLAG_MANUAL_FOLDER_NAME = 0x00000008;
 
     /**
+     * Lawnchair: Folder displays as its first app's icon and launches that app directly on tap;
+     * swiping up still opens the folder. See {@code app.lawnchair.folder.FolderCoverMode}.
+     */
+    public static final int FLAG_COVER_MODE = 0x00000010;
+
+    /**
      * Different states of folder label.
      */
     public enum LabelState {
