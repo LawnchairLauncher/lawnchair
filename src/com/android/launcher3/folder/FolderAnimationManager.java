@@ -20,7 +20,6 @@ import static android.view.View.ALPHA;
 
 import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderGridOrganizer.createFolderGridOrganizer;
 
 import android.animation.Animator;
@@ -105,7 +104,7 @@ public class FolderAnimationManager implements FolderAnimationCreator {
 
         mContext = folder.getContext();
         mDeviceProfile = folder.mActivityContext.getDeviceProfile();
-        mPreviewVerifier = createFolderGridOrganizer(mDeviceProfile);
+        mPreviewVerifier = createFolderGridOrganizer(mContext, mDeviceProfile);
 
         mIsOpening = true;
 
@@ -377,7 +376,7 @@ public class FolderAnimationManager implements FolderAnimationCreator {
                 isOnFirstPage ? 0 : mFolder.mContent.getCurrentPage());
         final int numItemsInPreview = itemsInPreview.size();
         final int numItemsInFirstPagePreview = isOnFirstPage
-                ? numItemsInPreview : MAX_NUM_ITEMS_IN_PREVIEW;
+                ? numItemsInPreview : mPreviewVerifier.getPreviewMaxItems();
 
         TimeInterpolator previewItemInterpolator = getPreviewItemInterpolator();
 
@@ -429,7 +428,7 @@ public class FolderAnimationManager implements FolderAnimationCreator {
             scaleAnimator.setInterpolator(previewItemInterpolator);
             play(animatorSet, scaleAnimator);
 
-            if (mFolder.getItemCount() > MAX_NUM_ITEMS_IN_PREVIEW) {
+            if (mFolder.getItemCount() > mPreviewVerifier.getPreviewMaxItems()) {
                 // These delays allows the preview items to move as part of the Folder's motion,
                 // and its only necessary for large folders because of differing interpolators.
                 int delay = mIsOpening ? mDelay : mDelay * 2;
@@ -479,7 +478,7 @@ public class FolderAnimationManager implements FolderAnimationCreator {
     }
 
     private boolean isLargeFolder() {
-        return mFolder.getItemCount() > MAX_NUM_ITEMS_IN_PREVIEW;
+        return mFolder.getItemCount() > mPreviewVerifier.getPreviewMaxItems();
     }
 
     private Interpolator getPreviewItemInterpolator() {

@@ -1377,6 +1377,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     private void updateItemLocationsInDatabaseBatch(boolean isBind) {
         FolderGridOrganizer verifier = createFolderGridOrganizer(
+                mActivityContext.asContext(),
                 mActivityContext.getDeviceProfile()
         ).setFolderInfo(mInfo);
 
@@ -1717,6 +1718,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         if (!mSuppressContentUpdate) {
             FolderGridOrganizer verifier = createFolderGridOrganizer(
+                    mActivityContext.asContext(),
                     mActivityContext.getDeviceProfile()).setFolderInfo(mInfo);
             verifier.updateRankAndPos(item, rank);
             mActivityContext.getModelWriter().addOrMoveItemInDatabase(item, mInfo.id, 0,
