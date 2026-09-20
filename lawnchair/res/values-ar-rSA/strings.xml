@@ -184,7 +184,7 @@
     <string name="gesturenavcontract_warning_incompatibility">جهازك غير مدعوم بالكامل. قد يتسبب ذلك في مشكلات بصرية لبعض الرسوم المتحركة.</string>
     <string name="vibration_feedback_level_label">Vibration feedback level</string>
     <string name="vibration_feedback_no_feedback_choice">لا أحد</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_minimal_choice">بسيط</string>
     <string name="vibration_feedback_default_choice">افتراضي</string>
     <string name="vibration_feedback_expressive_choice">معبر</string>
     <string name="recents_lock_unlock">قَفْل التطبيقات</string>
@@ -200,17 +200,18 @@
     -->
     <string name="suggestion_pref_screen_title">اقتراحات</string>
     <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
-    <string name="prediction_mode_label">Suggestions provider</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="app_predictions_label">اقتراحات التطبيق</string>
+    <string name="prediction_mode_label">موفر الاقتراحات</string>
+    <string name="app_predictions_disable_reason_pre_q_description">المِيزة تتطلب أندرويد 10 فما فوق</string>
     <string name="prediction_mode_system">نظام</string>
     <string name="prediction_mode_none">معطل</string>
-    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
-    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
-    <string name="dismissed_prediction_apps_label">Blocked apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
-    <string name="prediction_system_settings">Manage system suggestions</string>
-    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="prediction_weighted_usage_stats_label">استخدام بيانات استخدام الهاتف</string>
+    <string name="prediction_weighted_usage_stats_description">استخدم إحصائيات استخدام هاتفك لجعل
+الاقتراحات أكثر دِقَّة</string>
+    <string name="dismissed_prediction_apps_label">التطبيقات المحظورة</string>
+    <string name="dismissed_prediction_apps_label_with_count">التطبيقات المحظورة (%1$d)</string>
+    <string name="prediction_system_settings">أدارة اقتراحات النظام</string>
+    <string name="missing_usage_access_label">مطلوب الوصول إلى الاستخدام</string>
     <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
@@ -643,7 +644,7 @@
     <string name="open_in_store_drop_target_label">فتح في المتجر</string>
     <string name="dock_icons">أيقونات شريط Dock</string>
     <string name="dock_rows">صفوف Dock</string>
-    <string name="dock_pages">Dock pages</string>
+    <string name="dock_pages">صفحة المرسى</string>
     <string name="state_folded">%1$s (مطوي)</string>
     <string name="state_unfolded">%1$s (غير مطوي)</string>
     <string name="folded_label">مطوي</string>
