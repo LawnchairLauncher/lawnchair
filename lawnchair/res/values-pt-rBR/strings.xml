@@ -46,7 +46,7 @@
     <string name="download_update">Baixar atualização</string>
     <string name="install_update">Instalar atualização</string>
     <string name="view_changes">Exibir alterações</string>
-    <string name="pro_updated">\"Você Atualizou para a versão Pro\"</string>
+    <string name="pro_updated">Você está atualizado</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Atualizações</string>
     <string name="changes_dialog_error">Não possível carregar atualizações</string>
@@ -210,8 +210,8 @@
     <string name="dismissed_prediction_apps_label">Aplicativos bloqueados</string>
     <string name="dismissed_prediction_apps_label_with_count">Aplicativos bloqueados (%1$d)</string>
     <string name="prediction_system_settings">Gerenciar sugestões do sistema</string>
-    <string name="missing_usage_access_label">Usage access needed</string>
-    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <string name="missing_usage_access_label">Requer acesso ao uso</string>
+    <string name="missing_usage_access_desc">Para aprimorar as sugestões de aplicativo, ative o acesso ao uso para <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -557,13 +557,13 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="auto_updater_label">Automaticamente procurar por atualizações</string>
     <string name="auto_updater_description">Procura por atualizações Nightly quando abrir a tela de sobre</string>
     <string name="live_information_label">Informação ao vivo</string>
-    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
+    <string name="live_information_description">Mostra anúncio, e define os sinais de recurso padrão</string>
     <string name="wallpaper_blur">Desfoque no papel de parede (experimental)</string>
     <string name="wallpaper_background_blur">Intensidade do desfoque</string>
     <string name="wallpaper_background_blur_factor">Limite de fator</string>
     <string name="home_lawn_deck_label">Deck</string>
     <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_description">Acesse seus aplicativos sem esforço com o Deck, uma experiência sem gaveta de aplicativos, oferecendo simplicidade e organização fluída</string>
     <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à tela inicial</string>
     <string name="minus_one_enable">Mostrar o feed</string>
     <string name="minus_one_unavailable">Nenhum aplicativo de feed instalado</string>
@@ -632,7 +632,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="hotseat_bg_vertical_inset_top">Margem superior</string>
     <string name="hotseat_bg_vertical_inset_bottom">Margem inferior</string>
     <string name="hotseat_bg_color_label">Cor de fundo</string>
-    <string name="hotseat_bg_corner_radius">Background corner radius</string>
+    <string name="hotseat_bg_corner_radius">Rádio dos cantos do fundo</string>
     <string name="hotseat_bg_alpha">Opacidade do fundo</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pausar</string>
@@ -678,7 +678,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="app_drawer_haptic_feedback_label">Feedback Tático/Vibração</string>
     <string name="app_drawer_indent_label">Preenchimento horizontal</string>
     <string name="app_drawer_bg_color_label">Cor de fundo</string>
-    <string name="work_profile_tab_background_label">Tab background color</string>
+    <string name="work_profile_tab_background_label">Cor de fundo da aba</string>
     <string name="pref_all_apps_search_bar_background">Mostrar plano de fundo atrás da barra de busca</string>
     <string name="work_profile_tab_container_background_label">Mostrar plano de fundo atrás das abas</string>
     <!-- HiddenAppsPreferences -->

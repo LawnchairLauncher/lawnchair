@@ -686,7 +686,6 @@
     <plurals name="apps_count">
         <item quantity="one">%1$d app</item>
         <item quantity="two">%1$d apps</item>
-        <item quantity="many">%1$d apps</item>
         <item quantity="other">%1$d apps</item>
     </plurals>
     <!-- Folder settings -->
