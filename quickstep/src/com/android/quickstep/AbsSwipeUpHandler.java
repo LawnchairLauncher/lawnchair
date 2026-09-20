@@ -81,6 +81,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -1687,8 +1688,19 @@ public abstract class AbsSwipeUpHandler<
             boolean hasValidLeash = runningTaskTarget != null
                     && runningTaskTarget.leash != null
                     && runningTaskTarget.leash.isValid();
+
+            boolean enableDesktopWindowingPipCompat = false;
+            // Literal int because https://github.com/LawnchairLauncher/lawnchair/issues/6817
+            if (Build.VERSION.SDK_INT >= 36 && Build.VERSION.SDK_INT_FULL >= 3600001) {
+                try {
+                    enableDesktopWindowingPipCompat = DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP.isTrue();
+                } catch (Exception e) {
+                    Log.d("LC-AbsSwipeUpHandler", "Failed to get ENABLE_DESKTOP_WINDOWING_PIP flag, defaulting to false", e);
+                }
+            }
+            
             final boolean swipeUpInDesktopWindowing =
-                    DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP.isTrue()
+                    enableDesktopWindowingPipCompat
                             && runningTaskTarget != null
                             && runningTaskTarget.taskInfo.getWindowingMode()
                             == WINDOWING_MODE_FREEFORM;

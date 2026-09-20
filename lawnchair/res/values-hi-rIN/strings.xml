@@ -38,29 +38,29 @@
     <string name="action_copy">कॉपी</string>
     <string name="action_paste">पेस्ट</string>
     <string name="action_done">हो गया</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">सभी चुनें</string>
+    <string name="deselect_all">सभी चयन हटाएँ</string>
+    <string name="inverse_selection">चयन उलटें</string>
     <string name="loading">हो रहा है...</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="view_changes">View changes</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="dismiss">निरस्त करें</string>
+    <string name="download_update">अपडेट डाउनलोड करें</string>
+    <string name="install_update">अपडेट स्थापित करें</string>
+    <string name="view_changes">बदलाव देखें</string>
+    <string name="pro_updated">आप नवीनतम संस्करण पर हैं</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">अपडेट</string>
+    <string name="changes_dialog_error">अपडेट लोड नहीं हो सके</string>
+    <string name="changes_dialog_no_changes">कोई बदलाव नहीं मिले</string>
+    <string name="changes_dialog_build_format">बिल्ड #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">%1$s • %2$s • %3$s द्वारा</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_just_now">अभी</string>
+    <string name="time_minutes_ago">%dमिनट पहले</string>
+    <string name="time_hours_ago">%dघंटे पहले</string>
+    <string name="time_days_ago">%dदिन पहले</string>
+    <string name="time_weeks_ago">%dहफ्ते पहले</string>
+    <string name="time_months_ago">%dमाह पहले</string>
+    <string name="time_years_ago">%dवर्ष पहले</string>
     <string name="managed_by_lawnchair">Lawnchair द्वारा प्रबंधित</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">पसंद</string>
@@ -72,7 +72,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">अन्य</string>
     <!-- Selection options -->
     <string name="dynamic">क्रियाशील</string>
     <string name="presets">पूर्व निर्धारित</string>
@@ -87,48 +87,48 @@
     <string name="grid">ग्रिड</string>
     <string name="layout">लेआउट</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">पृष्ठचित्र दिखाएँ</string>
     <string name="wallpaper">वॉलपेपर</string>
-    <string name="style">Style</string>
+    <string name="style">शैली</string>
     <string name="background_opacity">पृष्ठभूमि अपारदर्शिता</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">क्लिपबोर्ड पर कॉपी किया गया</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">परिणाम कॉपी किया गया</string>
     <string name="item_removed">आइटम हटाया गया</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">क्या दिखाएं?</string>
-    <string name="wallpapers">Wallpapers</string>
-    <string name="caddy_beta">Caddy (beta)</string>
-    <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="wallpapers">पृष्ठचित्र</string>
+    <string name="caddy_beta">कैडी (परीक्षण संस्करण)</string>
+    <string name="caddy">कैडी</string>
+    <string name="app_drawer_folder">ऐप सूची फोल्डर</string>
+    <string name="selected_apps">चयनित ऐप</string>
+    <string name="add_apps">ऐप जोड़ें</string>
+    <string name="app_drawer_folder_settings">ऐप सूची फ़ोल्डर प्रबंधन</string>
+    <string name="add_folder">फ़ोल्डर बनाएँ</string>
+    <string name="edit_folder">फ़ोल्डर में बदलाव करें</string>
+    <string name="add_label">जोड़ें</string>
+    <string name="edit_label">बदलाव करें</string>
     <string name="apply_label">ओके</string>
     <string name="delete_label">नष्ट करे</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="folder_list_note">बदलाव करने हेतु बाईं ओर अंगुली खिसकाएँ, हटाने हेतु दाईं ओर अंगुली खिसकाएँ, या चीज़ों को अपडेट करने के लिए स्क्रिन को एक बार छूएँ</string>
+    <string name="apps_in_folder_label">फ़ोल्डर ऐप छिपाएँ</string>
+    <string name="apps_in_folder_description">फ़ोल्डर में जोड़े गए ऐप, ऐप सूची से हट जाते हैं</string>
+    <string name="folders_filter_duplicates">केवल अद्वितीय ऐप दिखाएँ</string>
+    <string name="my_folder_label">फ़ोल्डर</string>
+    <string name="sort_active_items_action">सक्रिय चीज़ों को क्रमबद्ध करें</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s और %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">उन्नत</string>
     <!-- Draggable -->
-    <string name="reorderable_move_up">Move up</string>
-    <string name="reorderable_move_down">Move down</string>
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_move_up">ऊपर ले जाएँ</string>
+    <string name="reorderable_move_down">नीचे ले जाएँ</string>
+    <string name="reorderable_active_items">सक्रिय चीज़ें</string>
+    <string name="reorderable_disabled_items">अन्य चीज़ें</string>
+    <string name="reorderable_disabled_hint">निष्क्रिय चीज़ें यहाँ दिखेंगी</string>
+    <string name="reorderable_add_hint_items">सक्रिय चीज़ें यहाँ दिखेंगी</string>
     <!--
 
     Preference Dashboard
@@ -139,88 +139,88 @@
     <string name="general_description">रंग, आइकन पैक, अधिसूचना बिंदु</string>
     <string name="home_screen_label">होम स्क्रीन</string>
     <string name="home_screen_description">फ़ीड, ग्रिड, चिह्न</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">होम स्क्रीन क्रियाएँ</string>
     <string name="dock_label">गोदी</string>
     <string name="dock_description">खोज बार, आइकन गिनती</string>
     <string name="app_drawer_label">अनुप्रयोग का दराज</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="app_drawer_description">छिपे ऐप, स्तम्भ, चिह्न</string>
+    <string name="drawer_search_label">ऐप सूची में खोजें</string>
+    <string name="drawer_search_description">वेब सुझाव, सार्वभौमिक खोज</string>
     <string name="folders_label">फ़ोल्डर</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">पंक्ति व स्तम्भ संख्या</string>
     <string name="gestures_label">जेस्चर</string>
-    <string name="gestures_description">Taps and swipes</string>
-    <string name="quickstep_label">Recents screen</string>
-    <string name="quickstep_description">Clear all button, corner radius</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="gestures_description">स्क्रीन छूना व स्क्रीन पर अंगुली खिसकाना</string>
+    <string name="quickstep_label">हाल ही के ऐप</string>
+    <string name="quickstep_description">“सब साफ़ करें” बटन, कोने की त्रिज्या</string>
+    <string name="backup_and_restore_label">बैकअप व पुनर्प्राप्ति</string>
+    <string name="backup_and_restore_description">वर्तमान व्यवस्था सहेजें, बैकअप पुनर्स्थापित करें</string>
     <string name="about_label">बारे में</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">ऐप विवरण</string>
     <string name="debug_restart_launcher">लॉन चेयर को दोबारा खोलें</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">प्रयोगात्मक सुविधाएँ</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
-    <string name="font_picker_label">Font customization</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="workspace_label">कार्य स्थान</string>
+    <string name="smartspace_label">उन्नत जगह</string>
+    <string name="internal_label">आंतरिक</string>
+    <string name="internal_description">\'आंतरिक\' अन्य प्रयोगात्मक समूहों की अपेक्षा कम स्थिर हो सकता है</string>
+    <string name="font_picker_label">अक्षरों को पसंद के अनुसार बदलें</string>
+    <string name="font_picker_description">कुछ लेख अपरिवर्तनीय रहते हैं</string>
+    <string name="smartspace_calendar_label">\'एक नज़र में\' कैलेंडर को पसंद के अनुसार बदलें</string>
+    <string name="smartspace_calendar_description">तारीख को ग्रेगोरियन के अतिरिक्त अन्य कैलेंडरों में दिखाएँ</string>
+    <string name="workspace_increase_max_grid_size_label">अधिकतम ग्रिड आकार की सीमा बढ़ाएँ</string>
+    <string name="workspace_increase_max_grid_size_description">अधिकतम होम स्क्रीन ग्रिड आकार को 10 &#xd7; 10 से 20 &#xd7; 20 तक बढ़ाएँ</string>
+    <string name="always_reload_icons_label">हमेशा चिह्न पुनः लोड करें</string>
     <string name="always_reload_icons_description">आइकन पैक से कैश्ड आइकन का उपयोग करने से बचें</string>
-    <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
+    <string name="always_reload_icons_warning">इससे चिह्न नियमित रूप से पुनः लोड होंगे, प्रदर्शन पर प्रभाव पड़ेगा। अगर चिह्न पैक बार-बार अपडेट नहीं होते हैं, तो इसे बंद रखें।</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
-    <string name="folder_shape_label">Folder shape</string>
-    <string name="folder_label">Folder</string>
+    <string name="material_expressive_label">मटेरियल 3 एक्सप्रेसिव</string>
+    <string name="material_expressive_description">मटेरियल 3 एक्सप्रेसिव में किए बदलाव कार्यस्थान में सक्रिय करें</string>
+    <string name="folder_shape_label">फ़ोल्डर आकृति</string>
+    <string name="folder_label">फ़ोल्डर</string>
     <string name="app_icon_shape_label">ऐप</string>
-    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
-    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
-    <string name="vibration_feedback_level_label">Vibration feedback level</string>
-    <string name="vibration_feedback_no_feedback_choice">None</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="gesturenavcontract_label">GestureNavContract API का उपयोग करें</string>
+    <string name="gesturenavcontract_description">जेस्चर संचालन का उपयोग करने पर एन्ड्रॉइड के बेहतर किए गए एनिमेशनों का समर्थन करें</string>
+    <string name="gesturenavcontract_warning_incompatibility">यह डिवाइस पूरी तरह समर्थित नहीं है। इससे कुछ एनिमेशनों में दृश्य संबंधित समस्या हो सकती है।</string>
+    <string name="vibration_feedback_level_label">कंपन प्रतिक्रिया स्तर</string>
+    <string name="vibration_feedback_no_feedback_choice">शून्य</string>
+    <string name="vibration_feedback_minimal_choice">कम</string>
     <string name="vibration_feedback_default_choice">पहले जैसा</string>
-    <string name="vibration_feedback_expressive_choice">Expressive</string>
-    <string name="recents_lock_unlock">App locking</string>
-    <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
+    <string name="vibration_feedback_expressive_choice">जीवंत</string>
+    <string name="recents_lock_unlock">ऐप सुरक्षित करना</string>
+    <string name="recents_lock_unlock_description">“सब साफ़ करें” को छूने पर चुने गए ऐप को बंद होने से रोकें</string>
     <!--Overlay-->
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_fade_in">Fade in</string>
-    <string name="overlay_suck_in">Suck in</string>
-    <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="app_closing_animation">ऐप बंद होने की एनिमेशन</string>
+    <string name="overlay_fade_in">ऐप धीरे से लुप्त हो</string>
+    <string name="overlay_suck_in">अंदर खिंचे</string>
+    <string name="overlay_label">ऊपरी परत</string>
+    <string name="overlay_none">कोई नहीं</string>
     <!--
     App suggestions
     -->
     <string name="suggestion_pref_screen_title">सुझाव</string>
-    <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
-    <string name="prediction_mode_label">Suggestions provider</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="global_predictions_label">सुविधाओं के सुझाव</string>
+    <string name="app_predictions_label">ऐप सुझाव</string>
+    <string name="prediction_mode_label">सुझाव प्रदाता</string>
+    <string name="app_predictions_disable_reason_pre_q_description">इस सुविधा के ‘एन्ड्रॉइड 10 या उससे ऊपर’ के संस्करण की आवश्यकता है</string>
     <string name="prediction_mode_system">तंत्र</string>
     <string name="prediction_mode_none">बंद</string>
-    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
-    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
-    <string name="dismissed_prediction_apps_label">Blocked apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
-    <string name="prediction_system_settings">Manage system suggestions</string>
-    <string name="missing_usage_access_label">Usage access needed</string>
-    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <string name="prediction_weighted_usage_stats_label">डिवाइस उपयोग जानकारी का उपयोग करें</string>
+    <string name="prediction_weighted_usage_stats_description">सुझावों को ज़्यादा सटीक बनाने के लिए अपने डिवाइस के इस्तेमाल से जुड़े आँकड़ों का इस्तेमाल करें</string>
+    <string name="dismissed_prediction_apps_label">प्रतिबंधित ऐप</string>
+    <string name="dismissed_prediction_apps_label_with_count">प्रतिबंधित ऐप (%1$d)</string>
+    <string name="prediction_system_settings">सिस्टम के सुझावों का प्रबंधन करें</string>
+    <string name="missing_usage_access_label">उपयोग तक पहुँच की आवश्यकता है</string>
+    <string name="missing_usage_access_desc">ऐप सुझाव बेहतर करने के लिए, <xliff:g id="name" example="Lawnchair">%1$s</xliff:g> के लिए उपयोग तक पहुँच अनुमत करें</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
+    <string name="set_default_launcher_tip">शॉर्टकट और अतिरिक्त सुविधाओं का उपयोग करने के लिए, Lawnchair को अपना डिफ़ॉल्ट लॉन्चर सेट करें</string>
+    <string name="notification_dots">सूचना बिंदु</string>
     <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
+    <string name="notification_dots_color">सूचना बिंदु का रंग</string>
     <string name="notification_dots_text_color">Notification counter color</string>
     <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
@@ -230,31 +230,31 @@
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Icon style</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
-    <string name="icon_shape_label">Icon shape</string>
-    <string name="icon_sizes">Icon size</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="icon_style_label">चिह्न शैली</string>
+    <string name="apply_icon_pack_title">चिह्न पैक लागू करें</string>
+    <string name="icon_shape_label">चिह्न आकृति</string>
+    <string name="icon_sizes">चिह्न आकार</string>
+    <string name="show_labels">नाम दिखाएँ</string>
+    <string name="label_size">नाम का आकार</string>
+    <string name="twoline_label">एक से अधिक पंक्तियाँ</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
-    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
-    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
-    <string name="background_lightness_label">Background lightness</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
+    <string name="transparent_background_icons_label">पारदर्शी चिह्न पार्श्वभूमि</string>
+    <string name="transparent_background_icons_description">थीम वाले व स्वतः समायोजी चिह्नों के लिए</string>
+    <string name="auto_adaptive_icons_label">स्वतः समायोजी चिह्न</string>
+    <string name="auto_adaptive_icons_description">सभी असमायोजी चिह्नों के लिए</string>
+    <string name="shadow_bg_icons_label">चिह्नों के पीछे छाया</string>
+    <string name="background_lightness_label">पार्श्वभूमि उज्ज्वलता</string>
+    <string name="adaptive_icon_background_description">सफ़ेद के लिए 100% पार्श्वभूमि उज्ज्वलता का उपयोग करें</string>
     <string name="reset_custom_icons">Reset custom icons</string>
     <string name="reset_custom_icons_confirmation">सभी कस्टम आइकन रीसेट होंगें। क्या आप जारी रखना चाहते हैं?</string>
-    <string name="remove_all_views_from_home_screen">Clear home screen</string>
-    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
+    <string name="remove_all_views_from_home_screen">मुख्य स्क्रीन खाली करें</string>
+    <string name="remove_all_views_from_home_screen_desc">मुख्य स्क्रीन खाली हो जाएगी। क्या आप इसपर आगे बढ़ना चाहते हैं?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">चिह्न</string>
     <string name="icon_picker_reset_to_default">डिफॉल्ट पर रीसेट करें</string>
-    <string name="icon_pack_external_picker">Open external picker</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
-    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="icon_pack_external_picker">वाह्य चयनकर्ता खोलें</string>
+    <string name="pick_icon_from_label">चिह्न यहाँ से चुनें</string>
+    <string name="icon_picker_load_failed">और अधिक चिह्न लोड नहीं हो सके</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">तंत्र</string>
     <string name="icon_shape_circle">गोल</string>
@@ -263,10 +263,10 @@
     <string name="icon_shape_egg">अंडाकार</string>
     <string name="icon_shape_cupertino">आईओएस</string>
     <string name="icon_shape_octagon">अष्टकोण</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">षट्भुज</string>
     <string name="icon_shape_sammy">वन यूआई</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
+    <string name="icon_shape_rounded_square">गोल कोनों वाला वर्ग</string>
+    <string name="icon_shape_sharp_square">वर्ग</string>
     <string name="icon_shape_square">चौकोर</string>
     <string name="icon_shape_squircle">स्क्विर्कल</string>
     <string name="icon_shape_teardrop">अश्रु</string>
@@ -277,45 +277,45 @@
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
     <!-- Additional icon shapes -->
-    <string name="icon_shape_cloudy">Cloudy</string>
-    <string name="icon_shape_flower">Flower</string>
-    <string name="icon_shape_heart">Heart</string>
-    <string name="icon_shape_leaf">Leaf</string>
+    <string name="icon_shape_cloudy">बादल</string>
+    <string name="icon_shape_flower">फूल</string>
+    <string name="icon_shape_heart">दिल</string>
+    <string name="icon_shape_leaf">पत्ता</string>
     <string name="icon_shape_meow">Meow</string>
     <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
-    <string name="icon_shape_stretched">Stretched</string>
+    <string name="icon_shape_roundedhexagon">गोल कोनों वाला षट्भुज</string>
+    <string name="icon_shape_stretched">खिंचा हुआ</string>
     <string name="icon_shape_vessel">Vessel</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
-    <string name="custom_icon_shape_create">Create custom icon shape</string>
-    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
+    <string name="custom_icon_shape">चिह्न आकृति बनाएँ</string>
+    <string name="custom_icon_shape_create">नई चिह्न आकृति बनाएँ</string>
+    <string name="custom_icon_shape_edit">चिह्न आकृति में बदलाव करें</string>
     <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape_create">नई फ़ोल्डर आकृति बनाएँ</string>
+    <string name="custom_folder_shape_edit">फ़ोल्डर आकृति में बदलाव करें</string>
     <string name="custom_icon_shape_corner">Corner shape</string>
     <string name="custom_icon_shape_corner_round">गोलाकार</string>
     <string name="custom_icon_shape_corner_squircle">चिकना</string>
     <string name="custom_icon_shape_corner_cut">कट</string>
-    <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
-    <string name="custom_icon_shape_bottom_right">Bottom right</string>
-    <string name="export_to_clipboard">Export to clipboard</string>
-    <string name="import_from_clipboard">Import from clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <string name="custom_icon_shape_top_left">ऊपर बाएँ</string>
+    <string name="custom_icon_shape_top_right">ऊपर दाएँ</string>
+    <string name="custom_icon_shape_bottom_left">नीचे बाएँ</string>
+    <string name="custom_icon_shape_bottom_right">नीचे दाएँ</string>
+    <string name="export_to_clipboard">क्लिपबोर्ड में निर्यात करें</string>
+    <string name="import_from_clipboard">क्लिपबोर्ड से आयात करें</string>
+    <string name="icon_shape_clipboard_import_error">क्लिपबोर्ड में मान्य चिह्न आकृति नहीं है</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Icon pack</string>
+    <string name="icon_pack">चिह्न पैक</string>
     <string name="themed_icon_pack">Themed icon source</string>
     <string name="themed_icon_pack_tint">Tint with accent color</string>
-    <string name="system_icons">System icons</string>
-    <string name="force_monochrome_label">Force monochrome</string>
+    <string name="system_icons">तंत्र के चिह्न</string>
+    <string name="force_monochrome_label">श्वेत-श्याम लागू करें</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">बंद</string>
-    <string name="themed_icons_home_label">Home screen</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="themed_icons_home_label">मुख्य स्क्रीन</string>
+    <string name="themed_icons_home_and_drawer_label">मुख्य स्क्रीन और ऐप सूची</string>
+    <string name="lawnicons_not_installed_description">कोई समर्थित चिह्न पैक नहीं</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Add fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>

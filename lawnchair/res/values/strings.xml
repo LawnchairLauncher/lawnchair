@@ -842,6 +842,8 @@
     <string name="search_provider_yandex" translatable="false">Yandex</string>
     <string name="search_provider_fennec" translatable="false">Fennec</string>
     <string name="search_provider_firefox" translatable="false">Firefox</string>
+    <string name="search_provider_firefox_beta" translatable="false">Firefox Beta</string>
+    <string name="search_provider_firefox_nightly" translatable="false">Firefox Nightly</string>
     <string name="search_provider_iceraven" translatable="false">Iceraven</string>
     <string name="search_provider_ironfox" translatable="false">IronFox</string>
     <string name="search_provider_waterfox" translatable="false">Waterfox</string>
