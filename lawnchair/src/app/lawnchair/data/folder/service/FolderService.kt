@@ -15,6 +15,7 @@ import com.android.launcher3.util.SafeCloseable
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
@@ -49,6 +50,26 @@ class FolderService @Inject constructor(
     suspend fun saveFolderInfo(title: String) = withContext(Dispatchers.IO) {
         val rank = (folderDao.getMaxFolderRank() ?: -1) + 1
         folderDao.insertFolder(FolderInfoEntity(title = title, rank = rank))
+    }
+
+    suspend fun createFolderWithItem(componentKey: String, title: String) = withContext(Dispatchers.IO) {
+        val rank = (folderDao.getMaxFolderRank() ?: -1) + 1
+        val id = folderDao.insertFolder(FolderInfoEntity(title = title, rank = rank)).toInt()
+        folderDao.insertFolderItems(listOf(FolderItemEntity(folderId = id, rank = 0, componentKey = componentKey)))
+    }
+
+    suspend fun addAppToFolder(folderId: Int, componentKey: String) = withContext(Dispatchers.IO) {
+        val folder = folderDao.getAllFoldersWithItems().first().firstOrNull { it.folder.id == folderId }
+            ?: return@withContext
+        val appAlreadyExists = folder.items.any { it.componentKey == componentKey }
+        if (appAlreadyExists) return@withContext
+
+        val updatedItems = folder.items + FolderItemEntity(
+            folderId = folderId,
+            rank = folder.items.size,
+            componentKey = componentKey,
+        )
+        folderDao.replaceFolderItems(folderId, folder.folder.title, updatedItems)
     }
 
     suspend fun renameFolderInfo(folderId: Int, title: String) = withContext(Dispatchers.IO) {

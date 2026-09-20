@@ -48,6 +48,8 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.views.ActivityContext;
 
+import java.util.Objects;
+
 /**
  * Adapter for all the apps.
  *
@@ -160,6 +162,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
          * as well. Returning true will prevent redrawing of thee item.
          */
         public boolean isContentSame(AdapterItem other) {
+            if (viewType == VIEW_TYPE_FOLDER) {
+                return Objects.equals(folderInfo.title, other.folderInfo.title)
+                        && folderInfo.getContents().equals(other.folderInfo.getContents());
+            }
             return itemInfo == null && other.itemInfo == null;
         }
 

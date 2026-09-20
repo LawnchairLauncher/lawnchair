@@ -56,6 +56,7 @@ import com.android.launcher3.BaseActivity
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.GestureNavContract
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS_PREDICTION
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION
@@ -279,13 +280,24 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
     }
 
-    override fun getSupportedShortcuts(container: Int): Stream<SystemShortcut.Factory<*>> = Stream.concat(
-        super.getSupportedShortcuts(container),
-        Stream.concat(
-            Stream.of(LawnchairShortcut.UNINSTALL, LawnchairShortcut.CUSTOMIZE, LawnchairShortcut.OPEN_IN_STORE),
+    override fun getSupportedShortcuts(container: Int): Stream<SystemShortcut.Factory<*>> {
+        val baseShortcuts = Stream.concat(
+            Stream.of(
+                LawnchairShortcut.UNINSTALL,
+                LawnchairShortcut.CUSTOMIZE,
+                LawnchairShortcut.OPEN_IN_STORE,
+            ),
             if (LawnchairApp.isRecentsEnabled) Stream.of(LawnchairShortcut.PAUSE_APPS) else Stream.empty(),
-        ),
-    )
+        )
+
+        val appDrawerShortcuts = if (container == CONTAINER_ALL_APPS) {
+            Stream.concat(Stream.of(LawnchairShortcut.ADD_TO_FOLDER), baseShortcuts)
+        } else {
+            baseShortcuts
+        }
+
+        return Stream.concat(super.getSupportedShortcuts(container), appDrawerShortcuts)
+    }
 
     fun updateTheme() {
         if (themeProvider.colorScheme != colorScheme) {

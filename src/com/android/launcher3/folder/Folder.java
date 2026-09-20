@@ -694,7 +694,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         reapplyItemInfo();
         // In case any children didn't come across during loading, clean up the folder accordingly
         mFolderIcon.post(() -> {
-            if (getItemCount() <= 1) {
+            if (getItemCount() <= 1 && !isInAppDrawer()) {
                 replaceFolderWithFinalItem();
             }
         });

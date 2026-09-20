@@ -20,14 +20,18 @@ import android.view.View
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.data.folder.service.FolderService
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.ReloadHelper
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK
 import com.android.launcher3.R
@@ -45,6 +49,8 @@ import com.android.launcher3.util.PackageManagerHelper
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.OptionsPopupView
 import java.net.URISyntaxException
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class LawnchairShortcut {
 
@@ -85,6 +91,11 @@ class LawnchairShortcut {
                 ),
                 true,
             ) != null
+        }
+
+        val ADD_TO_FOLDER = SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo: ItemInfo, originalView: View ->
+            if (itemInfo.itemType != ITEM_TYPE_APPLICATION || itemInfo.targetComponent == null) return@Factory null
+            AddToFolder(activity, itemInfo, originalView)
         }
 
         val CUSTOMIZE =
@@ -158,6 +169,59 @@ class LawnchairShortcut {
             }
 
             PauseApps(activity, itemInfo, originalView)
+        }
+    }
+
+    class AddToFolder(
+        target: LawnchairLauncher,
+        itemInfo: ItemInfo,
+        originalView: View,
+    ) : SystemShortcut<LawnchairLauncher>(R.drawable.ic_folder, R.string.add_to_folder_shortcut, target, itemInfo, originalView) {
+
+        override fun onClick(v: View) {
+            val bounds = Rect()
+            mTarget.dragLayer.getDescendantRectRelativeToSelf(mOriginalView, bounds)
+            val itemKey = ComponentKey(mItemInfo.targetComponent, mItemInfo.user).toString()
+            val folderIcon = mTarget.getDrawable(R.drawable.ic_folder)!!
+
+            mTarget.lifecycleScope.launch {
+                val folders = FolderService.INSTANCE.get(mTarget).getFoldersFlow().first()
+                val items = folders.map { folder ->
+                    OptionsPopupView.OptionItem(
+                        folder.title,
+                        folderIcon,
+                        StatsLogManager.LauncherEvent.IGNORE,
+                    ) { _ ->
+                        mTarget.lifecycleScope.launch {
+                            FolderService.INSTANCE.get(mTarget).addAppToFolder(folder.id, itemKey)
+                            ReloadHelper(mTarget).reloadGrid()
+                            LauncherAppState.getInstance(mTarget).model.forceReload()
+                        }
+                        true
+                    }
+                }.toMutableList()
+
+                items.add(
+                    OptionsPopupView.OptionItem(
+                        mTarget.getString(R.string.add_folder),
+                        folderIcon,
+                        StatsLogManager.LauncherEvent.IGNORE,
+                    ) { _ ->
+                        mTarget.lifecycleScope.launch {
+                            FolderService.INSTANCE.get(mTarget).createFolderWithItem(
+                                itemKey,
+                                mTarget.getString(R.string.my_folder_label),
+                            )
+                            ReloadHelper(mTarget).reloadGrid()
+                            LauncherAppState.getInstance(mTarget).model.forceReload()
+                        }
+                        true
+                    },
+                )
+
+                AbstractFloatingView.closeAllOpenViews(mTarget)
+                OptionsPopupView.show<LawnchairLauncher>(mTarget, RectF(bounds), items, true)
+            }
         }
     }
 

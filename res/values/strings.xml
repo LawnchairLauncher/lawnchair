@@ -436,6 +436,7 @@
 
     <!-- Accessibility description to move item into an existing folder. -->
     <string name="add_to_folder">Add to folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
+    <string name="add_to_folder_shortcut">Add to folder</string>
 
     <!-- Accessibility description to move item into an existing folder containing an app. -->
     <string name="add_to_folder_with_app">Add to folder with <xliff:g id="name" example="Messenger">%1$s</xliff:g></string>

@@ -117,7 +117,7 @@ class LawnchairAlphabeticalAppsList<T>(
                     appsStore.getApp(componentKey) as? AppInfo
                 }
 
-                if (resolvedApps.size > 1) {
+                if (resolvedApps.isNotEmpty()) {
                     val folderInfo = FolderInfo().apply {
                         id = folderEntry.id
                         title = folderEntry.title
