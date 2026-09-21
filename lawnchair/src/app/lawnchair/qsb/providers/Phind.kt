@@ -8,6 +8,6 @@ data object Phind : QsbSearchProvider(
     name = R.string.search_provider_phind,
     icon = R.drawable.ic_qsb_search,
     packageName = "",
-    website = "https://www.phind.com/search?q=",
+    website = "https://www.phind.com/search",
     type = QsbSearchProviderType.WEBSITE,
 )
