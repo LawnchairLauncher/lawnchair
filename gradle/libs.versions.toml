@@ -16,7 +16,7 @@ exifinterface = "1.4.2"
 
 guava = "33.7.1-jre"
 junitVersion = "4.13.2"
-mockito = "5.23.0"
+mockito = "5.24.0"
 mockitoKotlin = "6.3.0"
 truth = "1.4.5"
 testRules = "1.7.0"
