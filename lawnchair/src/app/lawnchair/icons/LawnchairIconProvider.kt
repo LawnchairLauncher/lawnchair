@@ -405,11 +405,14 @@ class LawnchairIconProvider @Inject constructor(
             filter.addAction(ACTION_PACKAGE_CHANGED)
             filter.addAction(ACTION_PACKAGE_REMOVED)
             filter.addDataScheme("package")
-            filter.addDataSchemeSpecificPart(themeMapName, 0)
             context.registerReceiver(this, filter, null, handler)
         }
 
         override fun onReceive(context: Context, intent: Intent) {
+            if (intent.data?.schemeSpecificPart != themedIconSourcePref.get()) return
+            synchronized(themeMapLock) {
+                _themeMap = null
+            }
             updateSystemState()
         }
 
