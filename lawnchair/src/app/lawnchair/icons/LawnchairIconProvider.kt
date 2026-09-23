@@ -69,25 +69,25 @@ class LawnchairIconProvider @Inject constructor(
     private val themedIconSource
         get() = iconPackProvider.getIconPack(themedIconSourcePref.get())?.apply { loadBlocking() }
 
+    private val themeMapLock = Any()
     private var themeMapName: String = ""
+    private var themeMapEnabled: Boolean? = null
     private var _themeMap: Map<String, ThemeData>? = null
 
     val themeMap: Map<String, ThemeData>
-        get() {
-            if (!themedIconsEnabled) {
-                _themeMap = DISABLED_MAP
+        get() = synchronized(themeMapLock) {
+            val sourceName = themedIconSource?.packPackageName.orEmpty()
+            val enabled = themedIconsEnabled
+            if (
+                _themeMap == null ||
+                themeMapName != sourceName ||
+                themeMapEnabled != enabled
+            ) {
+                themeMapName = sourceName
+                themeMapEnabled = enabled
+                _themeMap = if (enabled) getThemedIconMap() else DISABLED_MAP
             }
-            if (_themeMap == null) {
-                _themeMap = getThemedIconMap()
-            }
-            if (themedIconSource != null && themeMapName == "") {
-                _themeMap = super.getThemedIconMap()
-            }
-            if (themedIconSource != null && themeMapName != themedIconSource!!.packPackageName) {
-                themeMapName = themedIconSource!!.packPackageName
-                _themeMap = getThemedIconMap()
-            }
-            return _themeMap!!
+            _themeMap!!
         }
 
     val systemIconState = themeManager.iconState
@@ -315,19 +315,18 @@ class LawnchairIconProvider @Inject constructor(
         private val themedIconPackPref = PreferenceManager.getInstance(context).themedIconPackPackage
 
         private val subscription = iconPackPref.subscribeChanges {
-            val newState = themeManager.iconState
-            if (iconState != newState) {
-                iconState = newState
-                updateSystemState()
-                recreateCalendarAndClockChangeReceiver()
-            }
+            updateIconStateIfNeeded()
+            recreateCalendarAndClockChangeReceiver()
         }
         private val themedIconSubscription = themedIconPackPref.subscribeChanges {
+            updateIconStateIfNeeded()
+        }
+
+        private fun updateIconStateIfNeeded() {
             val newState = themeManager.iconState
             if (iconState != newState) {
                 iconState = newState
                 updateSystemState()
-                recreateCalendarAndClockChangeReceiver()
             }
         }
 
@@ -406,11 +405,14 @@ class LawnchairIconProvider @Inject constructor(
             filter.addAction(ACTION_PACKAGE_CHANGED)
             filter.addAction(ACTION_PACKAGE_REMOVED)
             filter.addDataScheme("package")
-            filter.addDataSchemeSpecificPart(themeMapName, 0)
             context.registerReceiver(this, filter, null, handler)
         }
 
         override fun onReceive(context: Context, intent: Intent) {
+            if (intent.data?.schemeSpecificPart != themedIconSourcePref.get()) return
+            synchronized(themeMapLock) {
+                _themeMap = null
+            }
             updateSystemState()
         }
 
