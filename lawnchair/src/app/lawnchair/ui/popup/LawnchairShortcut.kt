@@ -159,7 +159,7 @@ class LawnchairShortcut {
             val unsuspendableApps = try {
                 AppGlobals.getPackageManager().getUnsuspendablePackagesForUser(
                     arrayOf(packageName),
-                    context.userId
+                    context.userId,
                 )
             } catch (e: RemoteException) {
                 Log.e("LawnchairShortcut", "Fail to query suspension authority for $packageName", e)
@@ -246,7 +246,7 @@ class LawnchairShortcut {
                 context.packageManager.getApplicationInfo(
                     mItemInfo.targetComponent?.packageName ?: "",
                     0,
-                )
+                ),
             )
             AlertDialog.Builder(context)
                 .setIcon(R.drawable.ic_hourglass_top)
