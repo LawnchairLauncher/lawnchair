@@ -25,13 +25,11 @@ import android.content.res.Resources;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.Utilities;
-
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Flags;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
-import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.util.CompatibilityKt;
+import com.android.launcher3.Utilities;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.
@@ -89,10 +87,14 @@ public final class FeatureFlags {
     public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag(270393108, "NOTIFY_CRASHES",
             DISABLED, "Sends a notification whenever launcher encounters an uncaught exception.");
 
+    // LC-Note: QuickSwitch, Note, when this is enabled, it can crash with type 2019 on 
+    // Android 15 QPR1 and under
     public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
-            Utilities.ATLEAST_V && enableTaskbarNavbarUnification()
-                    && (!isPhone() || enableTaskbarOnPhones()); // LC-Note: QuickSwitch, Note, when this is enabled, it can crash with type 2019 on Android 14 and under
-
+            Utilities.ATLEAST_V
+                && !CompatibilityKt.isAndroidVInitial()
+                && !CompatibilityKt.isAndroidVFirstQuarterlyRelease()
+                && enableTaskbarNavbarUnification()
+                && (!isPhone() || enableTaskbarOnPhones());
     private static boolean isPhone() {
         final boolean isPhone;
         int foldedDeviceStatesId = Resources.getSystem().getIdentifier(

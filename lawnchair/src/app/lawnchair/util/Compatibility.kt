@@ -15,6 +15,16 @@ val isNothingOs = checkNothingStock()
 
 val isAndroidBaklavaInitial = checkGenericBaklavaInitial()
 
+/** Generic check to identify if the device is using Android 15 QPR1 build.
+ *
+ * (excluding Developer Preview/Beta/Milestone Stability build) */
+val isAndroidVFirstQuarterlyRelease = checkGenericVFirstQuarterlyRelease()
+
+/** Generic check to identify if the device is using Android 15 Initial build.
+ *
+ * (excluding Developer Preview/Beta/Milestone Stability build) */
+val isAndroidVInitial = checkGenericVInitial()
+
 private fun checkOnePlusStock(): Boolean = when {
     getSystemProperty("ro.rom.version", "")
         .contains(Regex("Oxygen OS|Hydrogen OS|O2_BETA|H2_BETA")) -> true
@@ -65,6 +75,16 @@ private fun checkNothingStock(): Boolean = when {
 
 private fun checkGenericBaklavaInitial(): Boolean = when {
     arrayOf("BP2A.", "BD1A.").any { prefix -> Build.FINGERPRINT.contains(prefix) } -> true
+    else -> false
+}
+
+private fun checkGenericVInitial(): Boolean = when {
+    Utilities.ATLEAST_V && Build.FINGERPRINT.contains("AP3A") -> true
+    else -> false
+}
+
+private fun checkGenericVFirstQuarterlyRelease(): Boolean = when {
+    Utilities.ATLEAST_V && Build.FINGERPRINT.contains("AP4A") -> true
     else -> false
 }
 
