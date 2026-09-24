@@ -9,11 +9,13 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
+import android.content.pm.PackageManager
 import android.content.pm.SuspendDialogInfo
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.net.Uri
+import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
 import android.view.View
@@ -133,6 +135,8 @@ class LawnchairShortcut {
             "com.github.librecaptcha.apps.fdroidclient",
         )
 
+        private const val SUSPEND_APPS_PERMISSION = "android.permission.SUSPEND_APPS"
+
         val OPEN_IN_STORE =
             SystemShortcut.Factory { activity: ActivityContext, itemInfo: ItemInfo, originalView: View ->
                 if (itemInfo.itemType != ITEM_TYPE_APPLICATION) return@Factory null
@@ -238,11 +242,12 @@ class LawnchairShortcut {
         @SuppressLint("NewApi")
         override fun onClick(view: View) {
             val context = view.context
-            val appLabel = ApplicationInfoWrapper(
-                context,
-                mItemInfo.targetComponent?.packageName ?: "",
-                mItemInfo.user,
-            ).toString()
+            val appLabel = context.packageManager.getApplicationLabel(
+                context.packageManager.getApplicationInfo(
+                    mItemInfo.targetComponent?.packageName ?: "",
+                    0,
+                )
+            )
             AlertDialog.Builder(context)
                 .setIcon(R.drawable.ic_hourglass_top)
                 .setTitle(context.getString(R.string.pause_apps_dialog_title, appLabel))
