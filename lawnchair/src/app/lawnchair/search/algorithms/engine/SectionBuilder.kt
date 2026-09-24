@@ -110,7 +110,7 @@ data object WebSuggestionsSectionBuilder : SectionBuilder {
 
         val targets = mutableListOf<SearchTargetCompat>()
         val suggestionsHeader =
-            factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
+            factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_web_suggestions))
         targets.add(suggestionsHeader)
         targets.addAll(
             webSuggestions.map {
@@ -181,6 +181,25 @@ data object ActionsSectionBuilder : SectionBuilder {
                 targets.add(it)
             }
         }
+        targets.add(factory.createHeaderTarget(SPACE))
+        return targets
+    }
+}
+
+data object TextClassifierSectionBuilder : SectionBuilder {
+    override fun build(
+        context: Context,
+        factory: SearchTargetFactory,
+        results: List<SearchResult>,
+    ): List<SearchTargetCompat> {
+        val textActions = results.filterIsInstance<SearchResult.Action.TextAction>()
+        if (textActions.isEmpty()) {
+            return emptyList()
+        }
+
+        val targets = mutableListOf<SearchTargetCompat>()
+        targets.add(factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_action_suggestions)))
+        targets.addAll(textActions.map(factory::createTextActionTarget))
         targets.add(factory.createHeaderTarget(SPACE))
         return targets
     }
