@@ -149,12 +149,12 @@ class LawnchairShortcut {
             }
 
         val PAUSE_APPS = SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo: ItemInfo, originalView: View ->
-            val targetCmp = itemInfo.targetComponent
-            val packageName = targetCmp?.packageName ?: return@Factory null
             val context = activity.asContext()
-            if (context.checkSelfPermission(SUSPEND_APPS_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+            if (context.checkCallingOrSelfPermission(SUSPEND_APPS_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
                 return@Factory null
             }
+            val targetCmp = itemInfo.targetComponent
+            val packageName = targetCmp?.packageName ?: return@Factory null
 
             val unsuspendableApps = try {
                 AppGlobals.getPackageManager().getUnsuspendablePackagesForUser(
