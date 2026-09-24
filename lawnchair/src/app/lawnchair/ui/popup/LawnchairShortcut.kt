@@ -147,9 +147,26 @@ class LawnchairShortcut {
         val PAUSE_APPS = SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo: ItemInfo, originalView: View ->
             val targetCmp = itemInfo.targetComponent
             val packageName = targetCmp?.packageName ?: return@Factory null
+            val context = activity.asContext()
+            if (context.checkSelfPermission(SUSPEND_APPS_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+                return@Factory null
+            }
+
+            val unsuspendableApps = try {
+                AppGlobals.getPackageManager().getUnsuspendablePackagesForUser(
+                    arrayOf(packageName),
+                    context.userId
+                )
+            } catch (e: RemoteException) {
+                Log.e("LawnchairShortcut", "Fail to query suspension authority for $packageName", e)
+                return@Factory null
+            }
+            if (packageName in unsuspendableApps) {
+                return@Factory null
+            }
 
             if (ApplicationInfoWrapper(
-                    activity.asContext(),
+                    context,
                     packageName,
                     itemInfo.user,
                 ).isSuspended()
