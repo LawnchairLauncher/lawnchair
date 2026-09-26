@@ -242,12 +242,10 @@ class LawnchairShortcut {
         @SuppressLint("NewApi")
         override fun onClick(view: View) {
             val context = view.context
-            val appLabel = context.packageManager.getApplicationLabel(
-                context.packageManager.getApplicationInfo(
-                    mItemInfo.targetComponent?.packageName ?: "",
-                    0,
-                ),
-            )
+            val packageName = mItemInfo.targetComponent?.packageName ?: return
+            val launcherApps = context.getSystemService(LauncherApps::class.java) ?: return
+            val appInfo = launcherApps.getApplicationInfo(packageName, 0, mItemInfo.user)
+            val appLabel = context.packageManager.getApplicationLabel(appInfo)
             AlertDialog.Builder(context)
                 .setIcon(R.drawable.ic_hourglass_top)
                 .setTitle(context.getString(R.string.pause_apps_dialog_title, appLabel))
