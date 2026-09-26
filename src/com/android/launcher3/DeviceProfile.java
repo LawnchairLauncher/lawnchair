@@ -2128,8 +2128,7 @@ public class DeviceProfile {
             return new Rect(mInsets.left + edgeMarginPx,
                     mInsets.top + getDropTargetProfile().getBarSizePx() + edgeMarginPx,
                     mInsets.left + mDeviceProperties.getAvailableWidthPx() - edgeMarginPx,
-                    mInsets.top + mDeviceProperties.getAvailableHeightPx() - hotseatTop
-                            - workspacePageIndicatorHeight - edgeMarginPx);
+                    mInsets.top + mDeviceProperties.getAvailableHeightPx() - edgeMarginPx);
         }
     }
 
