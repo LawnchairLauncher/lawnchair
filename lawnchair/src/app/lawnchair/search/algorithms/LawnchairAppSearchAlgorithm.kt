@@ -37,6 +37,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     val coroutineScope = CoroutineScope(context = Dispatchers.IO)
 
     private var modelRetryJob: Job? = null
+    private var currentJob: Job? = null
 
     init {
         prefs2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
@@ -56,7 +57,10 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
         modelRetryJob?.cancel()
         modelRetryJob = appState.model.runWhenModelLoaded(coroutineScope) { apps ->
-            coroutineScope.launch(Dispatchers.Main) {
+            // Track the delivery job so cancel(true) (e.g. from a drawer close) can stop a
+            // late-arriving result from being delivered after reset. See issue #7325.
+            currentJob?.cancel()
+            currentJob = coroutineScope.launch(Dispatchers.Main) {
                 val results = getResult(apps.data, query)
                 callback.onSearchResult(query, results)
             }
@@ -66,6 +70,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     override fun cancel(interruptActiveRequests: Boolean) {
         if (interruptActiveRequests) {
             modelRetryJob?.cancel()
+            currentJob?.cancel()
             resultHandler.removeCallbacksAndMessages(null)
         }
     }
