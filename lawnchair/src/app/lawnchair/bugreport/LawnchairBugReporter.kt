@@ -13,6 +13,7 @@ import com.android.launcher3.R
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class LawnchairBugReporter(private val context: Context) {
 
@@ -38,8 +39,13 @@ class LawnchairBugReporter(private val context: Context) {
 
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            sendNotification(throwable)
-            defaultHandler?.uncaughtException(thread, throwable)
+            try {
+                sendNotification(throwable)
+            } finally {
+                // Always hand off to the default handler so the process gets killed,
+                // even if generating the report fails. Otherwise the app would hang.
+                defaultHandler?.uncaughtException(thread, throwable)
+            }
         }
 
         removeDismissedLogs()
@@ -68,7 +74,9 @@ class LawnchairBugReporter(private val context: Context) {
 
     inner class Report(val error: String, val throwable: Throwable? = null) {
 
-        private val fileName = "$appName bug report ${SimpleDateFormat.getDateTimeInstance().format(Date())}"
+        // Use a fixed, locale-independent format: some locales produce characters
+        // such as '/' that are not valid in a file name.
+        private val fileName = "$appName bug report ${SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(Date())}"
 
         fun generateBugReport(): BugReport? {
             val contents = writeContents()
