@@ -514,7 +514,9 @@ public class RecentTasksList {
         Set<Integer> minimizedTaskIds = minimizedTaskIdArray != null
                 ? CollectionsKt.toSet(ArraysKt.asIterable(minimizedTaskIdArray))
                 : Collections.emptySet();
-        if (!DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue()) {
+        // LC-Ignored: Intentional, all Android desktop flags are disabled
+        // - DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue()
+        if (true) {
             // This code is not needed when the multiple desktop feature is enabled, since Shell
             // will send a single `GroupedTaskInfo` for each desk with a unique `deskId` across
             // all displays.

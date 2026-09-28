@@ -393,7 +393,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
      * @param homeAction The lambda to execute for the standard home action on the default display.
      */
     public void maybeStartHomeAction(Runnable homeAction) {
-        if (!DesktopExperienceFlags.ENABLE_REJECT_HOME_TRANSITION.isTrue()) {
+        if (false) { // LC-Ignored: Intentional, all Android desktop flags are disabled - DesktopExperienceFlags.ENABLE_REJECT_HOME_TRANSITION.isTrue()
           homeAction.run();
           return;
         }

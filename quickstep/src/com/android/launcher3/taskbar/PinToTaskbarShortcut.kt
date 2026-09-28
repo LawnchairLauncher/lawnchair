@@ -26,6 +26,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
@@ -105,8 +106,8 @@ class PinToTaskbarShortcut<T>(
     }
 
     companion object {
-        fun isPinningAppWithContextMenuEnabled(context: TaskbarActivityContext): Boolean =
-            DesktopExperienceFlags.ENABLE_PINNING_APP_WITH_CONTEXT_MENU.isTrue &&
-                context.isTaskbarShowingDesktopTasks
+        // LC-Ignored: Intentional, all Android desktop flags are disabled
+        // - DesktopExperienceFlags.ENABLE_PINNING_APP_WITH_CONTEXT_MENU.isTrue()
+        fun isPinningAppWithContextMenuEnabled(context: TaskbarActivityContext): Boolean = false
     }
 }

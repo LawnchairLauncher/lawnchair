@@ -44,7 +44,6 @@ import android.view.MotionEvent
 import android.view.RemoteAnimationTarget
 import android.view.SurfaceControl
 import android.view.SurfaceControl.Transaction
-import android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_TASKBAR_RUNNING_APPS
 import android.window.IOnBackInvokedCallback
 import android.window.RemoteTransition
 import android.window.TaskSnapshot
@@ -1140,13 +1139,9 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
         return emptyList()
     }
 
-    private fun shouldEnableRunningTasksForDesktopMode(): Boolean =
-        DesktopModeStatus.canEnterDesktopMode(context) &&
-            if (Utilities.ATLEAST_BAKLAVA) {
-                ENABLE_DESKTOP_WINDOWING_TASKBAR_RUNNING_APPS.isTrue
-            } else {
-                false
-            }
+    // LC-Ignored: Intentional, all Android desktop flags are disabled
+    // - DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_TASKBAR_RUNNING_APPS.isTrue()
+    private fun shouldEnableRunningTasksForDesktopMode(): Boolean = false
 
     private fun handleMessageAsync(msg: Message): Boolean {
         return when (msg.what) {

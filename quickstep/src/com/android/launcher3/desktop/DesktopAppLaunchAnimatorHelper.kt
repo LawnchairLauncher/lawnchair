@@ -27,7 +27,6 @@ import android.view.SurfaceControl.Transaction
 import android.view.WindowManager.TRANSIT_CLOSE
 import android.view.WindowManager.TRANSIT_OPEN
 import android.view.WindowManager.TRANSIT_TO_BACK
-import android.window.DesktopModeFlags
 import android.window.TransitionInfo
 import android.window.TransitionInfo.Change
 import androidx.core.animation.addListener
@@ -110,10 +109,9 @@ class DesktopAppLaunchAnimatorHelper(
         }
 
     private fun getTrampolineCloseChange(info: TransitionInfo): Change? {
-        if (
-            info.changes.size < 2 ||
-            !DesktopModeFlags.ENABLE_DESKTOP_TRAMPOLINE_CLOSE_ANIMATION_BUGFIX.isTrue
-        ) {
+        // LC-Ignored: Intentional, all Android desktop flags are disabled
+        // - DesktopModeFlags.ENABLE_DESKTOP_TRAMPOLINE_CLOSE_ANIMATION_BUGFIX.isTrue()
+        if (true) {
             return null
         }
         val openChange =

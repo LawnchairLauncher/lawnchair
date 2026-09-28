@@ -19,17 +19,13 @@ package com.android.launcher3.desktop
 import android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD
 import android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM
 import android.content.Context
-import android.window.DesktopExperienceFlags
-import android.window.DesktopModeFlags
 import android.window.RemoteTransition
 import android.window.TransitionFilter
 import android.window.TransitionFilter.CONTAINER_ORDER_TOP
 import com.android.internal.jank.Cuj
-import com.android.launcher3.Utilities
 import com.android.launcher3.desktop.DesktopAppLaunchTransition.AppLaunchType
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.quickstep.SystemUiProxy
-import com.android.wm.shell.shared.desktopmode.DesktopModeStatus
 
 /** Manages transitions related to app launches in Desktop Mode. */
 class DesktopAppLaunchTransitionManager(
@@ -74,10 +70,9 @@ class DesktopAppLaunchTransitionManager(
         remoteWindowLimitUnminimizeTransition = null
     }
 
-    private fun shouldRegisterTransitions(): Boolean =
-        Utilities.ATLEAST_BAKLAVA && // LC-Note: This is only available for Baklava
-            DesktopModeStatus.canEnterDesktopMode(context) &&
-            DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX.isTrue
+    // LC-Ignored: Intentional, all Android desktop flags are disabled
+    // - DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX.isTrue()
+    private fun shouldRegisterTransitions(): Boolean = false
 
     companion object {
         private fun buildAppLaunchFilter(): TransitionFilter {
@@ -87,9 +82,9 @@ class DesktopAppLaunchTransitionManager(
                     mWindowingMode = WINDOWING_MODE_FREEFORM
                     mModes = DesktopAppLaunchTransition.LAUNCH_CHANGE_MODES
                     mMustBeTask = true
-                    if (!DesktopExperienceFlags.ENABLE_DESKTOP_APP_LAUNCH_BUGFIX.isTrue) {
-                        mOrder = CONTAINER_ORDER_TOP
-                    }
+                    // LC-Ignored: Intentional, all Android desktop flags are disabled
+                    // - DesktopExperienceFlags.ENABLE_DESKTOP_APP_LAUNCH_BUGFIX.isTrue()
+                    mOrder = CONTAINER_ORDER_TOP
                 }
             return TransitionFilter().apply {
                 mTypeSet = DesktopAppLaunchTransition.LAUNCH_CHANGE_MODES

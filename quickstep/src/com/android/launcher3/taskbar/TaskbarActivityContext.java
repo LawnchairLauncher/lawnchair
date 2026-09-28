@@ -1706,8 +1706,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         BubbleTextView.RunningAppState runningAppState =
                 mControllers.taskbarRecentAppsController.getRunningAppState(taskId);
         Log.d(TAG, "Task id=" + taskId + ", Running app state=" + runningAppState);
-        return runningAppState == RunningAppState.MINIMIZED
-                && DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_ALTTAB_TRANSITIONS_BUGFIX.isTrue();
+        // LC-Ignored: Intentional, all Android desktop flags are disabled
+        // - DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_ALTTAB_TRANSITIONS_BUGFIX.isTrue()
+        return false;
     }
 
     private RemoteTransition createDesktopAppLaunchRemoteTransition(
@@ -1859,6 +1860,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     private boolean shouldLaunchInDesktop(int displayId, ItemInfo info) {
+        // LC-Ignored: Intentional, all Android desktop flags are disabled
+        // - DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX.isTrue()
+        // - DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_FULLSCREEN_REFOCUS_BUGFIX.isTrue()
+        // - DesktopExperienceFlags.ENABLE_FREEFORM_DISPLAY_LAUNCH_PARAMS.isTrue()
+        if (true) {
+            return false;
+        }
         if (!DesktopModeFlags.ENABLE_DESKTOP_APP_LAUNCH_TRANSITIONS_BUGFIX.isTrue()) {
             return false;
         }
@@ -1891,7 +1899,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
         // There is no task associated with this launch - launch a new task through an intent
         ActivityOptionsWrapper opts = getActivityLaunchDesktopOptions();
-        if (DesktopModeFlags.ENABLE_START_LAUNCH_TRANSITION_FROM_TASKBAR_BUGFIX.isTrue()) {
+        if (false) { // LC-Ignored: Intentional, all Android desktop flags are disabled - DesktopModeFlags.ENABLE_START_LAUNCH_TRANSITION_FROM_TASKBAR_BUGFIX.isTrue()
             mSysUiProxy.startLaunchIntentTransition(intent, opts.options.toBundle(), displayId);
         } else {
             startActivity(intent, opts.options.toBundle());

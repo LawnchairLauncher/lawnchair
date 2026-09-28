@@ -110,7 +110,6 @@ import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
-import android.window.DesktopModeFlags;
 import android.window.RemoteTransition;
 import android.window.TransitionFilter;
 import android.window.WindowAnimationState;
@@ -125,6 +124,7 @@ import com.android.internal.jank.Cuj;
 import com.android.internal.util.LatencyTracker;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -171,7 +171,6 @@ import com.android.systemui.animation.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
-import com.android.wm.shell.shared.desktopmode.DesktopModeStatus;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.io.PrintWriter;
@@ -1641,10 +1640,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     }
 
     private boolean isFreeformAnimation(RemoteAnimationTarget[] appTargets) {
-        return DesktopModeStatus.canEnterDesktopMode(mLauncher.getApplicationContext())
-                && DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_EXIT_TRANSITIONS_BUGFIX.isTrue()
-                && Arrays.stream(appTargets)
-                        .anyMatch(app -> app.taskInfo != null && app.taskInfo.isFreeform());
+        // LC-Ignored: Intentional, all Android desktop flags are disabled
+        // - DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_EXIT_TRANSITIONS_BUGFIX.isTrue()
+        return false;
     }
 
     private void addCujInstrumentation(Animator anim, int cuj) {

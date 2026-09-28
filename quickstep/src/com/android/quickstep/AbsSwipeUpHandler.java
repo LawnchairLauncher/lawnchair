@@ -99,8 +99,6 @@ import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.WindowInsets;
 import android.view.animation.Interpolator;
 import android.widget.Toast;
-import android.window.DesktopExperienceFlags;
-import android.window.DesktopModeFlags;
 import android.window.PictureInPictureSurfaceTransaction;
 import android.window.TransitionInfo;
 import android.window.WindowAnimationState;
@@ -1330,9 +1328,7 @@ public abstract class AbsSwipeUpHandler<
         TaskView currentPageTaskView = mRecentsView != null
                 ? mRecentsView.getCurrentPageTaskView() : null;
 
-        if (DesktopModeStatus.canEnterDesktopMode(mContext)
-                && !(false
-                && DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_QUICK_SWITCH.isTrue())) {
+        if (DesktopModeStatus.canEnterDesktopMode(mContext)) {
             if ((nextPageTaskView instanceof DesktopTaskView
                     || currentPageTaskView instanceof DesktopTaskView)
                     && endTarget == NEW_TASK) {
@@ -1506,9 +1502,7 @@ public abstract class AbsSwipeUpHandler<
             setClampScrollOffset(false);
         };
 
-        if (DesktopModeStatus.canEnterDesktopMode(mContext)
-                && !(false
-                && DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_QUICK_SWITCH.isTrue())) {
+        if (DesktopModeStatus.canEnterDesktopMode(mContext)) {
             if (mRecentsView != null && (mRecentsView.getCurrentPageTaskView() != null
                     && !(mRecentsView.getCurrentPageTaskView() instanceof DesktopTaskView))) {
                 ActiveGestureLog.INSTANCE.trackEvent(ActiveGestureErrorDetector.GestureEvent
@@ -1563,7 +1557,8 @@ public abstract class AbsSwipeUpHandler<
                 events.add(mLogDirectionUpOrLeft ? LAUNCHER_QUICKSWITCH_LEFT
                         : LAUNCHER_QUICKSWITCH_RIGHT);
                 if (targetTaskView != null && DesktopModeStatus.canEnterDesktopMode(mContext)
-                        && DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_QUICK_SWITCH.isTrue()) {
+                        && false // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_DESKTOP_WINDOWING_QUICK_SWITCH.isTrue()
+                ) {
                     if (targetTaskView.getType() == TaskViewType.DESKTOP) {
                         events.add(LAUNCHER_QUICKSWITCH_ENTER_DESKTOP_MODE);
                     } else if (mPreviousTaskViewType == TaskViewType.DESKTOP) {
@@ -1690,14 +1685,8 @@ public abstract class AbsSwipeUpHandler<
                     && runningTaskTarget.leash.isValid();
 
             boolean enableDesktopWindowingPipCompat = false;
-            // Literal int because https://github.com/LawnchairLauncher/lawnchair/issues/6817
-            if (Build.VERSION.SDK_INT >= 36 && Build.VERSION.SDK_INT_FULL >= 3600001) {
-                try {
-                    enableDesktopWindowingPipCompat = DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP.isTrue();
-                } catch (Exception e) {
-                    Log.d("LC-AbsSwipeUpHandler", "Failed to get ENABLE_DESKTOP_WINDOWING_PIP flag, defaulting to false", e);
-                }
-            }
+            // LC-Ignored: Intentional, all Android desktop flags are disabled - DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_PIP.isTrue()
+            // Ref: https://github.com/LawnchairLauncher/lawnchair/issues/6817
             
             final boolean swipeUpInDesktopWindowing =
                     enableDesktopWindowingPipCompat
@@ -2438,9 +2427,7 @@ public abstract class AbsSwipeUpHandler<
                     mRecentsAnimationController, mRecentsAnimationTargets);
         });
 
-        if (DesktopModeStatus.canEnterDesktopMode(mContext)
-                && !(false
-                        && DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_QUICK_SWITCH.isTrue())) {
+        if (DesktopModeStatus.canEnterDesktopMode(mContext)) {
             if (mRecentsView.getNextPageTaskView() instanceof DesktopTaskView
                     || mRecentsView.getCurrentPageTaskView() instanceof DesktopTaskView) {
                 mRecentsViewScrollLinked = false;

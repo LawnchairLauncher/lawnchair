@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 import static android.window.DesktopModeFlags.ENABLE_TASKBAR_OVERFLOW;
-import static android.window.DesktopModeFlags.ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION;
 
 import static com.android.launcher3.BubbleTextView.DISPLAY_TASKBAR;
 import static com.android.launcher3.Flags.enableCursorHoverStates;
@@ -725,9 +724,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             overflowSize = mIdealNumIcons - mMaxNumIcons;
             hasOverflow = overflowSize > 0;
 
-            if (!ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue() && hasOverflow) {
+            if (!false && hasOverflow) { // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()
                 addView(mTaskbarOverflowView, mNextViewIndex++);
-            } else if (ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()) {
+            } else if (false) { // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()
                 // RTL case is handled after we add the recent icons, because the button needs to
                 // then be to the right of them.
                 if (hasOverflow && !mIsRtl) {
@@ -784,7 +783,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
             View recentIcon = null;
             // If a task is new, we should not reuse a view so that it animates in when it is added.
-            final boolean canReuseView = !ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()
+            // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()
+            final boolean canReuseView = !false
                     || (mPrevRecentTasks.contains(task) && !mPrevOverflowTasks.contains(task));
             while (canReuseView && isNextViewInSection(GroupTask.class)) {
                 recentIcon = getChildAt(mNextViewIndex);
@@ -794,7 +794,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 if ((recentIcon.getSourceLayoutResId() != expectedLayoutResId)
                         || (isCollection && tag != task)
                         // Remove view corresponding to removed task so that it animates out.
-                        || (ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()
+                        || (false // LC-Ignored: Intentional, all Android desktop flags are disabled - ENABLE_TASKBAR_RECENTS_LAYOUT_TRANSITION.isTrue()
                                 && (!recentTasksSet.contains(tag)
                                         || overflownRecentsSet.contains(tag)))) {
                     removeAndRecycle(recentIcon);

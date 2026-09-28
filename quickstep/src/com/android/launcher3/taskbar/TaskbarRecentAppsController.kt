@@ -17,13 +17,10 @@ package com.android.launcher3.taskbar
 
 import android.content.Context
 import android.util.Log
-import android.window.DesktopExperienceFlags
-import android.window.DesktopModeFlags
 import androidx.annotation.VisibleForTesting
 import com.android.launcher3.BubbleTextView.RunningAppState
 import com.android.launcher3.Flags
 import com.android.launcher3.Flags.enableRecentsInTaskbar
-import com.android.launcher3.Utilities
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.TaskItemInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
@@ -36,7 +33,6 @@ import com.android.quickstep.util.DesktopTask
 import com.android.quickstep.util.GroupTask
 import com.android.quickstep.util.SingleTask
 import com.android.systemui.shared.recents.model.Task
-import com.android.wm.shell.shared.desktopmode.DesktopModeStatus
 import java.io.PrintWriter
 
 /**
@@ -50,12 +46,9 @@ class TaskbarRecentAppsController(
 ) : LoggableTaskbarController {
 
     var canShowRunningApps =
-        DesktopModeStatus.canEnterDesktopMode(context) &&
-            if (Utilities.ATLEAST_BAKLAVA_1) {
-                DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_TASKBAR_RUNNING_APPS.isTrue
-            } else {
-                false
-            }
+        // LC-Ignored: Intentional, all Android desktop flags are disabled
+        // - DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_TASKBAR_RUNNING_APPS.isTrue()
+        false
         @VisibleForTesting
         set(isEnabledFromTest) {
             field = isEnabledFromTest
@@ -64,12 +57,9 @@ class TaskbarRecentAppsController(
             }
         }
 
-    val enableRecentTasksThrottle =
-        if (Utilities.ATLEAST_BAKLAVA_1) {
-            DesktopExperienceFlags.ENABLE_TASKBAR_RECENT_TASKS_THROTTLE_BUGFIX.isTrue
-        } else {
-            false
-        }
+    // LC-Ignored: Intentional, all Android desktop flags are disabled
+    // - DesktopExperienceFlags.ENABLE_TASKBAR_RECENT_TASKS_THROTTLE_BUGFIX.isTrue()
+    val enableRecentTasksThrottle = false
 
     // TODO(b/343532825): Add a setting to disable Recents even when the flag is on.
     var canShowRecentApps = enableRecentsInTaskbar()
