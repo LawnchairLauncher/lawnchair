@@ -302,6 +302,7 @@
     <string name="apply_icon_pack_title">Apply icon pack</string>
     <string name="icon_shape_label">Icon shape</string>
     <string name="icon_sizes">Icon size</string>
+    <string name="dock_icon_size">Dock icon size</string>
 
     <string name="show_labels">Show labels</string>
     <string name="label_size">Label size</string>

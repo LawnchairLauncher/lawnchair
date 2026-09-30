@@ -99,6 +99,7 @@ class DeviceProfileOverrides @Inject constructor(
         val iconSizeFactor: Float,
         val allAppsIconSizeFactor: Float,
         val allAppsIconTextSizeFactor: Float,
+        val hotseatIconSizeFactor: Float,
 
         val enableTaskbarOnPhone: Boolean,
 
@@ -129,6 +130,7 @@ class DeviceProfileOverrides @Inject constructor(
             } else {
                 0f
             },
+            hotseatIconSizeFactor = prefs2.hotseatIconSizeFactor.firstCached(),
 
             enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstCached(),
 
@@ -185,6 +187,11 @@ class DeviceProfileOverrides @Inject constructor(
             idp.iconSize[INDEX_LANDSCAPE] *= iconSizeFactor
             idp.iconSize[INDEX_TWO_PANEL_PORTRAIT] *= iconSizeFactor
             idp.iconSize[INDEX_TWO_PANEL_LANDSCAPE] *= iconSizeFactor
+
+            idp.hotseatIconSize[INDEX_DEFAULT] *= hotseatIconSizeFactor
+            idp.hotseatIconSize[INDEX_LANDSCAPE] *= hotseatIconSizeFactor
+            idp.hotseatIconSize[INDEX_TWO_PANEL_PORTRAIT] *= hotseatIconSizeFactor
+            idp.hotseatIconSize[INDEX_TWO_PANEL_LANDSCAPE] *= hotseatIconSizeFactor
 
             idp.allAppsIconSize[INDEX_DEFAULT] *= allAppsIconSizeFactor
             idp.allAppsIconSize[INDEX_LANDSCAPE] *= allAppsIconSizeFactor

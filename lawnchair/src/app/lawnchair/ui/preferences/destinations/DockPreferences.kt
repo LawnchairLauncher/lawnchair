@@ -82,6 +82,13 @@ fun DockPreferences(modifier: Modifier = Modifier) {
             SearchBarPreference(SearchRoute.DOCK_SEARCH)
             GridSettings(prefs, prefs2)
             PreferenceGroup(heading = stringResource(id = R.string.icons)) {
+                SliderPreference(
+                    label = stringResource(id = R.string.dock_icon_size),
+                    adapter = prefs2.hotseatIconSizeFactor.getAdapter(),
+                    step = 0.1f,
+                    valueRange = 0.5F..1.5F,
+                    showAsPercentage = true,
+                )
                 SwitchPreference(
                     adapter = prefs2.enableLabelInDock.getAdapter(),
                     label = stringResource(id = R.string.show_labels),
@@ -228,6 +235,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
             prefs2.hotseatBottomFactor.getAdapter(),
             prefs2.strokeColorStyle.getAdapter(),
             prefs2.enableLabelInDock.getAdapter(),
+            prefs2.hotseatIconSizeFactor.getAdapter(),
             prefs.hotseatBG.getAdapter(),
             prefs.hotseatBGHorizontalInsetLeft.getAdapter(),
             prefs.hotseatBGVerticalInsetTop.getAdapter(),

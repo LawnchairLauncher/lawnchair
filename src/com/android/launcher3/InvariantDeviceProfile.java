@@ -161,6 +161,7 @@ public class InvariantDeviceProfile {
     public int[] numFolderRows;
     public int[] numFolderColumns;
     public float[] iconSize;
+    public float[] hotseatIconSize;
     public float[] iconTextSize;
         /**
          * Bitmap size for workspace icons. This is calculated independently from all apps
@@ -533,6 +534,8 @@ public class InvariantDeviceProfile {
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, metrics);
 
+        hotseatIconSize = iconSize.clone();
+        
         // Lawnchair ignores partner overrides and allows the user to customize the grid themselves
         overrideOptions.applyUi(this);
 
@@ -540,11 +543,15 @@ public class InvariantDeviceProfile {
         for (int i = 1; i < iconSize.length; i++) {
             maxIconSize = Math.max(maxIconSize, iconSize[i]);
         }
+        float maxHotseatIconSize = hotseatIconSize[0];
+        for (int i = 1; i < hotseatIconSize.length; i++) {
+            maxHotseatIconSize = Math.max(maxHotseatIconSize, hotseatIconSize[i]);
+        }
         float maxAllAppsIconSize = allAppsIconSize[0];
         for (int i = 1; i < allAppsIconSize.length; i++) {
             maxAllAppsIconSize = Math.max(maxAllAppsIconSize, allAppsIconSize[i]);
         }
-        iconBitmapSize = ResourceUtils.pxFromDp(maxIconSize, metrics);
+        iconBitmapSize = ResourceUtils.pxFromDp(Math.max(maxIconSize, maxHotseatIconSize), metrics);
         allAppsIconBitmapSize = ResourceUtils.pxFromDp(maxAllAppsIconSize, metrics);
         fillResIconDpi = getLauncherIconDensity(Math.max(iconBitmapSize, allAppsIconBitmapSize));
 

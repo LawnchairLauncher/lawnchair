@@ -603,7 +603,7 @@ public class DeviceProfile {
         if (mIsResponsiveGrid) {
             updateHotseatSizes(mResponsiveWorkspaceCellSpec.getIconSize());
         } else {
-            updateHotseatSizes(pxFromDp(inv.iconSize[mTypeIndex], mMetrics));
+            updateHotseatSizes(pxFromDp(inv.hotseatIconSize[mTypeIndex], mMetrics));
         }
 
         mBubbleBarSpaceThresholdPx =

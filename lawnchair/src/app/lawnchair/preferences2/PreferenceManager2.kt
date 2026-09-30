@@ -516,6 +516,12 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val hotseatIconSizeFactor = preference(
+        key = floatPreferencesKey(name = "hotseat_icon_size_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_hotseat_icon_size_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showIconLabelsInDrawer = preference(
         key = booleanPreferencesKey(name = "show_icon_labels_in_drawer"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_in_drawer),
