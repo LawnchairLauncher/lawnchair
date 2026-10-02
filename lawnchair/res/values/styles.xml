@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Lawnchair picks its own light/dark colors from the launcherTheme preference,
+         independent of system night mode. Every AppTheme below descends from the platform's
+         Theme.Material.Light, so isLightTheme stays true and HWUI's force-dark pass inverts
+         the luminance of whatever we draw once the system is in night mode. That is what
+         turned dark folder tiles and the QSB pill light, per render node and
+         non-deterministically. So every AppTheme opts out of force-dark, and the Dark
+         variants additionally declare themselves dark. -->
     <style name="AppTheme" parent="@style/LauncherTheme">
+        <item name="android:forceDarkAllowed" tools:ignore="NewApi">false</item>
         <item name="uiColorMode">0</item>
 
         <item name="android:colorAccent">@color/accent_light</item>
@@ -25,6 +33,7 @@
         <item name="searchboxHighlight">@color/surface_variant_light</item>
     </style>
     <style name="AppTheme.DarkMainColor" parent="@style/LauncherTheme.DarkMainColor">
+        <item name="android:forceDarkAllowed" tools:ignore="NewApi">false</item>
         <item name="uiColorMode">4</item>
 
         <item name="android:colorAccent">@color/accent_light</item>
@@ -49,6 +58,7 @@
         <item name="searchboxHighlight">@color/surface_variant_light</item>
     </style>
     <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText">
+        <item name="android:forceDarkAllowed" tools:ignore="NewApi">false</item>
         <item name="uiColorMode">2</item>
 
         <item name="android:colorAccent">@color/accent_light</item>
@@ -74,6 +84,8 @@
     </style>
 
     <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark">
+        <item name="android:forceDarkAllowed" tools:ignore="NewApi">false</item>
+        <item name="android:isLightTheme" tools:ignore="NewApi">false</item>
         <item name="uiColorMode">1</item>
 
         <item name="android:colorAccent">@color/accent_dark</item>
@@ -98,6 +110,8 @@
         <item name="searchboxHighlight">@color/system_neutral1_800</item>
     </style>
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor">
+        <item name="android:forceDarkAllowed" tools:ignore="NewApi">false</item>
+        <item name="android:isLightTheme" tools:ignore="NewApi">false</item>
         <item name="uiColorMode">5</item>
 
         <item name="android:colorAccent">@color/accent_dark</item>
@@ -122,6 +136,8 @@
         <item name="searchboxHighlight">@color/system_neutral1_800</item>
     </style>
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText">
+        <item name="android:forceDarkAllowed" tools:ignore="NewApi">false</item>
+        <item name="android:isLightTheme" tools:ignore="NewApi">false</item>
         <item name="uiColorMode">3</item>
 
         <item name="android:colorAccent">@color/accent_dark</item>

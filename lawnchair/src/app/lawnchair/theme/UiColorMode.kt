@@ -17,7 +17,7 @@ value class UiColorMode(val mode: Int) {
         val Light_DarkPrimaryColor = UiColorMode(FLAG_DARK_PRIMARY_COLOR)
 
         val Dark = UiColorMode(FLAG_DARK)
-        val Dark_DarkText = UiColorMode(FLAG_DARK and FLAG_DARK_TEXT)
-        val Dark_DarkPrimaryColor = UiColorMode(FLAG_DARK and FLAG_DARK_PRIMARY_COLOR)
+        val Dark_DarkText = UiColorMode(FLAG_DARK or FLAG_DARK_TEXT)
+        val Dark_DarkPrimaryColor = UiColorMode(FLAG_DARK or FLAG_DARK_PRIMARY_COLOR)
     }
 }
