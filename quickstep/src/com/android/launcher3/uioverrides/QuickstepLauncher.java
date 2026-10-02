@@ -564,7 +564,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
             shortcuts.add(UNINSTALL_APP);
         }
         if (BubbleAnythingFlagHelper.enableCreateAnyBubble()
-                || checkSelfPermission(Manifest.permission.MANAGE_ACTIVITY_TASKS)
+                && checkSelfPermission(Manifest.permission.MANAGE_ACTIVITY_TASKS)
                         == PackageManager.PERMISSION_GRANTED) {
             shortcuts.add(BUBBLE_SHORTCUT);
         }
