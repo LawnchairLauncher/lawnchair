@@ -213,9 +213,9 @@ public class TouchInteractionService extends Service {
                     bundle.getBinder(IDragAndDrop.DESCRIPTOR));
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
                 SystemUiProxy.INSTANCE.get(tis).setProxy(proxy, pip,
-                        null, splitscreen, onehanded, shellTransitions, startingWindow,
+                        bubbles, splitscreen, onehanded, shellTransitions, startingWindow,
                         recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode,
-                        unfoldTransition, dragAndDrop); // pE-TODO(QuickSwitch-Baklava): Set bubbles from null to bubbles for Android 15/16
+                        unfoldTransition, dragAndDrop);
                 tis.initInputMonitor("TISBinder#onInitialize()");
                 ActivityPreloadUtil.preloadOverviewForTIS(tis, true /* fromInit */);
             }));
