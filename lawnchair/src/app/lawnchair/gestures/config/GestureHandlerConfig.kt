@@ -17,6 +17,8 @@ import app.lawnchair.gestures.handlers.OpenAssistantHandler
 import app.lawnchair.gestures.handlers.OpenNotificationsHandler
 import app.lawnchair.gestures.handlers.OpenQuickSettingsHandler
 import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
+import app.lawnchair.gestures.handlers.OpenShortcutGestureHandler
+import app.lawnchair.gestures.handlers.OpenShortcutTarget
 import app.lawnchair.gestures.handlers.RecentsGestureHandler
 import app.lawnchair.gestures.handlers.SleepGestureHandler
 import app.lawnchair.theme.color.tokens.ColorTokens
@@ -132,55 +134,45 @@ sealed class GestureHandlerConfig {
     @Serializable
     @SerialName("openApp")
     data class OpenApp(val appName: String, val target: OpenAppTarget) : GestureHandlerConfig() {
-        override fun getIcon(context: Context): Icon {
-            when (target) {
-                is OpenAppTarget.Shortcut -> {
-                    // fallback
-                    return Icon.createWithResource(context, iconRes)
-                }
-
-                is OpenAppTarget.App -> {
-                    val fallback = Icon.createWithResource(context, iconRes)
-
-                    val filter = AppFilter(context)
-                    val componentName = target.key.componentName
-                    val user = target.key.user
-
-                    if (!filter.shouldShowApp(componentName)) {
-                        // Fallback to default icon
-                        return fallback
-                    }
-
-                    val launcherApps = context.getSystemService(LauncherApps::class.java)
-
-                    return runBlocking(MODEL_EXECUTOR.asCoroutineDispatcher()) {
-                        val activityInfo = launcherApps.resolveActivity(
-                            AppInfo.makeLaunchIntent(componentName),
-                            target.key.user,
-                        ) ?: return@runBlocking fallback
-
-                        val appInfo = AppInfo(
-                            context,
-                            activityInfo,
-                            user,
-                        )
-
-                        LauncherAppState.getInstance(context).iconCache.getTitleAndIcon(
-                            appInfo,
-                            DEFAULT_LOOKUP_FLAG,
-                        )
-
-                        Icon.createWithBitmap(appInfo.bitmap.icon)
-                    }
-                }
-            }
+        override fun getIcon(context: Context) = when (target) {
+            is OpenAppTarget.App -> getAppIcon(context, target.key, iconRes)
+            is OpenAppTarget.Shortcut -> Icon.createWithResource(context, iconRes)
         }
 
         override fun isExternallyInvokable() = target is OpenAppTarget.App
 
         override fun getDisplayLabel(context: Context) = appName
         override fun getLabel(context: Context) = context.getString(R.string.gesture_handler_open_app_config, appName)
-        override fun createHandler(context: Context) = OpenAppGestureHandler(context, target)
+        override fun createHandler(context: Context) = when (target) {
+            is OpenAppTarget.App -> OpenAppGestureHandler(context, target.key)
+
+            is OpenAppTarget.Shortcut -> OpenShortcutGestureHandler(
+                context,
+                OpenShortcutTarget(
+                    user = target.user,
+                    packageName = target.packageName,
+                    id = target.id,
+                ),
+            )
+        }
+    }
+
+    @Serializable
+    @SerialName("openShortcut")
+    data class OpenShortcut(
+        val shortcutName: String,
+        val target: OpenShortcutTarget,
+    ) : GestureHandlerConfig() {
+        override fun getIcon(context: Context) = target.app?.let {
+            getAppIcon(context, it, iconRes)
+        } ?: Icon.createWithResource(context, iconRes)
+
+        override fun getDisplayLabel(context: Context) = shortcutName
+        override fun getLabel(context: Context) = context.getString(
+            R.string.gesture_handler_open_app_config,
+            shortcutName,
+        )
+        override fun createHandler(context: Context) = OpenShortcutGestureHandler(context, target)
     }
 
     companion object {
@@ -195,5 +187,23 @@ sealed class GestureHandlerConfig {
                 NoOp
             }
         }
+    }
+}
+
+private fun getAppIcon(context: Context, key: com.android.launcher3.util.ComponentKey, fallbackRes: Int): Icon {
+    val fallback = Icon.createWithResource(context, fallbackRes)
+    val componentName = key.componentName
+    if (!AppFilter(context).shouldShowApp(componentName)) return fallback
+
+    val launcherApps = context.getSystemService(LauncherApps::class.java) ?: return fallback
+    return runBlocking(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+        val activityInfo = launcherApps.resolveActivity(
+            AppInfo.makeLaunchIntent(componentName),
+            key.user,
+        ) ?: return@runBlocking fallback
+
+        val appInfo = AppInfo(context, activityInfo, key.user)
+        LauncherAppState.getInstance(context).iconCache.getTitleAndIcon(appInfo, DEFAULT_LOOKUP_FLAG)
+        Icon.createWithBitmap(appInfo.bitmap.icon)
     }
 }
