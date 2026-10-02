@@ -303,6 +303,11 @@ class PreferenceManager2 @Inject constructor(
         save = { it.id },
     )
 
+    val hotseatQsbGlobalSearchPackage = preference(
+        key = stringPreferencesKey(name = "dock_search_bar_global_search_package"),
+        defaultValue = "",
+    )
+
     val hotseatQsbForceWebsite = preference(
         key = booleanPreferencesKey(name = "dock_search_bar_force_website"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_dock_search_bar_force_website),
