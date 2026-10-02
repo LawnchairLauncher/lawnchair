@@ -73,6 +73,7 @@ import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SP
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 import static com.android.wm.shell.shared.split.SplitScreenConstants.SNAP_TO_2_50_50;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -80,6 +81,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -561,7 +563,9 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         if (Flags.enablePrivateSpace()) {
             shortcuts.add(UNINSTALL_APP);
         }
-        if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
+        if (BubbleAnythingFlagHelper.enableCreateAnyBubble()
+                && checkSelfPermission(Manifest.permission.MANAGE_ACTIVITY_TASKS)
+                        == PackageManager.PERMISSION_GRANTED) {
             shortcuts.add(BUBBLE_SHORTCUT);
         }
         return shortcuts.stream();
