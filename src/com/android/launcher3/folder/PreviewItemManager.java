@@ -20,7 +20,6 @@ import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
 import static com.android.launcher3.LauncherSettings.Favorites.DESKTOP_ICON_FLAG;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
-import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderIcon.DROP_IN_ANIMATION_DURATION;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
@@ -135,7 +134,9 @@ public class PreviewItemManager {
             mIcon.mPreviewLayoutRule.init(
                     mIcon.mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()),
-                    mIcon.mActivity.getDeviceProfile().numFolderColumns
+                    mIcon.mActivity.getDeviceProfile().numFolderColumns,
+                    app.lawnchair.folder.FolderPreviewConfig.getActiveItemCount(mIcon.getContext()),
+                    app.lawnchair.folder.FolderPreviewConfig.getGridSide(mIcon.getContext())
             );
             updatePreviewItems(false);
         }
@@ -225,7 +226,8 @@ public class PreviewItemManager {
         // enter/exit
         // animation purposes and they were added to the front of the list.
         // To index the params properly, we need to skip these params.
-        index = index + Math.max(mFirstPageParams.size() - MAX_NUM_ITEMS_IN_PREVIEW, 0);
+        int activePreviewCount = mIcon.mPreviewLayoutRule.getActivePreviewItemCount();
+        index = index + Math.max(mFirstPageParams.size() - activePreviewCount, 0);
 
         PreviewItemDrawingParams params = index < mFirstPageParams.size() ? mFirstPageParams.get(index) : null;
         if (params != null) {
@@ -244,7 +246,9 @@ public class PreviewItemManager {
             params.add(new PreviewItemDrawingParams(0, 0, 0));
         }
 
-        int numItemsInFirstPagePreview = page == 0 ? items.size() : MAX_NUM_ITEMS_IN_PREVIEW;
+        int numItemsInFirstPagePreview = page == 0
+                ? items.size()
+                : mIcon.mPreviewLayoutRule.getActivePreviewItemCount();
         for (int i = 0; i < params.size(); i++) {
             PreviewItemDrawingParams p = params.get(i);
             setDrawable(p, items.get(i));
@@ -282,6 +286,24 @@ public class PreviewItemManager {
             updatePreviewItems(false);
         }
         onParamsChanged();
+    }
+
+    /**
+     * Re-reads the folder preview grid preference and rebuilds preview drawing params.
+     * Used when the user changes 2×2 / 3×3 without restarting the launcher.
+     */
+    void reapplyPreviewGrid() {
+        int drawableSize = mIntrinsicIconSize > 0
+                ? (int) mIntrinsicIconSize
+                : (mReferenceDrawable != null ? mReferenceDrawable.getIntrinsicWidth() : 0);
+        int totalSize = mTotalWidth > 0 ? mTotalWidth : mIcon.getMeasuredWidth();
+        if (drawableSize <= 0 || totalSize <= 0) {
+            return;
+        }
+        // Reset size guards so computePreviewDrawingParams re-inits the layout rule.
+        mIntrinsicIconSize = -1;
+        mTotalWidth = -1;
+        computePreviewDrawingParams(drawableSize, totalSize);
     }
 
     void updatePreviewItems(boolean animate) {

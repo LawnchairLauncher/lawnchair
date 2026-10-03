@@ -29,6 +29,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.Converters
+import app.lawnchair.folder.FolderPreviewConfig
+import app.lawnchair.folder.FolderPreviewGrid
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
@@ -490,6 +492,14 @@ class PreferenceManager2 @Inject constructor(
         key = floatPreferencesKey(name = "folder_preview_background_opacity"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_preview_background_opacity),
         onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val folderPreviewGridSize = preference(
+        key = stringPreferencesKey(name = "folder_preview_grid_size"),
+        defaultValue = FolderPreviewGrid.TWO_BY_TWO,
+        parse = { FolderPreviewGrid.fromString(it) },
+        save = { it.name },
+        onSet = { FolderPreviewConfig.refreshAllFolderIcons(context) },
     )
 
     val folderBackgroundOpacity = preference(
