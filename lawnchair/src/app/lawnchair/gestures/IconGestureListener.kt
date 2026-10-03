@@ -89,11 +89,23 @@ class IconGestureListener(
             hasGestureConfigured(GestureType.SWIPE_RIGHT)
     }
 
+    /** Returns whether a leftward icon swipe has an assigned action. */
+    fun hasSwipeLeftGestureConfigured(): Boolean = hasGestureConfigured(GestureType.SWIPE_LEFT)
+
+    /** Returns whether a rightward icon swipe has an assigned action. */
+    fun hasSwipeRightGestureConfigured(): Boolean = hasGestureConfigured(GestureType.SWIPE_RIGHT)
+
     /** Check if there's a vertical gesture configured for this entry. (Swipe up/down) */
     fun hasVerticalGestureConfigured(): Boolean {
         return hasGestureConfigured(GestureType.SWIPE_UP) ||
             hasGestureConfigured(GestureType.SWIPE_DOWN)
     }
+
+    /** Returns whether an upward icon swipe has an assigned action. */
+    fun hasSwipeUpGestureConfigured(): Boolean = hasGestureConfigured(GestureType.SWIPE_UP)
+
+    /** Returns whether a downward icon swipe has an assigned action. */
+    fun hasSwipeDownGestureConfigured(): Boolean = hasGestureConfigured(GestureType.SWIPE_DOWN)
 
     /** Check if there's a specific gesture configured for this entry
      * @param gestureType The type of gesture to check */
