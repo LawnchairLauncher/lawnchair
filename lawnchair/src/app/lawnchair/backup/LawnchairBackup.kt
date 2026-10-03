@@ -16,6 +16,7 @@ import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.R
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.model.ModelDbController
@@ -79,6 +80,18 @@ class LawnchairBackup(
         }
         context.getDatabasePath(LAUNCHER_DB_FILE_NAME).parentFile?.deleteRecursively()
         DeviceGridState(info.gridState).writeToPrefs(context, true)
+
+        // Set DB_FILE from the backup's grid state so that createDatabaseHelper
+        // renames restored.db to the backup's grid filename (e.g. launcher_5_5_5.db)
+        // and sanitiseDB opens the correct database. Without this, the fallback to
+        // mIdp.dbFile (the device's grid name) causes the rename to target the wrong
+        // file, and sanitiseDB opens an empty database.
+        val gridSize = info.gridState.gridSize.split(",")
+        if (gridSize.size == 2) {
+            val dbFileName = "launcher_${gridSize[0]}_${gridSize[1]}_${info.gridState.hotseatCount}.db"
+            LauncherPrefs.get(context).putSync(LauncherPrefs.DB_FILE.to(dbFileName))
+        }
+
         readZip(handlers)
 
         var dbController = ModelDbController(context)
