@@ -763,6 +763,9 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
      */
     public void updatePreviewItems(Predicate<ItemInfo> itemCheck) {
         mPreviewItemManager.updatePreviewItems(itemCheck);
+        if (mCoverItem != null && itemCheck.test(mCoverItem)) {
+            updateCoverMode();
+        }
     }
 
     public void onItemsChanged(boolean animate) {
@@ -792,24 +795,20 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     @SuppressLint("ClickableViewAccessibility")
     public void updateCoverMode() {
         WorkspaceItemInfo coverItem = FolderCoverMode.INSTANCE.getCoverItem(this);
-        if (coverItem != mCoverItem) {
-            if (mCoverDrawable != null) {
-                mCoverDrawable.setCallback(null);
-            }
-            mCoverItem = coverItem;
-            mCoverDrawable = coverItem != null
-                    ? coverItem.newIcon(getContext(), FLAG_THEMED) : null;
-            if (mCoverDrawable != null) {
-                mCoverDrawable.setCallback(this);
-            }
+        // Icon/theme updates replace the bitmap on the same item object. Rebuild the drawable
+        // even when the first app has not changed, just like the regular folder preview does.
+        if (mCoverDrawable != null) {
+            mCoverDrawable.setCallback(null);
+        }
+        mCoverItem = coverItem;
+        mCoverDrawable = coverItem != null
+                ? coverItem.newIcon(getContext(), FLAG_THEMED) : null;
+        if (mCoverDrawable != null) {
+            mCoverDrawable.setCallback(this);
         }
         if (mCoverItem != null
                 && mCoverItem.getMatchingLookupFlag().isVisuallyLessThan(DESKTOP_ICON_FLAG)) {
-            // Lawnchair: IconCache can refresh an item's bitmap in place, keeping the same
-            // WorkspaceItemInfo reference (e.g. once the app's real icon replaces a placeholder,
-            // or a higher-res version becomes available) -- the reference check above alone
-            // won't catch that, so rebuild the drawable from whatever the cache now has, the same
-            // way PreviewItemManager#setDrawable does for the folder's own preview icons.
+            // Fetch a desktop-quality icon if the current bitmap is a placeholder or preview.
             LauncherAppState.getInstance(getContext()).getIconCache().updateIconInBackground(
                     newInfo -> {
                         if (mCoverItem == newInfo) {
