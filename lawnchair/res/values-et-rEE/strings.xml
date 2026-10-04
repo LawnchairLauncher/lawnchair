@@ -631,7 +631,7 @@
     <string name="hotseat_bg_vertical_inset_top">Ülemine serv</string>
     <string name="hotseat_bg_vertical_inset_bottom">Alumine serv</string>
     <string name="hotseat_bg_color_label">Tausta värv</string>
-    <string name="hotseat_bg_corner_radius">Background corner radius</string>
+    <string name="hotseat_bg_corner_radius">Tausta nurgaraadius</string>
     <string name="hotseat_bg_alpha">Tausta läbipaistmatus</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Paus</string>

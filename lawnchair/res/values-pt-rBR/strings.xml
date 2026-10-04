@@ -479,7 +479,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="backup_restore_error">Falha ao restaurar o backup</string>
     <string name="invalid_backup_file">Arquivo de backup inválido</string>
     <string name="restore_nova_backup">Restaure o backup Nova</string>
-    <string name="invalid_nova_backup_file">Arquivo do backup Nova inválido</string>
+    <string name="invalid_nova_backup_file">Arquivo de backup Nova inválido</string>
     <string name="nova_grid_label">Grade</string>
     <string name="nova_grid_value">%1$d x %2$d</string>
     <string name="nova_dock_label">Ancorar</string>
