@@ -125,7 +125,7 @@ class LawnchairBackup(
                 }
                 // Let grid changes finish against the old layout before installing the backup.
                 withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
-                    BackupLayoutDatabase.install(context, layout, info.gridState, LauncherAppState.getIDP(context).dbFile)
+                    BackupLayoutDatabase.install(context, layout, info.gridState, DeviceGridState(LauncherAppState.getIDP(context)))
                     val dbController = ModelDbController(context)
                     val database = dbController.db
                     database.beginTransaction()

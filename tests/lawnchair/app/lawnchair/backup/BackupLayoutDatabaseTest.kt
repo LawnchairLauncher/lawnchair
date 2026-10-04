@@ -10,6 +10,7 @@ import com.android.launcher3.model.DeviceGridState
 import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,7 +40,7 @@ class BackupLayoutDatabaseTest {
         preferences.edit().putString(DeviceGridState.KEY_DB_FILE, archivedDatabase.name).commit()
 
         BackupLayoutDatabase.validate(context, archive, grid)
-        BackupLayoutDatabase.install(context, archive, grid, targetDatabase.name)
+        BackupLayoutDatabase.install(context, archive, grid, DeviceGridState(6, 5, 6, 0, targetDatabase.name, 0))
 
         val selectedDatabase = preferences.getString(DeviceGridState.KEY_DB_FILE, null)
         assertEquals(BackupLayoutDatabase.SOURCE_DATABASE, selectedDatabase)
@@ -54,4 +55,44 @@ class BackupLayoutDatabaseTest {
             }
         }
     }
+
+    @Test
+    fun matchingGridUsesTargetFilenameWithoutSchedulingGridMigration() {
+        val context = RuntimeEnvironment.getApplication()
+        val archive = File(context.cacheDir, "same-grid.db").apply { writeText("validated layout") }
+        val target = context.getDatabasePath("launcher_6_4_4.db").apply {
+            parentFile!!.mkdirs()
+            writeText("old layout")
+        }
+        val grid = GridState.newBuilder().setGridSize("4,6").setHotseatCount(4).setDeviceType(0).build()
+        val preferences = context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, 0)
+        preferences.edit().putString(DeviceGridState.KEY_DB_FILE, "unrelated-grid.db").commit()
+
+        BackupLayoutDatabase.install(context, archive, grid, DeviceGridState(4, 6, 4, 0, target.name, 0))
+
+        assertEquals("validated layout", target.readText())
+        assertEquals(target.name, preferences.getString(DeviceGridState.KEY_DB_FILE, null))
+        assertFalse(context.getDatabasePath(BackupLayoutDatabase.SOURCE_DATABASE).exists())
+    }
+
+    @Test
+    fun failedSourceCopyDoesNotDeleteCurrentLayoutOrChangeDatabaseSelection() {
+        val context = RuntimeEnvironment.getApplication()
+        val missingArchive = File(context.cacheDir, "missing-layout.db")
+        val target = context.getDatabasePath("launcher_6_4_4.db").apply {
+            parentFile!!.mkdirs()
+            writeText("live layout")
+        }
+        val grid = GridState.newBuilder().setGridSize("4,6").setHotseatCount(4).setDeviceType(0).build()
+        val preferences = context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, 0)
+        preferences.edit().putString(DeviceGridState.KEY_DB_FILE, target.name).commit()
+
+        assertThrows(java.io.IOException::class.java) {
+            BackupLayoutDatabase.install(context, missingArchive, grid, DeviceGridState(4, 6, 4, 0, target.name, 0))
+        }
+
+        assertEquals("live layout", target.readText())
+        assertEquals(target.name, preferences.getString(DeviceGridState.KEY_DB_FILE, null))
+    }
+
 }

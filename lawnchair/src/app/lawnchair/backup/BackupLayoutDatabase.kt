@@ -38,8 +38,8 @@ internal object BackupLayoutDatabase {
 
             override fun onOpen(db: SQLiteDatabase) = Unit
         }
-        helper.use {
-            val db = it.writableDatabase
+        try {
+            val db = helper.writableDatabase
             db.rawQuery("SELECT ${Favorites.getColumns(0)} FROM favorites LIMIT 0", null).use { }
             db.rawQuery("PRAGMA table_info(favorites)", null).use { columns ->
                 var hasProfileDefault = false
@@ -57,20 +57,34 @@ internal object BackupLayoutDatabase {
                 check(hasPrimaryKey && hasProfileDefault) { "Invalid launcher identity columns" }
             }
             check(db.isDatabaseIntegrityOk) { "Invalid launcher database" }
+        } finally {
+            helper.close()
         }
     }
 
-    /** Keep source and destination distinct so startup can migrate even across different grids. */
-    fun install(context: Context, archive: File, gridState: GridState, targetDatabase: String) {
+    /** Use a separate migration source only when the target's grid actually differs. */
+    fun install(context: Context, archive: File, gridState: GridState, target: DeviceGridState) {
+        val targetDatabase = target.dbFile
         check(targetDatabase != SOURCE_DATABASE)
+        val source = context.getDatabasePath(SOURCE_DATABASE)
         context.deleteDatabase(SOURCE_DATABASE)
-        archive.copyTo(context.getDatabasePath(SOURCE_DATABASE).apply { parentFile?.mkdirs() }, overwrite = true)
+        archive.copyTo(source.apply { parentFile?.mkdirs() }, overwrite = true)
+        // Finish the potentially failing copy before removing the current layout.
         context.deleteDatabase(targetDatabase)
         context.deleteDatabase(LawnchairBackup.RESTORED_DB_FILE_NAME)
+        val archived = DeviceGridState(gridState)
+        val sameGrid = archived.columns == target.columns && archived.rows == target.rows &&
+            archived.numHotseat == target.numHotseat && archived.deviceType == target.deviceType
+        val databaseName = if (sameGrid) {
+            check(source.renameTo(context.getDatabasePath(targetDatabase))) { "Unable to install launcher database" }
+            targetDatabase
+        } else {
+            SOURCE_DATABASE
+        }
         DeviceGridState(gridState).writeToPrefs(context, true)
         check(
             context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-                .edit().putString(DeviceGridState.KEY_DB_FILE, SOURCE_DATABASE).commit(),
+                .edit().putString(DeviceGridState.KEY_DB_FILE, databaseName).commit(),
         ) { "Unable to select restored launcher database" }
     }
 }
