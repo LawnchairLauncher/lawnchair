@@ -563,11 +563,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 ? new float[]{1, mDeviceProfile.workspaceContentScale}
                 : new float[]{mDeviceProfile.workspaceContentScale, 1};
 
-        // LC-Note: Keep workspace scale fixed when reduced motion is enabled.
-        if (app.lawnchair.util.HomeScreenMotion.isReduced(mLauncher)) {
-            scales[0] = scales[1] = 1f;
-        }
-
         // Pause expensive view updates as they can lead to layer thrashing and skipped frames.
         mLauncher.pauseExpensiveViewUpdates();
 
@@ -613,6 +608,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         } else if (mLauncher.isInState(OVERVIEW)) {
             endListener = composeViewContentAnimator(launcherAnimator, alphas, scales);
         } else {
+            // LC-Note: Keep workspace scale fixed when reduced motion is enabled.
+            if (app.lawnchair.util.HomeScreenMotion.isReduced(mLauncher)) {
+                scales[0] = scales[1] = 1f;
+            }
+
             List<View> viewsToAnimate = new ArrayList<>();
             viewsToAnimate.add(mLauncher.getWorkspace());
 
