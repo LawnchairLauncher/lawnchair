@@ -288,6 +288,10 @@ android {
     }
 
     sourceSets {
+        test {
+            java.srcDirs = ['tests/lawnchair']
+            kotlin.directories.add('tests/lawnchair')
+        }
         main {
             res.srcDirs = ['res']
 
@@ -347,6 +351,8 @@ android {
 
 androidComponents {
     onVariants(selector().all()) { variant ->
+        // Refine must not rewrite signed JVM security providers used by Robolectric.
+        variant.unitTest?.instrumentation?.excludes?.addAll("org/conscrypt/**", "org/bouncycastle/**")
         def channel = variant.productFlavors.last().second
         variant.outputs.forEach { output ->
             output.outputFileName.set("Lawnchair.${output.versionName.get()}.$channel.${variant.buildType}.apk")
@@ -378,6 +384,9 @@ composeCompiler {
 addFrameworkJar('framework-16.jar')
 
 dependencies {
+    testImplementation libs.junit
+    testImplementation "org.robolectric:robolectric:4.16.1"
+
     implementation projects.iconloaderlib
     implementation projects.searchuilib
     implementation projects.animationlib

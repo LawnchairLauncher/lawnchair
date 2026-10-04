@@ -10,6 +10,7 @@ import android.os.Process
 import android.util.Log
 import app.lawnchair.DeviceProfileOverrides
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.GridType
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherSettings.Favorites
@@ -20,6 +21,7 @@ import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.RestoreDbTask
 import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.shortcuts.ShortcutRequest
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -28,6 +30,7 @@ import java.util.UUID
 import java.util.zip.ZipInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 class NovaBackupConverter(
@@ -150,35 +153,44 @@ class NovaBackupConverter(
             val stagedDbFile = File(tempDir, NOVA_WORKSPACE_DB)
             val importedDeepShortcuts = createRestoredDb(novaDbFile, stagedDbFile)
 
-            val columns = info.columns
-            val rows = info.rows
-            val hotseatCount = info.hotseatCount
-            if (columns != null && rows != null && hotseatCount != null) {
-                val gridInfo = DeviceProfileOverrides.DBGridInfo(
-                    numHotseatColumns = hotseatCount,
-                    numRows = rows,
-                    numColumns = columns,
-                )
-                val gridState = DeviceGridState(
-                    columns,
-                    rows,
-                    hotseatCount,
-                    InvariantDeviceProfile.TYPE_PHONE,
-                    gridInfo.dbFile,
-                    GridType.GRID_TYPE_ANY,
-                )
-                gridState.writeToPrefs(context, true)
-                gridState.writeToPrefs(context)
-                InvariantDeviceProfile.INSTANCE.get(context).dbFile = gridInfo.dbFile
-            }
+            // Publish all grid preferences together before any layout reload can observe them.
             writeGridToLawnchairPrefs(info)
 
-            val restoredDbFile = context.getDatabasePath(LawnchairBackup.RESTORED_DB_FILE_NAME)
-            restoredDbFile.parentFile?.mkdirs()
-            stagedDbFile.copyTo(restoredDbFile, overwrite = true)
+            // Let any grid migration finish against the old layout before installing the import.
+            withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                val columns = info.columns
+                val rows = info.rows
+                val hotseatCount = info.hotseatCount
+                if (columns != null && rows != null && hotseatCount != null) {
+                    val gridInfo = DeviceProfileOverrides.DBGridInfo(
+                        numHotseatColumns = hotseatCount,
+                        numRows = rows,
+                        numColumns = columns,
+                    )
+                    val gridState = DeviceGridState(
+                        columns,
+                        rows,
+                        hotseatCount,
+                        InvariantDeviceProfile.TYPE_PHONE,
+                        gridInfo.dbFile,
+                        GridType.GRID_TYPE_ANY,
+                    )
+                    gridState.writeToPrefs(context, true)
+                    gridState.writeToPrefs(context)
+                    InvariantDeviceProfile.INSTANCE.get(context).dbFile = gridInfo.dbFile
+                }
+                val restoredDbFile = context.getDatabasePath(LawnchairBackup.RESTORED_DB_FILE_NAME)
+                restoredDbFile.parentFile?.mkdirs()
+                stagedDbFile.copyTo(restoredDbFile, overwrite = true)
 
-            val dbController = ModelDbController(context)
-            RestoreDbTask.performRestore(context, dbController)
+                val dbController = ModelDbController(context)
+                try {
+                    check(RestoreDbTask.performRestore(context, dbController)) { "Unable to restore imported layout" }
+                    dbController.clearEmptyDbFlag()
+                } finally {
+                    dbController.db.close()
+                }
+            }
 
             pinImportedDeepShortcuts(importedDeepShortcuts)
         } finally {
@@ -193,14 +205,18 @@ class NovaBackupConverter(
         packageName
     }
 
-    private fun writeGridToLawnchairPrefs(info: NovaBackupInfo) {
+    private suspend fun writeGridToLawnchairPrefs(info: NovaBackupInfo) = withContext(Dispatchers.Main) {
         val prefs = PreferenceManager.getInstance(context)
-        prefs.sp.edit().apply {
-            info.columns?.let { putInt(prefs.workspaceColumns.key, it) }
-            info.rows?.let { putInt(prefs.workspaceRows.key, it) }
-            info.hotseatCount?.let { putInt(prefs.hotseatColumns.key, it) }
-            info.iconPackPackage?.let { putString(prefs.iconPackPackage.key, it) }
-        }.commit()
+        // An imported desktop owns its top row; don't put Lawnchair onboarding behind its widgets.
+        val prefs2 = PreferenceManager2.getInstance(context)
+        prefs2.enableSmartspace.set(false)
+        prefs.batchEdit {
+            info.columns?.let { prefs.workspaceColumns.set(it) }
+            info.rows?.let { prefs.workspaceRows.set(it) }
+            info.hotseatCount?.let { prefs.hotseatColumns.set(it) }
+            info.iconPackPackage?.let { prefs.iconPackPackage.set(it) }
+        }
+        InvariantDeviceProfile.INSTANCE.get(context).onPreferencesChanged(context)
     }
 
     private fun parseNovaConfig(xmlFile: File): NovaConfig {
@@ -304,7 +320,7 @@ class NovaBackupConverter(
         return importedDeepShortcuts.mapValues { (_, shortcutIds) -> shortcutIds.toSet() }
     }
 
-    private fun insertNovaItems(
+    internal fun insertNovaItems(
         src: SQLiteDatabase,
         db: SQLiteDatabase,
         profileId: Long,
@@ -346,6 +362,12 @@ class NovaBackupConverter(
                  *           X being category ID that are defined in drawer_group table
                  */
                 val rawIntent = getStringOrNull(cursor, NOVA_COL_INTENT)
+                val component = rawIntent?.let { runCatching { Intent.parseUri(it, 0).component }.getOrNull() }
+                if (component?.packageName == "com.teslacoilsw.launcher" &&
+                    component.className == "com.teslacoilsw.launcher.preferences.SettingsActivity"
+                ) {
+                    continue
+                }
                 val importedDeepShortcut = if (itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     parseNovaDeepShortcut(rawIntent)?.also { shortcut ->
                         importedDeepShortcuts.getOrPut(shortcut.packageName) { mutableSetOf() }
