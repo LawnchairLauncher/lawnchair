@@ -883,6 +883,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         Log.d("b/383526431", "animateOpen: content child count after cancelling"
                 + " animation: " + mContent.getTotalChildCount());
 
+        // LC-Note: A previous morph close can leave the reused panel in its closed state.
+        if (app.lawnchair.util.FolderMotion.get(getContext()) != app.lawnchair.util.FolderMotion.MORPH) {
+            app.lawnchair.util.FolderPanelAnimation.prepareOpen(mFooter, mBackground,
+                    LawnchairUtilsKt.resolveFolderBackgroundColor(getContext()));
+        }
+
         AnimatorSet animatorSet = getFolderAnimationManager()
                 .createAnimatorSet(/* isOpening */ true);
 

@@ -1,6 +1,8 @@
 package app.lawnchair.util
 
 import android.app.Application
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
@@ -18,6 +20,28 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE, sdk = [28], application = Application::class)
 class FolderPanelAnimationTest {
+    @Test
+    fun openingAfterMorphCloseRestoresFooterAndPanelColor() {
+        val context = RuntimeEnvironment.getApplication()
+        val footer = FrameLayout(context).apply {
+            // Both morph implementations fade the footer out; the legacy one also translates it.
+            alpha = 0f
+            translationY = -240f
+        }
+        val background = GradientDrawable().apply {
+            setColor(Color.TRANSPARENT)
+            alpha = 128
+        }
+
+        // Grow and Instant share this preparation before their separate animations begin.
+        FolderPanelAnimation.prepareOpen(footer, background, Color.BLUE)
+
+        assertEquals(1f, footer.alpha, 0f)
+        assertEquals(0f, footer.translationY, 0f)
+        assertEquals(Color.BLUE, background.color!!.defaultColor)
+        assertEquals(128, background.alpha)
+    }
+
     @Test
     fun cancellingGrowRestoresVisibilityAndClippingWithoutScalingIcons() {
         val context = RuntimeEnvironment.getApplication()

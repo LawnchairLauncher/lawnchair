@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.Rect
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider
@@ -12,6 +13,14 @@ import kotlin.math.roundToInt
 
 /** Reveals the panel without scaling or rearranging its app icons. */
 object FolderPanelAnimation {
+    /** Restore state left by a previous morph close before opening with another mode. */
+    @JvmStatic
+    fun prepareOpen(footer: View, background: GradientDrawable, backgroundColor: Int) {
+        footer.alpha = 1f
+        footer.translationY = 0f
+        background.setColor(backgroundColor)
+    }
+
     @JvmStatic
     fun create(view: View, iconSize: Int, cornerRadius: Float, opening: Boolean): AnimatorSet {
         val width = view.layoutParams.width
