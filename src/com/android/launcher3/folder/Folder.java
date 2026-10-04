@@ -96,6 +96,7 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -1081,7 +1082,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         AnimatorSet animatorSet = getFolderAnimationManager()
                 .createAnimatorSet(/* isOpening */ false);
 
-        animatorSet.addListener(new AnimatorListenerAdapter() {
+        animatorSet.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
                 if (Utilities.ATLEAST_R) {
@@ -1097,9 +1098,16 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
                     }
                 }
+                super.onAnimationEnd(animation);
+                mIsAnimatingClosed = false;
+            }
+
+            @Override
+            public void onAnimationSuccess(Animator animation) {
+                // LC-Note: Reopening cancels the close; retain its panel and external-drag state.
+                // Immediate dismissal still calls closeComplete(false) from handleClose.
                 closeComplete(true);
                 announceAccessibilityChanges();
-                mIsAnimatingClosed = false;
             }
         });
         addAnimationStartListeners(animatorSet);
