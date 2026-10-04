@@ -2,6 +2,8 @@ package app.lawnchair.backup
 
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -13,7 +15,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE, sdk = [28])
+@Config(manifest = Config.NONE, sdk = [28, 35])
 class BackupDatabaseSnapshotTest {
     @get:Rule val temporaryFolder = TemporaryFolder()
 
@@ -65,6 +67,35 @@ class BackupDatabaseSnapshotTest {
                 assertEquals(Cursor.FIELD_TYPE_FLOAT, cursor.getType(1))
                 assertEquals(Cursor.FIELD_TYPE_STRING, cursor.getType(2))
             }
+        }
+    }
+
+    @Test
+    @Config(sdk = [35])
+    fun readOnlySnapshotAllowsWalWriterWithoutChangingItsReadView() {
+        val source = temporaryFolder.newFile("concurrent.db")
+        val writer = Executors.newSingleThreadExecutor()
+        try {
+            SQLiteDatabase.openOrCreateDatabase(source, null).use { live ->
+                live.enableWriteAheadLogging()
+                live.execSQL("CREATE TABLE items (_id INTEGER PRIMARY KEY)")
+                live.execSQL("INSERT INTO items VALUES (1)")
+                BackupDatabaseSnapshot.readSnapshot(source) { snapshot ->
+                    fun count() = snapshot.rawQuery("SELECT COUNT(*) FROM items", null).use {
+                        check(it.moveToFirst())
+                        it.getInt(0)
+                    }
+                    assertEquals(1, count())
+                    writer.submit { live.execSQL("INSERT INTO items VALUES (2)") }.get(5, TimeUnit.SECONDS)
+                    assertEquals(1, count())
+                }
+                live.rawQuery("SELECT COUNT(*) FROM items", null).use {
+                    assertTrue(it.moveToFirst())
+                    assertEquals(2, it.getInt(0))
+                }
+            }
+        } finally {
+            writer.shutdownNow()
         }
     }
 
