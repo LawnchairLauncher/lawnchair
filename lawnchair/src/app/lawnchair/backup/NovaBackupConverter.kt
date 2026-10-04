@@ -8,10 +8,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.os.Process
 import android.util.Log
-import app.lawnchair.DeviceProfileOverrides
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import com.android.launcher3.GridType
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.model.DatabaseHelper
@@ -158,27 +156,11 @@ class NovaBackupConverter(
 
             // Let any grid migration finish against the old layout before installing the import.
             withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
-                val columns = info.columns
-                val rows = info.rows
-                val hotseatCount = info.hotseatCount
-                if (columns != null && rows != null && hotseatCount != null) {
-                    val gridInfo = DeviceProfileOverrides.DBGridInfo(
-                        numHotseatColumns = hotseatCount,
-                        numRows = rows,
-                        numColumns = columns,
-                    )
-                    val gridState = DeviceGridState(
-                        columns,
-                        rows,
-                        hotseatCount,
-                        InvariantDeviceProfile.TYPE_PHONE,
-                        gridInfo.dbFile,
-                        GridType.GRID_TYPE_ANY,
-                    )
-                    gridState.writeToPrefs(context, true)
-                    gridState.writeToPrefs(context)
-                    InvariantDeviceProfile.INSTANCE.get(context).dbFile = gridInfo.dbFile
-                }
+                // Missing Nova dimensions retain the current grid preference. Publish the
+                // complete effective grid so the controller opens the imported database.
+                val gridState = DeviceGridState(InvariantDeviceProfile.INSTANCE.get(context))
+                gridState.writeToPrefs(context, true)
+                gridState.writeToPrefs(context)
                 val restoredDbFile = context.getDatabasePath(LawnchairBackup.RESTORED_DB_FILE_NAME)
                 restoredDbFile.parentFile?.mkdirs()
                 stagedDbFile.copyTo(restoredDbFile, overwrite = true)
