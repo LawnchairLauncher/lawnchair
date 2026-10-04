@@ -127,6 +127,11 @@ fun HomeScreenPreferences(
         }
         PreferenceGroup(heading = stringResource(R.string.style)) {
             HomeScreenTextColorPreference()
+            SwitchPreference(
+                adapter = prefs2.reduceHomeScreenMotion.getAdapter(),
+                label = stringResource(R.string.reduce_home_screen_motion_label),
+                description = stringResource(R.string.reduce_home_screen_motion_description),
+            )
             OverlayHandlerPreference(
                 adapter = prefs2.closingAppOverlay.getAdapter(),
                 label = stringResource(id = R.string.app_closing_animation),

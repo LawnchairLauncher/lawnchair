@@ -202,7 +202,10 @@ public class BaseDepthController {
         float depth = mDepth;
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null && Utilities.ATLEAST_R) {
-            if (enableScalingRevealHomeAnimation()) {
+            // LC-Note: Respect Lawnchair wallpaper and reduced-motion preferences.
+            if (!app.lawnchair.util.HomeScreenMotion.wallpaperZoomEnabled(mLauncher)) {
+                mWallpaperManager.setWallpaperZoomOut(windowToken, 0f);
+            } else if (enableScalingRevealHomeAnimation()) {
                 mWallpaperManager.setWallpaperZoomOut(windowToken, depth);
             } else {
                 // The API's full zoom-out is three times larger than the zoom-out we apply
