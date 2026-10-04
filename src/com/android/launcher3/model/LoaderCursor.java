@@ -537,6 +537,12 @@ public class LoaderCursor extends CursorWrapper {
         info.screenId = getInt(mScreenIndex);
         info.cellX = getInt(mCellXIndex);
         info.cellY = getInt(mCellYIndex);
+        // LC-Note: Subgrid positioning — recover half-cell offsets/sizes from the (possibly REAL)
+        // columns. Base reads above stay integer (getInt truncates), so legacy behavior is unchanged.
+        info.subX = ItemInfo.decodeSubgridStep(getFloat(mCellXIndex));
+        info.subY = ItemInfo.decodeSubgridStep(getFloat(mCellYIndex));
+        info.subSpanX = ItemInfo.decodeSubgridStep(getFloat(mSpanXIndex));
+        info.subSpanY = ItemInfo.decodeSubgridStep(getFloat(mSpanYIndex));
     }
 
     /**
@@ -669,7 +675,13 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            return PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getAllowWidgetOverlap());
+            // LC-Note: Subgrid free placement lets icons/widgets share a base cell, so don't drop
+            // them. Folders stay on the unchanged integer grid, so keep their overlap check strict.
+            boolean allowSubgridOverlap = item.itemType != Favorites.ITEM_TYPE_FOLDER
+                    && PreferenceCacheExtensionsKt.firstCached(
+                            preferenceManager2.getEnableSubgridPositioning());
+            return PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getAllowWidgetOverlap())
+                    || allowSubgridOverlap;
         }
     }
 
