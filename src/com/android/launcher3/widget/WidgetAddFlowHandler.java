@@ -28,6 +28,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.PendingRequestArgs;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * Utility class to handle app widget add flow.
@@ -56,8 +57,12 @@ public class WidgetAddFlowHandler implements Parcelable {
 
     public void startBindFlow(Launcher launcher, int appWidgetId, ItemInfo info, int requestCode) {
         launcher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
+        // LC-Note: Pass the rendered (possibly half-cell) size to the bind dialog.
         launcher.getAppWidgetHolder()
-                .startBindFlow(launcher, appWidgetId, mProviderInfo, requestCode);
+                .startBindFlow(launcher, appWidgetId, mProviderInfo, requestCode,
+                        WidgetSizes.getWidgetSizeOptions(launcher, mProviderInfo.provider,
+                                info.spanX + info.subSpanX * 0.5f,
+                                info.spanY + info.subSpanY * 0.5f));
     }
 
     /**

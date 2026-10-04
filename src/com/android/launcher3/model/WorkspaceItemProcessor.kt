@@ -646,8 +646,8 @@ class WorkspaceItemProcessor(
                     appWidgetInfo.appWidgetId,
                     lapi,
                     context,
-                    appWidgetInfo.spanX,
-                    appWidgetInfo.spanY,
+                    appWidgetInfo.spanX + appWidgetInfo.subSpanX * 0.5f,
+                    appWidgetInfo.spanY + appWidgetInfo.subSpanY * 0.5f,
                 )
         }
 

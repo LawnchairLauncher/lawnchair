@@ -663,11 +663,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             mLastDirectionVector[1] = mDirectionVector[1];
         }
 
-        // Split the half-cell range back into a base cell/span plus a half-step (0 or 1).
+        // Keep base spans positive; a half-cell span uses base 1 with a half-step of -1.
         int newCellX = Math.floorDiv(cellXHalf, 2);
         int newCellY = Math.floorDiv(cellYHalf, 2);
-        int newSpanX = Math.floorDiv(spanXHalf, 2);
-        int newSpanY = Math.floorDiv(spanYHalf, 2);
+        int newSpanX = Math.max(1, Math.floorDiv(spanXHalf, 2));
+        int newSpanY = Math.max(1, Math.floorDiv(spanYHalf, 2));
 
         lp.setTmpCellX(newCellX);
         lp.setTmpCellY(newCellY);
@@ -682,9 +682,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mRunningHalfVInc += vHalfDelta;
 
         if (!onDismiss) {
-            // Report the widget's host size ranges using the same base spans the layout uses, so the
-            // framework's size info matches the rendered cell span. (The widget size-options API is
-            // integer-cell based, so a half-cell span is reported as its whole-cell part.)
+            // WidgetSizes includes the layout params' half-spans in the host's size options.
             WidgetSizes.updateWidgetSizeRanges(mWidgetView, mLauncher, newSpanX, newSpanY);
             // LC-Note: Subgrid positioning — mirror the integer path's resize announcement for a11y.
             if (mStateAnnouncer != null) {

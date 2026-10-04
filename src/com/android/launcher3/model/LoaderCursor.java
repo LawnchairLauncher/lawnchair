@@ -285,14 +285,16 @@ public class LoaderCursor extends CursorWrapper {
      * Returns the x position for the item in the cell layout's grid
      */
     public int getSpanX() {
-        return getInt(mSpanXIndex);
+        // LC-Note: Subgrid positioning, the column can hold a REAL half-cell span.
+        return ItemInfo.decodeSubgridSpanBase(getFloat(mSpanXIndex));
     }
 
     /**
      * Returns the y position for the item in the cell layout's grid
      */
     public int getSpanY() {
-        return getInt(mSpanYIndex);
+        // LC-Note: See getSpanX.
+        return ItemInfo.decodeSubgridSpanBase(getFloat(mSpanYIndex));
     }
 
     /**
@@ -541,8 +543,8 @@ public class LoaderCursor extends CursorWrapper {
         // columns. Base reads above stay integer (getInt truncates), so legacy behavior is unchanged.
         info.subX = ItemInfo.decodeSubgridStep(getFloat(mCellXIndex));
         info.subY = ItemInfo.decodeSubgridStep(getFloat(mCellYIndex));
-        info.subSpanX = ItemInfo.decodeSubgridStep(getFloat(mSpanXIndex));
-        info.subSpanY = ItemInfo.decodeSubgridStep(getFloat(mSpanYIndex));
+        info.subSpanX = ItemInfo.decodeSubgridSpanStep(getFloat(mSpanXIndex));
+        info.subSpanY = ItemInfo.decodeSubgridSpanStep(getFloat(mSpanYIndex));
     }
 
     /**
@@ -643,8 +645,13 @@ public class LoaderCursor extends CursorWrapper {
 
         final int countX = mIDP.numColumns;
         final int countY = mIDP.numRows;
-        if (item.container == Favorites.CONTAINER_DESKTOP && item.cellX < 0 || item.cellY < 0
-                || item.cellX + item.spanX > countX || item.cellY + item.spanY > countY) {
+        boolean subgrid = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableSubgridPositioning());
+        // LC-Note: Subgrid positioning, check the half-cell extent.
+        float x = item.cellX + (subgrid ? item.subX * 0.5f : 0);
+        float y = item.cellY + (subgrid ? item.subY * 0.5f : 0);
+        float width = item.spanX + (subgrid ? item.subSpanX * 0.5f : 0);
+        float height = item.spanY + (subgrid ? item.subSpanY * 0.5f : 0);
+        if (x < 0 || y < 0 || x + width > countX || y + height > countY) {
             Log.e(TAG, "Error loading shortcut " + item
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellY

@@ -30,10 +30,9 @@ import javax.inject.Inject
 open class WidgetSizeHandler @Inject constructor(@ApplicationContext private val context: Context) {
 
     /**
-     * Updates the widget size range if it is not currently the same. This makes two binder calls,
-     * one for getting the existing options, [AppWidgetManager.getAppWidgetOptions] and if it
-     * doesn't match the expected value, another call to update it,
-     * [AppWidgetManager.updateAppWidgetOptions].
+     * Updates the size range of a bound widget if it differs from the existing options.
+     *
+     * LC-Note: Takes float spans for subgrid (half-cell) sizes and skips unbound widget IDs.
      *
      * Note that updating the options is a costly call as it wakes up the provider process and
      * causes a full widget update, hence two binder calls are preferable over unnecessarily
@@ -42,21 +41,38 @@ open class WidgetSizeHandler @Inject constructor(@ApplicationContext private val
     open fun updateSizeRangesAsync(
         widgetId: Int,
         info: AppWidgetProviderInfo,
-        spanX: Int,
-        spanY: Int,
+        spanX: Float,
+        spanY: Float,
     ) {
         Executors.UI_HELPER_EXECUTOR.execute {
-            val widgetManager = AppWidgetManager.getInstance(context)
-            val sizeOptions = WidgetSizes.getWidgetSizeOptions(context, info.provider, spanX, spanY)
-            if (
-                sizeOptions.getWidgetSizeList() !=
-                    widgetManager.getAppWidgetOptions(widgetId).getWidgetSizeList()
-            )
-                widgetManager.updateAppWidgetOptions(widgetId, sizeOptions)
+            updateSizeRanges(widgetId, info, spanX, spanY)
+        }
+    }
+
+    // LC-Note: Split out of updateSizeRangesAsync, skips widget IDs without a bound provider.
+    internal fun updateSizeRanges(widgetId: Int, info: AppWidgetProviderInfo, spanX: Float, spanY: Float) {
+        val widgetManager = AppWidgetManager.getInstance(context)
+        // Imported placeholders have allocated IDs but no provider binding yet. Some Android
+        // builds crash in AppWidgetService when updating options for those IDs. Binding supplies
+        // the initial options, so defer size updates until the system reports a bound provider.
+        if (widgetId <= 0 || widgetManager.getAppWidgetInfo(widgetId) == null) return
+        val sizeOptions = WidgetSizes.getWidgetSizeOptions(context, info.provider, spanX, spanY) ?: return
+        if (needsSizeUpdate(widgetManager.getAppWidgetOptions(widgetId), sizeOptions)) {
+            widgetManager.updateAppWidgetOptions(widgetId, sizeOptions)
         }
     }
 
     companion object {
+
+        // LC-Note: Unlike AOSP, also compare the min/max size options, not only the size list.
+        internal fun needsSizeUpdate(current: Bundle, desired: Bundle): Boolean =
+            current.getWidgetSizeList() != desired.getWidgetSizeList() ||
+                listOf(
+                    AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
+                    AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
+                    AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
+                    AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
+                ).any { !current.containsKey(it) || current.getInt(it) != desired.getInt(it) }
 
         fun Bundle.getWidgetSizeList() = getParcelableArrayList<SizeF>(OPTION_APPWIDGET_SIZES)
     }

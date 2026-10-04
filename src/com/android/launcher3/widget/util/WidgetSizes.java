@@ -33,6 +33,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.dagger.LauncherComponentProvider;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,11 @@ public final class WidgetSizes {
      * Returns the list of all possible sizes, in dp, for a widget of given spans on this device.
      */
     public static ArrayList<SizeF> getWidgetSizesDp(Context context, int spanX, int spanY) {
+        return getWidgetSizesDp(context, (float) spanX, (float) spanY);
+    }
+
+    /** LC-Note: Float spans for subgrid (half-cell) sizes. */
+    public static ArrayList<SizeF> getWidgetSizesDp(Context context, float spanX, float spanY) {
         ArrayList<SizeF> sizes = new ArrayList<>(2);
         final float density = context.getResources().getDisplayMetrics().density;
 
@@ -57,15 +63,20 @@ public final class WidgetSizes {
 
     /** Returns the size, in pixels, a widget of given spans & {@code profile}. */
     public static Size getWidgetSizePx(DeviceProfile profile, int spanX, int spanY) {
-        final int hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacePx.x;
-        final int vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacePx.y;
+        return getWidgetSizePx(profile, (float) spanX, (float) spanY);
+    }
+
+    /** LC-Note: Float spans for subgrid (half-cell) sizes. */
+    public static Size getWidgetSizePx(DeviceProfile profile, float spanX, float spanY) {
+        final float hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacePx.x;
+        final float vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacePx.y;
 
         Point cellSize = profile.getCellSize();
         Rect padding = profile.widgetPadding;
 
         return new Size(
-                (spanX * cellSize.x) + hBorderSpacing - padding.left - padding.right,
-                (spanY * cellSize.y) + vBorderSpacing - padding.top - padding.bottom);
+                Math.max(1, Math.round((spanX * cellSize.x) + hBorderSpacing) - padding.left - padding.right),
+                Math.max(1, Math.round((spanY * cellSize.y) + vBorderSpacing) - padding.top - padding.bottom));
     }
 
     /**
@@ -94,8 +105,15 @@ public final class WidgetSizes {
      */
     public static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Context context,
             int spanX, int spanY) {
+        // LC-Note: Subgrid positioning, include the view's half-cell span.
+        float width = spanX;
+        float height = spanY;
+        if (widgetView.getLayoutParams() instanceof CellLayoutLayoutParams lp) {
+            width += lp.getSubSpanX() * 0.5f;
+            height += lp.getSubSpanY() * 0.5f;
+        }
         updateWidgetSizeRangesAsync(
-                widgetView.getAppWidgetId(), widgetView.getAppWidgetInfo(), context, spanX, spanY);
+                widgetView.getAppWidgetId(), widgetView.getAppWidgetInfo(), context, width, height);
     }
 
     /**
@@ -105,7 +123,8 @@ public final class WidgetSizes {
      * from {@code spanX}, {@code spanY} in all supported device profiles.
      */
     public static void updateWidgetSizeRangesAsync(int widgetId,
-            AppWidgetProviderInfo info, Context context, int spanX, int spanY) {
+            AppWidgetProviderInfo info, Context context, float spanX, float spanY) {
+        // LC-Note: Float spans for subgrid (half-cell) sizes.
         if (widgetId <= 0 || info == null) {
             return;
         }
@@ -119,6 +138,12 @@ public final class WidgetSizes {
      */
     public static Bundle getWidgetSizeOptions(Context context, ComponentName provider, int spanX,
             int spanY) {
+        return getWidgetSizeOptions(context, provider, (float) spanX, (float) spanY);
+    }
+
+    /** LC-Note: Float spans for subgrid (half-cell) sizes. */
+    public static Bundle getWidgetSizeOptions(Context context, ComponentName provider, float spanX,
+            float spanY) {
         ArrayList<SizeF> paddedSizes = getWidgetSizesDp(context, spanX, spanY);
         if (paddedSizes == null || paddedSizes.isEmpty()) {
             Log.e("LC-WidgetSizes", "Failed to get widget sizes for provider: " + provider);
