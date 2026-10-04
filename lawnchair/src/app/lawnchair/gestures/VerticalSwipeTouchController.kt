@@ -87,7 +87,7 @@ class VerticalSwipeTouchController(
             launcher.dragLayer.mapCoordInSelfToDescendant(it, coord)
             it.isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)
         } ?: false
-        if (isIconSwipe) {
+        if (isIconSwipe || launcher.hotseat?.isTouchOnIconWithSwipeGesture(ev.x, ev.y, true) == true) {
             return false
         }
         return AbstractFloatingView.getTopOpenView(launcher) == null &&
