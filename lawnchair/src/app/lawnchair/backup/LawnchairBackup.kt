@@ -78,14 +78,20 @@ class LawnchairBackup(
             }
             if (contents.hasFlag(INCLUDE_WALLPAPER)) {
                 handlers[WALLPAPER_FILE_NAME] = {
-                    val wallpaperManager = WallpaperManager.getInstance(context)
-                    wallpaperManager.setBitmap(BitmapFactory.decodeStream(it))
+                    File(staging, WALLPAPER_FILE_NAME).outputStream().use { output -> it.copyTo(output) }
                 }
             }
             // Finish reading before touching the live layout or its bound widget IDs.
             readZip(handlers)
+            val restoredWallpaper = if (contents.hasFlag(INCLUDE_WALLPAPER)) {
+                checkNotNull(BitmapFactory.decodeFile(File(staging, WALLPAPER_FILE_NAME).path)) { "Backup has no valid wallpaper" }
+            } else {
+                null
+            }
             if (restoreLayout) {
-                check(File(staging, LAUNCHER_DB_FILE_NAME).isFile) { "Backup has no launcher layout" }
+                val layout = File(staging, LAUNCHER_DB_FILE_NAME)
+                check(layout.isFile) { "Backup has no launcher layout" }
+                withContext(Dispatchers.IO) { BackupLayoutDatabase.validate(context, layout, info.gridState) }
                 val preferencesFile = File(staging, PREFS_FILE_NAME)
                 val preferences = if (preferencesFile.isFile) {
                     withContext(Dispatchers.IO) { BackupSharedPreferences.read(preferencesFile) }
@@ -119,17 +125,7 @@ class LawnchairBackup(
                 }
                 // Let grid changes finish against the old layout before installing the backup.
                 withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
-                    context.deleteDatabase(LauncherAppState.getIDP(context).dbFile)
-                    context.deleteDatabase(RESTORED_DB_FILE_NAME)
-                    destinations.forEach { (name, destination) ->
-                        val source = File(staging, name)
-                        if (source.isFile && name == LAUNCHER_DB_FILE_NAME) {
-                            destination.parentFile?.mkdirs()
-                            source.copyTo(destination, overwrite = true)
-                        }
-                    }
-                    // Write after extracting the backed-up preferences, so they cannot overwrite it.
-                    DeviceGridState(info.gridState).writeToPrefs(context, true)
+                    BackupLayoutDatabase.install(context, layout, info.gridState, LauncherAppState.getIDP(context).dbFile)
                     val dbController = ModelDbController(context)
                     val database = dbController.db
                     database.beginTransaction()
@@ -142,6 +138,9 @@ class LawnchairBackup(
                     }
                     dbController.clearEmptyDbFlag()
                 }
+            }
+            if (restoredWallpaper != null) {
+                withContext(Dispatchers.IO) { WallpaperManager.getInstance(context).setBitmap(restoredWallpaper) }
             }
         } finally {
             withContext(NonCancellable + Dispatchers.IO) { staging.deleteRecursively() }
