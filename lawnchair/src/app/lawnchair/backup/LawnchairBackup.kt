@@ -7,31 +7,40 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.core.graphics.drawable.toBitmap
+import androidx.datastore.preferences.core.PreferencesFileSerializer
 import app.lawnchair.LawnchairProto.BackupInfo
+import app.lawnchair.data.AppDatabase
+import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.scaleDownTo
 import app.lawnchair.util.scaleDownToDisplaySize
 import app.lawnchair.wallpaper.WallpaperColorsCompat
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.BuildConfig
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.R
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.model.ModelDbController
 import com.android.launcher3.provider.RestoreDbTask
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.google.protobuf.Timestamp
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.io.InputStream
+import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
+import kotlin.io.path.createTempDirectory
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 class LawnchairBackup(
@@ -58,33 +67,85 @@ class LawnchairBackup(
     }
 
     suspend fun restore(selectedContents: Int) {
-        val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
         val contents = selectedContents and info.contents
-        if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
-            handlers.putAll(
-                getFiles(context, forRestore = true).mapValues { entry ->
-                    {
-                        val file = entry.value
-                        file.parentFile?.mkdirs()
-                        file.outputStream().use { out -> it.copyTo(out) }
-                    }
-                },
-            )
-        }
-        if (contents.hasFlag(INCLUDE_WALLPAPER)) {
-            handlers[WALLPAPER_FILE_NAME] = {
-                val wallpaperManager = WallpaperManager.getInstance(context)
-                wallpaperManager.setBitmap(BitmapFactory.decodeStream(it))
+        val restoreLayout = contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)
+        val staging = createTempDirectory(context.cacheDir.toPath(), "restore-").toFile()
+        try {
+            val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
+            val destinations = if (restoreLayout) getFiles(context, forRestore = true) else emptyMap()
+            destinations.keys.forEach { name ->
+                handlers[name] = { input -> File(staging, name).outputStream().use { input.copyTo(it) } }
             }
+            if (contents.hasFlag(INCLUDE_WALLPAPER)) {
+                handlers[WALLPAPER_FILE_NAME] = {
+                    val wallpaperManager = WallpaperManager.getInstance(context)
+                    wallpaperManager.setBitmap(BitmapFactory.decodeStream(it))
+                }
+            }
+            // Finish reading before touching the live layout or its bound widget IDs.
+            readZip(handlers)
+            if (restoreLayout) {
+                check(File(staging, LAUNCHER_DB_FILE_NAME).isFile) { "Backup has no launcher layout" }
+                val preferencesFile = File(staging, PREFS_FILE_NAME)
+                val preferences = if (preferencesFile.isFile) {
+                    withContext(Dispatchers.IO) { BackupSharedPreferences.read(preferencesFile) }
+                } else {
+                    null
+                }
+                val dataStoreFile = File(staging, PREFS_DATASTORE_FILE_NAME)
+                val dataStorePreferences = if (dataStoreFile.isFile) {
+                    withContext(Dispatchers.IO) { dataStoreFile.inputStream().use { PreferencesFileSerializer.readFrom(it) } }
+                } else {
+                    null
+                }
+                val preferencesDatabase = File(staging, PREFS_DB_FILE_NAME)
+                if (preferencesDatabase.isFile) {
+                    val database = withContext(Dispatchers.Main) { AppDatabase.INSTANCE.get(context) }
+                    withContext(Dispatchers.IO) { BackupPreferencesDatabase.restore(context, preferencesDatabase, database) }
+                }
+                withContext(Dispatchers.Main) {
+                    if (dataStorePreferences != null) {
+                        PreferenceManager2.getInstance(context).restorePreferences(dataStorePreferences)
+                    }
+                    if (preferences != null) {
+                        val manager = PreferenceManager.getInstance(context)
+                        manager.batchEdit {
+                            // Clear also removes keys without per-key notifications on newer Android.
+                            manager.prefsMap.values.forEach { it.invalidate() }
+                            BackupSharedPreferences.apply(manager.sp, preferences)
+                        }
+                    }
+                    InvariantDeviceProfile.INSTANCE.get(context).onPreferencesChanged(context)
+                }
+                // Let grid changes finish against the old layout before installing the backup.
+                withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                    context.deleteDatabase(LauncherAppState.getIDP(context).dbFile)
+                    context.deleteDatabase(RESTORED_DB_FILE_NAME)
+                    destinations.forEach { (name, destination) ->
+                        val source = File(staging, name)
+                        if (source.isFile && name == LAUNCHER_DB_FILE_NAME) {
+                            destination.parentFile?.mkdirs()
+                            source.copyTo(destination, overwrite = true)
+                        }
+                    }
+                    // Write after extracting the backed-up preferences, so they cannot overwrite it.
+                    DeviceGridState(info.gridState).writeToPrefs(context, true)
+                    val dbController = ModelDbController(context)
+                    val database = dbController.db
+                    database.beginTransaction()
+                    try {
+                        check(RestoreDbTask.performRestore(context, dbController)) { "Unable to restore launcher layout" }
+                        database.setTransactionSuccessful()
+                    } finally {
+                        database.endTransaction()
+                        database.close()
+                    }
+                    dbController.clearEmptyDbFlag()
+                }
+            }
+        } finally {
+            withContext(NonCancellable + Dispatchers.IO) { staging.deleteRecursively() }
         }
-        context.getDatabasePath(LAUNCHER_DB_FILE_NAME).parentFile?.deleteRecursively()
-        readZip(handlers)
-        // Written after the zip has been extracted: the backed up preferences file is one of
-        // the restored entries, so writing the grid state first would let it be overwritten.
-        DeviceGridState(info.gridState).writeToPrefs(context, true)
-
-        val dbController = ModelDbController(context)
-        RestoreDbTask.performRestore(context, dbController)
     }
 
     private suspend fun readZip(handlers: Map<String, suspend (InputStream) -> Unit>) {
@@ -142,50 +203,70 @@ class LawnchairBackup(
             )
         }
 
-        @SuppressLint("MissingPermission")
-        suspend fun create(context: Context, contents: Int, screenshotBitmap: Bitmap, fileUri: Uri) {
-            val idp = LauncherAppState.getIDP(context)
-            val createdAt = Timestamp.newBuilder()
-                .setSeconds(System.currentTimeMillis() / 1000)
-            val colorHints = WallpaperManagerCompat.INSTANCE.get(context).wallpaperColors?.colorHints ?: 0
-            val wallpaperSupportsDarkText = (colorHints and WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0
-            val info = BackupInfo.newBuilder()
-                .setLawnchairVersion(BuildConfig.VERSION_CODE)
-                .setBackupVersion(BACKUP_VERSION)
-                .setCreatedAt(createdAt)
-                .setContents(contents)
-                .setGridState(DeviceGridState(idp).toProtoMessage())
-                .setPreviewWidth(screenshotBitmap.width)
-                .setPreviewHeight(screenshotBitmap.height)
-                .setPreviewDarkText(wallpaperSupportsDarkText)
-                .build()
-
-            val pfd = context.contentResolver.openFileDescriptor(fileUri, "w")!!
+        suspend fun create(context: Context, contents: Int, screenshotBitmap: Bitmap?, fileUri: Uri) {
             withContext(Dispatchers.IO) {
-                pfd.use {
-                    ZipOutputStream(FileOutputStream(pfd.fileDescriptor).buffered()).use { out ->
+                val output = context.contentResolver.openOutputStream(fileUri, "wt")
+                    ?: error("Unable to open backup destination")
+                output.use { create(context, contents, screenshotBitmap, it) }
+            }
+        }
+
+        /** Writes and closes [output]. A preview is optional for unattended exports. */
+        @SuppressLint("MissingPermission")
+        suspend fun create(context: Context, contents: Int, screenshotBitmap: Bitmap?, output: OutputStream) {
+            withContext(Dispatchers.IO) {
+                val idp = LauncherAppState.getIDP(context)
+                val colorHints = WallpaperManagerCompat.INSTANCE.get(context).wallpaperColors?.colorHints ?: 0
+                val info = BackupInfo.newBuilder()
+                    .setLawnchairVersion(BuildConfig.VERSION_CODE)
+                    .setBackupVersion(BACKUP_VERSION)
+                    .setCreatedAt(Timestamp.newBuilder().setSeconds(System.currentTimeMillis() / 1000))
+                    .setContents(contents)
+                    .setGridState(DeviceGridState(idp).toProtoMessage())
+                    .setPreviewWidth(screenshotBitmap?.width ?: 1)
+                    .setPreviewHeight(screenshotBitmap?.height ?: 1)
+                    .setPreviewDarkText((colorHints and WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0)
+                    .build()
+                val staging = createTempDirectory(context.cacheDir.toPath(), "backup-").toFile()
+                try {
+                    val files = if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
+                        check(launcherDbFile(context, forRestore = false).isFile) { "Launcher layout is not ready for backup" }
+                        getFiles(context, forRestore = false).mapValues { (name, source) ->
+                            val snapshot = File(staging, name)
+                            if (source.exists()) {
+                                if (name == LAUNCHER_DB_FILE_NAME || name == PREFS_DB_FILE_NAME) {
+                                    BackupDatabaseSnapshot.create(source, snapshot)
+                                } else {
+                                    source.copyTo(snapshot)
+                                }
+                            }
+                            snapshot
+                        }
+                    } else {
+                        emptyMap()
+                    }
+                    ZipOutputStream(output.buffered()).use { out ->
                         out.putNextEntry(ZipEntry(INFO_FILE_NAME))
                         info.writeTo(out)
-
                         if (contents.hasFlag(INCLUDE_WALLPAPER)) {
-                            val wallpaperManager = WallpaperManager.getInstance(context)
-                            val wallpaperBitmap = wallpaperManager.drawable?.toBitmap()
-                            if (wallpaperBitmap != null) {
-                                out.putNextEntry(ZipEntry(WALLPAPER_FILE_NAME))
-                                wallpaperBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                            val wallpaper = WallpaperManager.getInstance(context).drawable?.toBitmap()
+                                ?: error("Wallpaper is unavailable")
+                            out.putNextEntry(ZipEntry(WALLPAPER_FILE_NAME))
+                            check(wallpaper.compress(Bitmap.CompressFormat.PNG, 100, out))
+                        }
+                        if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS) && screenshotBitmap != null) {
+                            out.putNextEntry(ZipEntry(SCREENSHOT_FILE_NAME))
+                            check(screenshotBitmap.compress(Bitmap.CompressFormat.PNG, 85, out))
+                        }
+                        files.forEach { (name, file) ->
+                            if (file.exists()) {
+                                out.putNextEntry(ZipEntry(name))
+                                file.inputStream().use { it.copyTo(out) }
                             }
                         }
-                        if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
-                            out.putNextEntry(ZipEntry(SCREENSHOT_FILE_NAME))
-                            screenshotBitmap.compress(Bitmap.CompressFormat.PNG, 85, out)
-                        }
-
-                        getFiles(context, forRestore = false).entries.forEach {
-                            if (!it.value.exists()) return@forEach
-                            out.putNextEntry(ZipEntry(it.key))
-                            it.value.inputStream().use { input -> input.copyTo(out) }
-                        }
                     }
+                } finally {
+                    staging.deleteRecursively()
                 }
             }
         }
