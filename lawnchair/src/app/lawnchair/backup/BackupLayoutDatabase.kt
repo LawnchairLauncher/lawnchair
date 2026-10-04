@@ -24,41 +24,50 @@ internal object BackupLayoutDatabase {
             check(db.version in 12..DatabaseHelper.SCHEMA_VERSION) { "Unsupported launcher database version" }
             db.rawQuery("SELECT _id FROM favorites LIMIT 0", null).use { }
         }
-        // DatabaseHelper normally recovers failed upgrades by creating an empty database. Reject
-        // that recovery for a backup, and avoid its onOpen writes to the live downgrade schema.
-        val helper = object : DatabaseHelper(
-            context,
-            archive.absolutePath,
-            { user -> context.getSystemService(UserManager::class.java).getSerialNumberForUser(user) },
-            { error("Backup has no launcher layout") },
-        ) {
-            override fun onCreate(db: SQLiteDatabase) {
-                error("Unable to migrate launcher backup")
-            }
-
-            override fun onOpen(db: SQLiteDatabase) = Unit
-        }
+        // Discard the trial upgrade. The installed original must migrate with the restored
+        // preferences, and only that real upgrade may pin legacy Android shortcuts.
+        val validationFile = File.createTempFile("layout-validation-", ".db", archive.parentFile)
         try {
-            val db = helper.writableDatabase
-            db.rawQuery("SELECT ${Favorites.getColumns(0)} FROM favorites LIMIT 0", null).use { }
-            db.rawQuery("PRAGMA table_info(favorites)", null).use { columns ->
-                var hasProfileDefault = false
-                var hasPrimaryKey = false
-                while (columns.moveToNext()) {
-                    val name = columns.getString(columns.getColumnIndexOrThrow("name"))
-                    if (name == Favorites._ID) {
-                        hasPrimaryKey = columns.getInt(columns.getColumnIndexOrThrow("pk")) == 1 &&
-                            columns.getString(columns.getColumnIndexOrThrow("type")).equals("INTEGER", ignoreCase = true)
-                    }
-                    if (name == Favorites.PROFILE_ID) {
-                        hasProfileDefault = columns.getString(columns.getColumnIndexOrThrow("dflt_value"))?.toLongOrNull() != null
-                    }
+            archive.copyTo(validationFile, overwrite = true)
+            // DatabaseHelper normally recovers failed upgrades by creating an empty database. Reject
+            // that recovery for a backup, and avoid its onOpen writes to the live downgrade schema.
+            val helper = object : DatabaseHelper(
+                context,
+                validationFile.absolutePath,
+                { user -> context.getSystemService(UserManager::class.java).getSerialNumberForUser(user) },
+                { error("Backup has no launcher layout") },
+            ) {
+                override fun onCreate(db: SQLiteDatabase) {
+                    error("Unable to migrate launcher backup")
                 }
-                check(hasPrimaryKey && hasProfileDefault) { "Invalid launcher identity columns" }
+
+                override fun onOpen(db: SQLiteDatabase) = Unit
+                override fun shouldMigrateWorkspaceItems() = false
             }
-            check(db.isDatabaseIntegrityOk) { "Invalid launcher database" }
+            try {
+                val db = helper.writableDatabase
+                db.rawQuery("SELECT ${Favorites.getColumns(0)} FROM favorites LIMIT 0", null).use { }
+                db.rawQuery("PRAGMA table_info(favorites)", null).use { columns ->
+                    var hasProfileDefault = false
+                    var hasPrimaryKey = false
+                    while (columns.moveToNext()) {
+                        val name = columns.getString(columns.getColumnIndexOrThrow("name"))
+                        if (name == Favorites._ID) {
+                            hasPrimaryKey = columns.getInt(columns.getColumnIndexOrThrow("pk")) == 1 &&
+                                columns.getString(columns.getColumnIndexOrThrow("type")).equals("INTEGER", ignoreCase = true)
+                        }
+                        if (name == Favorites.PROFILE_ID) {
+                            hasProfileDefault = columns.getString(columns.getColumnIndexOrThrow("dflt_value"))?.toLongOrNull() != null
+                        }
+                    }
+                    check(hasPrimaryKey && hasProfileDefault) { "Invalid launcher identity columns" }
+                }
+                check(db.isDatabaseIntegrityOk) { "Invalid launcher database" }
+            } finally {
+                helper.close()
+            }
         } finally {
-            helper.close()
+            SQLiteDatabase.deleteDatabase(validationFile)
         }
     }
 

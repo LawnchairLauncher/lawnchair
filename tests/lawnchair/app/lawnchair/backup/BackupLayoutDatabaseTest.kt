@@ -8,6 +8,7 @@ import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.model.DatabaseHelper
 import com.android.launcher3.model.DeviceGridState
 import java.io.File
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
@@ -93,6 +94,33 @@ class BackupLayoutDatabaseTest {
 
         assertEquals("live layout", target.readText())
         assertEquals(target.name, preferences.getString(DeviceGridState.KEY_DB_FILE, null))
+    }
+
+
+    @Test
+    fun legacyValidationPreservesOriginalRowsAndDefersPreferenceAndShortcutMigrations() {
+        val context = RuntimeEnvironment.getApplication()
+        val archive = File(context.cacheDir, "legacy-layout.db")
+        SQLiteDatabase.openOrCreateDatabase(archive, null).use {
+            Favorites.addTableToDb(it, 0, false)
+            it.version = 30
+            it.execSQL("INSERT INTO favorites (_id, title, itemType, screen, container, cellY) VALUES (42, 'row zero', 1, 0, -100, 0)")
+        }
+        val before = archive.readBytes()
+        val grid = GridState.newBuilder().setGridSize("4,6").setHotseatCount(4).build()
+
+        // This plain Application has no launcher preference manager or shortcut factory.
+        // Validation must neither consult target smartspace settings nor pin legacy shortcuts.
+        BackupLayoutDatabase.validate(context, archive, grid)
+
+        assertArrayEquals(before, archive.readBytes())
+        SQLiteDatabase.openDatabase(archive.path, null, SQLiteDatabase.OPEN_READONLY).use {
+            assertEquals(30, it.version)
+            it.rawQuery("SELECT title FROM favorites WHERE _id = 42", null).use { cursor ->
+                assertTrue(cursor.moveToFirst())
+                assertEquals("row zero", cursor.getString(0))
+            }
+        }
     }
 
 }

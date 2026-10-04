@@ -260,20 +260,24 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                         Favorites.SCREEN, IntArray.wrap(-777, -778)), null);
             }
             case 30: {
-                PreferenceManager2 prefs = PreferenceManager2.INSTANCE.get(mContext);
-                if (PreferenceCacheExtensionsKt.firstCached(prefs.getEnableSmartspace())) {
-                    // Clean up first row in screen 0 as it might contain junk data.
-                    Log.d(TAG, "Cleaning up first row");
-                    db.delete(Favorites.TABLE_NAME,
-                            String.format(Locale.ENGLISH,
-                                    "%1$s = %2$d AND %3$s = %4$d AND %5$s = %6$d",
-                                    Favorites.SCREEN, 0,
-                                    Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP,
-                                    Favorites.CELLY, 0), null);
+                if (shouldMigrateWorkspaceItems()) {
+                    PreferenceManager2 prefs = PreferenceManager2.INSTANCE.get(mContext);
+                    if (PreferenceCacheExtensionsKt.firstCached(prefs.getEnableSmartspace())) {
+                        // Clean up first row in screen 0 as it might contain junk data.
+                        Log.d(TAG, "Cleaning up first row");
+                        db.delete(Favorites.TABLE_NAME,
+                                String.format(Locale.ENGLISH,
+                                        "%1$s = %2$d AND %3$s = %4$d AND %5$s = %6$d",
+                                        Favorites.SCREEN, 0,
+                                        Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP,
+                                        Favorites.CELLY, 0), null);
+                    }
                 }
             }
             case 31: {
-                LauncherDbUtils.migrateLegacyShortcuts(mContext, db);
+                if (shouldMigrateWorkspaceItems()) {
+                    LauncherDbUtils.migrateLegacyShortcuts(mContext, db);
+                }
             }
             // Fall through
             case 32: {
@@ -285,6 +289,11 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
         // DB was not upgraded
         Log.w(TAG, "Destroying all old data.");
         createEmptyDB(db);
+    }
+
+    /** Schema-only backup validation must not read live settings or pin system shortcuts. */
+    protected boolean shouldMigrateWorkspaceItems() {
+        return true;
     }
 
     @Override
