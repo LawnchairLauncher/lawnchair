@@ -202,6 +202,7 @@ class DeviceProfileOverrides @Inject constructor(
         val iconTextSizeFactor: Float,
         val allAppsIconTextSizeFactor: Float,
         val iconFolderTextSizeFactor: Float,
+        val folderTitleTextSizeFactor: Float,
     ) {
         constructor(
             prefs2: PreferenceManager2,
@@ -225,6 +226,7 @@ class DeviceProfileOverrides @Inject constructor(
             iconTextSizeFactor = if (enableIconText) iconTextSizeFactor else 0f,
             allAppsIconTextSizeFactor = if (enableAllAppsIconText) allAppsIconTextSizeFactor else 0f,
             iconFolderTextSizeFactor = if (enableIconTextFolder) iconFolderTextSizeFactor else 0f,
+            folderTitleTextSizeFactor = iconFolderTextSizeFactor,
         )
     }
 
