@@ -39,6 +39,7 @@ class BackupLayoutDatabaseTest {
         val targetDatabase = context.getDatabasePath("launcher_5_6_6.db").apply { writeText("old target layout") }
         val preferences = context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, 0)
         preferences.edit().putString(DeviceGridState.KEY_DB_FILE, archivedDatabase.name).commit()
+        BackupSharedPreferences.apply(preferences, mapOf(DeviceGridState.KEY_DB_FILE to "missing-archive.db"))
 
         BackupLayoutDatabase.validate(context, archive, grid)
         BackupLayoutDatabase.install(context, archive, grid, DeviceGridState(6, 5, 6, 0, targetDatabase.name, 0))
@@ -68,6 +69,7 @@ class BackupLayoutDatabaseTest {
         val grid = GridState.newBuilder().setGridSize("4,6").setHotseatCount(4).setDeviceType(0).build()
         val preferences = context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, 0)
         preferences.edit().putString(DeviceGridState.KEY_DB_FILE, "unrelated-grid.db").commit()
+        BackupSharedPreferences.apply(preferences, mapOf(DeviceGridState.KEY_DB_FILE to "missing-archive.db"))
 
         BackupLayoutDatabase.install(context, archive, grid, DeviceGridState(4, 6, 4, 0, target.name, 0))
 
@@ -87,6 +89,7 @@ class BackupLayoutDatabaseTest {
         val grid = GridState.newBuilder().setGridSize("4,6").setHotseatCount(4).setDeviceType(0).build()
         val preferences = context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, 0)
         preferences.edit().putString(DeviceGridState.KEY_DB_FILE, target.name).commit()
+        BackupSharedPreferences.apply(preferences, mapOf(DeviceGridState.KEY_DB_FILE to "missing-archive.db"))
 
         assertThrows(java.io.IOException::class.java) {
             BackupLayoutDatabase.install(context, missingArchive, grid, DeviceGridState(4, 6, 4, 0, target.name, 0))

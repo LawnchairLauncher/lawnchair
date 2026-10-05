@@ -79,6 +79,12 @@ internal object BackupLayoutDatabase {
     }
 
     private val installOperations = object : InstallOperations {}
+    val selectionKeys = setOf(
+        DeviceGridState.KEY_DB_FILE,
+        DeviceGridState.KEY_WORKSPACE_SIZE,
+        DeviceGridState.KEY_HOTSEAT_COUNT,
+        DeviceGridState.KEY_DEVICE_TYPE,
+    )
 
     /** Call on the model executor: rollback must finish before an existing DB handle writes again. */
     fun install(
@@ -95,8 +101,7 @@ internal object BackupLayoutDatabase {
         val staging = createTempDirectory(directory.toPath(), ".layout-install-").toFile()
         val incoming = File(staging, "incoming.db")
         val preferences = context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-        val keys = listOf(DeviceGridState.KEY_DB_FILE, DeviceGridState.KEY_WORKSPACE_SIZE, DeviceGridState.KEY_HOTSEAT_COUNT, DeviceGridState.KEY_DEVICE_TYPE)
-        val previousPreferences = preferences.all.filterKeys { it in keys }
+        val previousPreferences = preferences.all.filterKeys { it in selectionKeys }
         val archived = DeviceGridState(gridState)
         val sameGrid = archived.columns == target.columns && archived.rows == target.rows &&
             archived.numHotseat == target.numHotseat && archived.deviceType == target.deviceType
@@ -156,7 +161,7 @@ internal object BackupLayoutDatabase {
                 rollback {
                     // A failed SharedPreferences commit can still change its in-memory map.
                     val editor = preferences.edit()
-                    keys.forEach { editor.remove(it) }
+                    selectionKeys.forEach { editor.remove(it) }
                     previousPreferences.forEach { (key, value) ->
                         when (value) {
                             is String -> editor.putString(key, value)

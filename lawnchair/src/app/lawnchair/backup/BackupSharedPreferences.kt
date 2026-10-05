@@ -48,8 +48,12 @@ internal object BackupSharedPreferences {
     }
 
     fun apply(preferences: SharedPreferences, values: Map<String, Any?>) {
+        // Keep the live database and its grid selected until the layout installer replaces them.
+        // Archive filenames may not exist here; even a failed copy must retain the live selection.
+        val selectionKeys = BackupLayoutDatabase.selectionKeys
+        val restoredValues = values - selectionKeys + preferences.all.filterKeys { it in selectionKeys }
         val editor = preferences.edit().clear()
-        values.forEach { (name, value) ->
+        restoredValues.forEach { (name, value) ->
             when (value) {
                 null -> Unit
                 is Boolean -> editor.putBoolean(name, value)

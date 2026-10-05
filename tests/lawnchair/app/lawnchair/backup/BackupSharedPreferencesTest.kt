@@ -18,6 +18,40 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE, sdk = [28], application = Application::class)
 class BackupSharedPreferencesTest {
     @Test
+    fun restoringSettingsPreservesPresentAndAbsentLiveDatabaseSelectionKeys() {
+        val context = RuntimeEnvironment.getApplication()
+        val preferences = context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, 0)
+        listOf(true, false).forEach { hasSelection ->
+            preferences.edit().clear().apply {
+                if (hasSelection) {
+                    putString(DeviceGridState.KEY_DB_FILE, "live.db")
+                    putString(DeviceGridState.KEY_WORKSPACE_SIZE, "4,6")
+                    putInt(DeviceGridState.KEY_HOTSEAT_COUNT, 4)
+                    putInt(DeviceGridState.KEY_DEVICE_TYPE, 0)
+                }
+            }.commit()
+            val liveSelection = preferences.all
+            preferences.edit().putString("icon-pack", "old-pack").putBoolean("obsolete", true).commit()
+
+            BackupSharedPreferences.apply(
+                preferences,
+                mapOf(
+                    DeviceGridState.KEY_DB_FILE to "missing-archive.db",
+                    DeviceGridState.KEY_WORKSPACE_SIZE to "8,9",
+                    DeviceGridState.KEY_HOTSEAT_COUNT to 8,
+                    DeviceGridState.KEY_DEVICE_TYPE to 1,
+                    "icon-pack" to "restored-pack",
+                ),
+            )
+
+            val expected = liveSelection + ("icon-pack" to "restored-pack")
+            assertEquals(expected, preferences.all)
+            val xml = File(context.applicationInfo.dataDir, "shared_prefs/${LauncherFiles.SHARED_PREFERENCES_KEY}.xml")
+            assertEquals(expected, BackupSharedPreferences.read(xml))
+        }
+    }
+
+    @Test
     fun restoringCachedPreferenceSurvivesSubsequentGridMetadataWrite() {
         val context = RuntimeEnvironment.getApplication()
         val preferences = context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, 0)

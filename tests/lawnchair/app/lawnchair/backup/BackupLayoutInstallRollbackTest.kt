@@ -47,6 +47,17 @@ class BackupLayoutInstallRollbackTest {
     }
 
     private fun install(operations: BackupLayoutDatabase.InstallOperations, sameGrid: Boolean = true) {
+        // Follow the public restore ordering, including selection keys from another device.
+        BackupSharedPreferences.apply(
+            preferences,
+            mapOf(
+                DeviceGridState.KEY_DB_FILE to "missing-archive-grid.db",
+                DeviceGridState.KEY_WORKSPACE_SIZE to "8,9",
+                DeviceGridState.KEY_HOTSEAT_COUNT to 8,
+                DeviceGridState.KEY_DEVICE_TYPE to 1,
+                "unrelated" to true,
+            ),
+        )
         val archive = File(context.cacheDir, "incoming-layout.db").apply { writeText("validated archive") }
         val target = DeviceGridState(if (sameGrid) 4 else 5, 6, 4, 0, targetName, 0)
         BackupLayoutDatabase.install(context, archive, grid, target, operations)
