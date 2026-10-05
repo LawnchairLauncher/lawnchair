@@ -1,6 +1,7 @@
 package app.lawnchair.backup
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import android.os.UserManager
 import app.lawnchair.LawnchairProto.GridState
@@ -9,6 +10,7 @@ import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.model.DatabaseHelper
 import com.android.launcher3.model.DeviceGridState
 import java.io.File
+import kotlin.io.path.createTempDirectory
 
 /** Validate and migrate only the extracted copy, before changing any live launcher state. */
 internal object BackupLayoutDatabase {
@@ -71,29 +73,103 @@ internal object BackupLayoutDatabase {
         }
     }
 
-    /** Use a separate migration source only when the target's grid actually differs. */
-    fun install(context: Context, archive: File, gridState: GridState, target: DeviceGridState) {
+    internal interface InstallOperations {
+        fun rename(source: File, destination: File): Boolean = source.renameTo(destination)
+        fun commit(editor: SharedPreferences.Editor): Boolean = editor.commit()
+    }
+
+    private val installOperations = object : InstallOperations {}
+
+    /** Call on the model executor: rollback must finish before an existing DB handle writes again. */
+    fun install(
+        context: Context,
+        archive: File,
+        gridState: GridState,
+        target: DeviceGridState,
+        operations: InstallOperations = installOperations,
+    ) {
         val targetDatabase = target.dbFile
         check(targetDatabase != SOURCE_DATABASE)
-        val source = context.getDatabasePath(SOURCE_DATABASE)
-        context.deleteDatabase(SOURCE_DATABASE)
-        archive.copyTo(source.apply { parentFile?.mkdirs() }, overwrite = true)
-        // Finish the potentially failing copy before removing the current layout.
-        context.deleteDatabase(targetDatabase)
-        context.deleteDatabase(LawnchairBackup.RESTORED_DB_FILE_NAME)
+        val targetFile = context.getDatabasePath(targetDatabase)
+        val directory = requireNotNull(targetFile.parentFile).apply { mkdirs() }
+        val staging = createTempDirectory(directory.toPath(), ".layout-install-").toFile()
+        val incoming = File(staging, "incoming.db")
+        val preferences = context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+        val keys = listOf(DeviceGridState.KEY_DB_FILE, DeviceGridState.KEY_WORKSPACE_SIZE, DeviceGridState.KEY_HOTSEAT_COUNT, DeviceGridState.KEY_DEVICE_TYPE)
+        val previousPreferences = preferences.all.filterKeys { it in keys }
         val archived = DeviceGridState(gridState)
         val sameGrid = archived.columns == target.columns && archived.rows == target.rows &&
             archived.numHotseat == target.numHotseat && archived.deviceType == target.deviceType
-        val databaseName = if (sameGrid) {
-            check(source.renameTo(context.getDatabasePath(targetDatabase))) { "Unable to install launcher database" }
-            targetDatabase
-        } else {
-            SOURCE_DATABASE
+        val databaseName = if (sameGrid) targetDatabase else SOURCE_DATABASE
+        val destination = context.getDatabasePath(databaseName)
+        val preserved = mutableListOf<Pair<File, File>>()
+        var installed = false
+        var preferencesChanged = false
+        var canCleanUp = true
+        try {
+            // Complete the copy before moving any live database or its sidecars.
+            archive.copyTo(incoming)
+            listOf(targetDatabase, SOURCE_DATABASE, LawnchairBackup.RESTORED_DB_FILE_NAME).distinct().forEach { name ->
+                val database = context.getDatabasePath(name)
+                listOf("", "-wal", "-shm", "-journal").forEach { suffix ->
+                    val original = File(database.path + suffix)
+                    if (original.exists()) {
+                        val saved = File(staging, "previous-${preserved.size}")
+                        check(operations.rename(original, saved)) { "Unable to preserve launcher database: $original" }
+                        preserved += original to saved
+                    }
+                }
+            }
+            check(operations.rename(incoming, destination)) { "Unable to install launcher database" }
+            installed = true
+            // One checked commit selects both the database and the grid that describes it.
+            preferencesChanged = true
+            check(
+                operations.commit(
+                    preferences.edit()
+                        .putString(DeviceGridState.KEY_DB_FILE, databaseName)
+                        .putString(DeviceGridState.KEY_WORKSPACE_SIZE, gridState.gridSize)
+                        .putInt(DeviceGridState.KEY_HOTSEAT_COUNT, gridState.hotseatCount)
+                        .putInt(DeviceGridState.KEY_DEVICE_TYPE, gridState.deviceType),
+                ),
+            ) { "Unable to select restored launcher database" }
+        } catch (failure: Throwable) {
+            fun rollback(action: () -> Unit) {
+                try {
+                    action()
+                } catch (rollbackFailure: Throwable) {
+                    canCleanUp = false
+                    failure.addSuppressed(rollbackFailure)
+                }
+            }
+            if (installed) {
+                rollback {
+                    check(destination.delete()) { "Unable to remove failed launcher installation: $destination" }
+                }
+            }
+            preserved.asReversed().forEach { (original, saved) ->
+                rollback {
+                    check(operations.rename(saved, original)) { "Unable to recover launcher database from $saved" }
+                }
+            }
+            if (preferencesChanged) {
+                rollback {
+                    // A failed SharedPreferences commit can still change its in-memory map.
+                    val editor = preferences.edit()
+                    keys.forEach { editor.remove(it) }
+                    previousPreferences.forEach { (key, value) ->
+                        when (value) {
+                            is String -> editor.putString(key, value)
+                            is Int -> editor.putInt(key, value)
+                        }
+                    }
+                    check(operations.commit(editor)) { "Unable to recover launcher database selection" }
+                }
+            }
+            throw failure
+        } finally {
+            // Keep recovery files if rollback itself failed; never discard the only old copy.
+            if (canCleanUp) staging.deleteRecursively()
         }
-        DeviceGridState(gridState).writeToPrefs(context, true)
-        check(
-            context.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-                .edit().putString(DeviceGridState.KEY_DB_FILE, databaseName).commit(),
-        ) { "Unable to select restored launcher database" }
     }
 }
