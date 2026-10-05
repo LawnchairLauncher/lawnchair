@@ -48,7 +48,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback impl
 
     public static final String TAG = "InstallSessionTracker";
 
-    // Lazily initialized
+    // Initialized before registering callbacks, including sessions that predate this tracker.
     private SparseArray<PackageUserKey> mActiveSessions = null;
     // LC-Note: Unarchival recovery must not depend on whether a new icon was allowed.
     private final SparseBooleanArray mUnarchivalSessions = new SparseBooleanArray();
@@ -205,21 +205,32 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback impl
     }
 
     void register() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            mInstaller.registerSessionCallback(this, MODEL_EXECUTOR.getHandler());
-        } else {
-            Objects.requireNonNull(mLauncherApps).registerPackageInstallerSessionCallback(
-                    MODEL_EXECUTOR, this);
-        }
+        MODEL_EXECUTOR.execute(() -> {
+            InstallSessionHelper helper = mWeakHelper.get();
+            if (helper != null) {
+                // Existing sessions do not receive onCreated again. Snapshot them before
+                // registering, while completion callbacks cannot interleave on this executor.
+                getActiveSessionMap(helper);
+            }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                mInstaller.registerSessionCallback(this, MODEL_EXECUTOR.getHandler());
+            } else {
+                Objects.requireNonNull(mLauncherApps).registerPackageInstallerSessionCallback(
+                        MODEL_EXECUTOR, this);
+            }
+        });
     }
 
     @Override
     public void close() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            mInstaller.unregisterSessionCallback(this);
-        } else {
-            Objects.requireNonNull(mLauncherApps).unregisterPackageInstallerSessionCallback(this);
-        }
+        // Keep unregister ordered after a registration queued by another thread.
+        MODEL_EXECUTOR.execute(() -> {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                mInstaller.unregisterSessionCallback(this);
+            } else {
+                Objects.requireNonNull(mLauncherApps).unregisterPackageInstallerSessionCallback(this);
+            }
+        });
     }
 
     public interface Callback {

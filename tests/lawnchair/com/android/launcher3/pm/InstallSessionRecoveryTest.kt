@@ -2,19 +2,32 @@ package com.android.launcher3.pm
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.LauncherApps
+import android.content.pm.PackageInstaller
 import android.content.pm.PackageInstaller.SessionInfo
 import android.os.Process
 import android.os.UserHandle
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.util.PackageUserKey
+import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.Implementation
+import org.robolectric.annotation.Implements
+import org.robolectric.shadows.ShadowLauncherApps
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE, sdk = [35], application = Application::class)
+@Config(
+    manifest = Config.NONE,
+    sdk = [35],
+    application = Application::class,
+    shadows = [InstallSessionRecoveryTest.SessionCallbackShadow::class],
+)
 class InstallSessionRecoveryTest {
     private val context = RuntimeEnvironment.getApplication()
     private val user = Process.myUserHandle()
@@ -39,10 +52,19 @@ class InstallSessionRecoveryTest {
         val helper = FakeHelper(context, session(true))
         val callback = RecordingCallback()
         val tracker = tracker(helper, callback)
-        tracker.onFinished(99, false) // Snapshot active sessions before the installer drops them.
-        helper.sessions.clear()
-        tracker.onFinished(1, false)
-        assertEquals(listOf(key), callback.failures)
+        // Observe a session that predates the tracker. There is no onCreated or other
+        // callback before the installer removes it and delivers its first completion.
+        tracker.register()
+        MODEL_EXECUTOR.submit {
+            try {
+                helper.sessions.clear()
+                tracker.onFinished(1, false)
+                assertEquals(listOf(key), callback.failures)
+                assertEquals(listOf(1), helper.removed)
+            } finally {
+                tracker.close()
+            }
+        }.get(5, TimeUnit.SECONDS)
     }
 
     @Test
@@ -81,7 +103,8 @@ class InstallSessionRecoveryTest {
     }
 
     private fun tracker(helper: FakeHelper, callback: RecordingCallback) = InstallSessionTracker(
-        helper, callback, context.packageManager.packageInstaller, null,
+        helper, callback, context.packageManager.packageInstaller,
+        context.getSystemService(LauncherApps::class.java),
     )
 
     private class FakeHelper(context: Context, val session: SessionInfo, val promiseIcon: Boolean = false) : InstallSessionHelper(context) {
@@ -92,6 +115,17 @@ class InstallSessionRecoveryTest {
         override fun tryQueuePromiseAppIcon(info: SessionInfo?) = Unit
         override fun promiseIconAddedForId(id: Int) = promiseIcon
         override fun removePromiseIconId(id: Int) { removed += id }
+    }
+
+    // Robolectric's LauncherApps shadow throws for these registration APIs. Keep
+    // the production snapshot/register path, replacing only the framework boundary.
+    @Implements(LauncherApps::class)
+    class SessionCallbackShadow : ShadowLauncherApps() {
+        @Implementation
+        override fun registerPackageInstallerSessionCallback(executor: Executor, callback: PackageInstaller.SessionCallback) = Unit
+
+        @Implementation
+        override fun unregisterPackageInstallerSessionCallback(callback: PackageInstaller.SessionCallback) = Unit
     }
 
     private class RecordingCallback : InstallSessionTracker.Callback {
