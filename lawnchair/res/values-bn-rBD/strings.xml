@@ -46,10 +46,10 @@
     <string name="download_update">আপডেট ডাউনলোড করুন</string>
     <string name="install_update">আপডেট ইনস্টল করুন</string>
     <string name="view_changes">পরিবর্তন দেখুন</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">আপনি সর্বশেষ সংস্করণে আছেন</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">আপডেট</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">আপডেট লোড করা যায়নি</string>
     <string name="changes_dialog_no_changes">কোন পরিবর্তন পাওয়া যায়নি</string>
     <string name="changes_dialog_build_format">বিল্ড %1$d %2$d</string>
     <string name="changes_dialog_commit_info">দ্বারা %1$s • %2$s • %3$s</string>
@@ -98,12 +98,12 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">যা দেখাবে</string>
     <string name="wallpapers">ওয়ালপেপার</string>
-    <string name="caddy_beta">Caddy (beta)</string>
+    <string name="caddy_beta">ক্যাডি (বিটা)</string>
     <string name="caddy">ক্যাডি</string>
     <string name="app_drawer_folder">অ্যাপ ড্রয়ার ফোল্ডার</string>
-    <string name="selected_apps">Selected apps</string>
+    <string name="selected_apps">বাছাইকৃত অ্যাপস</string>
     <string name="add_apps">অ্যাপ যোগ করুন</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
+    <string name="app_drawer_folder_settings">অ্যাপ ড্রয়ার ফোল্ডার</string>
     <string name="add_folder">ফোল্ডার তৈরি করুন</string>
     <string name="edit_folder">ফোল্ডার সম্পাদনা করুন</string>
     <string name="add_label">যোগ করুন</string>
@@ -115,7 +115,7 @@
     <string name="apps_in_folder_description">ফোল্ডারগুলিতে নির্ধারিত অ্যাপগুলি অ্যাপ তালিকা থেকে বাদ দেওয়া হয়েছে</string>
     <string name="folders_filter_duplicates">শুধুমাত্র অনন্য অ্যাপগুলি দেখান</string>
     <string name="my_folder_label">আমার ফোল্ডার</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">সক্রিয় আইটেমগুলো ক্রমানুসারে সাজান</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -125,10 +125,10 @@
     <!-- Draggable -->
     <string name="reorderable_move_up">Move up</string>
     <string name="reorderable_move_down">Move down</string>
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_active_items">সক্রিয় আইটেমসমূহ</string>
+    <string name="reorderable_disabled_items">অন্যান্য আইটেমসমূহ</string>
+    <string name="reorderable_disabled_hint">বন্ধ আইটেমগুলো এখানে প্রদর্শন করবে</string>
+    <string name="reorderable_add_hint_items">সক্রিয় আইটেমগুলো এখানে দেখা যাবে</string>
     <!--
 
     Preference Dashboard
@@ -139,7 +139,7 @@
     <string name="general_description">রং, আইকন প্যাক, ও নোটিফিকেশন ডট</string>
     <string name="home_screen_label">হোম স্ক্রিন</string>
     <string name="home_screen_description">ফিড, গ্রিড, আইকন</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">হোম স্ক্রিনের কাজসমূহ</string>
     <string name="dock_label">ডক</string>
     <string name="dock_description">অনুসন্ধান বার, আইকন সংখ্যা</string>
     <string name="app_drawer_label">অ্যাপ ড্রয়ার</string>
@@ -151,17 +151,17 @@
     <string name="gestures_label">জেসচার</string>
     <string name="gestures_description">ট্যাপ এবং সোয়াইপ</string>
     <string name="quickstep_label">সাম্প্রতিক স্ক্রিনগুলি</string>
-    <string name="quickstep_description">Clear all button, corner radius</string>
+    <string name="quickstep_description">সকল বাটন এবং কর্নার রেডিয়াস বাতিল করুন</string>
     <string name="backup_and_restore_label">ব্যাকআপ ও পুনরুদ্ধার</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="backup_and_restore_description">বর্তমান সেটআপ সংরক্ষণ করুন, ব্যাকআপ পুনরুদ্ধার করুন</string>
     <string name="about_label">সম্পর্কে</string>
     <string name="app_info_drop_target_label">অ্যাপের তথ্য</string>
     <string name="debug_restart_launcher">লনচেয়ার পুনরায় চালু করুন</string>
     <string name="experimental_features_label">পরীক্ষামূলক ফিচার</string>
     <!-- Experimental features -->
     <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
+    <string name="smartspace_label">স্মার্ট স্পেস</string>
+    <string name="internal_label">অভ্যন্তরীণ</string>
     <string name="internal_description">Internal may be less stable than other experimental groups</string>
     <string name="font_picker_label">ফন্ট কাস্টমাইজেশন</string>
     <string name="font_picker_description">কিছু লেখা অপরিবর্তিত রয়ে গেছে</string>
@@ -169,48 +169,48 @@
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
     <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="always_reload_icons_label">সর্বদা আইকন রিলোড করুন</string>
     <string name="always_reload_icons_description">ক্যাসে থেকে আইকন ব্যাবহার করা থেকে এড়ান</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
-    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout">ডেক লেয়াউট</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_label">মেটেরিয়াল ৩ এক্সপ্রেসিভ</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
     <string name="folder_shape_label">ফোল্ডারের আকার</string>
     <string name="folder_label">ফোল্ডার</string>
     <string name="app_icon_shape_label">অ্যাপ</string>
     <string name="gesturenavcontract_label">GestureNavContract API ব্যাবহার করুন</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
-    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
-    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="gesturenavcontract_warning_incompatibility">আপনার ডিভাইসটি পুরোপুরি অনুমোদিত নয়। এটি কিছু এনিমেশনের জন্য ভিজ্যুয়াল সমস্যা তৈরি পারে।</string>
+    <string name="vibration_feedback_level_label">ভাইব্রেশন প্রতিক্রিয়ার মাত্রা </string>
     <string name="vibration_feedback_no_feedback_choice">কোনটা না</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_minimal_choice">যৎসামান্য</string>
     <string name="vibration_feedback_default_choice">ডিফল্ট</string>
-    <string name="vibration_feedback_expressive_choice">Expressive</string>
-    <string name="recents_lock_unlock">App locking</string>
-    <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
+    <string name="vibration_feedback_expressive_choice">ভাবপূর্ণ </string>
+    <string name="recents_lock_unlock">অ্যাপ লোক করা</string>
+    <string name="recents_lock_unlock_description">বাছাইকৃত আপগুলোকে \"সব পরিষ্কার করুন\" চাপার পর বন্ধ হয়ে যাওয়া থেকে নিবারণ করুন</string>
     <!--Overlay-->
-    <string name="app_closing_animation">App closing animation</string>
+    <string name="app_closing_animation">অ্যাপ বন্ধের এনিমেশন </string>
     <string name="overlay_fade_in">Fade in</string>
     <string name="overlay_suck_in">Suck in</string>
-    <string name="overlay_label">Overlay</string>
+    <string name="overlay_label">আস্তরণ</string>
     <string name="overlay_none">কোনটা না</string>
     <!--
     App suggestions
     -->
     <string name="suggestion_pref_screen_title">পরামর্শ</string>
     <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
-    <string name="prediction_mode_label">Suggestions provider</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="app_predictions_label">অ্যাপ পরামর্শ</string>
+    <string name="prediction_mode_label">পরামর্শ প্রদানকারী</string>
+    <string name="app_predictions_disable_reason_pre_q_description">এই ফিচারটির জন্য এন্ড্রয়েড ১০ বা তার উপরের সংস্করণ প্রয়োজন</string>
     <string name="prediction_mode_system">সিস্টেম</string>
     <string name="prediction_mode_none">বন্ধ</string>
     <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
     <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
-    <string name="dismissed_prediction_apps_label">Blocked apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="dismissed_prediction_apps_label">ব্লককৃত অ্যাপস</string>
+    <string name="dismissed_prediction_apps_label_with_count">ব্লক করা অ্যাপস </string>
     <string name="prediction_system_settings">Manage system suggestions</string>
-    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="missing_usage_access_label">ব্যবহারের এক্সেস দরকার</string>
     <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
@@ -218,9 +218,9 @@
 
     -->
     <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
+    <string name="notification_dots">নোটিফিকেশন ফোঁটা </string>
     <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
+    <string name="notification_dots_color">নোটিফিকেশন ফোঁটার রং</string>
     <string name="notification_dots_text_color">Notification counter color</string>
     <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
@@ -230,15 +230,15 @@
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Icon style</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
+    <string name="icon_style_label">আইকন স্টাইল</string>
+    <string name="apply_icon_pack_title">আইকন প্যাক প্রয়োগ করুন</string>
     <string name="icon_shape_label">আইকনের আকৃতি</string>
     <string name="icon_sizes">আইকনের আকার</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="show_labels">লেবেল দেখান</string>
+    <string name="label_size">লেবেলের আকার</string>
+    <string name="twoline_label">একাধিক লাইন ব্যবহার করুন</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_label">স্বচ্ছ আইকন ব্যাকগ্রাউন্ড</string>
     <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
@@ -247,13 +247,13 @@
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
     <string name="reset_custom_icons">Reset custom icons</string>
     <string name="reset_custom_icons_confirmation">সব কাস্টম আইকন গুলি রিসেট হয়ে যাবে. আপনি কি চালিয়ে যেতে চান?</string>
-    <string name="remove_all_views_from_home_screen">Clear home screen</string>
-    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
+    <string name="remove_all_views_from_home_screen">হোম স্ক্রিন পরিষ্কার করুন</string>
+    <string name="remove_all_views_from_home_screen_desc">হোম স্ক্রিন পরিষ্কার হয়ে যাবে। আপনি কি চালিয়ে যেতে চান? </string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">আইকন-সমুহ</string>
     <string name="icon_picker_reset_to_default">Reset to default</string>
     <string name="icon_pack_external_picker">Open external picker</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
+    <string name="pick_icon_from_label">আইকন বেছে নিন</string>
     <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">সিস্টেম</string>
@@ -263,16 +263,16 @@
     <string name="icon_shape_egg">ডিম</string>
     <string name="icon_shape_cupertino">আই ও এস</string>
     <string name="icon_shape_octagon">অষ্টভুজ</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">ষড়ভুজ</string>
     <string name="icon_shape_sammy">ওয়ান ইউয়াই</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
+    <string name="icon_shape_rounded_square">গোলাকৃতির চতুর্ভুজ</string>
+    <string name="icon_shape_sharp_square">তীক্ষ্ণ চতুর্ভুজ</string>
     <string name="icon_shape_square">বর্গ</string>
     <string name="icon_shape_squircle">কাঠবিড়ালি</string>
     <string name="icon_shape_teardrop">জলফোঁটা</string>
     <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <string name="icon_shape_very_sunny">খুবই রৌদ্রোজ্জ্বল</string>
+    <string name="icon_shape_complex_clover">জটিল ট্রিপত্র</string>
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -500,10 +500,10 @@
     <string name="gesture_swipe_down"> নিচের দিকে সোয়াইপ</string>
     <string name="gesture_two_finger_swipe_down">Two-finger swipe down</string>
     <string name="gesture_two_finger_swipe_up">Two-finger swipe up</string>
-    <string name="gesture_home_tap">হোম বোতাম</string>
-    <string name="gesture_back_tap">ব্যাক বোতাম</string>
-    <string name="gesture_swipe_left">বন দিকে সোয়াইপ</string>
-    <string name="gesture_swipe_right">দান দিকে সোয়াইপ</string>
+    <string name="gesture_home_tap">হোম বাটন</string>
+    <string name="gesture_back_tap">পেছনে ফেরার বাটন</string>
+    <string name="gesture_swipe_left">বাম দিকে সোয়াইপ</string>
+    <string name="gesture_swipe_right">ডান দিকে সোয়াইপ</string>
     <string name="gesture_handler_no_op">কিছু করো না</string>
     <string name="gesture_handler_sleep">বন্ধ</string>
     <string name="gesture_handler_recents">Open Recents screen</string>
@@ -789,13 +789,13 @@
     <string name="missing_notification_access_label">Notification access needed</string>
     <string name="missing_notification_access_desc">To show notification dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>
     </string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
+    <string name="warn_contact_permission_title">কন্ট্যাক্টস ব্যবহারের অনুমতি প্রয়োজন</string>
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g>
     </string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
+    <string name="permissions_music_audio">সঙ্গীত এবং অডিওর এক্সেস প্রয়োজন</string>
     <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
+    <string name="permissions_photos_videos">ছবির এবং ভিডিওর এক্সেস প্রয়োজন</string>
     <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
     <string name="permissions_photos_videos_full">Access your full media library?</string>
     <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library</string>
@@ -815,13 +815,13 @@
     <string name="permission_label_read_photos_videos">Read photos and videos</string>
     <string name="manage_storage_access_denied_title">Cannot turn on manage storage access</string>
     <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
-    <string name="open_permission_settings">Open settings</string>
-    <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="open_permission_settings">সেটিংস খুলুন</string>
+    <string name="grant_requested_permissions">অনুমতি প্রদান করুন</string>
+    <string name="permissions_needed">অনুমতি প্রয়োজন</string>
+    <string name="grant_requested_permissions_tap">অনুমতি প্রদান করতে ট্যাপ করুন</string>
     <!-- Message shown when all home screen views are removed -->
-    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
-    <string name="lawnchair_actions">Actions</string>
+    <string name="home_screen_all_views_removed_msg">হোম স্ক্রিন পরিষ্কার করা হয়েছে</string>
+    <string name="lawnchair_actions">কাজসমূহ</string>
     <string name="lawnchair_action_failed">Failed to trigger action</string>
-    <string name="please_wait">Please wait…</string>
+    <string name="please_wait">অনুগ্রহ করে অপেক্ষা করুন</string>
 </resources>
