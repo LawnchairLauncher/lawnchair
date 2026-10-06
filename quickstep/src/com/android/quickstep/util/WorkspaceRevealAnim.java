@@ -69,7 +69,9 @@ public class WorkspaceRevealAnim {
         prepareToAnimate(launcher, animateOverviewScrim);
 
         ResourceProvider rp = DynamicResource.provider(launcher);
-        mScaleStart = rp.getFloat(R.dimen.swipe_up_scale_start);
+        // LC-Note: Reduced motion keeps the workspace at its final scale and opacity.
+        mScaleStart = app.lawnchair.util.HomeScreenMotion.isReduced(launcher)
+                ? 1f : rp.getFloat(R.dimen.swipe_up_scale_start);
 
         Workspace<?> workspace = launcher.getWorkspace();
         workspace.setPivotToScaleWithSelf(launcher.getHotseat());
@@ -99,6 +101,9 @@ public class WorkspaceRevealAnim {
                 .getSysUIMultiplier().animateToValue(0f, 1f));
 
         mAnimators.setDuration(DURATION_MS);
+        if (app.lawnchair.util.HomeScreenMotion.isReduced(launcher)) {
+            mAnimators.setDuration(0);
+        }
         mAnimators.setInterpolator(Interpolators.DECELERATED_EASE);
         mAnimators.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -121,7 +126,8 @@ public class WorkspaceRevealAnim {
         scale.setInterpolator(Interpolators.DECELERATED_EASE);
         mAnimators.play(scale);
 
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 0, 1f);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA,
+                app.lawnchair.util.HomeScreenMotion.isReduced(v.getContext()) ? 1f : 0f, 1f);
         alpha.setDuration(DURATION_MS);
         alpha.setInterpolator(Interpolators.DECELERATED_EASE);
         mAnimators.play(alpha);

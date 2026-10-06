@@ -22,16 +22,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences.rememberTransformAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.GeneralIconShape
+import app.lawnchair.util.FolderMotion
 import com.android.launcher3.R
 
 @Composable
@@ -52,6 +56,20 @@ fun FolderPreferences(
             ?.label?.invoke()
             ?: stringResource(id = R.string.custom)
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
+            val reducedHomeMotion = prefs2.reduceHomeScreenMotion.getAdapter().state.value
+            ListPreference(
+                adapter = rememberTransformAdapter(
+                    adapter = prefs2.folderMotion.getAdapter(),
+                    transformGet = { FolderMotion.resolve(it, reducedHomeMotion) },
+                    transformSet = { it.name },
+                ),
+                entries = listOf(
+                    ListPreferenceEntry(FolderMotion.MORPH) { stringResource(R.string.folder_motion_morph_choice) },
+                    ListPreferenceEntry(FolderMotion.GROW) { stringResource(R.string.folder_motion_grow_choice) },
+                    ListPreferenceEntry(FolderMotion.INSTANT) { stringResource(R.string.folder_motion_instant_choice) },
+                ),
+                label = stringResource(R.string.folder_motion_label),
+            )
             NavigationActionPreference(
                 label = stringResource(id = R.string.folder_shape_label),
                 destination = GeneralIconShape(ShapeRoute.FOLDER_SHAPE),
