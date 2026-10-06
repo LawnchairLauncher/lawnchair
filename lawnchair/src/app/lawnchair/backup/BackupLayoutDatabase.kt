@@ -86,13 +86,17 @@ internal object BackupLayoutDatabase {
         DeviceGridState.KEY_DEVICE_TYPE,
     )
 
-    /** Call on the model executor: rollback must finish before an existing DB handle writes again. */
+    /**
+     * Call on the model executor: rollback must finish before an existing DB handle writes again.
+     * [finishRestore] must close all incoming database handles before returning or throwing.
+     */
     fun install(
         context: Context,
         archive: File,
         gridState: GridState,
         target: DeviceGridState,
         operations: InstallOperations = installOperations,
+        finishRestore: () -> Unit = {},
     ) {
         val targetDatabase = target.dbFile
         check(targetDatabase != SOURCE_DATABASE)
@@ -138,6 +142,7 @@ internal object BackupLayoutDatabase {
                         .putInt(DeviceGridState.KEY_DEVICE_TYPE, gridState.deviceType),
                 ),
             ) { "Unable to select restored launcher database" }
+            finishRestore()
         } catch (failure: Throwable) {
             fun rollback(action: () -> Unit) {
                 try {
@@ -148,8 +153,12 @@ internal object BackupLayoutDatabase {
                 }
             }
             if (installed) {
-                rollback {
-                    check(destination.delete()) { "Unable to remove failed launcher installation: $destination" }
+                // Restore processing can create sidecars even when it ultimately fails.
+                listOf("", "-wal", "-shm", "-journal").forEach { suffix ->
+                    rollback {
+                        val file = File(destination.path + suffix)
+                        check(!file.exists() || file.delete()) { "Unable to remove failed launcher installation: $file" }
+                    }
                 }
             }
             preserved.asReversed().forEach { (original, saved) ->

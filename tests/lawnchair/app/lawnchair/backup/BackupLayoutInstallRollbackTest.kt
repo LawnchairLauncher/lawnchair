@@ -46,7 +46,11 @@ class BackupLayoutInstallRollbackTest {
             .commit()
     }
 
-    private fun install(operations: BackupLayoutDatabase.InstallOperations, sameGrid: Boolean = true) {
+    private fun install(
+        operations: BackupLayoutDatabase.InstallOperations,
+        sameGrid: Boolean = true,
+        finishRestore: () -> Unit = {},
+    ) {
         // Follow the public restore ordering, including selection keys from another device.
         BackupSharedPreferences.apply(
             preferences,
@@ -60,7 +64,7 @@ class BackupLayoutInstallRollbackTest {
         )
         val archive = File(context.cacheDir, "incoming-layout.db").apply { writeText("validated archive") }
         val target = DeviceGridState(if (sameGrid) 4 else 5, 6, 4, 0, targetName, 0)
-        BackupLayoutDatabase.install(context, archive, grid, target, operations)
+        BackupLayoutDatabase.install(context, archive, grid, target, operations, finishRestore)
     }
 
     private fun assertRestored(files: Map<File, ByteArray>, values: Map<String, *>) {
@@ -159,6 +163,92 @@ class BackupLayoutInstallRollbackTest {
             }
         }
         assertEquals(targetName, preferences.getString(DeviceGridState.KEY_DB_FILE, null))
+    }
+
+    @Test
+    fun restoreProcessingFailureRestoresBothGridPathsAndEverySidecar() {
+        listOf(true, false).forEach { sameGrid ->
+            listOf(true, false).forEach { rejectsRestore ->
+                val files = seedFiles()
+                seedPreferences()
+                val values = preferences.all
+                val operations = object : BackupLayoutDatabase.InstallOperations {}
+                val failure = assertThrows(IllegalStateException::class.java) {
+                    install(operations, sameGrid) {
+                        val selected = preferences.getString(DeviceGridState.KEY_DB_FILE, null)!!
+                        assertEquals(if (sameGrid) targetName else BackupLayoutDatabase.SOURCE_DATABASE, selected)
+                        val database = context.getDatabasePath(selected)
+                        database.writeText("partially processed layout")
+                        listOf("-wal", "-shm", "-journal").forEach { suffix ->
+                            File(database.path + suffix).writeText("incoming sidecar")
+                        }
+                        if (rejectsRestore) {
+                            // performRestore catches processing exceptions and returns false.
+                            check(false) { "Restore rejected" }
+                        }
+                        error("Restore threw")
+                    }
+                }
+                assertEquals(if (rejectsRestore) "Restore rejected" else "Restore threw", failure.message)
+                assertRestored(files, values)
+            }
+        }
+    }
+
+    @Test
+    fun failedProcessingRemovesNewSidecarsAndLeavesOriginalWalConnectionWritable() {
+        listOf(true, false).forEach { sameGrid ->
+            val target = context.getDatabasePath(targetName).apply { parentFile!!.mkdirs() }
+            SQLiteDatabase.deleteDatabase(target)
+            seedPreferences()
+            val values = preferences.all
+            SQLiteDatabase.openOrCreateDatabase(target, null).use { live ->
+                assertTrue(live.enableWriteAheadLogging())
+                live.execSQL("CREATE TABLE items (_id INTEGER PRIMARY KEY)")
+                live.execSQL("INSERT INTO items VALUES (1)")
+                val operations = object : BackupLayoutDatabase.InstallOperations {}
+                assertThrows(IllegalStateException::class.java) {
+                    install(operations, sameGrid) {
+                        val selected = context.getDatabasePath(preferences.getString(DeviceGridState.KEY_DB_FILE, null)!!)
+                        // Simulate sidecars created by the failed incoming connection.
+                        listOf("-wal", "-shm", "-journal").forEach { File(selected.path + it).writeText("incoming") }
+                        error("Restore failed")
+                    }
+                }
+                assertFalse(File(target.path + "-journal").exists())
+                if (!sameGrid) {
+                    val source = context.getDatabasePath(BackupLayoutDatabase.SOURCE_DATABASE)
+                    listOf("", "-wal", "-shm", "-journal").forEach { assertFalse(File(source.path + it).exists()) }
+                }
+                live.execSQL("INSERT INTO items VALUES (2)")
+            }
+            SQLiteDatabase.openDatabase(target.path, null, SQLiteDatabase.OPEN_READONLY).use { database ->
+                database.rawQuery("SELECT COUNT(*) FROM items", null).use {
+                    assertTrue(it.moveToFirst())
+                    assertEquals(2, it.getInt(0))
+                }
+            }
+            assertEquals(values, preferences.all)
+        }
+    }
+
+    @Test
+    fun successfulProcessingDiscardsRecoveryFilesOnlyAfterItReturns() {
+        listOf(true, false).forEach { sameGrid ->
+            seedFiles()
+            seedPreferences()
+            val operations = object : BackupLayoutDatabase.InstallOperations {}
+            val directory = context.getDatabasePath(targetName).parentFile!!
+            install(operations, sameGrid) {
+                val staging = directory.listFiles()!!.single { it.name.startsWith(".layout-install-") }
+                assertEquals("previous $targetName", File(staging, "previous-0").readText())
+                val selected = preferences.getString(DeviceGridState.KEY_DB_FILE, null)!!
+                context.getDatabasePath(selected).writeText("processed layout")
+            }
+            val selected = preferences.getString(DeviceGridState.KEY_DB_FILE, null)!!
+            assertEquals("processed layout", context.getDatabasePath(selected).readText())
+            assertTrue(directory.listFiles()!!.none { it.name.startsWith(".layout-install-") })
+        }
     }
 
     @Test

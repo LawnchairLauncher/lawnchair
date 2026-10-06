@@ -125,18 +125,19 @@ class LawnchairBackup(
                 }
                 // Let grid changes finish against the old layout before installing the backup.
                 withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
-                    BackupLayoutDatabase.install(context, layout, info.gridState, DeviceGridState(LauncherAppState.getIDP(context)))
-                    val dbController = ModelDbController(context)
-                    val database = dbController.db
-                    database.beginTransaction()
-                    try {
-                        check(RestoreDbTask.performRestore(context, dbController)) { "Unable to restore launcher layout" }
-                        database.setTransactionSuccessful()
-                    } finally {
-                        database.endTransaction()
-                        database.close()
+                    BackupLayoutDatabase.install(context, layout, info.gridState, DeviceGridState(LauncherAppState.getIDP(context))) {
+                        val dbController = ModelDbController(context)
+                        dbController.db.use { database ->
+                            database.beginTransaction()
+                            try {
+                                check(RestoreDbTask.performRestore(context, dbController)) { "Unable to restore launcher layout" }
+                                database.setTransactionSuccessful()
+                            } finally {
+                                database.endTransaction()
+                            }
+                        }
+                        dbController.clearEmptyDbFlag()
                     }
-                    dbController.clearEmptyDbFlag()
                 }
             }
             if (restoredWallpaper != null) {
