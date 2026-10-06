@@ -8,13 +8,16 @@ import app.lawnchair.preferences.PreferenceChangeListener
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
+import app.lawnchair.theme.ThemeProvider
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.concurrent.annotations.Ui
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.icons.mono.MonoIconThemeController
+import com.android.launcher3.icons.mono.ThemedIconDrawable
 import com.android.launcher3.util.DaggerSingletonTracker
+import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.LooperExecutor
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
@@ -36,6 +39,7 @@ constructor(
     private val lifecycle: DaggerSingletonTracker,
     private val prefs2: PreferenceManager2,
     private val prefs1: PreferenceManager,
+    private val themeProvider: ThemeProvider,
 ) : ThemeManager(
     context,
     uiExecutor,
@@ -49,6 +53,7 @@ constructor(
         prefs1.shadowBGIcons,
         prefs1.coloredBackgroundLightness,
         prefs1.forceIconMonochrome,
+        prefs1.launcherTheme,
     )
 
     private val prefListener = PreferenceChangeListener {
@@ -67,10 +72,27 @@ constructor(
         ).onEach { verifyIconState() }
             .launchIn(scope)
 
+        val colorSchemeChangeListener = object : ThemeProvider.ColorSchemeChangeListener {
+            override fun onColorSchemeChanged() {
+                uiExecutor.execute { verifyIconState() }
+            }
+        }
+        themeProvider.addListener(colorSchemeChangeListener)
+
+        val displayController = DisplayController.INSTANCE.get(context)
+        val displayInfoChangeListener = DisplayController.DisplayInfoChangeListener { _, _, flags ->
+            if (flags and DisplayController.CHANGE_NIGHT_MODE != 0) {
+                uiExecutor.execute { verifyIconState() }
+            }
+        }
+        displayController.addChangeListener(displayInfoChangeListener)
+
         statePrefs1.forEach { it.addListener(prefListener) }
 
         lifecycle.addCloseable {
             scope.cancel()
+            themeProvider.removeListener(colorSchemeChangeListener)
+            displayController.removeChangeListener(displayInfoChangeListener)
             statePrefs1.forEach { it.removeListener(prefListener) }
         }
     }
@@ -103,7 +125,20 @@ constructor(
         val currentPrefs1State = prefs1State()
         val appShapeKey = currentAppShape.getHashString() + currentPrefs1State
         val folderShapeKey = currentFolderShape.getHashString() + currentPrefs1State
-        val combinedKey = "$appShapeKey:$folderShapeKey"
+        val themeController = iconControllerFactory.createThemeController()?.let {
+            if (prefs1.forceIconMonochrome.get()) {
+                FORCED_MONO_THEME_CONTROLLER
+            } else {
+                MONO_THEME_CONTROLLER
+            }
+        }
+        val themedColorsKey =
+            if (themeController != null) {
+                ThemedIconDrawable.getColors(context).joinToString(",")
+            } else {
+                ""
+            }
+        val combinedKey = "$appShapeKey:$folderShapeKey:$themedColorsKey"
 
         val appShape =
             if (oldState != null && (oldState.iconShape as? PathShapeDelegate)?.iconShape == currentAppShape) {
@@ -118,14 +153,6 @@ constructor(
             } else {
                 PathShapeDelegate(currentFolderShape)
             }
-
-        val themeController = iconControllerFactory.createThemeController()?.let {
-            if (prefs1.forceIconMonochrome.get()) {
-                FORCED_MONO_THEME_CONTROLLER
-            } else {
-                MONO_THEME_CONTROLLER
-            }
-        }
 
         return IconState(
             iconMask = combinedKey,
