@@ -19,33 +19,24 @@ package app.lawnchair.ui.preferences.destinations
 import android.content.Context
 import androidx.annotation.Keep
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -57,7 +48,6 @@ import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
@@ -256,36 +246,36 @@ fun IconShapePreview(
 ) {
     val path = iconShape.getMaskPath().asComposePath()
 
-    var translated = remember { false }
-    fun translatePath(canvasWidth: Float, canvasHeight: Float) {
-        if (!translated) {
-            translated = true
-            val pathHeight = path.getBounds().size.height
-            val pathWidth = path.getBounds().size.width
-            path.translate(
-                Offset(
-                    x = (canvasWidth - pathWidth) / 2,
-                    y = (canvasHeight - pathHeight) / 2,
-                ),
-            )
-        }
-    }
-
     Canvas(
-        modifier = modifier.requiredSize(48.dp),
+        modifier = modifier.size(48.dp),
     ) {
-        translatePath(
-            canvasWidth = size.width,
-            canvasHeight = size.height,
+        val pathBounds = path.getBounds()
+        if (pathBounds.width <= 0f || pathBounds.height <= 0f) return@Canvas
+
+        val strokeWidth = 4f
+        val fitScale = minOf(
+            (size.width - strokeWidth) / (pathBounds.width + strokeWidth),
+            (size.height - strokeWidth) / (pathBounds.height + strokeWidth),
         )
-        drawPath(
-            path = path,
-            color = fillColor,
+        if (fitScale <= 0f) return@Canvas
+
+        val offset = Offset(
+            x = (size.width - pathBounds.width * fitScale) / 2f - pathBounds.left * fitScale,
+            y = (size.height - pathBounds.height * fitScale) / 2f - pathBounds.top * fitScale,
         )
-        drawPath(
-            path = path,
-            color = strokeColor,
-            style = Stroke(width = 4f),
-        )
+
+        translate(left = offset.x, top = offset.y) {
+            scale(scaleX = fitScale, scaleY = fitScale, pivot = Offset.Zero) {
+                drawPath(
+                    path = path,
+                    color = fillColor,
+                )
+                drawPath(
+                    path = path,
+                    color = strokeColor,
+                    style = Stroke(width = strokeWidth),
+                )
+            }
+        }
     }
 }
