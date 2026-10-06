@@ -7,6 +7,9 @@ import android.content.pm.LauncherApps
 import android.util.Log
 import com.android.launcher3.AppFilter
 import java.util.concurrent.TimeUnit
+import kotlin.math.exp
+import kotlin.math.ln
+import kotlin.math.log10
 
 /**
  * Queries [UsageStatsManager] across multiple time windows with configurable
@@ -60,6 +63,81 @@ class UsageStatsRanker(private val context: Context) {
             }
     }
 
+    fun getUsageStatsWeights(): LinkedHashMap<String, Double> {
+        val usageStatsManager =
+            context.getSystemService(UsageStatsManager::class.java)
+                ?: return LinkedHashMap<String, Double>()
+        val now = System.currentTimeMillis()
+        val scores = LinkedHashMap<String, Double>()
+
+        try {
+            USAGE_WINDOWS_SEARCH.forEach { window ->
+                addUsageStatsToScoresForSearch(
+                    scores = scores,
+                    stats = usageStatsManager.queryAndAggregateUsageStats(
+                        now - window.durationMs,
+                        now,
+                    ),
+                    now = now,
+                    window = window,
+                )
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to query usage stats", e)
+            return LinkedHashMap<String, Double>()
+        }
+
+        if (scores.isEmpty()) {
+            Log.w(TAG, "scores.isEmpty()")
+            return LinkedHashMap<String, Double>()
+        }
+
+        return scores
+    }
+
+    private fun addUsageStatsToScoresForSearch(
+        scores: MutableMap<String, Double>,
+        stats: Map<String, UsageStats>,
+        now: Long,
+        window: UsageStatsWindow,
+    ) {
+        if (stats.isEmpty()) return
+
+        val maxDuration = stats.values.maxOf { stat ->
+            stat.totalTimeInForeground
+        }
+
+        stats.values.forEach { stat ->
+            val packageName = stat.packageName
+            if (packageName.isNullOrEmpty() || packageName == context.packageName) return@forEach
+
+            val durationDampened = when {
+                stat.totalTimeInForeground <= 0 -> 0
+                else -> log10((1 + (stat.totalTimeInForeground) / (maxDuration)).toDouble())
+            }.toDouble()
+
+            val decayHalfLife = window.durationMs / 2
+            val decayTimeDelta = now - stat.lastTimeUsed
+            val decayAtDelta =
+                exp(-((ln(2.0) / (decayHalfLife)) * decayTimeDelta))
+            val decayAt0 = exp(-((ln(2.0) / (decayHalfLife)) * window.durationMs))
+            val recencyDecayed = when {
+                stat.lastTimeUsed <= 0L -> 0.0
+
+                else -> {
+                    (decayAtDelta - decayAt0) / (exp(0.0) - decayAt0)
+                }
+            }
+
+            val score =
+                (durationDampened * window.foregroundMinutesWeight) + (recencyDecayed * window.recencyWeight)
+
+            if (score <= 0.0) return@forEach
+
+            scores[packageName] = (scores[packageName] ?: 0.0) + score
+        }
+    }
+
     private fun addUsageStatsToScores(
         scores: MutableMap<String, Double>,
         stats: Map<String, UsageStats>,
@@ -96,7 +174,7 @@ class UsageStatsRanker(private val context: Context) {
         /** Weight period */
         val durationMs: Long,
         /** Weight for when the app is presence in the usage window. It is merely just is this app appeared in the window, nothing more. */
-        val presenceWeight: Double,
+        val presenceWeight: Double = 0.0,
         /** Weight for when the app is being in foreground */
         val foregroundMinutesWeight: Double,
         /** Weight for when was the app being used recently */
@@ -125,6 +203,19 @@ class UsageStatsRanker(private val context: Context) {
                 presenceWeight = 1.0,
                 foregroundMinutesWeight = 0.02,
                 recencyWeight = 0.5,
+            ),
+        )
+
+        private val USAGE_WINDOWS_SEARCH = listOf(
+            UsageStatsWindow(
+                durationMs = TimeUnit.HOURS.toMillis(12),
+                foregroundMinutesWeight = 5.0,
+                recencyWeight = 0.5,
+            ),
+            UsageStatsWindow(
+                durationMs = TimeUnit.DAYS.toMillis(7),
+                foregroundMinutesWeight = 10.0,
+                recencyWeight = 0.1,
             ),
         )
     }
