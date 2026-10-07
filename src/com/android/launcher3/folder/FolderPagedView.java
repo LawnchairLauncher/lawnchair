@@ -112,7 +112,9 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         this(
                 context,
                 attrs,
-                createFolderGridOrganizer(ActivityContext.lookupContext(context).getDeviceProfile())
+                createFolderGridOrganizer(
+                    context,
+                    ActivityContext.lookupContext(context).getDeviceProfile())
         );
     }
 
