@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.LawnchairApp
 import app.lawnchair.data.iconoverride.IconOverrideRepository
+import app.lawnchair.deck.LawndeckManager
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -52,7 +53,9 @@ import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.celllayout.CellPosMapper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 object HomeScreenRoutes {
     const val GRID = "grid"
@@ -67,6 +70,7 @@ fun HomeScreenPreferences(
     val prefs2 = preferenceManager2()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+
     PreferenceLayout(
         label = stringResource(id = R.string.home_screen_label),
         backArrowVisible = !LocalIsExpandedScreen.current,
@@ -74,6 +78,7 @@ fun HomeScreenPreferences(
     ) {
         val lockHomeScreenAdapter = prefs2.lockHomeScreen.getAdapter()
         val showDeckLayout = prefs2.showDeckLayout.getAdapter().state.value
+        val deckManager = remember { LawndeckManager(context) }
 
         if (showDeckLayout) {
             HomeLayoutSettings()
@@ -84,11 +89,30 @@ fun HomeScreenPreferences(
             val isDeckLayoutAdapter = prefs2.deckLayout.getAdapter()
             ExpandAndShrink(visible = !isDeckLayoutAdapter.state.value) {
                 SwitchPreference(
-                    checked = (!lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value) || isDeckLayoutAdapter.state.value,
+                    checked = !lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value,
                     onCheckedChange = addIconToHomeAdapter::onChange,
                     label = stringResource(id = R.string.auto_add_shortcuts_label),
                     description = if (lockHomeScreenAdapter.state.value) stringResource(id = R.string.home_screen_locked) else null,
                     enabled = lockHomeScreenAdapter.state.value.not(),
+                )
+            }
+            ExpandAndShrink(visible = isDeckLayoutAdapter.state.value) {
+                val allowDeckSorting = prefs2.allowDeckSorting.getAdapter()
+                SwitchPreference(
+                    checked = allowDeckSorting.state.value,
+                    onCheckedChange = { newValue ->
+                        scope.launch {
+                            deckManager.backupLawndeck()
+                            delay(200)
+                            clearAllViewsFromHomeScreen(context, LauncherSettings.Favorites.CONTAINER_DESKTOP, false)
+                            delay(200)
+                            prefs2.allowDeckSorting.set(newValue)
+                            deckManager.enableLawndeck(newValue)
+                        }
+                    },
+                    label = stringResource(id = R.string.deck_allow_sorts),
+                    description = null,
+                    enabled = true,
                 )
             }
             GestureHandlerPreference(
@@ -264,7 +288,7 @@ fun HomeScreenPreferences(
     }
 }
 
-private fun clearAllViewsFromHomeScreen(context: Context, type: Int) {
+private fun clearAllViewsFromHomeScreen(context: Context, type: Int, reload: Boolean = true) {
     val launcherModel = LauncherAppState.getInstance(context).model
     val modelWriter = launcherModel.getWriter(
         verifyChanges = false,
@@ -273,7 +297,9 @@ private fun clearAllViewsFromHomeScreen(context: Context, type: Int) {
     )
     val isViewsRemoved = modelWriter.clearAllHomeScreenViewsByType(type)
     if (isViewsRemoved) {
-        launcherModel.forceReload()
+        if (reload) {
+            launcherModel.forceReload()
+        }
         Toast.makeText(
             context,
             R.string.home_screen_all_views_removed_msg,
