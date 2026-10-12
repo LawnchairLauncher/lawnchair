@@ -2,6 +2,7 @@ package app.lawnchair.gestures
 
 import android.graphics.PointF
 import android.view.MotionEvent
+import android.view.ViewConfiguration
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -38,6 +39,12 @@ class VerticalSwipeTouchController(
     private var pointerCount = 0
     private var triggered = false
 
+    // LC: a touch that starts on a paged dock belongs to the pager while it is mostly horizontal.
+    private val touchSlop = ViewConfiguration.get(launcher).scaledTouchSlop
+    private var downOnPagedDock = false
+    private var downX = 0f
+    private var downY = 0f
+
     init {
         launcher.lifecycleScope.launch {
             prefs.swipeUpGestureHandler.get()
@@ -62,7 +69,14 @@ class VerticalSwipeTouchController(
             if (noIntercept) {
                 return false
             }
+            downOnPagedDock = isOnPagedDock(ev)
+            downX = ev.x
+            downY = ev.y
             detector.setDetectableScrollConditions(getSwipeDirection(), false)
+        } else if (downOnPagedDock && !noIntercept &&
+            HorizontalSwipeFilter.isHorizontalSwipe(ev.x - downX, ev.y - downY, touchSlop / 2f)
+        ) {
+            noIntercept = true
         }
         if (noIntercept) {
             return false
@@ -75,6 +89,11 @@ class VerticalSwipeTouchController(
         // We don't need to check when the pointer count changes during a swipe
         pointerCount = ev.pointerCount
         return detector.onTouchEvent(ev)
+    }
+
+    private fun isOnPagedDock(ev: MotionEvent): Boolean {
+        val hotseat = launcher.hotseat ?: return false
+        return hotseat.pagedView.isPagingEnabled && launcher.dragLayer.isEventOverView(hotseat, ev)
     }
 
     private fun canInterceptTouch(ev: MotionEvent): Boolean {
