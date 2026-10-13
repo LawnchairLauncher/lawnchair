@@ -363,7 +363,11 @@ class GridSizeMigrationLogic {
 
         // In case the new grid is smaller, there might be some leftover items that don't fit on
         // any of the screens, in this case we add them to new screens until all of them are placed.
-        var screenId = destReader.mLastScreenId + 1
+        // LC-Note: Start after the last screen used above (lastScreen), not after the
+        // destination's last screen. Items placed above are not in mWorkspaceEntriesByScreenId,
+        // so solving one of those screens again would put leftovers on top of them, and the
+        // loader would then delete the overlapping items.
+        var screenId = lastScreen + 1
         while (itemsToPlace.mRemainingItemsToPlace.isNotEmpty()) {
             itemsToPlace =
                 solveGridPlacement(
@@ -525,6 +529,31 @@ class GridSizeMigrationLogic {
                 occupied.markCells(entry, true)
             }
         }
+        // LC-Note: Keep the user's existing layout when possible. Before anything is placed
+        // automatically, keep every item of this screen that still fits at its original cell and
+        // size. Items placed automatically afterwards (carried over from an earlier screen, or no
+        // longer fitting) then only take cells that are really free, and never push a kept item
+        // out of its cell.
+        if (preserveOriginal) {
+            // Rows reserved at the top of this screen (e.g. the smartspace). Read once, before
+            // automatic placement starts moving next.
+            val reservedTopRows = next.y
+            val keepIterator = itemsToPlace.mRemainingItemsToPlace.iterator()
+            while (keepIterator.hasNext()) {
+                val entry = keepIterator.next()
+                // The minSpan check matches the drop rule below, for widgets whose minSpan is
+                // larger than their span.
+                if (entry.screenId == screenId &&
+                    entry.minSpanX <= trgX &&
+                    entry.minSpanY <= trgY &&
+                    canKeepOriginalPlacement(entry, reservedTopRows, trg, occupied)
+                ) {
+                    occupied.markCells(entry, true)
+                    itemsToPlace.mPlacementSolution.add(entry)
+                    keepIterator.remove()
+                }
+            }
+        }
         val iterator = itemsToPlace.mRemainingItemsToPlace.iterator()
         while (iterator.hasNext()) {
             val entry = iterator.next()
@@ -532,22 +561,9 @@ class GridSizeMigrationLogic {
                 iterator.remove()
                 continue
             }
-            // Lawnchair: keep the user's existing layout when possible. Items are deferred to
-            // their original screen and kept at their original cell and size if it still fits and
-            // the spot is free; only items that no longer fit fall back to automatic placement.
-            if (preserveOriginal) {
-                if (entry.screenId > screenId) {
-                    // This item belongs to a later screen; leave it for that screen's pass.
-                    continue
-                }
-                if (entry.screenId == screenId &&
-                    canKeepOriginalPlacement(entry, next.y, trg, occupied)
-                ) {
-                    occupied.markCells(entry, true)
-                    itemsToPlace.mPlacementSolution.add(entry)
-                    iterator.remove()
-                    continue
-                }
+            if (preserveOriginal && entry.screenId > screenId) {
+                // LC-Note: This item belongs to a later screen; leave it for that screen's pass.
+                continue
             }
             findPlacementForEntry(entry, next.x, next.y, trg, occupied)?.let {
                 entry.screenId = screenId
