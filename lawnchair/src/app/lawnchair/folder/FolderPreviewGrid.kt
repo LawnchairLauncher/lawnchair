@@ -49,8 +49,7 @@ enum class FolderPreviewGrid(
     ;
 
     companion object {
-        fun fromString(value: String?): FolderPreviewGrid =
-            entries.firstOrNull { it.name == value } ?: DEFAULT
+        fun fromString(value: String?): FolderPreviewGrid = entries.firstOrNull { it.name == value } ?: DEFAULT
 
         fun preferenceEntries(): List<ListPreferenceEntry<FolderPreviewGrid>> = entries.map {
             ListPreferenceEntry(value = it) { stringResource(id = it.labelResourceId) }
