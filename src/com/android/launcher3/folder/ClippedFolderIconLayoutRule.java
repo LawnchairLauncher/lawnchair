@@ -302,7 +302,9 @@ public class ClippedFolderIconLayoutRule {
         if (mUseCircularLayout) {
             if (page > 0) {
                 scale = MIN_SCALE;
-            } else if (numItems <= 3) {
+            } else if (numItems <= 2) {
+                // 1–2 items stay larger. 3-item previews match 4-item folders (MIN_SCALE);
+                // MAX_SCALE at 3 items clips the triangle against the folder circle.
                 scale = MAX_SCALE;
             } else {
                 scale = MIN_SCALE;
