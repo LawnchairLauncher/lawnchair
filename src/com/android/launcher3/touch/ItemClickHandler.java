@@ -222,8 +222,12 @@ public class ItemClickHandler {
                 }
                 addFlowHandler.startBindFlow(launcher, info.appWidgetId, info,
                         REQUEST_BIND_PENDING_APPWIDGET);
-            } else {
-                addFlowHandler.startConfigActivity(launcher, info, REQUEST_RECONFIGURE_APPWIDGET);
+            } else if (!addFlowHandler.startConfigActivity(
+                    launcher, info, REQUEST_RECONFIGURE_APPWIDGET)) {
+                // LC-Note: The provider does not need configuration (e.g. its configuration is
+                // optional), so there is nothing left to set up. Finish the restore instead of
+                // ignoring the tap.
+                launcher.completeRestoreAppWidget(info.appWidgetId);
             }
         } else {
             final String packageName = info.providerName.getPackageName();

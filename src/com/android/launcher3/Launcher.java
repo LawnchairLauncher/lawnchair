@@ -793,10 +793,12 @@ public class Launcher extends StatefulActivity<LauncherState>
                     // Since the view was just bound, also launch the configure activity if needed
                     LauncherAppWidgetProviderInfo provider = mAppWidgetManager
                             .getLauncherAppWidgetInfo(widgetId, info.getTargetComponent());
-                    if (provider != null) {
-                        new WidgetAddFlowHandler(provider)
-                                .startConfigActivity(this, widgetInfo,
-                                        REQUEST_RECONFIGURE_APPWIDGET);
+                    if (provider != null && !new WidgetAddFlowHandler(provider)
+                            .startConfigActivity(this, widgetInfo,
+                                    REQUEST_RECONFIGURE_APPWIDGET)) {
+                        // LC-Note: Nothing to configure (e.g. the configuration is optional),
+                        // so the widget is ready to go.
+                        completeRestoreAppWidget(widgetId);
                     }
                 }
                 break;
@@ -2295,6 +2297,19 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (view != null) {
             mWorkspace.addInScreen(view, item);
             mWorkspace.requestLayout();
+        }
+    }
+
+    /**
+     * LC-Note: Marks a pending widget as fully restored and replaces its placeholder with the real
+     * widget.
+     * Does nothing if the widget is no longer pending (for example, it was already restored).
+     *
+     * @param appWidgetId The app widget id
+     */
+    public void completeRestoreAppWidget(int appWidgetId) {
+        if (mWorkspace.getWidgetForAppWidgetId(appWidgetId) instanceof PendingAppWidgetHostView) {
+            completeRestoreAppWidget(appWidgetId, LauncherAppWidgetInfo.RESTORE_COMPLETED);
         }
     }
 
