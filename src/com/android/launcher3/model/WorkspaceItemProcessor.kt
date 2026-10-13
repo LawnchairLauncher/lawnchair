@@ -646,8 +646,9 @@ class WorkspaceItemProcessor(
                     appWidgetInfo.appWidgetId,
                     lapi,
                     context,
-                    appWidgetInfo.spanX + appWidgetInfo.subSpanX * 0.5f,
-                    appWidgetInfo.spanY + appWidgetInfo.subSpanY * 0.5f,
+                    // LC-Note: Subgrid positioning, report the rendered (half-cell) size.
+                    appWidgetInfo.getRenderedSpanX(context),
+                    appWidgetInfo.getRenderedSpanY(context),
                 )
         }
 

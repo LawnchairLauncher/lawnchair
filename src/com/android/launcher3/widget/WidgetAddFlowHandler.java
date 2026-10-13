@@ -61,8 +61,7 @@ public class WidgetAddFlowHandler implements Parcelable {
         launcher.getAppWidgetHolder()
                 .startBindFlow(launcher, appWidgetId, mProviderInfo, requestCode,
                         WidgetSizes.getWidgetSizeOptions(launcher, mProviderInfo.provider,
-                                info.spanX + info.subSpanX * 0.5f,
-                                info.spanY + info.subSpanY * 0.5f));
+                                info.getRenderedSpanX(launcher), info.getRenderedSpanY(launcher)));
     }
 
     /**

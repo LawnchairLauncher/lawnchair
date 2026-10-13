@@ -74,6 +74,8 @@ import java.util.List;
 import java.util.Optional;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Represents an item in the launcher.
@@ -332,6 +334,28 @@ public class ItemInfo {
         float frac = value - (float) Math.floor(value);
         // The writer only ever emits a whole number or base + 0.5, so match .5 exactly (with epsilon).
         return Math.abs(frac - 0.5f) <= 0.01f ? 1 : 0;
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Whether this item's half-cell steps are honored, i.e. it is on
+     * the workspace and the preference is enabled. Mirrors {@code WorkspaceLayoutManager#addInScreen}.
+     */
+    public boolean isSubgridHonored(@NonNull Context context) {
+        return container == CONTAINER_DESKTOP && PreferenceCacheExtensionsKt.firstCached(
+                PreferenceManager2.getInstance(context).getEnableSubgridPositioning());
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. The horizontal span as rendered: including the half-cell step
+     * when {@link #isSubgridHonored} is true, else the whole-cell span.
+     */
+    public float getRenderedSpanX(@NonNull Context context) {
+        return isSubgridHonored(context) ? spanX + subSpanX * 0.5f : spanX;
+    }
+
+    /** LC-Note: Subgrid positioning. See {@link #getRenderedSpanX}. */
+    public float getRenderedSpanY(@NonNull Context context) {
+        return isSubgridHonored(context) ? spanY + subSpanY * 0.5f : spanY;
     }
 
     /**

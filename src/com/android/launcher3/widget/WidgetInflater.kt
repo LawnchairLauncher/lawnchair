@@ -128,8 +128,10 @@ constructor(
                     pendingInfo.spanX = item.spanX
                     pendingInfo.spanY = item.spanY
                     // LC-Note: Subgrid positioning, bind with the rendered half-cell size.
-                    pendingInfo.subSpanX = item.subSpanX
-                    pendingInfo.subSpanY = item.subSpanY
+                    if (item.isSubgridHonored(context)) {
+                        pendingInfo.subSpanX = item.subSpanX
+                        pendingInfo.subSpanY = item.subSpanY
+                    }
                     pendingInfo.minSpanX = item.minSpanX
                     pendingInfo.minSpanY = item.minSpanY
                     var options = pendingInfo.getDefaultSizeOptions(context)
