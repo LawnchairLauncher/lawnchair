@@ -136,7 +136,8 @@ public class PreviewItemManager {
                     Utilities.isRtl(mIcon.getResources()),
                     mIcon.mActivity.getDeviceProfile().numFolderColumns,
                     app.lawnchair.folder.FolderPreviewConfig.getActiveItemCount(mIcon.getContext()),
-                    app.lawnchair.folder.FolderPreviewConfig.getGridSide(mIcon.getContext())
+                    app.lawnchair.folder.FolderPreviewConfig.getGridSide(mIcon.getContext()),
+                    app.lawnchair.folder.FolderPreviewConfig.useCircularLayout(mIcon.getContext())
             );
             updatePreviewItems(false);
         }

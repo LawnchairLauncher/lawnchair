@@ -24,22 +24,33 @@ import com.android.launcher3.R
 enum class FolderPreviewGrid(
     val itemCount: Int,
     val sideLength: Int,
+    /** When true, closed-folder previews use Launcher3's circular/triangle layout. */
+    val useCircularLayout: Boolean,
     @StringRes val labelResourceId: Int,
 ) {
+    DEFAULT(
+        itemCount = 4,
+        sideLength = 2,
+        useCircularLayout = true,
+        labelResourceId = R.string.folder_preview_grid_default,
+    ),
     TWO_BY_TWO(
         itemCount = 4,
         sideLength = 2,
+        useCircularLayout = false,
         labelResourceId = R.string.folder_preview_grid_2x2,
     ),
     THREE_BY_THREE(
         itemCount = 9,
         sideLength = 3,
+        useCircularLayout = false,
         labelResourceId = R.string.folder_preview_grid_3x3,
     ),
     ;
 
     companion object {
-        fun fromString(value: String?): FolderPreviewGrid = entries.firstOrNull { it.name == value } ?: TWO_BY_TWO
+        fun fromString(value: String?): FolderPreviewGrid =
+            entries.firstOrNull { it.name == value } ?: DEFAULT
 
         fun preferenceEntries(): List<ListPreferenceEntry<FolderPreviewGrid>> = entries.map {
             ListPreferenceEntry(value = it) { stringResource(id = it.labelResourceId) }

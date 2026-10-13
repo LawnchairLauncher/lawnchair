@@ -32,6 +32,11 @@ object FolderPreviewConfig {
     @JvmStatic
     fun getGridSide(context: Context): Int = PreferenceManager2.getInstance(context).folderPreviewGridSize.firstCached().sideLength
 
+    /** Whether closed-folder previews use Launcher3's circular/triangle layout ("Default"). */
+    @JvmStatic
+    fun useCircularLayout(context: Context): Boolean =
+        PreferenceManager2.getInstance(context).folderPreviewGridSize.firstCached().useCircularLayout
+
     /**
      * Reapplies the preview grid on workspace/hotseat folder icons and rebinds the app drawer
      * so folder previews update without restarting the launcher.

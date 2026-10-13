@@ -496,7 +496,7 @@ class PreferenceManager2 @Inject constructor(
 
     val folderPreviewGridSize = preference(
         key = stringPreferencesKey(name = "folder_preview_grid_size"),
-        defaultValue = FolderPreviewGrid.TWO_BY_TWO,
+        defaultValue = FolderPreviewGrid.DEFAULT,
         parse = { FolderPreviewGrid.fromString(it) },
         save = { it.name },
         onSet = { FolderPreviewConfig.refreshAllFolderIcons(context) },
