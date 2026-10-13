@@ -54,7 +54,8 @@ open class WidgetSizeHandler @Inject constructor(@ApplicationContext private val
         val widgetManager = AppWidgetManager.getInstance(context)
         // Imported placeholders have allocated IDs but no provider binding yet. Some Android
         // builds crash in AppWidgetService when updating options for those IDs. Binding supplies
-        // the initial options, so defer size updates until the system reports a bound provider.
+        // the initial options, so skip the update here; nothing retries it, the next size update
+        // after the widget is bound (load, resize) sends the options.
         if (widgetId <= 0 || widgetManager.getAppWidgetInfo(widgetId) == null) return
         val sizeOptions = WidgetSizes.getWidgetSizeOptions(context, info.provider, spanX, spanY) ?: return
         if (needsSizeUpdate(widgetManager.getAppWidgetOptions(widgetId), sizeOptions)) {
