@@ -266,9 +266,18 @@ public class ClippedFolderIconLayoutRule {
         // is inverted to match the coordinate system.
         result[0] = mAvailableSpace / 2 + (float) (radius * Math.cos(theta) / 2) - halfIconSize;
         result[1] = mAvailableSpace / 2 + (float) (-radius * Math.sin(theta) / 2) - halfIconSize;
+        if (curNumItems == 3) {
+            // Equilateral triangle centers span [-R, +R/2]; nudge down so the bbox matches 2x2.
+            result[1] += radius / 8f;
+        }
     }
 
     private float getRadius(int numItems) {
+        if (numItems == 3) {
+            // chord = radius * sin(π/n). Match 3-item side length to the 2x2 (n=4) spacing:
+            // radius3 = radius4 * √(2/3).
+            return getRadius(CIRCULAR_MAX_NUM_ITEMS_IN_PREVIEW) * (float) Math.sqrt(2.0 / 3.0);
+        }
         float radiusDilation = Flags.enableLauncherIconShapes() ? radiusDilationForItems(numItems)
                 : MAX_RADIUS_DILATION;
         if (Flags.enableLauncherIconShapes()) {
@@ -282,9 +291,7 @@ public class ClippedFolderIconLayoutRule {
     }
 
     private float radiusDilationForItems(int numItems) {
-        if (numItems == 3) {
-            return 0.15f;
-        } else if (numItems == CIRCULAR_MAX_NUM_ITEMS_IN_PREVIEW) {
+        if (numItems == CIRCULAR_MAX_NUM_ITEMS_IN_PREVIEW) {
             return 0.12f;
         } else {
             return 0;
