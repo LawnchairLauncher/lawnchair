@@ -103,6 +103,8 @@ public class LoaderCursor extends CursorWrapper {
     private final IntArray mItemsToRemove = new IntArray();
     private final IntArray mRestoredRows = new IntArray();
     private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
+    // LC-Note: Subgrid positioning — base cells of the half-stepped items loaded so far.
+    private final IntSparseArrayMap<GridOccupancy> mSubgridOccupied = new IntSparseArrayMap<>();
 
     // CollectionInfo objects, which have not yet been loaded from the DB, but are expected to
     // found eventually as the loading progresses
@@ -684,8 +686,12 @@ public class LoaderCursor extends CursorWrapper {
                 screen.markCells(0, 0, spanX, spanY, true);
             }
             mOccupied.put(item.screenId, screen);
+            // LC-Note: Subgrid positioning, see trackSubgridOverlap.
+            mSubgridOccupied.put(item.screenId, new GridOccupancy(countX + 1, countY + 1));
         }
         final GridOccupancy occupancy = mOccupied.get(item.screenId);
+        // LC-Note: Subgrid positioning, see trackSubgridOverlap.
+        boolean subgridOverlap = trackSubgridOverlap(item, mSubgridOccupied.get(item.screenId));
 
         // Check if any workspace icons overlap with each other
         if (occupancy.isRegionVacant(item.cellX, item.cellY, item.spanX, item.spanY)) {
@@ -696,14 +702,28 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            // LC-Note: Subgrid free placement lets icons/widgets share a base cell, so don't drop
-            // them. Folders stay on the unchanged integer grid, so keep their overlap check strict.
-            boolean allowSubgridOverlap = item.itemType != Favorites.ITEM_TYPE_FOLDER
-                    && PreferenceCacheExtensionsKt.firstCached(
-                            preferenceManager2.getEnableSubgridPositioning());
+            // LC-Note: Subgrid free placement lets any workspace item, folders included, share a
+            // base cell with a half-stepped neighbour, so don't drop it. Which of the two loads
+            // second depends on row order, so a stricter check for folders would delete them.
+            // Keep such overlaps when subgrid is off too, or turning it off would delete them.
             return PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getAllowWidgetOverlap())
-                    || allowSubgridOverlap;
+                    || subgrid || subgridOverlap;
         }
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Records the base cells of {@code item} in {@code halfStepped}
+     * if it has a half-cell offset or size, whatever the current setting is.
+     *
+     * @return whether {@code item} may share base cells with an item loaded before it: it has a
+     * half step itself, or one of its base cells holds a half-stepped item
+     */
+    private static boolean trackSubgridOverlap(ItemInfo item, GridOccupancy halfStepped) {
+        if (item.subX != 0 || item.subY != 0 || item.subSpanX != 0 || item.subSpanY != 0) {
+            halfStepped.markCells(item, true);
+            return true;
+        }
+        return !halfStepped.isRegionVacant(item.cellX, item.cellY, item.spanX, item.spanY);
     }
 
     /**
