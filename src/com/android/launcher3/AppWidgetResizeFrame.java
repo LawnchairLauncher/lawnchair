@@ -412,10 +412,17 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             mDragHandles[INDEX_BOTTOM].setAlpha(mBottomBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
         }
 
+        // LC-Note: The frame is drawn mBackgroundPadding outside the widget, so bound the
+        // widget's edge (not the frame's) by the DragLayer. Bounding the frame's edge leaves the
+        // last column next to the screen edge out of reach when the grid sits close to it, and
+        // gives a frame that already overhangs the edge a range without 0, which pulls it inward
+        // on the first move.
         if (mLeftBorderActive) {
-            mDeltaXRange.set(-getLeft(), getWidth() - 2 * mTouchTargetWidth);
+            mDeltaXRange.setIncludingZero(-getLeft() - mBackgroundPadding,
+                    getWidth() - 2 * mTouchTargetWidth);
         } else if (mRightBorderActive) {
-            mDeltaXRange.set(2 * mTouchTargetWidth - getWidth(), mDragLayer.getWidth() - getRight());
+            mDeltaXRange.setIncludingZero(2 * mTouchTargetWidth - getWidth(),
+                    mDragLayer.getWidth() - getRight() + mBackgroundPadding);
         } else {
             mDeltaXRange.set(0, 0);
         }
@@ -872,6 +879,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         public void set(int s, int e) {
             start = s;
             end = e;
+        }
+
+        /**
+         * LC-Note: Same as {@link #set(int, int)}, but widens the range to contain 0 so that
+         * clamping a zero delta never moves the edge.
+         */
+        public void setIncludingZero(int s, int e) {
+            set(Math.min(s, 0), Math.max(e, 0));
         }
 
         public int size() {
