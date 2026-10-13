@@ -98,7 +98,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">สิ่งที่อยากให้แสดง</string>
     <string name="wallpapers">พื้นหลัง</string>
-    <string name="caddy_beta">Caddy (beta)</string>
+    <string name="caddy_beta">แคดดี้ (เบต้า)</string>
     <string name="caddy">แคดดี้</string>
     <string name="app_drawer_folder">โฟลเดอร์ในรายการแอป</string>
     <string name="selected_apps">เลือกแอพ</string>
@@ -200,8 +200,8 @@
     -->
     <string name="suggestion_pref_screen_title">คำแนะนำ</string>
     <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
-    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_label">การแนะนำแอป</string>
+    <string name="prediction_mode_label">ผู้ให้บริการคำแนะนำ</string>
     <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
     <string name="prediction_mode_system">ระบบ</string>
     <string name="prediction_mode_none">ปิด</string>
@@ -411,9 +411,9 @@
     <string name="torch_action_off">แตะเพื่อปิด</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Set up Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
+    <string name="onboarding_open_settings_subtitle">กดค้างที่หน้าจอหลักเพื่อเปิดการตั้งค่า</string>
     <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
+    <string name="onboarding_major_upgrade_subtitle">มาดูกันว่ามีอะไรใหม่บ้าง</string>
     <string name="onboarding_welcome">ยินดีต้อนรับเข้าสู่ Lawnchair!</string>
     <string name="onboarding_swipe_up">ปัดขึ้นเพื่อเปิดรายการแอป</string>
     <!-- Smartspacer strings -->
@@ -422,10 +422,10 @@
     <string name="smartspacer_settings">การตั้งค่าของ Smartspacer</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">แตะเพื่อตั้งค่า</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
+    <string name="event_provider_missing_notification_dots">หากต้องการใช้ <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> ให้เปิดจุดแสดงการแจ้งเตือน</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">แสดงบนหน้าจอหลัก</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">สามารถเพิ่มข้อมูลโดยย่อในหน้าหลักได้ด้วยตนเองด้วยวิดเจ็ต Lawnchair</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">ผู้ให้บริการข้อมูลโดยย่อ</string>
     <string name="smartspace_mode_google">Google</string>
