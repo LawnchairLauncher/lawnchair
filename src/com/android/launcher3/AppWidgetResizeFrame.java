@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.icu.text.NumberFormat;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -686,14 +687,27 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             WidgetSizes.updateWidgetSizeRanges(mWidgetView, mLauncher, newSpanX, newSpanY);
             // LC-Note: Subgrid positioning — mirror the integer path's resize announcement for a11y.
             if (mStateAnnouncer != null) {
-                mStateAnnouncer.announce(
-                        mLauncher.getString(R.string.widget_resized, newSpanX, newSpanY));
+                mStateAnnouncer.announce(mLauncher.getString(R.string.widget_resized,
+                        formatHalfCells(mLauncher, spanXHalf),
+                        formatHalfCells(mLauncher, spanYHalf)));
             }
         } else {
             // Free placement: persist directly (the reorder/commit path is skipped for subgrid).
             mCellLayout.persistViewGeometry(mWidgetView);
         }
         mWidgetView.requestLayout();
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Formats a size given in half cells (5 -> 2.5) for the
+     * {@code widget_resized} announcement, with the locale's digits and decimal separator (so
+     * Arabic reads ٢٫٥, not 2.5). Whole sizes have no fraction.
+     */
+    public static String formatHalfCells(Context context, int halfCells) {
+        NumberFormat format = NumberFormat.getInstance(
+                context.getResources().getConfiguration().getLocales().get(0));
+        format.setMaximumFractionDigits(1);
+        return format.format(halfCells / 2f);
     }
 
     @Override
