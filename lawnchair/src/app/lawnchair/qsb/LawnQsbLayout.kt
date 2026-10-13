@@ -24,6 +24,7 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.qsb.providers.AppSearch
+import app.lawnchair.qsb.providers.GlobalSearchApp
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
@@ -249,7 +250,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             context: Context,
             provider: QsbSearchProvider,
         ): QsbSearchProvider {
-            return if (provider == AppSearch ||
+            return if (provider == AppSearch || provider == GlobalSearchApp ||
                 resolveIntent(context, provider.createSearchIntent()) ||
                 resolveIntent(context, provider.createWebsiteIntent())
             ) {

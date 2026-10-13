@@ -825,6 +825,10 @@
 
     <!-- Search providers -->
     <string name="search_provider_app_search">App search</string>
+    <string name="search_provider_other_app">Other search app</string>
+    <string name="search_provider_choose_app">Choose an installed app</string>
+    <string name="search_provider_select_app">Choose a search app</string>
+    <string name="search_provider_no_compatible_apps">No compatible search apps found</string>
     <string name="search_provider_startpage" translatable="false">Startpage</string>
     <string name="search_provider_startpage_eu" translatable="false">Startpage (EU)</string>
     <string name="search_provider_google" translatable="false">Google</string>
