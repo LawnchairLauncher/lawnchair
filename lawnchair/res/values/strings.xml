@@ -711,6 +711,7 @@
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
 
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
+    <string name="deck_allow_sorts">Categorize apps</string>
 
     <string name="minus_one_enable">Show feed</string>
     <string name="minus_one_unavailable">No feed apps installed</string>
@@ -771,6 +772,11 @@
 
     <string name="widget_unlimited_size_label">Remove size constraints</string>
     <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    
+    <!-- Deck mode -->
+    <string name="adding_apps_to_workspace">Adding apps to the home screen...</string>
+    <string name="restore_previous_layout">Restoring previous layout...</string>
+    <string name="creating_workspace_folder">Creating folder: %1$s...</string>
 
     <!-- Dock settings -->
     <string name="show_hotseat_title">Show dock</string>
