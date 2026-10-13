@@ -395,6 +395,8 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                         // adding this flag ensures that launcher shows 'click to setup'
                         // if the widget has a config activity. In case there is no config
                         // activity, it will be marked as 'restored' during bind.
+                        // LC-Note: So will a widget whose configuration is optional, see
+                        // WidgetAddFlowHandler.needsConfigure and WidgetInflater.
                         widget.restoreStatus |= LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
                         widget.installProgress = 100;
                         taskController.getModelWriter().updateItemInDatabase(widget);
