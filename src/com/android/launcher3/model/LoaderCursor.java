@@ -646,6 +646,20 @@ public class LoaderCursor extends CursorWrapper {
         final int countX = mIDP.numColumns;
         final int countY = mIDP.numRows;
         boolean subgrid = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableSubgridPositioning());
+        // LC-Note: Subgrid positioning — an item whose whole cells fit can still stick out half a
+        // cell past the page. Pull it back on to the page and persist that, instead of deleting it.
+        if (subgrid && item.cellX >= 0 && item.cellY >= 0
+                && item.cellX + item.spanX <= countX && item.cellY + item.spanY <= countY
+                && clampSubgridToGrid(item, countX, countY)) {
+            FileLog.w("LC-LoaderCursor", "Clamped half-cell overflow of " + item + " to the "
+                    + countX + "x" + countY + " grid");
+            updater()
+                    .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
+                    .putSubgrid(Favorites.CELLY, item.cellY, item.subY)
+                    .putSubgrid(Favorites.SPANX, item.spanX, item.subSpanX)
+                    .putSubgrid(Favorites.SPANY, item.spanY, item.subSpanY)
+                    .commit();
+        }
         // LC-Note: Subgrid positioning, check the half-cell extent.
         float x = item.cellX + (subgrid ? item.subX * 0.5f : 0);
         float y = item.cellY + (subgrid ? item.subY * 0.5f : 0);
@@ -690,6 +704,40 @@ public class LoaderCursor extends CursorWrapper {
             return PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getAllowWidgetOverlap())
                     || allowSubgridOverlap;
         }
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Keeps an item's half-cell extent on the {@code countX} x
+     * {@code countY} page by moving its leading edge back and, if it is larger than the page,
+     * shrinking it to the page size. Works in half cells; the base cell must already be on the page.
+     *
+     * @return whether the item was changed
+     */
+    private static boolean clampSubgridToGrid(ItemInfo item, int countX, int countY) {
+        int posX = item.cellX * 2 + item.subX;
+        int posY = item.cellY * 2 + item.subY;
+        int sizeX = item.spanX * 2 + item.subSpanX;
+        int sizeY = item.spanY * 2 + item.subSpanY;
+        int newSizeX = Math.min(sizeX, countX * 2);
+        int newSizeY = Math.min(sizeY, countY * 2);
+        int newPosX = Math.max(0, Math.min(posX, countX * 2 - newSizeX));
+        int newPosY = Math.max(0, Math.min(posY, countY * 2 - newSizeY));
+        if (newPosX == posX && newPosY == posY && newSizeX == sizeX && newSizeY == sizeY) {
+            return false;
+        }
+        item.cellX = newPosX / 2;
+        item.subX = newPosX % 2;
+        item.cellY = newPosY / 2;
+        item.subY = newPosY % 2;
+        if (newSizeX != sizeX) {
+            item.spanX = countX;
+            item.subSpanX = 0;
+        }
+        if (newSizeY != sizeY) {
+            item.spanY = countY;
+            item.subSpanY = 0;
+        }
+        return true;
     }
 
     @AssistedFactory
