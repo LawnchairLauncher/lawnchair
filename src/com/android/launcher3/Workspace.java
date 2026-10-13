@@ -2790,11 +2790,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     child, mTargetCell, span, CellLayout.MODE_SHOW_REORDER_HINT);
             // LC-Note: Subgrid positioning — preview the half-cell position/size before dropping.
             int[] previewCell = {mTargetCell[0], mTargetCell[1]};
-            int previewSubSpanX = mDragTargetLayout.isSubgridEnabled() ? item.subSpanX : 0;
-            int previewSubSpanY = mDragTargetLayout.isSubgridEnabled() ? item.subSpanY : 0;
-            mDragTargetLayout.computeSubgridTarget(previewCell, mTargetSub, span[0], span[1],
-                    previewSubSpanX, previewSubSpanY,
-                    mDragViewVisualCenter[0], mDragViewVisualCenter[1]);
+            boolean subgridDrop = isSubgridDrop(d);
+            int previewSubSpanX = subgridDrop ? item.subSpanX : 0;
+            int previewSubSpanY = subgridDrop ? item.subSpanY : 0;
+            computeSubgridPreview(subgridDrop, previewCell, span[0], span[1],
+                    previewSubSpanX, previewSubSpanY);
             mDragTargetLayout.visualizeDropLocation(previewCell[0], previewCell[1], span[0],
                     span[1], mTargetSub[0], mTargetSub[1], previewSubSpanX, previewSubSpanY, d);
             nearestDropOccupied = mDragTargetLayout.isNearestDropLocationOccupied((int)
@@ -3021,6 +3021,31 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
     }
 
+    /**
+     * LC-Note: Subgrid positioning. Whether a drop of {@code d} on {@link #mDragTargetLayout} lands
+     * on a half cell. Only the internal move in {@link #onDrop} applies the half-cell target;
+     * {@link #onDropExternal} (All Apps, the widget tray, folders) places items on whole cells, so
+     * those drags get a whole-cell preview that matches where the item lands.
+     */
+    private boolean isSubgridDrop(DragObject d) {
+        return d.dragSource == this && mDragInfo != null && mDragTargetLayout.isSubgridEnabled();
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Refines {@code previewCell} to the half-cell drop target into
+     * {@link #mTargetSub}, or clears the half-step when {@code subgridDrop} is false.
+     */
+    private void computeSubgridPreview(boolean subgridDrop, int[] previewCell, int spanX,
+            int spanY, int subSpanX, int subSpanY) {
+        if (subgridDrop) {
+            mDragTargetLayout.computeSubgridTarget(previewCell, mTargetSub, spanX, spanY,
+                    subSpanX, subSpanY, mDragViewVisualCenter[0], mDragViewVisualCenter[1]);
+        } else {
+            mTargetSub[0] = 0;
+            mTargetSub[1] = 0;
+        }
+    }
+
     class ReorderAlarmListener implements OnAlarmListener {
         final float[] dragViewCenter;
         final int minSpanX, minSpanY, spanX, spanY;
@@ -3056,14 +3081,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
             // LC-Note: Subgrid positioning — preview the half-cell position before dropping.
             int[] previewCell = {mTargetCell[0], mTargetCell[1]};
-            boolean subgridOn = mDragTargetLayout.isSubgridEnabled();
-            int previewSubSpanX = subgridOn && dragObject.dragInfo != null
-                    ? dragObject.dragInfo.subSpanX : 0;
-            int previewSubSpanY = subgridOn && dragObject.dragInfo != null
-                    ? dragObject.dragInfo.subSpanY : 0;
-            mDragTargetLayout.computeSubgridTarget(previewCell, mTargetSub, resultSpan[0],
-                    resultSpan[1], previewSubSpanX, previewSubSpanY,
-                    mDragViewVisualCenter[0], mDragViewVisualCenter[1]);
+            boolean subgridDrop = isSubgridDrop(dragObject) && dragObject.dragInfo != null;
+            int previewSubSpanX = subgridDrop ? dragObject.dragInfo.subSpanX : 0;
+            int previewSubSpanY = subgridDrop ? dragObject.dragInfo.subSpanY : 0;
+            computeSubgridPreview(subgridDrop, previewCell, resultSpan[0], resultSpan[1],
+                    previewSubSpanX, previewSubSpanY);
             mDragTargetLayout.visualizeDropLocation(previewCell[0], previewCell[1],
                     resultSpan[0], resultSpan[1], mTargetSub[0], mTargetSub[1],
                     previewSubSpanX, previewSubSpanY, dragObject);
