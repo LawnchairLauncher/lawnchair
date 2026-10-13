@@ -53,8 +53,9 @@ public class ClippedFolderIconLayoutRule {
      */
     public void init(int availableSpace, float intrinsicIconSize, boolean rtl,
             int numFolderColumns) {
+        // Prefer circular/triangle placement when no preference is supplied (Launcher3 default).
         init(availableSpace, intrinsicIconSize, rtl, numFolderColumns,
-                DEFAULT_NUM_ITEMS_IN_PREVIEW, DEFAULT_PREVIEW_GRID_SIDE, false);
+                DEFAULT_NUM_ITEMS_IN_PREVIEW, DEFAULT_PREVIEW_GRID_SIDE, true);
     }
 
     /**
@@ -307,8 +308,9 @@ public class ClippedFolderIconLayoutRule {
                 scale = MIN_SCALE;
             }
         } else if (mPreviewGridSide >= 3) {
-            // Keep single/dual icons a bit larger; everything else uses the tight 3×3 scale.
-            scale = numItems <= 2 ? MAX_SCALE : GRID_3X3_SCALE;
+            // Keep a lone icon larger; two+ icons use the tight 3×3 scale so adjacent
+            // cells do not overlap (MAX_SCALE is wider than a 1/3 preview cell).
+            scale = numItems <= 1 ? MAX_SCALE : GRID_3X3_SCALE;
         } else if (page > 0) {
             scale = MIN_SCALE;
         } else if (numItems <= 2) {
