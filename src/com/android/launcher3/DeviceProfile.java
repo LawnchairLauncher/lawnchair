@@ -900,9 +900,9 @@ public class DeviceProfile {
         boolean isLabelInDock = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableLabelInDock());
         HotseatMode hotseatMode = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatMode());
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
-        // Ensure there is enough space for folder icons, which have a slightly larger radius.
-        hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 2;
-        hotseatCellHeightPx += isLabelInDock ? iconTextHeight : 0;
+        // LC-Note: Hidden dock labels need no text space; keep the minimum touch target.
+        hotseatCellHeightPx = app.lawnchair.util.DockCellSize.calculate(
+                hotseatIconSizePx, iconTextHeight, isLabelInDock, pxFromDp(48, mMetrics));
         hotseatQsbSpace = mHotseatQsbSpaceBase;
         hotseatQsbSpace += isQsbEnable && isLabelInDock ? (iconTextHeight / 2) : 0;
         
