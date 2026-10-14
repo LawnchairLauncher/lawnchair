@@ -19,7 +19,7 @@ object SearchUtils {
         val queryNormalized = normalizeForSearch(query)
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
         return apps.asSequence()
-            .filter { matchesAppTitle(queryNormalized, it.title.toString(), matcher) }
+            .filter { matchAppTitle(queryNormalized, it.title.toString(), matcher) != TitleMatch.NONE }
             .filterHiddenApps(queryNormalized, hiddenApps, hiddenAppsInSearch)
             .take(maxResultsCount)
             .toList()
@@ -42,21 +42,31 @@ object SearchUtils {
             .map { it.referent }
     }
 
+    /** How an app title matches a query in the non-fuzzy search, see [matchAppTitle]. */
+    enum class TitleMatch { NONE, WORD_START, ANYWHERE }
+
     /**
-     * Returns whether [title] matches [query] in the non-fuzzy search.
+     * Returns how [title] matches [query] in the non-fuzzy search.
      *
      * The query must already be normalized with [normalizeForSearch]. The title is normalized
      * here, keeping its case so that camel case word breaks still work (e.g. "tube" matches
      * "YouTube").
      *
-     * The query has to match at the start of a word. Arabic labels often start with an attached
-     * article or prefix (e.g. "al-"), so for Arabic queries any substring of the title also
-     * matches, similar to how [StringMatcherUtility] handles Han characters.
+     * The query has to match at the start of a word ([TitleMatch.WORD_START]). Arabic labels
+     * often start with an attached article or prefix (e.g. "al-"), so for Arabic queries any
+     * substring of the title also matches ([TitleMatch.ANYWHERE]), similar to how
+     * [StringMatcherUtility] handles Han characters.
      */
-    fun matchesAppTitle(query: String, title: String, matcher: StringMatcherUtility.StringMatcher): Boolean {
+    fun matchAppTitle(query: String, title: String, matcher: StringMatcherUtility.StringMatcher): TitleMatch {
         val titleNormalized = normalizeForSearch(title, lowercase = false)
-        return StringMatcherUtility.matches(query, titleNormalized, matcher) ||
-            (query.containsArabicScript() && titleNormalized.lowercase(Locale.getDefault()).contains(query))
+        return when {
+            StringMatcherUtility.matches(query, titleNormalized, matcher) -> TitleMatch.WORD_START
+
+            query.containsArabicScript() &&
+                titleNormalized.lowercase(Locale.getDefault()).contains(query) -> TitleMatch.ANYWHERE
+
+            else -> TitleMatch.NONE
+        }
     }
 
     fun getShortcuts(app: AppInfo, context: Context): List<ShortcutInfo> {

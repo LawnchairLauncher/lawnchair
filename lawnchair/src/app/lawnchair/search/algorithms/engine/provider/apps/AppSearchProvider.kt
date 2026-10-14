@@ -4,6 +4,7 @@ import android.content.Context
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.search.algorithms.SearchUtils
+import app.lawnchair.search.algorithms.SearchUtils.TitleMatch
 import app.lawnchair.search.algorithms.engine.SearchResult
 import app.lawnchair.search.algorithms.filterHiddenApps
 import app.lawnchair.search.algorithms.normalizeForSearch
@@ -36,15 +37,14 @@ object AppSearchProvider {
         // apps that don't match all of the words in the query.
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
         val matches = apps.asSequence()
-            .filter { SearchUtils.matchesAppTitle(query, it.title.toString(), matcher) }
             .filterHiddenApps(query, hiddenApps, hiddenAppsInSearch)
+            .map { it to SearchUtils.matchAppTitle(query, it.title.toString(), matcher) }
+            .filter { (_, match) -> match != TitleMatch.NONE }
             .toList()
         // Keep word-start matches ahead of Arabic match-anywhere results, so those never push a
         // better match past the result limit. Non-Arabic queries keep their order.
-        val (wordStart, anywhere) = matches.partition {
-            StringMatcherUtility.matches(query, normalizeForSearch(it.title.toString(), lowercase = false), matcher)
-        }
-        return (wordStart + anywhere).take(maxResultsCount)
+        val (wordStart, anywhere) = matches.partition { (_, match) -> match == TitleMatch.WORD_START }
+        return (wordStart + anywhere).take(maxResultsCount).map { (app, _) -> app }
     }
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> {
