@@ -1010,6 +1010,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     protected void onStop() {
         super.onStop();
+        mRotationHelper.setCurrentTransitionRequest(REQUEST_LOCK);
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
         } else {
