@@ -283,7 +283,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         super.getSupportedShortcuts(container),
         Stream.concat(
             Stream.of(LawnchairShortcut.UNINSTALL, LawnchairShortcut.CUSTOMIZE, LawnchairShortcut.OPEN_IN_STORE),
-            if (LawnchairApp.isRecentsEnabled) Stream.of(LawnchairShortcut.PAUSE_APPS) else Stream.empty(),
+            Stream.of(LawnchairShortcut.PAUSE_APPS),
         ),
     )
 
