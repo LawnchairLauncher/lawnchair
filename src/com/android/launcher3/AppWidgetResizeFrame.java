@@ -418,11 +418,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             mDragHandles[INDEX_BOTTOM].setAlpha(mBottomBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
         }
 
-        // LC-Note: The frame is drawn mBackgroundPadding outside the widget, so bound the
-        // widget's edge (not the frame's) by the DragLayer. Bounding the frame's edge leaves the
-        // last column next to the screen edge out of reach when the grid sits close to it, and
-        // gives a frame that already overhangs the edge a range without 0, which pulls it inward
-        // on the first move.
+        // LC-Note: Bound the widget's edge (the frame overhangs it by mBackgroundPadding) so the
+        // last column stays reachable; include 0 so an overhanging frame isn't pulled inward.
         if (mLeftBorderActive) {
             mDeltaXRange.setIncludingZero(-getLeft() - mBackgroundPadding,
                     getWidth() - 2 * mTouchTargetWidth);
@@ -510,9 +507,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     /**
-     * LC-Note: Like {@link #getSpanIncrement(float)}, but once the finger has reached the
-     * screen edge, a partial step towards that edge counts as reached. Otherwise the last column
-     * can be out of reach of the finger when the grid sits close to the screen edge.
+     * LC-Note: Like {@link #getSpanIncrement(float)}, but once the finger hits the screen edge a
+     * partial step towards it counts, so the last column stays reachable.
      */
     private int getHSpanIncrement(float deltaFrac) {
         if (mHorizontalEdgeReached) {
