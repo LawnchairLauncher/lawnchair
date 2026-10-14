@@ -796,8 +796,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                     if (provider != null && !new WidgetAddFlowHandler(provider)
                             .startConfigActivity(this, widgetInfo,
                                     REQUEST_RECONFIGURE_APPWIDGET)) {
-                        // LC-Note: Nothing to configure (e.g. the configuration is optional),
-                        // so the widget is ready to go.
+                        // LC-Note: Nothing to configure (e.g. optional), so the widget is ready.
                         completeRestoreAppWidget(widgetId);
                     }
                 }
@@ -2301,11 +2300,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     /**
-     * LC-Note: Marks a pending widget as fully restored and replaces its placeholder with the real
-     * widget.
-     * Does nothing if the widget is no longer pending (for example, it was already restored).
-     *
-     * @param appWidgetId The app widget id
+     * LC-Note: Completes the restore of a pending widget, replacing its placeholder. No-op if the
+     * widget is no longer pending.
      */
     public void completeRestoreAppWidget(int appWidgetId) {
         if (mWorkspace.getWidgetForAppWidgetId(appWidgetId) instanceof PendingAppWidgetHostView) {

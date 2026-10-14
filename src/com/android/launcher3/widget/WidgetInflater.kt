@@ -111,9 +111,8 @@ constructor(
                 )
             }
 
-            // LC-Note: Whether the provider really needs its configure activity to run before the
-            // widget can be shown. Providers whose configuration is optional and reconfigurable do
-            // not: they can be shown right away and reconfigured later from the widget's settings.
+            // LC-Note: Also false when configuration is optional and reconfigurable; such widgets
+            // show right away and can be reconfigured later.
             val needsConfig = WidgetAddFlowHandler(appWidgetInfo).needsConfigure()
 
             // If we do not have a valid id, try to bind an id.
@@ -162,8 +161,7 @@ constructor(
                     if (success) {
                         // If the widget has a configure activity, it is still needs to set it
                         // up, otherwise the widget is ready to go.
-                        // LC-Note: Use needsConfig instead of only checking for a configure
-                        // activity, so widgets with optional configuration are ready to go too.
+                        // LC-Note: needsConfig also treats optional configuration as ready to go.
                         item.restoreStatus =
                             if (!needsConfig || isDirectConfig)
                                 LauncherAppWidgetInfo.RESTORE_COMPLETED
@@ -174,16 +172,12 @@ constructor(
             } else if (
                 item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY) && !needsConfig
             ) {
-                // LC-Note: The widget was marked as UI not ready, but the provider does not need
-                // its configure activity (there is none, or its configuration is optional). Unlike
-                // AOSP, do not wait for the provider to report the restore as completed: many
-                // providers never do, which left such widgets stuck on the setup placeholder.
-                // This also recovers widgets that are already stuck in this state.
+                // LC-Note: No config needed (none, or optional): complete now instead of waiting
+                // for a restore signal many providers never send, which left widgets stuck.
                 item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED
                 update = true
             } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)) {
-                // LC-Note: Only reached when needsConfig is true, which implies a configure
-                // activity.
+                // LC-Note: Reached only when needsConfig, which implies a configure activity.
                 if (widgetHelper.isAppWidgetRestored(item.appWidgetId)) {
                     item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED
                     update = true

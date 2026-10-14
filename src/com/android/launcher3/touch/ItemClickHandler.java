@@ -224,9 +224,8 @@ public class ItemClickHandler {
                         REQUEST_BIND_PENDING_APPWIDGET);
             } else if (!addFlowHandler.startConfigActivity(
                     launcher, info, REQUEST_RECONFIGURE_APPWIDGET)) {
-                // LC-Note: The provider does not need configuration (e.g. its configuration is
-                // optional), so there is nothing left to set up. Finish the restore instead of
-                // ignoring the tap.
+                // LC-Note: Nothing to configure (e.g. optional configuration), so finish the
+                // restore instead of ignoring the tap.
                 launcher.completeRestoreAppWidget(info.appWidgetId);
             }
         } else {
