@@ -5,6 +5,7 @@ import androidx.core.graphics.luminance
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.theme.UiColorMode
+import app.lawnchair.theme.color.ColorOption
 import dev.kdrag0n.monet.theme.ColorScheme
 
 /** Shared colors for Personal/Work tabs in the app drawer. */
@@ -16,12 +17,17 @@ object AllAppsTabColors {
         uiColorMode: UiColorMode,
     ): Int {
         val prefs2 = PreferenceManager2.getInstance(context)
-        val entry = prefs2.workProfileTabBackgroundColor.firstCached().colorPreferenceEntry
+        val option = prefs2.workProfileTabBackgroundColor.firstCached()
+        val entry = option.colorPreferenceEntry
         // lightColor is the sentinel for "no custom colour" (0); darkColor is always non-zero
         // because it falls back to lightenColor(), so the default check must use lightColor.
         val customColor = entry.lightColor.invoke(context)
         return if (customColor != 0) {
-            if (uiColorMode.isDarkTheme) entry.darkColor.invoke(context) else customColor
+            if (option is ColorOption.CustomColor || !uiColorMode.isDarkTheme) {
+                customColor
+            } else {
+                entry.darkColor.invoke(context)
+            }
         } else {
             ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode)
         }
