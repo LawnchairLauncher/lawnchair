@@ -212,10 +212,15 @@ public class TouchInteractionService extends Service {
             IDragAndDrop dragAndDrop = IDragAndDrop.Stub.asInterface(
                     bundle.getBinder(IDragAndDrop.DESCRIPTOR));
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
+                // LC-Note: QuickSwitch compatibility! The bubbles argument is deliberately null:
+                // passing the live IBubbles binder caused QuickSwitch crashes on Android 15/16.
+                // Do not restore `bubbles` here without verification on a QuickSwitch-enabled
+                // device; see the discussion on LawnchairLauncher/lawnchair#7355.
+                // pE-TODO(QuickSwitch-Baklava): Set bubbles from null to bubbles for Android 15/16
                 SystemUiProxy.INSTANCE.get(tis).setProxy(proxy, pip,
                         null, splitscreen, onehanded, shellTransitions, startingWindow,
                         recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode,
-                        unfoldTransition, dragAndDrop); // pE-TODO(QuickSwitch-Baklava): Set bubbles from null to bubbles for Android 15/16
+                        unfoldTransition, dragAndDrop);
                 tis.initInputMonitor("TISBinder#onInitialize()");
                 ActivityPreloadUtil.preloadOverviewForTIS(tis, true /* fromInit */);
             }));
