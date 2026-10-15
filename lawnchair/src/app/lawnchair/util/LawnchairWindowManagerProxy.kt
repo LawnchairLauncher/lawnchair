@@ -1,6 +1,7 @@
 package app.lawnchair.util
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Insets
 import android.graphics.Point
@@ -14,8 +15,10 @@ import android.view.DisplayCutout
 import android.view.Surface
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.view.WindowMetrics
 import androidx.annotation.Keep
 import androidx.annotation.VisibleForTesting
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.Utilities
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.testing.shared.ResourceUtils
@@ -25,7 +28,9 @@ import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 
 @Keep
 @LauncherAppSingleton
@@ -39,6 +44,7 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
         val displayManager = displayInfoContext.getSystemService(DisplayManager::class.java) ?: return result
 
         val displays = displayManager.displays
+        var internalDisplayInfo: CachedDisplayInfo? = null
 
         for (display in displays) {
             try {
@@ -51,13 +57,96 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
                     val bounds = estimateWindowBounds(contextForDisplay, info)
 
                     result[info] = bounds
+                    if (display.displayId == DEFAULT_DISPLAY) internalDisplayInfo = info
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error estimating bounds for display ${display.displayId}", e)
             }
         }
 
+        // LC-Note: DisplayManager only reports the panel in use, so a foldable looked like a phone
+        // when folded and like a tablet when unfolded, and every fold reloaded the grid. On devices
+        // that can fold, add the other states of the internal display, like
+        // SystemWindowManagerProxy does, so the device type is the same in all of them.
+        for (info in getInternalDisplayStates(displayInfoContext, internalDisplayInfo)) {
+            if (result.keys.none { it.size == info.size }) {
+                result[info] = estimateWindowBounds(displayInfoContext, info)
+            }
+        }
+
         return result
+    }
+
+    /**
+     * Returns the known states of the internal display of a foldable (e.g. both panels), normalized
+     * to [Surface.ROTATION_0]. May not include [current].
+     */
+    private fun getInternalDisplayStates(context: Context, current: CachedDisplayInfo?): List<CachedDisplayInfo> {
+        if (!hasHingeSensor(context)) return emptyList()
+
+        // The system knows all of them, but only tells the recents provider.
+        val possibleStates = getPossibleMaximumWindowMetrics(context)
+            .map { getDisplayInfo(it, Surface.ROTATION_0) }
+        if (possibleStates.size > 1) return possibleStates
+
+        // Otherwise remember the ones seen so far.
+        return if (current != null) rememberInternalDisplayState(context, current) else emptyList()
+    }
+
+    private fun getPossibleMaximumWindowMetrics(context: Context): Set<WindowMetrics> {
+        if (!Utilities.ATLEAST_T) return emptySet()
+        return try {
+            context.getSystemService(WindowManager::class.java)
+                ?.getPossibleMaximumWindowMetrics(DEFAULT_DISPLAY)
+                .orEmpty()
+        } catch (t: Throwable) {
+            // Hidden API, not always reachable
+            Log.w(TAG, "getPossibleMaximumWindowMetrics unavailable: $t")
+            emptySet()
+        }
+    }
+
+    private fun hasHingeSensor(context: Context): Boolean = Utilities.ATLEAST_R &&
+        context.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_HINGE_ANGLE)
+
+    /**
+     * Adds [current] to the states of the internal display seen on this device, and returns them all,
+     * most recent first. They are kept in device protected storage, as this runs before the user
+     * unlocks the device when Lawnchair is the recents provider, and are not backed up.
+     */
+    @Synchronized
+    private fun rememberInternalDisplayState(context: Context, current: CachedDisplayInfo): List<CachedDisplayInfo> {
+        val prefs = context.createDeviceProtectedStorageContext()
+            .getSharedPreferences(LauncherPrefs.BOOT_AWARE_PREFS_KEY, Context.MODE_PRIVATE)
+        val saved = prefs.getString(KEY_INTERNAL_DISPLAY_STATES, null)
+        val savedStates = saved?.split(STATE_SEPARATOR)?.mapNotNull { parseDisplayState(it) }.orEmpty()
+
+        // A state with the same aspect ratio is the same panel at another resolution (or the same
+        // state), so it is replaced.
+        val states = (listOf(current) + savedStates.filterNot { hasSameAspectRatio(it, current) })
+            .take(MAX_INTERNAL_DISPLAY_STATES)
+        val serialized = states.joinToString(STATE_SEPARATOR) { serializeDisplayState(it) }
+        if (serialized != saved) {
+            prefs.edit().putString(KEY_INTERNAL_DISPLAY_STATES, serialized).apply()
+        }
+        return states
+    }
+
+    private fun hasSameAspectRatio(a: CachedDisplayInfo, b: CachedDisplayInfo): Boolean {
+        fun CachedDisplayInfo.ratio() = min(size.x, size.y).toFloat() / max(size.x, size.y)
+        return abs(a.ratio() - b.ratio()) < ASPECT_RATIO_TOLERANCE
+    }
+
+    private fun serializeDisplayState(info: CachedDisplayInfo): String {
+        val cutout = getSafeInsets(info.cutout)
+        return "${info.size.x},${info.size.y},${cutout.left},${cutout.top},${cutout.right},${cutout.bottom}"
+    }
+
+    private fun parseDisplayState(value: String): CachedDisplayInfo? {
+        val values = value.split(",").map { it.toIntOrNull() ?: return null }
+        if (values.size != 6 || values[0] <= 0 || values[1] <= 0) return null
+        val cutout = DisplayCutout(Insets.of(values[2], values[3], values[4], values[5]), null, null, null, null)
+        return CachedDisplayInfo(Point(values[0], values[1]), Surface.ROTATION_0, cutout)
     }
 
     override fun getRealBounds(displayInfoContext: Context, info: CachedDisplayInfo): WindowBounds {
@@ -232,5 +321,12 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
 
     private fun dpToPx(resources: Resources, dp: Int): Int {
         return (dp * resources.displayMetrics.density).toInt()
+    }
+
+    companion object {
+        private const val KEY_INTERNAL_DISPLAY_STATES = "lc_internal_display_states"
+        private const val STATE_SEPARATOR = ";"
+        private const val MAX_INTERNAL_DISPLAY_STATES = 4
+        private const val ASPECT_RATIO_TOLERANCE = 0.01f
     }
 }
