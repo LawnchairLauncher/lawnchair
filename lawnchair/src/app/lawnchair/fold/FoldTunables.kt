@@ -143,4 +143,15 @@ object FoldTunables {
 
     /** Elevation of an icon at full tilt (its soft shadow). */
     var deepMaxElevationDp = 10f
+
+    // App drawer (Phase 3ج)
+
+    /** BIG_ICONS: upper bound of the icon and label scale over the cover's (read when the grid loads). */
+    var drawerBigIconsMaxScale = 1.6f
+
+    /** EXPAND "river": delay between two apps, at the nominal unfold duration (compressed for long lists). */
+    var drawerRiverStaggerMillis = 16f
+
+    /** EXPAND "river": how far the path of an app bulges. */
+    var drawerRiverArcDp = 24f
 }

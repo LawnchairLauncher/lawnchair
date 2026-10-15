@@ -32,6 +32,7 @@ import app.lawnchair.data.Converters
 import app.lawnchair.fold.FoldAfterFold
 import app.lawnchair.fold.FoldDock
 import app.lawnchair.fold.FoldDrawerLayout
+import app.lawnchair.fold.FoldDrawerLayouts
 import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldLandscape
 import app.lawnchair.fold.FoldLayout
@@ -750,6 +751,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = FoldDrawerLayout.EXPAND,
         parse = { FoldDrawerLayout.fromString(it) },
         save = { it.key },
+        // "Book" and "zoom" change the device profiles of the large screen.
+        onSet = {
+            FoldDrawerLayouts.onDrawerLayoutSet(it)
+            reloadHelper.reloadGrid()
+        },
     )
 
     val foldTransitionStyle = preference(

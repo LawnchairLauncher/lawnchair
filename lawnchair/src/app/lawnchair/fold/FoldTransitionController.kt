@@ -26,6 +26,7 @@ import com.android.app.animation.Interpolators
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.LauncherState
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
 import kotlin.math.abs
 import kotlin.math.exp
@@ -65,6 +66,9 @@ import kotlin.math.min
  *
  * Reduced motion (animator duration scale 0): no motion, a [FoldTunables.reducedMotionDurationMillis]
  * crossfade. Any failure ends the transition at once with the final layout showing.
+ *
+ * While the app drawer is open, [DrawerFoldStyle] (river, book or zoom, after `foldDrawerLayout`)
+ * replaces the selected home style for that transition.
  */
 class FoldTransitionController(
     private val launcher: LawnchairLauncher,
@@ -89,6 +93,7 @@ class FoldTransitionController(
     private var lastLarge = false
     private var restAngle = Float.NaN
     private var pendingReplay: ReplayMode? = null
+    private var replayOpenedDrawer = false
     private var preDrawObserver: ViewTreeObserver? = null
     private var run: Run? = null
 
@@ -134,6 +139,7 @@ class FoldTransitionController(
         resumed = false
         handler.removeCallbacks(replayRunnable)
         pendingReplay = null
+        replayOpenedDrawer = false
         hinge.stop()
         finishNow("pause")
     }
@@ -210,8 +216,19 @@ class FoldTransitionController(
 
     private fun runPendingReplay() {
         val mode = pendingReplay ?: return
+        if (!resumed || launcher.isDestroyed) {
+            pendingReplay = null
+            return
+        }
+        if (mode.drawer && !replayOpenedDrawer && launcher.stateManager.state != LauncherState.ALL_APPS) {
+            // Open the drawer, then replay once it has settled
+            replayOpenedDrawer = true
+            launcher.stateManager.goToState(LauncherState.ALL_APPS, false)
+            scheduleReplay(REPLAY_DELAY_AFTER_DRAWER_MS)
+            return
+        }
+        replayOpenedDrawer = false
         pendingReplay = null
-        if (!resumed || launcher.isDestroyed) return
         replay(mode)
     }
 
@@ -336,7 +353,12 @@ class FoldTransitionController(
         scene.timeScale = if (startWithHinge || reduced) 1f else timeScale
         val style = when {
             Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || styleType == FoldTransitionStyle.NONE -> NoneFoldStyle()
+
             reduced -> FoldStyle.createReducedMotion()
+
+            // The drawer has its own transitions, which replace the home style while it is open.
+            isDrawerOpen() -> DrawerFoldStyle(drawerLayout())
+
             else -> FoldStyle.create(styleType)
         }
         val r = Run(reason, scene, style, notify, allowHinge, SystemClock.uptimeMillis(), hinge.angle)
@@ -593,6 +615,16 @@ class FoldTransitionController(
 
     private fun isReducedMotion(): Boolean = !ValueAnimator.areAnimatorsEnabled()
 
+    private fun isDrawerOpen(): Boolean = launcher.appsView != null &&
+        launcher.stateManager.state == LauncherState.ALL_APPS &&
+        !launcher.stateManager.isInTransition
+
+    /** The drawer layout of the large screen, also when the transition plays on the cover. */
+    private fun drawerLayout(): FoldDrawerLayout {
+        val large = FoldDrawerLayouts.largeProfileOf(launcher.deviceProfile) ?: return FoldDrawerLayout.EXPAND
+        return FoldDrawerLayouts.drawerLayoutOf(large) ?: FoldDrawerLayout.EXPAND
+    }
+
     private fun durationScale(): Float {
         val scale = Settings.Global.getFloat(launcher.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
         return if (scale > 0f) min(scale, MAX_DURATION_SCALE) else 1f
@@ -655,12 +687,16 @@ class FoldTransitionController(
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
     }
 
-    /** Modes of the debug replay. */
-    enum class ReplayMode(val key: String, val opening: Boolean, val slow: Boolean) {
+    /** Modes of the debug replay. The drawer ones open the app drawer first. */
+    enum class ReplayMode(val key: String, val opening: Boolean, val slow: Boolean, val drawer: Boolean = false) {
         UNFOLD("unfold", true, false),
         FOLD("fold", false, false),
         UNFOLD_SLOW("unfold_slow", true, true),
         FOLD_SLOW("fold_slow", false, true),
+        UNFOLD_DRAWER("unfold_drawer", true, false, true),
+        FOLD_DRAWER("fold_drawer", false, false, true),
+        UNFOLD_DRAWER_SLOW("unfold_drawer_slow", true, true, true),
+        FOLD_DRAWER_SLOW("fold_drawer_slow", false, true, true),
         ;
 
         companion object {
@@ -685,6 +721,7 @@ class FoldTransitionController(
         private const val MAX_DURATION_SCALE = 10f
         private const val REPLAY_DELAY_AFTER_RESUME_MS = 500L
         private const val REPLAY_DELAY_WHILE_RESUMED_MS = 250L
+        private const val REPLAY_DELAY_AFTER_DRAWER_MS = 400L
 
         /** Brings the launcher to the front and replays the transition there (debug menu entry). */
         fun requestReplay(context: Context, mode: ReplayMode) {

@@ -93,6 +93,7 @@ import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.fold.FoldDockLayout;
+import app.lawnchair.fold.FoldDrawerLayouts;
 import app.lawnchair.fold.FoldLayout;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences.PreferenceManager;
@@ -539,7 +540,9 @@ public class DeviceProfile {
         mIsFoldDockSameAsCover = numShownHotseatIcons != displayOptionSpec.numShownHotseatIcons;
         mHotseatColumnSpan = inv.numColumns;
 
-        numShownAllAppsColumns = displayOptionSpec.numAllAppsColumns;
+        // LC-Note: the foldable drawer layouts "book" and "zoom" keep the cover's columns
+        numShownAllAppsColumns = FoldDrawerLayouts.getShownAllAppsColumns(preferenceManager2, inv,
+                mDeviceProperties, displayOptionSpec.numAllAppsColumns);
 
         int hotseatBarBottomSpace = pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
         int minQsbMargin = res.getDimensionPixelSize(R.dimen.min_qsb_margin);
