@@ -69,11 +69,17 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         currentJob?.cancel()
         appState.model.enqueueModelUpdateTask { _, _, apps ->
             if (generation.get() != requestGeneration) return@enqueueModelUpdateTask
-            val appResults = appSearchProvider.search(context, query, apps)
-            val shortcutResults = shortcutSearchProvider.search(context, appResults)
-
+            // The model queue must only hand off a stable snapshot. Preference reads,
+            // fuzzy matching, ShortcutRequest and provider lookups can otherwise stall
+            // Launcher3 model updates when the user types rapidly.
+            val appSnapshot = apps.data.toList()
             if (generation.get() != requestGeneration) return@enqueueModelUpdateTask
             currentJob = coroutineScope.launch {
+                if (generation.get() != requestGeneration) return@launch
+                val appResults = appSearchProvider.search(context, query, appSnapshot)
+                if (generation.get() != requestGeneration) return@launch
+                val shortcutResults = shortcutSearchProvider.search(context, appResults)
+                if (generation.get() != requestGeneration) return@launch
                 val nonAppProvidersFlow = combine(
                     searchProviders.map { it.search(context, query) },
                 ) { resultsArray ->

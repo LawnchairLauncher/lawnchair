@@ -4,7 +4,6 @@ import android.content.Context
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.algorithms.engine.SearchResult
 import app.lawnchair.search.algorithms.filterHiddenApps
-import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.search.StringMatcherUtility
 import com.patrykmichalik.opto.core.firstBlocking
@@ -12,7 +11,7 @@ import java.util.Locale
 
 object AppSearchProvider {
 
-    fun search(context: Context, query: String, allApps: AllAppsList): List<SearchResult.App> {
+    fun search(context: Context, query: String, allApps: List<AppInfo>): List<SearchResult.App> {
         val prefs = PreferenceManager2.getInstance(context)
         val hiddenApps = prefs.hiddenApps.firstBlocking()
         val hiddenAppsInSearch = prefs.hiddenAppsInSearch.firstBlocking()
@@ -21,9 +20,9 @@ object AppSearchProvider {
         if (maxAppResults <= 0 || query.isBlank()) return emptyList()
 
         val appResults = if (enableFuzzySearch) {
-            fuzzySearch(allApps.data, query, maxAppResults, hiddenApps, hiddenAppsInSearch)
+            fuzzySearch(allApps, query, maxAppResults, hiddenApps, hiddenAppsInSearch)
         } else {
-            normalSearch(allApps.data, query, maxAppResults, hiddenApps, hiddenAppsInSearch)
+            normalSearch(allApps, query, maxAppResults, hiddenApps, hiddenAppsInSearch)
         }
 
         return appResults.map { SearchResult.App(data = it) }
