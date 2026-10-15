@@ -1070,4 +1070,73 @@
     <string name="lawnchair_action_failed">Failed to trigger action</string>
 
     <string name="please_wait">Please wait…</string>
+
+    <string name="fold_label">Foldable screen</string>
+    <string name="fold_description">Large screen layout and fold transitions</string>
+    <string name="fold_coming_soon">%1$s (coming soon)</string>
+    <string name="fold_option_summary">%1$s: %2$s</string>
+
+    <string name="fold_group_large_screen">Large screen</string>
+    <string name="fold_group_transition">Transition</string>
+    <string name="fold_group_after_fold">After folding</string>
+    <string name="fold_group_advanced">Advanced</string>
+
+    <string name="fold_home_screen">Home screen</string>
+    <string name="fold_home_pages">Two pages</string>
+    <string name="fold_home_pages_description">The page you were on stays in place and the next one opens beside it, like a book.</string>
+    <string name="fold_home_expand">Expand</string>
+    <string name="fold_home_expand_description">One wide page. Widgets can span both screens and swiping covers the full width.</string>
+    <string name="fold_home_mirror">Same as cover</string>
+    <string name="fold_home_mirror_description">The exact layout of the cover screen, just larger. No need to arrange two screens.</string>
+    <string name="fold_home_independent">Independent</string>
+    <string name="fold_home_independent_description">A separate layout for the large screen that differs from the cover screen.</string>
+
+    <string name="fold_app_drawer">App drawer</string>
+    <string name="fold_drawer_expand">Expand</string>
+    <string name="fold_drawer_expand_description">Columns increase and apps flow in order into the new half. The first row stays put.</string>
+    <string name="fold_drawer_pages">Two pages</string>
+    <string name="fold_drawer_pages_description">The grid you see does not move. Apps that were below the edge continue on the second page.</string>
+    <string name="fold_drawer_big_icons">Bigger icons</string>
+    <string name="fold_drawer_big_icons_description">The same four columns in the same order, with larger icons.</string>
+
+    <string name="fold_animation">Animation</string>
+    <string name="fold_transition_window">Window</string>
+    <string name="fold_transition_window_description">Content stays fixed in space and the moving half is a window passing over it.</string>
+    <string name="fold_transition_wave">Light wave</string>
+    <string name="fold_transition_wave_description">Light spreads from the hinge and reveals the icons.</string>
+    <string name="fold_transition_mass">Weight</string>
+    <string name="fold_transition_mass_description">Icons lag behind according to your hand speed and settle back softly.</string>
+    <string name="fold_transition_deep">Depth</string>
+    <string name="fold_transition_deep_description">Layers move apart according to their depth.</string>
+    <string name="fold_transition_simple">Simple</string>
+    <string name="fold_transition_simple_description">A calm fade and a direct switch, without effects.</string>
+    <string name="fold_transition_none">None</string>
+    <string name="fold_transition_none_description">No animation, but also no jump, reload or deletion.</string>
+    <string name="fold_track_hinge">Follow hinge angle</string>
+    <string name="fold_track_hinge_description">The animation follows your hand and stops when you stop</string>
+
+    <string name="fold_cover_opens_on">Cover screen opens on</string>
+    <string name="fold_after_fold_last_panel">Last panel you used</string>
+    <string name="fold_after_fold_last_panel_description">The page you used last, even if it was on the second half.</string>
+    <string name="fold_after_fold_first_page">First page</string>
+    <string name="fold_after_fold_first_page_description">Always the first page.</string>
+    <string name="fold_extra_dock_info">Extra dock icons are hidden on the cover screen and come back when you unfold. They are never deleted.</string>
+
+    <string name="fold_dock">Dock</string>
+    <string name="fold_dock_merge">Merge</string>
+    <string name="fold_dock_merge_description">Your familiar dock stays in its half and the new part arrives with the new half, merging at the hinge.</string>
+    <string name="fold_dock_same">Same dock</string>
+    <string name="fold_dock_same_description">The same icons and the same count on both screens.</string>
+    <string name="fold_dock_side">Side dock</string>
+    <string name="fold_dock_side_description">A vertical dock on the screen edge where your thumb rests.</string>
+    <string name="fold_landscape">Landscape</string>
+    <string name="fold_landscape_auto">Automatic</string>
+    <string name="fold_landscape_auto_description">The same layout adapts to the width automatically.</string>
+    <string name="fold_landscape_own">Own layout</string>
+    <string name="fold_landscape_own_description">A separate arrangement for the large screen in landscape.</string>
+    <string name="fold_wallpaper">Wallpaper</string>
+    <string name="fold_wallpaper_span">One spanning image</string>
+    <string name="fold_wallpaper_span_description">One image stretched across both screens, so the transition looks continuous.</string>
+    <string name="fold_wallpaper_each">Per screen</string>
+    <string name="fold_wallpaper_each_description">A separate image for each screen.</string>
 </resources>
