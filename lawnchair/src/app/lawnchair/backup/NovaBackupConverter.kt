@@ -11,6 +11,7 @@ import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.model.DatabaseHelper
 import com.android.launcher3.model.DeviceGridState
@@ -27,6 +28,7 @@ import java.net.URISyntaxException
 import java.util.UUID
 import java.util.zip.ZipInputStream
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.io.path.createTempDirectory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -176,17 +178,7 @@ class NovaBackupConverter(
                     val gridState = DeviceGridState(InvariantDeviceProfile.INSTANCE.get(context))
                     gridState.writeToPrefs(context, true)
                     gridState.writeToPrefs(context)
-                    val restoredDbFile = context.getDatabasePath(LawnchairBackup.RESTORED_DB_FILE_NAME)
-                    restoredDbFile.parentFile?.mkdirs()
-                    stagedDbFile.copyTo(restoredDbFile, overwrite = true)
-
-                    val dbController = ModelDbController(context)
-                    try {
-                        check(RestoreDbTask.performRestore(context, dbController)) { "Unable to restore imported layout" }
-                        dbController.clearEmptyDbFlag()
-                    } finally {
-                        dbController.db.close()
-                    }
+                    installRestoredDatabase(stagedDbFile, gridState.dbFile)
                 }
             } catch (failure: Throwable) {
                 try {
@@ -248,6 +240,69 @@ class NovaBackupConverter(
             prefs.prefsMap[key]?.invalidate()
         }
         check(editor.commit()) { "Unable to restore pre-import preferences" }
+    }
+
+    /** Runs on the model executor and retains the previous files until restore processing succeeds. */
+    private fun installRestoredDatabase(source: File, databaseName: String) {
+        val target = context.getDatabasePath(databaseName)
+        val directory = requireNotNull(target.parentFile).apply { mkdirs() }
+        val recovery = createTempDirectory(directory.toPath(), ".nova-install-").toFile()
+        val incoming = File(recovery, "incoming.db")
+        val preserved = mutableListOf<Pair<File, File>>()
+        var installed = false
+        var canCleanUp = true
+        try {
+            // A failed source copy must not disturb the live database or its open connection.
+            source.copyTo(incoming)
+            LauncherAppState.getInstance(context).model.modelDbController.closeDb()
+            // Hide any older pending restore too, so opening the target cannot consume it.
+            listOf(databaseName, LawnchairBackup.RESTORED_DB_FILE_NAME).distinct().forEach { name ->
+                val database = context.getDatabasePath(name)
+                listOf("", "-wal", "-shm", "-journal").forEach { suffix ->
+                    val original = File(database.path + suffix)
+                    if (original.exists()) {
+                        val saved = File(recovery, "previous-${preserved.size}")
+                        check(original.renameTo(saved)) { "Unable to preserve launcher database: $original" }
+                        preserved += original to saved
+                    }
+                }
+            }
+            check(incoming.renameTo(target)) { "Unable to install imported launcher database" }
+            installed = true
+            val controller = ModelDbController(context)
+            try {
+                check(RestoreDbTask.performRestore(context, controller)) { "Unable to restore imported layout" }
+                controller.clearEmptyDbFlag()
+            } finally {
+                controller.closeDb()
+            }
+        } catch (failure: Throwable) {
+            fun rollback(action: () -> Unit) {
+                try {
+                    action()
+                } catch (rollbackFailure: Throwable) {
+                    canCleanUp = false
+                    failure.addSuppressed(rollbackFailure)
+                }
+            }
+            if (installed) {
+                listOf("", "-wal", "-shm", "-journal").forEach { suffix ->
+                    rollback {
+                        val file = File(target.path + suffix)
+                        check(!file.exists() || file.delete()) { "Unable to remove failed launcher installation: $file" }
+                    }
+                }
+            }
+            preserved.asReversed().forEach { (original, saved) ->
+                rollback {
+                    check(saved.renameTo(original)) { "Unable to recover launcher database: $original" }
+                }
+            }
+            throw failure
+        } finally {
+            // Never discard the only previous copy if rollback itself fails.
+            if (canCleanUp) recovery.deleteRecursively()
+        }
     }
 
     private fun parseNovaConfig(xmlFile: File): NovaConfig {
