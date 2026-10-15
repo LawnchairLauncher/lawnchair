@@ -3,7 +3,8 @@ package app.lawnchair.search.algorithms
 import java.text.Normalizer
 import java.util.Locale
 
-private val NON_SPACING_MARKS = "\\p{Mn}+".toRegex()
+// Keeps the dot above that NFKD splits off a capital İ, so that Turkish İ still matches i.
+private val NON_SPACING_MARKS = "(?<!I)\\u0307|[\\p{Mn}&&[^\\u0307]]+".toRegex()
 private val FORMAT_CHARS = "\\p{Cf}+".toRegex()
 
 /**
