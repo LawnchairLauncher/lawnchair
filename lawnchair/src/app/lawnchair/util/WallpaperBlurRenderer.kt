@@ -40,7 +40,7 @@ object WallpaperBlurRenderer {
         val context = view.context.applicationContext ?: view.context
         executor.execute {
             val bitmap = try {
-                createSmallBlur(context, requestedRadius)
+                createSmallBlur(context, requestedRadius, requestId)
             } catch (error: Exception) {
                 Log.w(TAG, "Wallpaper blur unavailable; using system wallpaper", error)
                 null
@@ -68,7 +68,8 @@ object WallpaperBlurRenderer {
         executor.queue.clear()
     }
 
-    private fun createSmallBlur(context: Context, requestedRadius: Int): Bitmap? {
+    private fun createSmallBlur(context: Context, requestedRadius: Int, requestId: Int): Bitmap? {
+        if (requestId != generation.get()) return null
         val maxSide = if (DeviceTierManager.getInstance(context).tier == DeviceTier.LOW) {
             192
         } else {
@@ -92,6 +93,8 @@ object WallpaperBlurRenderer {
             // Two bounded CPU passes: no GPU context work after a heavy game.
             val radius = (requestedRadius / 5).coerceIn(1, 6)
             for (y in 0 until height) {
+                // Wallpaper/theme changed: stop the obsolete CPU passes immediately.
+                if (requestId != generation.get()) return null
                 for (x in 0 until width) {
                     var red = 0
                     var green = 0
@@ -109,6 +112,7 @@ object WallpaperBlurRenderer {
                 }
             }
             for (y in 0 until height) {
+                if (requestId != generation.get()) return null
                 for (x in 0 until width) {
                     var red = 0
                     var green = 0
