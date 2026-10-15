@@ -143,4 +143,9 @@ object FoldTunables {
 
     /** Elevation of an icon at full tilt (its soft shadow). */
     var deepMaxElevationDp = 10f
+
+    // App drawer (Phase 3ج)
+
+    /** BIG_ICONS: upper bound of the icon and label scale over the cover's (read when the grid loads). */
+    var drawerBigIconsMaxScale = 1.6f
 }

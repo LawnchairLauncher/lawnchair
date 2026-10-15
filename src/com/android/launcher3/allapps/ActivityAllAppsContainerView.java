@@ -116,6 +116,8 @@ import java.util.stream.Stream;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static com.topjohnwu.superuser.internal.Utils.context;
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
+import app.lawnchair.fold.FoldDrawerBook;
+import app.lawnchair.fold.FoldDrawerLayouts;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -1465,6 +1467,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             adapterHolder.mPadding.bottom = bottomPadding;
             adapterHolder.mPadding.left = grid.allAppsPadding.left;
             adapterHolder.mPadding.right = grid.allAppsPadding.right;
+            if (!adapterHolder.isSearch()) {
+                // LC-Note: the foldable "book" drawer lays the A-Z grid out on the fixed half
+                FoldDrawerLayouts.adjustAppsGridPadding(grid, adapterHolder.mPadding);
+            }
             adapterHolder.applyPadding();
         });
     }
@@ -1866,6 +1872,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             }
             mOnFocusChangeListener = focusedItemDecorator.getFocusListener();
             mAdapter.setIconFocusListener(mOnFocusChangeListener);
+            if (!isSearch()) {
+                // LC-Note: moves the overflow of the foldable "book" drawer to its second page
+                FoldDrawerBook.attach(mRecyclerView);
+            }
             applyPadding();
         }
 

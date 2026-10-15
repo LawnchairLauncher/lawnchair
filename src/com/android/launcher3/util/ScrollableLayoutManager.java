@@ -52,6 +52,9 @@ public class ScrollableLayoutManager extends GridLayoutManager {
     private int[] mTotalHeightCache = new int[1];
     private int mLastValidHeightIndex = 0;
 
+    // LC-Note: extra rows laid out below the visible ones (foldable "book" drawer, its zoom)
+    private int mFoldExtraLayoutSpacePx = 0;
+
     public ScrollableLayoutManager(Context context) {
         super(context, 1, GridLayoutManager.VERTICAL, false);
     }
@@ -120,7 +123,19 @@ public class ScrollableLayoutManager extends GridLayoutManager {
     protected void calculateExtraLayoutSpace(RecyclerView.State state, int[] extraLayoutSpace) {
         super.calculateExtraLayoutSpace(state, extraLayoutSpace);
         @Px int extraSpacePx = (int) (getHeight() * EXTRA_BOTTOM_SPACE_BY_HEIGHT_PERCENT);
-        extraLayoutSpace[1] = Math.max(extraLayoutSpace[1], extraSpacePx);
+        extraLayoutSpace[1] = Math.max(extraLayoutSpace[1],
+                Math.max(extraSpacePx, mFoldExtraLayoutSpacePx));
+    }
+
+    /**
+     * LC-Note: lays out {@code px} more pixels of items below the visible area, for the foldable
+     * drawer (app.lawnchair.fold.FoldDrawerBook) which shows them elsewhere.
+     */
+    public void setFoldExtraLayoutSpace(@Px int px) {
+        if (px != mFoldExtraLayoutSpacePx) {
+            mFoldExtraLayoutSpacePx = px;
+            requestLayout();
+        }
     }
 
     /**
