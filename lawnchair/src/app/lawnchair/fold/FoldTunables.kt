@@ -43,6 +43,9 @@ object FoldTunables {
     /** Safety net: a transition never runs longer than this. */
     var maxTransitionMillis = 8000L
 
+    /** After the progress ends, how long a style may keep moving until it settles (see FoldStyle.isSettled). */
+    var maxSettleMillis = 1200L
+
     // Debug replay
 
     /** Pause between folding and opening again in the "fold" replay. */
@@ -87,4 +90,57 @@ object FoldTunables {
 
     /** Radius of the middle blur band, as a fraction of the full radius. */
     var windowBlurBandSplit = 0.35f
+
+    // WAVE
+
+    /** Width of the band of light. */
+    var waveBandWidthDp = 120f
+
+    /** Peak opacity of the band (screen-blended over the moving half). */
+    var waveBandAlpha = 0.45f
+
+    /** How high an icon rises as the band passes. */
+    var waveLiftDp = 14f
+
+    /** Distance behind the band over which a lifted icon settles back. */
+    var waveSettleDp = 120f
+
+    /** Peak opacity of an icon's glow. */
+    var waveGlowAlpha = 0.6f
+
+    /** Opacity of the moving half ahead of the band (not revealed yet). */
+    var waveDimAlpha = 0.15f
+
+    // MASS
+
+    /** Displacement of an icon at the hinge at full speed; the free edge gets 1.3x. */
+    var massMaxDisplacementDp = 24f
+
+    /** Progress per second (in real time, before the slow-replay scale) that counts as full speed. */
+    var massReferenceVelocity = 3f
+
+    /** Share of the effect for icons on the fixed half (and the cover screen). */
+    var massFixedHalfFactor = 0.4f
+
+    /** Spring stiffness (androidx SpringForce units) and damping ratio of each icon. */
+    var massStiffness = 380f
+    var massDampingRatio = 0.42f
+
+    // DEEP
+
+    /** Virtual tilt of the moving half at progress 0. */
+    var deepMaxTiltDegrees = 50f
+
+    /** Shift of an icon (depth 1) toward the hinge at full tilt. */
+    var deepMaxShiftDp = 40f
+
+    /** Depth of widgets and of the wallpaper, relative to icons. */
+    var deepWidgetDepth = 0.6f
+    var deepWallpaperDepth = 0.25f
+
+    /** Wallpaper offset (0..1 units) per unit of depth at full tilt. */
+    var deepWallpaperShift = 0.08f
+
+    /** Elevation of an icon at full tilt (its soft shadow). */
+    var deepMaxElevationDp = 10f
 }

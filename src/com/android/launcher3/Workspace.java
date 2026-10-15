@@ -512,6 +512,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return mWallpaperOffset.getNumPagesForWallpaperParallax();
     }
 
+    /**
+     * Lawnchair: shifts the wallpaper on top of its scroll offset, for the fold transition's
+     * parallax. 0 restores the normal offset.
+     */
+    public void setWallpaperFoldOffset(float offset) {
+        mWallpaperOffset.setExtraOffset(offset);
+    }
+
     public Rect estimateItemPosition(CellLayout cl, int hCell, int vCell, int hSpan, int vSpan) {
         Rect r = new Rect();
         if (cl == null)
