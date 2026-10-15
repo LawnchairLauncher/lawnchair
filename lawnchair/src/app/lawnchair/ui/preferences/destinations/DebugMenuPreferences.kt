@@ -164,7 +164,7 @@ fun DebugMenuPreferences(
 }
 
 private val PreferenceManager2.debugFlags: List<Preference<Boolean, Boolean, Preferences.Key<Boolean>>>
-    get() = listOf(showComponentNames, legacyPopupOptionsMigrated)
+    get() = listOf(showComponentNames, legacyPopupOptionsMigrated, foldForceShowSettings)
 
 private val PreferenceManager2.textFlags: List<Preference<String, String, Preferences.Key<String>>>
     get() = listOf(additionalFonts, launcherPopupOrder)
