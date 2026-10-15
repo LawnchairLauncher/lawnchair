@@ -298,6 +298,9 @@ class NovaBackupConverter(
                     check(saved.renameTo(original)) { "Unable to recover launcher database: $original" }
                 }
             }
+            if (!canCleanUp) {
+                Log.e(TAG, "Launcher database rollback failed; recovery files kept at ${recovery.path}", failure)
+            }
             throw failure
         } finally {
             // Never discard the only previous copy if rollback itself fails.
