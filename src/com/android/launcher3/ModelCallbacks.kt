@@ -55,6 +55,11 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     var pendingExecutor: ViewOnDrawExecutor? = null
     var workspaceLoading = true
 
+    // Lawnchair: the screen the user was looking at when the bind started. On the large screen of
+    // a foldable it starts the visible pair, see Workspace.setFoldAnchorScreenId.
+    @Volatile
+    private var anchorScreenId = -1
+
     /**
      * Refreshes the shortcuts shown on the workspace.
      *
@@ -76,6 +81,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.dragController.cancelDrag()
         launcher.workspace.clearDropTargets()
         launcher.workspace.removeAllWorkspaceScreens()
+        launcher.workspace.setFoldAnchorScreenId(anchorScreenId)
         // Avoid clearing the widget update listeners for staying up-to-date with widget info
         launcher.appWidgetHolder.clearWidgetViews()
         // TODO(b/335141365): Remove this log after the bug is fixed.
@@ -140,9 +146,14 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.workspace.restoreInstanceStateForRemainingPages()
         workspaceLoading = false
         launcher.processActivityResult()
+        // Lawnchair: start on the anchor screen rather than on the first screen of its pair.
+        val firstScreenId =
+            if (pagesBoundFirst == null || pagesBoundFirst.isEmpty) -1
+            else if (pagesBoundFirst.contains(anchorScreenId)) anchorScreenId
+            else pagesBoundFirst.array[0]
+        launcher.workspace.setFoldAnchorScreenId(firstScreenId)
         val currentPage =
-            if (pagesBoundFirst != null && !pagesBoundFirst.isEmpty)
-                launcher.workspace.getPageIndexForScreenId(pagesBoundFirst.array[0])
+            if (firstScreenId != -1) launcher.workspace.getPageIndexForScreenId(firstScreenId)
             else PagedView.INVALID_PAGE
         // When undoing the removal of the last item on a page, return to that page.
         // Since we are just resetting the current page without user interaction,
@@ -265,7 +276,12 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             return result
         }
         val actualIds = orderedScreenIds.clone()
-        val firstId = visibleIds.first()
+        // Lawnchair: keep the anchor of the bind in progress, the first id may be its pair.
+        val firstId =
+            if (visibleIds === synchronouslyBoundPages && visibleIds.contains(anchorScreenId))
+                anchorScreenId
+            else visibleIds.first()
+        anchorScreenId = firstId
         val pairId = launcher.workspace.getScreenPair(firstId)
         // Double check that actual screenIds contains the visibleId, as empty screens are hidden
         // in single panel.
@@ -273,6 +289,11 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             result.add(firstId)
             if (launcher.deviceProfile.deviceProperties.isTwoPanels && actualIds.contains(pairId)) {
                 result.add(pairId)
+            }
+            // Lawnchair: on foldables the pair is the next page, also bind it first.
+            val nextIndex = actualIds.indexOf(firstId) + 1
+            if (launcher.deviceProfile.deviceProperties.isTwoPanels && nextIndex < actualIds.size()) {
+                result.add(actualIds[nextIndex])
             }
         } else if (
             LauncherAppState.getIDP(launcher).supportedProfiles.any {
