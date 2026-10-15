@@ -593,6 +593,17 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_fuzzy_search),
     )
 
+    val reduceHomeScreenMotion = preference(
+        key = booleanPreferencesKey(name = "reduce_home_screen_motion"),
+        defaultValue = false,
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val folderMotion = preference(
+        key = stringPreferencesKey(name = "folder_motion"),
+        defaultValue = "",
+    )
+
     val closingAppOverlay = preference(
         key = stringPreferencesKey(name = "closing_app_overlay"),
         defaultValue = FullScreenOverlayMode.fromValue(context.resources.getString(R.string.config_default_overlay)),

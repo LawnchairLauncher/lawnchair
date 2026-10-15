@@ -96,6 +96,7 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -883,6 +884,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         Log.d("b/383526431", "animateOpen: content child count after cancelling"
                 + " animation: " + mContent.getTotalChildCount());
 
+        // LC-Note: A previous morph close can leave the reused panel in its closed state.
+        if (app.lawnchair.util.FolderMotion.get(getContext()) != app.lawnchair.util.FolderMotion.MORPH) {
+            app.lawnchair.util.FolderPanelAnimation.prepareOpen(mFooter, mBackground,
+                    LawnchairUtilsKt.resolveFolderBackgroundColor(getContext()));
+        }
+
         AnimatorSet animatorSet = getFolderAnimationManager()
                 .createAnimatorSet(/* isOpening */ true);
 
@@ -905,7 +912,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         });
 
         // Footer animation
-        if (mContent.getPageCount() > 1 && !mInfo.hasOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION)) {
+        if (app.lawnchair.util.FolderMotion.get(getContext()) == app.lawnchair.util.FolderMotion.MORPH
+                && mContent.getPageCount() > 1
+                && !mInfo.hasOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION)) {
             int footerWidth = mContent.getDesiredWidth()
                     - mFooter.getPaddingLeft() - mFooter.getPaddingRight();
 
@@ -971,6 +980,21 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private FolderAnimationCreator getFolderAnimationManager() {
+        // LC-Note: Select the Lawnchair folder transition before the standard morph.
+        app.lawnchair.util.FolderMotion motion = app.lawnchair.util.FolderMotion.get(getContext());
+        if (motion == app.lawnchair.util.FolderMotion.GROW) {
+            return isOpening -> app.lawnchair.util.FolderPanelAnimation.create(this,
+                    mActivityContext.getDeviceProfile().iconSizePx,
+                    mBackground.getCornerRadius(), isOpening);
+        }
+        if (motion == app.lawnchair.util.FolderMotion.INSTANT) {
+            return isOpening -> {
+                AnimatorSet animator = new AnimatorSet();
+                animator.play(android.animation.ObjectAnimator.ofFloat(this, ALPHA, 1f, 1f));
+                animator.setDuration(0);
+                return animator;
+            };
+        }
         boolean shouldUseSpringMotion = Flags.enableLauncherIconShapes()
                 && Flags.enableExpressiveFolderExpansion();
         if (shouldUseSpringMotion) {
@@ -1058,7 +1082,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         AnimatorSet animatorSet = getFolderAnimationManager()
                 .createAnimatorSet(/* isOpening */ false);
 
-        animatorSet.addListener(new AnimatorListenerAdapter() {
+        animatorSet.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
                 if (Utilities.ATLEAST_R) {
@@ -1074,9 +1098,16 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
                     }
                 }
+                super.onAnimationEnd(animation);
+                mIsAnimatingClosed = false;
+            }
+
+            @Override
+            public void onAnimationSuccess(Animator animation) {
+                // LC-Note: Reopening cancels the close; retain its panel and external-drag state.
+                // Immediate dismissal still calls closeComplete(false) from handleClose.
                 closeComplete(true);
                 announceAccessibilityChanges();
-                mIsAnimatingClosed = false;
             }
         });
         addAnimationStartListeners(animatorSet);
@@ -1112,9 +1143,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             mFolderIcon.setIconVisible(true);
             mFolderIcon.mFolderName.setTextVisibility(true);
             if (wasAnimated) {
-                mFolderIcon.animateBgShadowAndStroke();
-                if (mFolderIcon.hasDot()) {
-                    mFolderIcon.animateDotScale(0f, 1f);
+                if (app.lawnchair.util.FolderMotion.get(getContext()) == app.lawnchair.util.FolderMotion.MORPH) {
+                    mFolderIcon.animateBgShadowAndStroke();
+                    if (mFolderIcon.hasDot()) {
+                        mFolderIcon.animateDotScale(0f, 1f);
+                    }
                 }
                 mFolderIcon.requestFocus();
             }
