@@ -58,6 +58,12 @@ object FoldTunables {
 
     // WINDOW
 
+    /**
+     * True: the content stays still in space and the moving half is a window onto it (the design).
+     * False: the content is painted on the swinging half, like a door. For comparing only.
+     */
+    var windowFixedPlane = true
+
     /** Virtual tilt of the moving half at progress 0 (decoupled from the real hinge angle). */
     var windowMaxTiltDegrees = 55f
 

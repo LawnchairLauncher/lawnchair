@@ -1,6 +1,7 @@
 package app.lawnchair.fold
 
 import android.graphics.Canvas
+import android.os.Build
 
 /**
  * The look of a fold transition, selected by [FoldTransitionStyle].
@@ -37,15 +38,24 @@ abstract class FoldStyle {
     open fun onEnd(scene: FoldScene) = Unit
 
     companion object {
-        fun create(style: FoldTransitionStyle): FoldStyle = when (style) {
-            FoldTransitionStyle.NONE -> NoneFoldStyle()
-
-            // Visual styles are added in the next step; until then every style behaves like NONE.
-            else -> NoneFoldStyle()
+        fun create(style: FoldTransitionStyle): FoldStyle {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return NoneFoldStyle()
+            return when (style) {
+                FoldTransitionStyle.WINDOW -> WindowFoldStyle()
+                FoldTransitionStyle.SIMPLE -> SimpleFoldStyle()
+                FoldTransitionStyle.WAVE -> WaveFoldStyle()
+                FoldTransitionStyle.MASS -> MassFoldStyle()
+                FoldTransitionStyle.DEEP -> DeepFoldStyle()
+                FoldTransitionStyle.NONE -> NoneFoldStyle()
+            }
         }
 
-        /** Used instead of the selected style when the system asks for reduced motion. */
-        fun createReducedMotion(): FoldStyle = NoneFoldStyle()
+        /** Used instead of the selected style when the system asks for reduced motion: a crossfade, no motion. */
+        fun createReducedMotion(): FoldStyle = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            SimpleFoldStyle(fadeOnly = true)
+        } else {
+            NoneFoldStyle()
+        }
     }
 }
 
