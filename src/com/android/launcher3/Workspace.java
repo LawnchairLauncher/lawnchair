@@ -150,6 +150,7 @@ import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.fold.FoldLayout;
 import app.lawnchair.fold.FoldPosture;
 import app.lawnchair.fold.HingeSide;
 import app.lawnchair.preferences.PreferenceManager;
@@ -344,6 +345,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     // Lawnchair: on the large screen of a foldable, pairs start at this screen, the page the user
     // was looking at when the workspace was bound, so it sits on the fixed half.
     private int mFoldAnchorScreenId = -1;
+    // Lawnchair: screen of the panel last touched in the visible pair (FoldAfterFold.LAST_PANEL).
+    private int mLastTouchedPanelScreenId = -1;
     private int mFoldPairMarkersCount = -1;
     private final Runnable mFoldPostureListener = this::updatePageDirection;
 
@@ -784,6 +787,42 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return page < getChildCount() ? page : INVALID_PAGE;
     }
 
+    /**
+     * Lawnchair: remembers which panel of the visible pair is touched (FoldAfterFold.LAST_PANEL).
+     */
+    private void trackTouchedPanel(float x) {
+        if (!isFoldPairingEnabled()) {
+            return;
+        }
+        float contentX = x + getScrollX();
+        for (int pageIndex : getVisiblePageIndices()) {
+            View page = getPageAt(pageIndex);
+            if (page != null && contentX >= page.getLeft() && contentX < page.getRight()) {
+                mLastTouchedPanelScreenId = getScreenIdForPageIndex(pageIndex);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Returns the screens to keep showing when the workspace is rebound. Lawnchair: when the large
+     * screen of a foldable folds, this is the panel last touched if the cover should open on it.
+     */
+    public IntSet getScreenIdsToKeepOnRebind() {
+        int screenId = mLastTouchedPanelScreenId;
+        if (screenId != -1 && !isTwoPanelEnabled()
+                && FoldLayout.opensLastPanelAfterFold(mPreferenceManager2)) {
+            CellLayout panel = mWorkspaceScreens.get(screenId);
+            // An empty panel is removed on the cover screen unless it is persisted, so use the
+            // fixed half then.
+            if (panel != null && (panel.getShortcutsAndWidgets().getChildCount() > 0
+                    || getPersistedWorkspaceScreenIds().contains(screenId))) {
+                return IntSet.wrap(screenId);
+            }
+        }
+        return getCurrentPageScreenIds();
+    }
+
     public void deferRemoveExtraEmptyScreen() {
         mDeferRemoveExtraEmptyScreen = true;
     }
@@ -922,6 +961,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         removeAllViews();
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
+        mLastTouchedPanelScreenId = -1;
 
         // Ensure there is always at least one page during bind lifecycle.
         bindAndInitFirstWorkspaceScreen();
@@ -1418,6 +1458,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            trackTouchedPanel(ev.getX());
+        }
         if (shouldSkipPagedViewInterceptionForIconSwipe(ev)) {
             return false;
         } // Lawnchair: Icon swipe gesture feature
@@ -1793,6 +1836,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
         if (prevPage != mCurrentPage) {
+            // Lawnchair: a new pair is shown, none of its panels was touched yet.
+            mLastTouchedPanelScreenId = -1;
             StatsLogManager.EventEnum event = (prevPage < mCurrentPage)
                     ? LAUNCHER_SWIPERIGHT : LAUNCHER_SWIPELEFT;
             mLauncher.getStatsLogManager().logger()

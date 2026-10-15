@@ -12,4 +12,8 @@ object FoldLayout {
      */
     @JvmStatic
     fun isHomeMirrored(prefs2: PreferenceManager2): Boolean = prefs2.foldHomeLayout.firstCached(prefs2) == FoldHomeLayout.MIRROR
+
+    /** Whether the cover screen opens on the panel last touched on the large screen. */
+    @JvmStatic
+    fun opensLastPanelAfterFold(prefs2: PreferenceManager2): Boolean = prefs2.foldAfterFold.firstCached(prefs2) == FoldAfterFold.LAST_PANEL
 }

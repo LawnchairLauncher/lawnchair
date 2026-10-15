@@ -267,7 +267,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         val visibleIds =
             when {
                 !pagesToBindSynchronously.isEmpty -> pagesToBindSynchronously
-                !workspaceLoading -> launcher.workspace.currentPageScreenIds
+                !workspaceLoading -> launcher.workspace.screenIdsToKeepOnRebind
                 else -> synchronouslyBoundPages
             }
         // Launcher IntArray has the same name as Kotlin IntArray
