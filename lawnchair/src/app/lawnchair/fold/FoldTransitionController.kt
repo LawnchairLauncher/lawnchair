@@ -241,6 +241,7 @@ class FoldTransitionController(
                 to = 1f,
                 durationMillis = unfoldMillis,
                 allowHinge = false,
+                timeScale = scale,
             )
 
             large -> startRun(
@@ -255,6 +256,7 @@ class FoldTransitionController(
                 durationMillis = foldMillis,
                 allowHinge = false,
                 bounceBack = true,
+                timeScale = scale,
             )
 
             else -> startRun(
@@ -268,6 +270,7 @@ class FoldTransitionController(
                 to = 0f,
                 durationMillis = foldMillis,
                 allowHinge = false,
+                timeScale = scale,
             )
         }
     }
@@ -294,6 +297,7 @@ class FoldTransitionController(
                 to = 1f,
                 durationMillis = if (reduced) FoldTunables.reducedMotionDurationMillis else (FoldTunables.unfoldDurationMillis * scale).toLong(),
                 allowHinge = !reduced && hinge.isStarted,
+                timeScale = scale,
             )
         } else {
             startRun(
@@ -307,6 +311,7 @@ class FoldTransitionController(
                 to = 0f,
                 durationMillis = if (reduced) FoldTunables.reducedMotionDurationMillis else (FoldTunables.foldDurationMillis * scale).toLong(),
                 allowHinge = false,
+                timeScale = scale,
             )
         }
     }
@@ -324,9 +329,11 @@ class FoldTransitionController(
         allowHinge: Boolean,
         startWithHinge: Boolean = false,
         bounceBack: Boolean = false,
+        timeScale: Float = 1f,
     ) {
         finishNow("restart")
         val scene = FoldScene(launcher, opening, large, reduced)
+        scene.timeScale = if (startWithHinge || reduced) 1f else timeScale
         val style = when {
             Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || styleType == FoldTransitionStyle.NONE -> NoneFoldStyle()
             reduced -> FoldStyle.createReducedMotion()
@@ -334,6 +341,7 @@ class FoldTransitionController(
         }
         val r = Run(reason, scene, style, notify, allowHinge, SystemClock.uptimeMillis(), hinge.angle)
         r.progress = from
+        r.lastProgress = from
         r.from = from
         r.to = to
         r.durationNanos = durationMillis * NANOS_PER_MILLI
@@ -395,47 +403,27 @@ class FoldTransitionController(
             r.lastFrameNanos = frameTimeNanos
             r.ageNanos += step
             val now = SystemClock.uptimeMillis()
-            var done = false
-            when (r.source) {
-                Source.TIMER -> {
-                    if (r.holdNanos > 0) r.holdNanos -= step else r.elapsedNanos += step
-                    val t = if (r.durationNanos <= 0) 1f else (r.elapsedNanos.toFloat() / r.durationNanos).coerceIn(0f, 1f)
-                    r.progress = r.from + (r.to - r.from) * r.interpolator.getInterpolation(t)
-                    if (t >= 1f) {
-                        if (r.bounceBack) {
-                            r.bounceBack = false
-                            restartTimer(r, to = 1f, durationNanos = r.durationNanos, holdNanos = FoldTunables.replayHoldMillis * NANOS_PER_MILLI)
-                        } else {
-                            done = true
-                        }
-                    } else if (r.allowHinge && now - r.startUptimeMillis <= FoldTunables.hingeWaitMillis && hingeMovedSince(r)) {
-                        r.source = Source.HINGE
-                        r.drivenByHinge = true
-                        Log.i(TAG, "hinge is moving (${hinge.angle}°), following it")
-                    }
-                }
-
-                Source.HINGE -> {
-                    val angle = hinge.angle
-                    val target = if (angle.isNaN()) r.progress else angleToProgress(angle)
-                    val follow = 1f - exp(-step / (FoldTunables.hingeSmoothingMillis * NANOS_PER_MILLI))
-                    r.progress += (target - r.progress) * follow
-                    if (abs(target - r.progress) < PROGRESS_EPSILON) r.progress = target
-                    if (BuildConfig.DEBUG) Log.d(TAG, "hinge angle=$angle° -> target=$target, progress=${r.progress}")
-                    if (r.progress >= 1f) {
-                        done = true
-                    } else if (!hinge.isStarted || now - hinge.lastMoveUptimeMillis > FoldTunables.hingeIdleMillis) {
-                        Log.i(TAG, "hinge stopped at $angle°, settling open")
-                        r.source = Source.TIMER
-                        val settle = max(MIN_SETTLE_MILLIS, (FoldTunables.settleDurationMillis * (1f - r.progress)).toLong())
-                        restartTimer(r, to = 1f, durationNanos = settle * NANOS_PER_MILLI, holdNanos = 0L)
-                    }
+            var done: Boolean
+            if (r.settling) {
+                // The progress is over; the style's own motion (springs) comes to rest.
+                done = r.style.isSettled(r.scene) ||
+                    r.ageNanos - r.settleStartNanos > FoldTunables.maxSettleMillis * r.scene.timeScale * NANOS_PER_MILLI
+            } else {
+                done = advance(r, step, now)
+                if (r.ageNanos > FoldTunables.maxTransitionMillis * NANOS_PER_MILLI) {
+                    Log.w(TAG, "transition took too long, ending it")
+                    done = true
+                } else if (done && !r.style.isSettled(r.scene)) {
+                    r.settling = true
+                    r.settleStartNanos = r.ageNanos
+                    done = false
                 }
             }
-            if (r.ageNanos > FoldTunables.maxTransitionMillis * NANOS_PER_MILLI) {
-                Log.w(TAG, "transition took too long, ending it")
-                done = true
+            if (step > 0) {
+                val raw = (r.progress - r.lastProgress) * NANOS_PER_SECOND / step
+                r.scene.velocity += (raw - r.scene.velocity) * (1f - exp(-step / VELOCITY_SMOOTHING_NANOS))
             }
+            r.lastProgress = r.progress
             if (r.notify) dispatchProgress(r)
             if (done) {
                 finishNow("done")
@@ -446,6 +434,44 @@ class FoldTransitionController(
         } catch (t: Throwable) {
             fail("frame", t)
         }
+    }
+
+    /** Moves the progress one frame forward. Returns true when it reached its end. */
+    private fun advance(r: Run, step: Long, now: Long): Boolean {
+        when (r.source) {
+            Source.TIMER -> {
+                if (r.holdNanos > 0) r.holdNanos -= step else r.elapsedNanos += step
+                val t = if (r.durationNanos <= 0) 1f else (r.elapsedNanos.toFloat() / r.durationNanos).coerceIn(0f, 1f)
+                r.progress = r.from + (r.to - r.from) * r.interpolator.getInterpolation(t)
+                if (t >= 1f) {
+                    if (!r.bounceBack) return true
+                    r.bounceBack = false
+                    restartTimer(r, to = 1f, durationNanos = r.durationNanos, holdNanos = (FoldTunables.replayHoldMillis * r.scene.timeScale).toLong() * NANOS_PER_MILLI)
+                } else if (r.allowHinge && now - r.startUptimeMillis <= FoldTunables.hingeWaitMillis && hingeMovedSince(r)) {
+                    r.source = Source.HINGE
+                    r.drivenByHinge = true
+                    r.scene.timeScale = 1f
+                    Log.i(TAG, "hinge is moving (${hinge.angle}°), following it")
+                }
+            }
+
+            Source.HINGE -> {
+                val angle = hinge.angle
+                val target = if (angle.isNaN()) r.progress else angleToProgress(angle)
+                val follow = 1f - exp(-step / (FoldTunables.hingeSmoothingMillis * NANOS_PER_MILLI))
+                r.progress += (target - r.progress) * follow
+                if (abs(target - r.progress) < PROGRESS_EPSILON) r.progress = target
+                if (BuildConfig.DEBUG) Log.d(TAG, "hinge angle=$angle° -> target=$target, progress=${r.progress}")
+                if (r.progress >= 1f) return true
+                if (!hinge.isStarted || now - hinge.lastMoveUptimeMillis > FoldTunables.hingeIdleMillis) {
+                    Log.i(TAG, "hinge stopped at $angle°, settling open")
+                    r.source = Source.TIMER
+                    val settle = max(MIN_SETTLE_MILLIS, (FoldTunables.settleDurationMillis * (1f - r.progress)).toLong())
+                    restartTimer(r, to = 1f, durationNanos = settle * NANOS_PER_MILLI, holdNanos = 0L)
+                }
+            }
+        }
+        return false
     }
 
     private fun restartTimer(r: Run, to: Float, durationNanos: Long, holdNanos: Long) {
@@ -604,6 +630,9 @@ class FoldTransitionController(
         var lastFrameNanos = -1L
         var ageNanos = 0L
         var overlayAttached = false
+        var lastProgress = 0f
+        var settling = false
+        var settleStartNanos = 0L
     }
 
     /** Draws the style above the whole launcher, in the root view overlay. */
@@ -647,6 +676,8 @@ class FoldTransitionController(
         const val EXTRA_MODE = "mode"
 
         private const val NANOS_PER_MILLI = 1_000_000L
+        private const val NANOS_PER_SECOND = 1_000_000_000f
+        private const val VELOCITY_SMOOTHING_NANOS = 30_000_000f
         private const val MAX_FRAME_STEP_NANOS = 34L * NANOS_PER_MILLI
         private const val MIN_SETTLE_MILLIS = 120L
         private const val PROGRESS_EPSILON = 0.001f

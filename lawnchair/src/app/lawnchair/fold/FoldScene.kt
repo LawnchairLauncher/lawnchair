@@ -1,5 +1,6 @@
 package app.lawnchair.fold
 
+import android.graphics.Matrix
 import android.graphics.Rect
 import android.view.Gravity
 import android.view.Surface
@@ -23,6 +24,18 @@ class FoldScene internal constructor(
     val reducedMotion: Boolean,
 ) {
     val geometry = FoldGeometry()
+
+    /** Progress change per second, low-pass filtered: positive while opening, negative while closing. */
+    var velocity = 0f
+        internal set
+
+    /**
+     * How many times slower than real time the transition plays: the slow-replay factor times the
+     * system animator duration scale for the timer, 1 when following the hinge. Styles with their
+     * own clock (springs) slow down by as much, so a slow replay shows the same motion.
+     */
+    var timeScale = 1f
+        internal set
 
     val rootView: LauncherRootView get() = launcher.rootView
     val dragLayer: DragLayer get() = launcher.dragLayer
@@ -135,6 +148,59 @@ class FoldGeometry {
         else -> v
     }
 
+    /** Extent across the hinge that a style sweeps: the moving half, or the whole cover screen. */
+    fun sweepSpan(largeLayout: Boolean): Float = when {
+        largeLayout -> halfSpan
+        isVerticalHinge -> width.toFloat()
+        else -> height.toFloat()
+    }
+
+    /**
+     * Sets [out] to map hinge space to root coordinates. On the large layout that is [toRootX] /
+     * [toRootY]; on the cover screen `u` starts at the screen edge where the hinge is and points
+     * into the screen.
+     */
+    fun getHingeFrame(out: Matrix, largeLayout: Boolean) {
+        val w = width.toFloat()
+        val h = height.toFloat()
+        val origin = if (largeLayout) hingePosition else 0f
+        when (movingEdge) {
+            Gravity.LEFT -> if (largeLayout) {
+                out.setScale(-1f, 1f)
+                out.postTranslate(origin, 0f)
+            } else {
+                out.reset()
+            }
+
+            Gravity.RIGHT -> if (largeLayout) {
+                out.setTranslate(origin, 0f)
+            } else {
+                out.setScale(-1f, 1f)
+                out.postTranslate(w, 0f)
+            }
+
+            // x = v; y runs along u
+            Gravity.TOP -> setFrame(out, if (largeLayout) -1f else 1f, if (largeLayout) origin else 0f)
+
+            else -> setFrame(out, if (largeLayout) 1f else -1f, if (largeLayout) origin else h)
+        }
+    }
+
+    private val frameValues = FloatArray(9)
+
+    private fun setFrame(out: Matrix, uSign: Float, yOrigin: Float) {
+        frameValues[Matrix.MSCALE_X] = 0f
+        frameValues[Matrix.MSKEW_X] = 1f
+        frameValues[Matrix.MTRANS_X] = 0f
+        frameValues[Matrix.MSKEW_Y] = uSign
+        frameValues[Matrix.MSCALE_Y] = 0f
+        frameValues[Matrix.MTRANS_Y] = yOrigin
+        frameValues[Matrix.MPERSP_0] = 0f
+        frameValues[Matrix.MPERSP_1] = 0f
+        frameValues[Matrix.MPERSP_2] = 1f
+        out.setValues(frameValues)
+    }
+
     companion object {
         /**
          * The moving half for a display rotation. [Surface.ROTATION_90] means the device was turned
@@ -142,7 +208,9 @@ class FoldGeometry {
          */
         fun movingEdgeFor(rotation: Int): Int = when (FoldPosture.getHingeSide(rotation, assumeBookStyle = true)) {
             HingeSide.LEFT -> Gravity.LEFT
+
             HingeSide.RIGHT -> Gravity.RIGHT
+
             // Horizontal fold line (or no hinge seen yet): fall back to the rotation of a book-style hinge
             HingeSide.UNKNOWN -> when (rotation) {
                 Surface.ROTATION_90 -> Gravity.BOTTOM

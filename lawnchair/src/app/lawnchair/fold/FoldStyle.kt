@@ -18,6 +18,10 @@ import android.os.Build
  * 4. [onEnd] exactly once, also after a failure or a cancellation. It must restore every view
  *    property the style changed, so the final layout shows as is.
  *
+ * When the progress reaches its end, the controller keeps calling [onPreDraw] (with the final
+ * progress) until [isSettled] is true, for at most [FoldTunables.maxSettleMillis] times
+ * [FoldScene.timeScale], so styles with their own motion (springs) can come to rest.
+ *
  * Progress is 0..1, 1 = unfolded. On the large layout ([FoldScene.largeLayout]) the rest state is
  * progress 1; on the cover layout after a fold it is progress 0.
  *
@@ -36,6 +40,8 @@ abstract class FoldStyle {
     open fun onDrawOverlay(scene: FoldScene, canvas: Canvas, progress: Float) = Unit
 
     open fun onEnd(scene: FoldScene) = Unit
+
+    open fun isSettled(scene: FoldScene): Boolean = true
 
     companion object {
         fun create(style: FoldTransitionStyle): FoldStyle {

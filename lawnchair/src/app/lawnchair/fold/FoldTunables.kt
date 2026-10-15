@@ -43,6 +43,9 @@ object FoldTunables {
     /** Safety net: a transition never runs longer than this. */
     var maxTransitionMillis = 8000L
 
+    /** After the progress ends, how long a style may keep moving until it settles (see FoldStyle.isSettled). */
+    var maxSettleMillis = 1200L
+
     // Debug replay
 
     /** Pause between folding and opening again in the "fold" replay. */
