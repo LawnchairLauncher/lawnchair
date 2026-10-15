@@ -92,6 +92,7 @@ import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.fold.FoldLayout;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -383,7 +384,8 @@ public class DeviceProfile {
                 transposeLayoutWithOrientation,
                 isMultiDisplay,
                 isMultiWindowMode,
-                isGestureMode
+                isGestureMode,
+                !FoldLayout.isHomeMirrored(preferenceManager2)
         );
 
         mInsets.set(windowBounds.insets);
@@ -2628,8 +2630,10 @@ public class DeviceProfile {
                 mOverrideProvider = DEFAULT_DIMENSION_PROVIDER;
             }
             if (mDisplayOptionSpec == null) {
+                // Lawnchair: "Same as cover" lays the large screen of a foldable out as one page.
                 mDisplayOptionSpec = createDefaultDisplayOptionSpec(mInfo, mWindowBounds,
-                        mIsMultiDisplay, mInv);
+                        mIsMultiDisplay && !FoldLayout.isHomeMirrored(
+                                PreferenceManager2.INSTANCE.get(mContext)), mInv);
             }
             return new DeviceProfile(mContext, mInv, mInfo, mWMProxy, mThemeManager,
                     mWindowBounds, mDotRendererCache,
