@@ -96,6 +96,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LawnchairLauncher : QuickstepLauncher() {
     private val defaultOverlay by unsafeLazy { OverlayCallbackImpl(this) }
@@ -242,11 +243,16 @@ class LawnchairLauncher : QuickstepLauncher() {
         LauncherOptionsPopup.migrateLegacyPreferences(launcher)
 
         // Handle update from version 12 Alpha 4 to version 12 Alpha 5.
-        if (
-            prefs.themedIcons.get() &&
-            packageManager.getThemedIconPacksInstalled(this).isEmpty()
-        ) {
-            prefs.themedIcons.set(newValue = false)
+        if (prefs.themedIcons.get()) {
+            // Installed icon pack enumeration is a potentially slow PackageManager Binder call.
+            lifecycleScope.launch(Dispatchers.IO) {
+                val hasThemedPack = packageManager.getThemedIconPacksInstalled(this@LawnchairLauncher).isNotEmpty()
+                withContext(Dispatchers.Main) {
+                    if (!hasThemedPack && prefs.themedIcons.get()) {
+                        prefs.themedIcons.set(newValue = false)
+                    }
+                }
+            }
         }
 
         colorScheme = themeProvider.colorScheme
@@ -513,10 +519,13 @@ class LawnchairLauncher : QuickstepLauncher() {
      * Reloads app icons if there is an active icon pack & [PreferenceManager2.alwaysReloadIcons] is enabled.
      */
     private fun reloadIconsIfNeeded() {
-        if (
-            preferenceManager2.alwaysReloadIcons.firstBlocking()
-        ) {
-            LauncherAppState.getInstance(this).reloadIcons()
+        // Reading the DataStore-backed toggle must not hold the Launcher first-frame path.
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (preferenceManager2.alwaysReloadIcons.firstBlocking()) {
+                withContext(Dispatchers.Main) {
+                    LauncherAppState.getInstance(this@LawnchairLauncher).reloadIcons()
+                }
+            }
         }
     }
 
