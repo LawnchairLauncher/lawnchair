@@ -456,6 +456,12 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.recreate() },
     )
 
+    /** Frequent, Recent and New/Updated app tabs at the top of the drawer while its search is in use. */
+    val drawerSuggestionTabs = preference(
+        key = booleanPreferencesKey(name = "drawer_suggestion_tabs"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_drawer_suggestion_tabs),
+    )
+
     val enableFontSelection = preference(
         key = booleanPreferencesKey(name = "enable_font_selection"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_font_selection),
