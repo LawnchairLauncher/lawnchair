@@ -29,6 +29,13 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.Converters
+import app.lawnchair.fold.FoldAfterFold
+import app.lawnchair.fold.FoldDock
+import app.lawnchair.fold.FoldDrawerLayout
+import app.lawnchair.fold.FoldHomeLayout
+import app.lawnchair.fold.FoldLandscape
+import app.lawnchair.fold.FoldTransitionStyle
+import app.lawnchair.fold.FoldWallpaper
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
@@ -723,6 +730,66 @@ class PreferenceManager2 @Inject constructor(
             reloadHelper.reloadTaskbar()
             reloadHelper.recreate()
         },
+    )
+
+    val foldHomeLayout = preference(
+        key = stringPreferencesKey("fold_home_layout"),
+        defaultValue = FoldHomeLayout.PAGES,
+        parse = { FoldHomeLayout.fromString(it) },
+        save = { it.key },
+    )
+
+    val foldDrawerLayout = preference(
+        key = stringPreferencesKey("fold_drawer_layout"),
+        defaultValue = FoldDrawerLayout.EXPAND,
+        parse = { FoldDrawerLayout.fromString(it) },
+        save = { it.key },
+    )
+
+    val foldTransitionStyle = preference(
+        key = stringPreferencesKey("fold_transition_style"),
+        defaultValue = FoldTransitionStyle.WINDOW,
+        parse = { FoldTransitionStyle.fromString(it) },
+        save = { it.key },
+    )
+
+    val foldAfterFold = preference(
+        key = stringPreferencesKey("fold_after_fold"),
+        defaultValue = FoldAfterFold.LAST_PANEL,
+        parse = { FoldAfterFold.fromString(it) },
+        save = { it.key },
+    )
+
+    val foldDock = preference(
+        key = stringPreferencesKey("fold_dock"),
+        defaultValue = FoldDock.MERGE,
+        parse = { FoldDock.fromString(it) },
+        save = { it.key },
+    )
+
+    val foldLandscape = preference(
+        key = stringPreferencesKey("fold_landscape"),
+        defaultValue = FoldLandscape.AUTO,
+        parse = { FoldLandscape.fromString(it) },
+        save = { it.key },
+    )
+
+    val foldWallpaper = preference(
+        key = stringPreferencesKey("fold_wallpaper"),
+        defaultValue = FoldWallpaper.SPAN,
+        parse = { FoldWallpaper.fromString(it) },
+        save = { it.key },
+    )
+
+    val foldTrackHinge = preference(
+        key = booleanPreferencesKey("fold_track_hinge"),
+        defaultValue = true,
+    )
+
+    /** Debug override: shows the foldable settings entry on devices that are not foldable. */
+    val foldForceShowSettings = preference(
+        key = booleanPreferencesKey("fold_force_show_settings"),
+        defaultValue = false,
     )
 
     val smartspaceMode = preference(
