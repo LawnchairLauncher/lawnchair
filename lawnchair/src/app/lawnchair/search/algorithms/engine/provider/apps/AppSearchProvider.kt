@@ -4,13 +4,11 @@ import android.content.Context
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.search.algorithms.SearchUtils
-import app.lawnchair.search.algorithms.SearchUtils.TitleMatch
 import app.lawnchair.search.algorithms.engine.SearchResult
 import app.lawnchair.search.algorithms.filterHiddenApps
 import app.lawnchair.search.algorithms.normalizeForSearch
 import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.search.StringMatcherUtility
 
 object AppSearchProvider {
 
@@ -32,20 +30,7 @@ object AppSearchProvider {
         return appResults.map { SearchResult.App(data = it) }
     }
 
-    private fun normalSearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> {
-        // Do an intersection of the words in the query and each title, and filter out all the
-        // apps that don't match all of the words in the query.
-        val matcher = StringMatcherUtility.StringMatcher.getInstance()
-        val matches = apps.asSequence()
-            .filterHiddenApps(query, hiddenApps, hiddenAppsInSearch)
-            .map { it to SearchUtils.matchAppTitle(query, it.title.toString(), matcher) }
-            .filter { (_, match) -> match != TitleMatch.NONE }
-            .toList()
-        // Keep word-start matches ahead of Arabic match-anywhere results, so those never push a
-        // better match past the result limit. Non-Arabic queries keep their order.
-        val (wordStart, anywhere) = matches.partition { (_, match) -> match == TitleMatch.WORD_START }
-        return (wordStart + anywhere).take(maxResultsCount).map { (app, _) -> app }
-    }
+    private fun normalSearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> = SearchUtils.matchApps(apps.asSequence().filterHiddenApps(query, hiddenApps, hiddenAppsInSearch), query, maxResultsCount)
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> {
         val filteredApps = apps.asSequence()
