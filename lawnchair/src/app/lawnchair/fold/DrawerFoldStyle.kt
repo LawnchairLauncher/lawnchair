@@ -404,10 +404,10 @@ class DrawerFoldStyle(
 
     // Book (PAGES)
 
-    override fun offsetY(child: View, onMovingPage: Boolean, pageTop: Int, pageHeight: Int): Float {
+    override fun offsetY(child: View, onMovingPage: Boolean, movingTop: Int, pageTop: Int, pageHeight: Int): Float {
         if (!onMovingPage || pageHeight <= 0) return 0f
         // Top row of the second page first
-        val depth = ((child.top - pageTop - pageHeight).toFloat() / pageHeight).coerceIn(0f, 1f)
+        val depth = ((movingTop - pageTop).toFloat() / pageHeight).coerceIn(0f, 1f)
         val local = ((progress - depth * MAX_DELAY) / (1f - MAX_DELAY)).coerceIn(0f, 1f)
         return (1f - EASE.getInterpolation(local)) * pageHeight
     }
