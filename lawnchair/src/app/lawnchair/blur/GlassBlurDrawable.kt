@@ -273,6 +273,10 @@ class GlassBlurDrawable private constructor(private val aggregator: Aggregator) 
             } else if (isDrawn) {
                 hasUiUpdates = true
                 drawables.remove(drawable)
+                // The pre-draw listener only sends the regions left, even none, if a frame is drawn
+                if (onPreDrawListener != null) {
+                    viewRoot.view?.invalidate()
+                }
             }
 
             val rootView = viewRoot.view
