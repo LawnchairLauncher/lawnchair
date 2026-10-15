@@ -46,6 +46,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.launcher3.util.MultiPropertyFactory;
@@ -58,6 +59,7 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import app.lawnchair.fold.FoldDockLayout;
 import app.lawnchair.hotseat.DisabledHotseat;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.hotseat.HotseatPagedView;
@@ -227,6 +229,13 @@ public class Hotseat extends FrameLayout implements Insettable {
         setBackground(bg);
     }
 
+    /** Returns the dock layout of an unfolded foldable, or null. */
+    @Nullable
+    public FoldDockLayout getFoldDockLayout() {
+        CellPosMapper mapper = mActivity.getCellPosMapper();
+        return mapper != null ? mapper.getFoldDockLayout() : null;
+    }
+
     /** Provides translation X for hotseat icons for the channel. */
     public MultiProperty getIconsTranslationX(@IconsTranslationX int channelId) {
         return mIconsTranslationXFactory.get(channelId);
@@ -282,6 +291,11 @@ public class Hotseat extends FrameLayout implements Insettable {
         DeviceProfile dp = mActivity.getDeviceProfile();
         int numColumns = dp.numShownHotseatIcons;
         int localRank = getLocalRank(rank, dp);
+        FoldDockLayout foldDock = getFoldDockLayout();
+        if (foldDock != null && rank < numColumns) {
+            // Unfolded foldable: first row of the first page, see FoldDockLayout
+            return foldDock.rankToCellX(rank);
+        }
         return localRank % numColumns;
     }
 
@@ -308,6 +322,21 @@ public class Hotseat extends FrameLayout implements Insettable {
         DeviceProfile dp = mActivity.getDeviceProfile();
         int slotsPerPage = Math.max(1, dp.numShownHotseatIcons * dp.numHotseatRows);
         return rank / slotsPerPage;
+    }
+
+    /**
+     * Whether the hotseat item at {@code rank} has a cell in the current layout. A foldable's
+     * cover dock has fewer cells than the database keeps, so the other items stay hidden there
+     * instead of landing on another item's cell. Always true on other devices.
+     */
+    public boolean isRankShown(int rank) {
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        if (!dp.getDeviceProperties().isMultiDisplay()) {
+            return true;
+        }
+        int slots = dp.isVerticalBarLayout() ? dp.numShownHotseatIcons
+                : dp.numShownHotseatIcons * dp.numHotseatRows * Math.max(1, dp.numHotseatPages);
+        return rank >= 0 && rank < slots;
     }
 
     private static int getLocalRank(int rank, DeviceProfile dp) {

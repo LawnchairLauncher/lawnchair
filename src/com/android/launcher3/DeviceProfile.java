@@ -92,6 +92,7 @@ import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.fold.FoldDockLayout;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -226,6 +227,8 @@ public class DeviceProfile {
     public int hotseatCellHeightPx;
     private int mHotseatColumnSpan;
     private int mHotseatWidthPx; // not used in vertical bar layout
+    // Lawnchair: an unfolded foldable showing the cover's dock count (see FoldDockLayout)
+    private boolean mIsFoldDockSameAsCover;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
     public int hotseatBarBottomSpacePx;
@@ -521,6 +524,10 @@ public class DeviceProfile {
         numShownHotseatIcons = displayOptionSpec.numShownHotseatIcons;
         numHotseatRows = Math.max(1, Math.min(2, PreferenceManager.getInstance(context).getHotseatRows().get()));
         numHotseatPages = Math.max(1, Math.min(5, PreferenceManager.getInstance(context).getDockPages().get()));
+        numShownHotseatIcons = FoldDockLayout.getShownHotseatIcons(context, inv,
+                mDeviceProperties.isTwoPanels(), numShownHotseatIcons, numHotseatRows,
+                numHotseatPages);
+        mIsFoldDockSameAsCover = numShownHotseatIcons != displayOptionSpec.numShownHotseatIcons;
         mHotseatColumnSpan = inv.numColumns;
 
         numShownAllAppsColumns = displayOptionSpec.numAllAppsColumns;
@@ -952,7 +959,8 @@ public class DeviceProfile {
         updateHotseatWidthAndBorderSpace(inv.numColumns);
         int numWorkspaceColumns = getPanelCount() * inv.numColumns;
         if (mDeviceProperties.isTwoPanels()) {
-            updateHotseatWidthAndBorderSpace(inv.numDatabaseHotseatIcons);
+            updateHotseatWidthAndBorderSpace(mIsFoldDockSameAsCover
+                    ? numShownHotseatIcons : inv.numDatabaseHotseatIcons);
             // If hotseat doesn't fit with current width, increase column span to fit by multiple
             // of 2.
             while (hotseatBorderSpace < getHotseatProfile().getMinIconSpacePx()

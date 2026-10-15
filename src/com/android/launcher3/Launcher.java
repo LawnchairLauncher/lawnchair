@@ -292,6 +292,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.fold.FoldDockLayout;
 
 /**
  * Default launcher application.
@@ -752,7 +753,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         } else {
             mCellPosMapper = new CellPosMapper(mDeviceProfile.isVerticalBarLayout(),
                     mDeviceProfile.numShownHotseatIcons, mDeviceProfile.numHotseatRows,
-                    mDeviceProfile.numHotseatPages);
+                    mDeviceProfile.numHotseatPages, FoldDockLayout.create(this, mDeviceProfile));
         }
         mModelWriter = mModel.getWriter(true, mCellPosMapper, this);
         updateFixedLandscape();
