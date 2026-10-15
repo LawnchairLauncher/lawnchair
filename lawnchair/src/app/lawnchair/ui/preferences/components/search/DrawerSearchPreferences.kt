@@ -62,6 +62,11 @@ fun DrawerSearchPreference(
                 description = stringResource(R.string.allapps_match_qsb_style_description),
                 adapter = prefs2.matchHotseatQsbStyle.getAdapter(),
             )
+            SwitchPreference(
+                label = stringResource(R.string.drawer_suggestion_tabs_label),
+                description = stringResource(R.string.drawer_suggestion_tabs_description),
+                adapter = prefs2.drawerSuggestionTabs.getAdapter(),
+            )
         }
 
         val searchAlgorithm = preferenceManager2().searchAlgorithm.getAdapter().state.value
