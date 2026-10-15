@@ -1,0 +1,499 @@
+package app.lawnchair.fold
+
+import android.os.Build
+import android.view.View
+import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.RecyclerView
+import com.android.app.animation.Interpolators
+import com.android.launcher3.DeviceProfile
+import com.android.launcher3.Utilities
+import com.android.launcher3.allapps.AllAppsRecyclerView
+import com.android.launcher3.allapps.BaseAllAppsAdapter
+import com.android.launcher3.util.ScrollableLayoutManager
+import kotlin.math.abs
+import kotlin.math.hypot
+import kotlin.math.max
+import kotlin.math.roundToInt
+
+/**
+ * The fold transition of the app drawer, played instead of the home style while the drawer is open.
+ *
+ * The anchor: what the eye is on when the device opens does not move; everything else flows around
+ * it, in the list's order. The "before" of the large layout is the cover's drawer, rebuilt from the
+ * cover profile around the list's first visible item (the drawer keeps its scroll across the
+ * change, see [FoldDrawerState]), so the same path plays for a real unfold, a fold tracked on the
+ * inner display and the debug replay.
+ *
+ * - [FoldDrawerLayout.EXPAND], "river": the first row goes straight to its new place; the apps after
+ *   it follow one after another ([FoldTunables.drawerRiverStaggerMillis] apart) along a small arc,
+ *   the ones that were below the cover's bottom edge flowing up into the new half.
+ * - [FoldDrawerLayout.PAGES], "book": the fixed page does not move at all; the apps of the second
+ *   page rise from below its bottom edge, top row first.
+ * - [FoldDrawerLayout.BIG_ICONS], "zoom": the grid scales from the cover's size up to the full
+ *   width, anchored at the outer edge of the fixed half, so it grows across the hinge.
+ *
+ * The search bar only stretches (or contracts) between its two widths; while searching nothing else
+ * moves, and the query, results and scroll stay. Folding plays the same path backwards: on the inner
+ * display when the fold is tracked, else on the cover after the switch (river from the captured
+ * large positions, zoom from the large size, nothing for the book).
+ */
+@RequiresApi(Build.VERSION_CODES.Q)
+class DrawerFoldStyle(
+    private val layout: FoldDrawerLayout,
+) : FoldStyle(),
+    FoldDrawerBook.OffsetProvider {
+
+    private var list: AllAppsRecyclerView? = null
+    private var header: View? = null
+    private var bar: View? = null
+    private var searching = false
+    private var prepared = false
+    private var progress = 0f
+
+    // Profiles and the mapping between cover and large-screen coordinates
+    private var cover: DeviceProfile? = null
+    private var large: DeviceProfile? = null
+    private var fixedLeft = 0f
+    private var coverScale = 1f
+    private var movingLeft = true
+    private var rtl = false
+
+    // Search bar padding, from and to
+    private var barFromLeft = 0
+    private var barFromRight = 0
+    private var barToLeft = 0
+    private var barToRight = 0
+    private var barActive = false
+
+    // River: the cover's grid position of each adapter position
+    private var coverColumn = IntArray(0)
+    private var coverRow = IntArray(0)
+    private var coverOrdinal = IntArray(0)
+    private var anchorPosition = RecyclerView.NO_POSITION
+    private var anchorCenterY = 0f
+    private var coverPaddingLeft = 0f
+    private var coverCellWidth = 0f
+    private var coverCellHeight = 0f
+    private var coverColumns = 1
+    private var firstRiverOrdinal = 0
+    private var stagger = 0f
+    private var arcPx = 0f
+    private var useCaptured = false
+    private var riverActive = false
+
+    // Book
+    private var book: FoldDrawerBook? = null
+
+    // Zoom
+    private var zoomFrom = 1f
+    private var zoomActive = false
+    private var zoomPivotRootX = 0f
+    private var zoomPivotRootY = 0f
+    private var savedClipChildren = true
+
+    private val coords = FloatArray(2)
+
+    override fun onStart(scene: FoldScene): Boolean {
+        val launcher = scene.launcher
+        val appsView = launcher.appsView ?: return false
+        // The book reads the progress before this style's first frame
+        progress = if (scene.largeLayout && !scene.opening) 1f else 0f
+        searching = appsView.isSearching
+        list = appsView.activeRecyclerView
+        header = appsView.floatingHeaderView
+        bar = appsView.searchView
+        rtl = Utilities.isRtl(launcher.resources)
+        val dp = launcher.deviceProfile
+        cover = FoldDrawerLayouts.coverProfileOf(dp)
+        large = FoldDrawerLayouts.largeProfileOf(dp)
+        val large = large
+        val cover = cover
+        if (large != null && cover != null) {
+            val width = large.deviceProperties.widthPx
+            movingLeft = FoldDrawerLayouts.isMovingHalfLeft(large)
+            fixedLeft = if (movingLeft) width / 2f else 0f
+            coverScale = width / 2f / cover.deviceProperties.widthPx
+        }
+        // The zoom needs more rows laid out below before the first frame, so its first, smallest
+        // frame is full.
+        if (!searching && layout == FoldDrawerLayout.BIG_ICONS && scene.largeLayout && dp === large && cover != null) {
+            zoomFrom = zoomScale(cover, large)
+            val height = large.deviceProperties.heightPx
+            (list?.layoutManager as? ScrollableLayoutManager)?.setFoldExtraLayoutSpace(
+                (height * (1f / zoomFrom - 1f)).roundToInt().coerceAtLeast(0),
+            )
+        }
+        return true
+    }
+
+    override fun onPreDraw(scene: FoldScene, progress: Float) {
+        this.progress = progress.coerceIn(0f, 1f)
+        val launcher = scene.launcher
+        val list = list ?: return
+        if (!prepared) {
+            prepared = true
+            prepareBar(scene)
+            if (!searching) {
+                val onLarge = launcher.deviceProfile === large
+                when (layout) {
+                    FoldDrawerLayout.EXPAND -> prepareRiver(scene, list, onLarge)
+
+                    FoldDrawerLayout.PAGES -> if (onLarge && scene.largeLayout) {
+                        book = FoldDrawerBook.of(list)?.takeIf { it.isActive }
+                        book?.offsetProvider = this
+                    }
+
+                    FoldDrawerLayout.BIG_ICONS -> prepareZoom(scene, list, onLarge)
+                }
+            }
+        }
+        // 0 = the other screen's look, 1 = this layout at rest
+        val t = if (scene.largeLayout) this.progress else 1f - this.progress
+        book?.update()
+        applyBar(t)
+        if (riverActive) applyRiver(scene, list, t)
+        if (zoomActive) applyZoom(scene, list, t)
+    }
+
+    override fun onEnd(scene: FoldScene) {
+        bar?.let { if (barActive) it.setPadding(barToLeft, it.paddingTop, barToRight, it.paddingBottom) }
+        barActive = false
+        val list = list
+        if (list != null) {
+            if (riverActive) {
+                for (i in 0 until list.childCount) {
+                    val child = list.getChildAt(i)
+                    child.translationX = 0f
+                    child.translationY = 0f
+                    child.scaleX = 1f
+                    child.scaleY = 1f
+                }
+            }
+            book?.let {
+                it.offsetProvider = null
+                it.update()
+            }
+            if (zoomActive) {
+                resetZoom(list)
+                resetZoom(header)
+                list.clipChildren = savedClipChildren
+            }
+            if (layout == FoldDrawerLayout.BIG_ICONS) {
+                (list.layoutManager as? ScrollableLayoutManager)?.setFoldExtraLayoutSpace(0)
+            }
+        }
+        riverActive = false
+        zoomActive = false
+        book = null
+    }
+
+    // Search bar
+
+    private fun prepareBar(scene: FoldScene) {
+        val bar = bar ?: return
+        val cover = cover ?: return
+        val large = large ?: return
+        if (bar.width == 0) return
+        barToLeft = bar.paddingLeft
+        barToRight = bar.paddingRight
+        coords[0] = 0f
+        coords[1] = 0f
+        Utilities.getDescendantCoordRelativeToAncestor(bar, scene.dragLayer, coords, false, true)
+        val barLeft = coords[0]
+        val barRight = barLeft + bar.width
+        val fresh = FoldDrawerState.isFresh() && !FoldDrawerState.searchBarLeft.isNaN()
+        var fromLeft: Float
+        var fromRight: Float
+        if (scene.largeLayout) {
+            // The cover's bar, on the fixed half
+            if (fresh && FoldDrawerState.capturedWidth == cover.deviceProperties.widthPx) {
+                fromLeft = toLarge(FoldDrawerState.searchBarLeft)
+                fromRight = toLarge(FoldDrawerState.searchBarRight)
+            } else {
+                val padding = FoldDrawerLayouts.getSearchBarPadding(scene.launcher, cover) * if (isSearchActive()) 0.5f else 1f
+                fromLeft = toLarge(padding)
+                fromRight = toLarge(cover.deviceProperties.widthPx - padding)
+            }
+        } else {
+            // The large bar, seen from the cover
+            if (fresh && FoldDrawerState.capturedWidth == large.deviceProperties.widthPx) {
+                fromLeft = toCover(FoldDrawerState.searchBarLeft)
+                fromRight = toCover(FoldDrawerState.searchBarRight)
+            } else {
+                val padding = FoldDrawerLayouts.getSearchBarPadding(scene.launcher, large) * if (isSearchActive()) 0.5f else 1f
+                fromLeft = toCover(padding)
+                fromRight = toCover(large.deviceProperties.widthPx - padding)
+            }
+        }
+        if (fromRight < fromLeft) {
+            val swap = fromLeft
+            fromLeft = fromRight
+            fromRight = swap
+        }
+        barFromLeft = (fromLeft - barLeft).roundToInt().coerceAtLeast(0)
+        barFromRight = (barRight - fromRight).roundToInt().coerceAtLeast(0)
+        barActive = barFromLeft != barToLeft || barFromRight != barToRight
+    }
+
+    private fun applyBar(t: Float) {
+        val bar = bar ?: return
+        if (!barActive) return
+        val e = EASE.getInterpolation(t)
+        val left = (barFromLeft + (barToLeft - barFromLeft) * e).roundToInt()
+        val right = (barFromRight + (barToRight - barFromRight) * e).roundToInt()
+        if (left != bar.paddingLeft || right != bar.paddingRight) bar.setPadding(left, bar.paddingTop, right, bar.paddingBottom)
+    }
+
+    private fun isSearchActive(): Boolean {
+        val bar = bar ?: return false
+        return searching || bar.hasFocus()
+    }
+
+    // River (EXPAND)
+
+    private fun prepareRiver(scene: FoldScene, list: AllAppsRecyclerView, onLarge: Boolean) {
+        arcPx = scene.dpToPx(FoldTunables.drawerRiverArcDp)
+        if (scene.largeLayout) {
+            if (onLarge) prepareRiverFromCover(scene, list)
+        } else {
+            prepareRiverFromLarge(list)
+        }
+    }
+
+    /** Large layout: each item comes from where the cover's drawer shows it. */
+    private fun prepareRiverFromCover(scene: FoldScene, list: AllAppsRecyclerView) {
+        val cover = cover ?: return
+        val items = list.apps?.adapterItems ?: return
+        // The cover's grid, row by row as the cover lays it out (rows restart after dividers)
+        coverColumns = cover.numShownAllAppsColumns.coerceAtLeast(1)
+        val size = items.size
+        coverColumn = IntArray(size) { -1 }
+        coverRow = IntArray(size)
+        coverOrdinal = IntArray(size) { -1 }
+        var row = -1
+        var inSection = 0
+        var ordinal = 0
+        for (i in 0 until size) {
+            if (BaseAllAppsAdapter.isIconViewType(items[i].viewType)) {
+                if (inSection % coverColumns == 0) row++
+                coverColumn[i] = inSection % coverColumns
+                coverOrdinal[i] = ordinal++
+                inSection++
+            } else {
+                inSection = 0
+            }
+            coverRow[i] = row
+        }
+        val coverWidth = cover.deviceProperties.widthPx.toFloat()
+        coverPaddingLeft = cover.allAppsPadding.left.toFloat()
+        coverCellWidth = (coverWidth - cover.allAppsPadding.left - cover.allAppsPadding.right) / coverColumns
+        coverCellHeight = cover.allAppsProfile.cellHeightPx.toFloat()
+        // The anchor: the item the cover showed first (the list keeps it on top), else the first
+        // visible icon.
+        val captured = FoldDrawerState.anchorPositionOf(list)
+        anchorPosition = RecyclerView.NO_POSITION
+        var firstIcon: View? = null
+        for (i in 0 until list.childCount) {
+            val child = list.getChildAt(i)
+            val position = gridPosition(list, child)
+            if (position == RecyclerView.NO_POSITION) continue
+            if (firstIcon == null) firstIcon = child
+            if (position == captured) {
+                anchorPosition = position
+                anchorCenterY = layoutCenterY(scene, child)
+            }
+        }
+        if (anchorPosition == RecyclerView.NO_POSITION) {
+            val first = firstIcon ?: return
+            anchorPosition = list.getChildAdapterPosition(first)
+            anchorCenterY = layoutCenterY(scene, first)
+        }
+        // Row 1 goes straight; the apps after it follow in order.
+        val anchorRow = coverRow[anchorPosition]
+        firstRiverOrdinal = Int.MAX_VALUE
+        var movers = 0
+        for (i in 0 until list.childCount) {
+            val position = gridPosition(list, list.getChildAt(i))
+            if (position == RecyclerView.NO_POSITION || coverRow[position] <= anchorRow) continue
+            firstRiverOrdinal = minOf(firstRiverOrdinal, coverOrdinal[position])
+            movers++
+        }
+        stagger = staggerFor(movers)
+        useCaptured = false
+        riverActive = true
+    }
+
+    /** Cover after a fold: each item comes back from where the large drawer showed it. */
+    private fun prepareRiverFromLarge(list: AllAppsRecyclerView) {
+        val large = large ?: return
+        if (!FoldDrawerState.isFresh() || FoldDrawerState.itemCenters.size() == 0) return
+        if (FoldDrawerState.capturedWidth != large.deviceProperties.widthPx) return
+        var movers = 0
+        for (i in 0 until list.childCount) {
+            val position = list.getChildAdapterPosition(list.getChildAt(i))
+            if (position != RecyclerView.NO_POSITION && FoldDrawerState.itemCenters[position] != null) movers++
+        }
+        stagger = staggerFor(movers)
+        useCaptured = true
+        riverActive = movers > 0
+    }
+
+    /** The adapter position of an icon or folder of the cover grid, else [RecyclerView.NO_POSITION]. */
+    private fun gridPosition(list: AllAppsRecyclerView, child: View): Int {
+        val position = list.getChildAdapterPosition(child)
+        if (position == RecyclerView.NO_POSITION || position >= coverColumn.size || coverColumn[position] < 0) {
+            return RecyclerView.NO_POSITION
+        }
+        return position
+    }
+
+    private fun staggerFor(movers: Int): Float {
+        val nominal = FoldTunables.drawerRiverStaggerMillis / FoldTunables.unfoldDurationMillis.coerceAtLeast(1L).toFloat()
+        return if (movers <= 1) 0f else minOf(nominal, MAX_DELAY / (movers - 1))
+    }
+
+    private fun applyRiver(scene: FoldScene, list: AllAppsRecyclerView, t: Float) {
+        for (i in 0 until list.childCount) {
+            val child = list.getChildAt(i)
+            val position = list.getChildAdapterPosition(child)
+            if (position == RecyclerView.NO_POSITION) continue
+            coords[0] = child.width / 2f
+            coords[1] = child.height / 2f
+            Utilities.getDescendantCoordRelativeToAncestor(child, scene.dragLayer, coords, false, true)
+            val toX = coords[0]
+            val toY = coords[1]
+            val fromX: Float
+            val fromY: Float
+            val delay: Float
+            if (useCaptured) {
+                val center = FoldDrawerState.itemCenters[position] ?: continue
+                fromX = toCover(center[0])
+                fromY = center[1]
+                delay = (i * stagger).coerceAtMost(MAX_DELAY)
+            } else {
+                if (gridPosition(list, child) == RecyclerView.NO_POSITION) continue
+                val column = if (rtl) coverColumns - 1 - coverColumn[position] else coverColumn[position]
+                fromX = toLarge(coverPaddingLeft + (column + 0.5f) * coverCellWidth)
+                fromY = anchorCenterY + (coverRow[position] - coverRow[anchorPosition]) * coverCellHeight
+                val rowOne = coverRow[position] <= coverRow[anchorPosition]
+                delay = if (rowOne) 0f else ((coverOrdinal[position] - firstRiverOrdinal + 1) * stagger).coerceAtMost(MAX_DELAY)
+            }
+            val local = ((t - delay) / (1f - MAX_DELAY)).coerceIn(0f, 1f)
+            val e = EASE.getInterpolation(local)
+            val dx = fromX - toX
+            val dy = fromY - toY
+            var x = dx * (1f - e)
+            var y = dy * (1f - e)
+            // A small arc, bulging up, along the way
+            val length = hypot(dx, dy)
+            if (length > 1f) {
+                var nx = -dy / length
+                var ny = dx / length
+                if (ny > 0f) {
+                    nx = -nx
+                    ny = -ny
+                }
+                val bulge = arcPx * 4f * e * (1f - e) * (length / (length + arcPx * ARC_REFERENCE))
+                x += nx * bulge
+                y += ny * bulge
+            }
+            if (abs(child.translationX - x) > 0.1f) child.translationX = x
+            if (abs(child.translationY - y) > 0.1f) child.translationY = y
+        }
+    }
+
+    // Book (PAGES)
+
+    override fun offsetY(child: View, onMovingPage: Boolean, pageTop: Int, pageHeight: Int): Float {
+        if (!onMovingPage || pageHeight <= 0) return 0f
+        // Top row of the second page first
+        val depth = ((child.top - pageTop - pageHeight).toFloat() / pageHeight).coerceIn(0f, 1f)
+        val local = ((progress - depth * MAX_DELAY) / (1f - MAX_DELAY)).coerceIn(0f, 1f)
+        return (1f - EASE.getInterpolation(local)) * pageHeight
+    }
+
+    // Zoom (BIG_ICONS)
+
+    private fun prepareZoom(scene: FoldScene, list: AllAppsRecyclerView, onLarge: Boolean) {
+        val cover = cover ?: return
+        val large = large ?: return
+        val outerEdge: Float
+        if (scene.largeLayout) {
+            if (!onLarge) return
+            zoomFrom = zoomScale(cover, large)
+            outerEdge = if (movingLeft) large.deviceProperties.widthPx.toFloat() else 0f
+        } else {
+            zoomFrom = 1f / zoomScale(cover, large)
+            outerEdge = if (movingLeft) cover.deviceProperties.widthPx.toFloat() else 0f
+        }
+        if (abs(zoomFrom - 1f) < 0.01f) return
+        // Pivot: the outer edge of the fixed half, at the top of the drawer content
+        val top = header ?: list
+        coords[0] = 0f
+        coords[1] = 0f
+        Utilities.getDescendantCoordRelativeToAncestor(top, scene.dragLayer, coords, false, true)
+        zoomPivotRootX = outerEdge
+        zoomPivotRootY = coords[1]
+        savedClipChildren = list.clipChildren
+        list.clipChildren = false
+        zoomActive = true
+    }
+
+    private fun applyZoom(scene: FoldScene, list: AllAppsRecyclerView, t: Float) {
+        val scale = zoomFrom + (1f - zoomFrom) * EASE.getInterpolation(t)
+        zoomView(scene, list, scale)
+        zoomView(scene, header, scale)
+    }
+
+    private fun zoomView(scene: FoldScene, view: View?, scale: Float) {
+        view ?: return
+        coords[0] = 0f
+        coords[1] = 0f
+        Utilities.getDescendantCoordRelativeToAncestor(view, scene.dragLayer, coords, false, true)
+        val pivotX = zoomPivotRootX - coords[0]
+        val pivotY = zoomPivotRootY - coords[1]
+        if (view.pivotX != pivotX) view.pivotX = pivotX
+        if (view.pivotY != pivotY) view.pivotY = pivotY
+        if (view.scaleX != scale) view.scaleX = scale
+        if (view.scaleY != scale) view.scaleY = scale
+    }
+
+    private fun resetZoom(view: View?) {
+        view ?: return
+        view.scaleX = 1f
+        view.scaleY = 1f
+        view.resetPivot()
+    }
+
+    /** Scale that shrinks the large grid onto the cover's grid on the fixed half. */
+    private fun zoomScale(cover: DeviceProfile, large: DeviceProfile): Float {
+        val coverGrid = (cover.deviceProperties.widthPx - cover.allAppsPadding.left - cover.allAppsPadding.right) * coverScale
+        val largeGrid = (large.deviceProperties.widthPx - large.allAppsPadding.left - large.allAppsPadding.right).toFloat()
+        return if (largeGrid > 0f) (coverGrid / largeGrid).coerceIn(0.2f, 1f) else 1f
+    }
+
+    // Coordinates
+
+    private fun layoutCenterY(scene: FoldScene, child: View): Float {
+        coords[0] = child.width / 2f
+        coords[1] = child.height / 2f
+        Utilities.getDescendantCoordRelativeToAncestor(child, scene.dragLayer, coords, false, true)
+        return coords[1]
+    }
+
+    /** Cover x (cover window) to the large screen, where the cover maps onto the fixed half. */
+    private fun toLarge(x: Float): Float = fixedLeft + x * coverScale
+
+    /** Large-screen x to the cover window. */
+    private fun toCover(x: Float): Float = (x - fixedLeft) / max(coverScale, 0.01f)
+
+    private companion object {
+        /** Share of the progress the last item of a river or a book waits before it moves. */
+        const val MAX_DELAY = 0.5f
+
+        /** Arcs of long paths bulge the full [FoldTunables.drawerRiverArcDp]; short ones less. */
+        const val ARC_REFERENCE = 2f
+
+        val EASE = Interpolators.EMPHASIZED_DECELERATE
+    }
+}

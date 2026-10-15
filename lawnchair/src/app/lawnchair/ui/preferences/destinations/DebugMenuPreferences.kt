@@ -130,6 +130,16 @@ fun DebugMenuPreferences(
                     subtitle = "Fold and open again at a fifth of the speed",
                     onClick = { FoldTransitionController.requestReplay(context, ReplayMode.FOLD_SLOW) },
                 )
+                ClickablePreference(
+                    label = "Replay fold transition (drawer, slow)",
+                    subtitle = "Opens the app drawer, then unfolds it at a fifth of the speed",
+                    onClick = { FoldTransitionController.requestReplay(context, ReplayMode.UNFOLD_DRAWER_SLOW) },
+                )
+                ClickablePreference(
+                    label = "Replay fold transition (drawer, fold, slow)",
+                    subtitle = "Opens the app drawer, then folds and opens it again slowly",
+                    onClick = { FoldTransitionController.requestReplay(context, ReplayMode.FOLD_DRAWER_SLOW) },
+                )
             }
 
             PreferenceGroup(heading = "Debug flags") {
