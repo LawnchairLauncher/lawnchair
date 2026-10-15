@@ -40,7 +40,6 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import java.io.File
 import java.io.IOException
-import java.io.InputStream
 import java.security.MessageDigest
 import java.util.Locale
 import java.util.UUID
@@ -385,10 +384,10 @@ class SearchTargetFactory(
         private const val HASH_ALGORITHM = "SHA-256"
 
         // TODO find a way to properly provide tag/provide ids to search target
-        private val messageDigest by lazy { MessageDigest.getInstance(HASH_ALGORITHM) }
+        // Search providers render concurrently. Avoid serializing every result ID on one digest lock.
+        private val messageDigest = ThreadLocal.withInitial { MessageDigest.getInstance(HASH_ALGORITHM) }
 
-        @Synchronized
-        private fun generateHashKey(input: String): String = ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
+        private fun generateHashKey(input: String): String = ByteString.of(*messageDigest.get().digest(input.toByteArray())).hex()
 
         fun createSearchTarget(
             id: String,
@@ -519,18 +518,31 @@ object FilesTarget {
 }
 
 object ContactsTarget {
+    private const val MAX_CONTACT_ICON_PX = 192
+
     fun displayContactPhoto(context: Context, name: String, contactUri: Uri): Icon {
-        var inputStream: InputStream? = null
         try {
-            inputStream = context.contentResolver.openInputStream(contactUri)
-            inputStream?.use { input ->
-                val bitmap = BitmapFactory.decodeStream(input)
-                return Icon.createWithAdaptiveBitmap(bitmap)
+            // A contact provider can return a full-resolution image. Decode bounds first to
+            // avoid allocating multi-megabyte bitmaps for a tiny search-result icon.
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            context.contentResolver.openInputStream(contactUri)?.use { input ->
+                BitmapFactory.decodeStream(input, null, bounds)
             }
-        } catch (e: IOException) {
-            // ignore
-        } finally {
-            inputStream?.close()
+            if (bounds.outWidth > 0 && bounds.outHeight > 0) {
+                val options = BitmapFactory.Options()
+                val largestSide = maxOf(bounds.outWidth, bounds.outHeight)
+                while (largestSide / options.inSampleSize > MAX_CONTACT_ICON_PX) {
+                    options.inSampleSize *= 2
+                }
+                context.contentResolver.openInputStream(contactUri)?.use { input ->
+                    val bitmap = BitmapFactory.decodeStream(input, null, options)
+                    if (bitmap != null) return Icon.createWithAdaptiveBitmap(bitmap)
+                }
+            }
+        } catch (error: Exception) {
+            // Revoked contact permissions, unavailable providers, and corrupt images fall back
+            // to a generated letter icon rather than crashing search.
+            Log.d("ContactsTarget", "Contact photo unavailable", error)
         }
 
         // If contact photo is not available, create an icon with the first letter of the contact's name
