@@ -83,8 +83,11 @@ class LawnchairBackup(
             }
             // Finish reading before touching the live layout or its bound widget IDs.
             readZip(handlers)
-            val restoredWallpaper = if (contents.hasFlag(INCLUDE_WALLPAPER)) {
-                checkNotNull(BitmapFactory.decodeFile(File(staging, WALLPAPER_FILE_NAME).path)) { "Backup has no valid wallpaper" }
+            val stagedWallpaper = File(staging, WALLPAPER_FILE_NAME)
+            val restoredWallpaper = if (contents.hasFlag(INCLUDE_WALLPAPER) && stagedWallpaper.isFile) {
+                withContext(Dispatchers.IO) {
+                    checkNotNull(BitmapFactory.decodeFile(stagedWallpaper.path)) { "Backup has no valid wallpaper" }
+                }
             } else {
                 null
             }
@@ -125,6 +128,8 @@ class LawnchairBackup(
                 }
                 // Let grid changes finish against the old layout before installing the backup.
                 withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                    // Reopen from the installed selection on the next model load, including after rollback.
+                    LauncherAppState.getInstance(context).model.modelDbController.closeDb()
                     BackupLayoutDatabase.install(context, layout, info.gridState, DeviceGridState(LauncherAppState.getIDP(context))) {
                         val dbController = ModelDbController(context)
                         dbController.db.use { database ->
