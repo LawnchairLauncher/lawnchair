@@ -110,4 +110,19 @@ object FoldTunables {
 
     /** Opacity of the moving half ahead of the band (not revealed yet). */
     var waveDimAlpha = 0.15f
+
+    // MASS
+
+    /** Displacement of an icon at the hinge at full speed; the free edge gets 1.3x. */
+    var massMaxDisplacementDp = 24f
+
+    /** Progress per second (in real time, before the slow-replay scale) that counts as full speed. */
+    var massReferenceVelocity = 3f
+
+    /** Share of the effect for icons on the fixed half (and the cover screen). */
+    var massFixedHalfFactor = 0.4f
+
+    /** Spring stiffness (androidx SpringForce units) and damping ratio of each icon. */
+    var massStiffness = 380f
+    var massDampingRatio = 0.42f
 }
