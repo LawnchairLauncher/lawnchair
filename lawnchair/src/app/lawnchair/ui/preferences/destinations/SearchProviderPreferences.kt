@@ -45,9 +45,10 @@ fun SearchProviderPreferences(
         label = stringResource(R.string.search_provider),
         modifier = modifier,
     ) {
+        app.lawnchair.omni.OmniIntegrationPreferences()
         PreferenceGroup {
             QsbSearchProvider.values().forEach { qsbSearchProvider ->
-                val appInstalled = qsbSearchProvider.isDownloaded(context)
+                val appInstalled = qsbSearchProvider.type.downloadable && qsbSearchProvider.isDownloaded(context)
                 val selected = adapter.state.value == qsbSearchProvider
                 val hasAppAndWebsite = qsbSearchProvider.type == QsbSearchProviderType.APP_AND_WEBSITE
                 val showDownloadButton = qsbSearchProvider.type == QsbSearchProviderType.APP && !appInstalled

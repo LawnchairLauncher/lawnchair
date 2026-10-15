@@ -239,6 +239,16 @@ class SearchTargetFactory(
         )
     }
 
+    fun createOmniAskTarget(query: String): SearchTargetCompat {
+        val id = "omni_ask:$query"
+        val action = SearchActionCompat.Builder(id, context.getString(R.string.omni_ask))
+            .setIcon(Icon.createWithResource(context, R.drawable.ic_omni_assistant))
+            .setSubtitle(query)
+            .setIntent(app.lawnchair.omni.OmniAskActivity.createIntent(context, query))
+            .build()
+        return createSearchLinksTarget(id, action, "omni_assistant")
+    }
+
     fun createWebSearchActionTarget(
         query: String,
         providerName: String,
@@ -377,6 +387,7 @@ class SearchTargetFactory(
         // TODO find a way to properly provide tag/provide ids to search target
         private val messageDigest by lazy { MessageDigest.getInstance(HASH_ALGORITHM) }
 
+        @Synchronized
         private fun generateHashKey(input: String): String = ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
 
         fun createSearchTarget(

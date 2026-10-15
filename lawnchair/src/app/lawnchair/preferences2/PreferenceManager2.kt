@@ -795,6 +795,9 @@ class PreferenceManager2 private constructor(private val context: Context) :
         }
 
     companion object {
+        /** Uses the existing store without initializing the launcher UI or default-provider resolver. */
+        fun omniPreferencesDataStore(context: Context) = context.preferencesDataStore
+
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
             produceMigrations = { listOf(SharedPreferencesMigration(context = it).produceMigration()) },

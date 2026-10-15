@@ -1,0 +1,30 @@
+// Copyright 2026 Abdelrahman Hussein (Obieda).
+// Licensed under the Apache License, Version 2.0; see ../LICENSE.txt.
+// CI init script: inspect actual variant compiler inputs, not just source-set filters.
+// Invoke with help --no-configuration-cache; this does not run or rewire JVM tests.
+gradle.projectsEvaluated {
+    def project = gradle.rootProject
+    def expected = project.fileTree('lawnchair/src') {
+        include '**/*.kt'
+        exclude 'test/**'
+    }.files
+    def testRoot = project.file('lawnchair/src/test').toPath()
+    def variants = [
+        'LawnWithQuickstepGithubRelease',
+        'LawnWithQuickstepGithubDebug',
+        'LawnWithQuickstepPlayDebug',
+    ]
+    variants.each { variant ->
+        def compile = project.tasks.getByName("compile${variant}Kotlin")
+        def inputs = compile.sources.files
+        def leaked = inputs.findAll { it.toPath().startsWith(testRoot) }
+        if (!leaked.empty) {
+            throw new GradleException("${compile.name} contains unit tests: ${leaked}")
+        }
+        def missing = expected - inputs
+        if (!missing.empty) {
+            throw new GradleException("${compile.name} is missing production Kotlin sources: ${missing}")
+        }
+        println("APK source isolation verified: ${compile.name}; ${expected.size()} Lawnchair production Kotlin files; no conventional unit tests")
+    }
+}

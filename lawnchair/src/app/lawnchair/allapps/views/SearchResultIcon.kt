@@ -2,6 +2,7 @@ package app.lawnchair.allapps.views
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.os.UserHandle
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import app.lawnchair.launcher
+import app.lawnchair.omni.OmniAskActivity
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.BubbleTextView
@@ -38,6 +40,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
 
     private val launcher = context.launcher
     private var boundId = ""
+    private var omniIntent: Intent? = null
     private var flags = 0
     private var allowLongClick = false
     private var callback: ((info: ItemInfoWithIcon) -> Unit)? = null
@@ -60,13 +63,16 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     override val titleText: CharSequence? get() = text
 
     override fun launch(): Boolean {
-        ItemClickHandler.INSTANCE.onClick(this)
+        onClick(this)
         return true
     }
 
     override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
         if (boundId == target.id) return
         boundId = target.id
+        omniIntent = target.searchAction?.intent?.takeIf {
+            it.component?.className == OmniAskActivity::class.java.name
+        }
         flags = getFlags(target.extras)
         reset()
         setForceHideDot(true)
@@ -151,7 +157,10 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         if (bindIcon) {
             Executors.MODEL_EXECUTOR.handler.postAtFrontOfQueue {
                 populateSearchActionItemInfo(target, info)
-                runOnMainThread { applyFromItemInfoWithIcon(info) }
+                runOnMainThread {
+                    // A queued icon load must not overwrite the intent/tag of a recycled row.
+                    if (boundId == target.id) applyFromItemInfoWithIcon(info)
+                }
             }
         }
     }
@@ -193,7 +202,13 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onClick(v: View) {
-        ItemClickHandler.INSTANCE.onClick(v)
+        val intent = omniIntent
+        if (intent != null) {
+            // Same explicit handoff for the row, its icon and keyboard quick launch.
+            context.startActivity(Intent(intent))
+        } else {
+            ItemClickHandler.INSTANCE.onClick(v)
+        }
     }
 
     private fun populateSearchActionItemInfo(

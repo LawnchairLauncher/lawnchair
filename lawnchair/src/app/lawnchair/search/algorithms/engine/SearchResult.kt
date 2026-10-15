@@ -23,6 +23,7 @@ sealed interface SearchResult {
     data class History(val data: RecentKeyword) : SearchResult
     data class Calculation(val data: app.lawnchair.search.algorithms.data.Calculation) : SearchResult
     sealed interface Action : SearchResult {
+        data class AskOmni(val query: String) : Action
         data class MarketSearch(val query: String) : Action
         data class WebSearch(
             val query: String,

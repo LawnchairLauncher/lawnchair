@@ -84,6 +84,12 @@ class PreferenceManager private constructor(private val context: Context) :
 
     // TODO REMOVE
     val deviceSearch = BoolPref("device_search", false, recreate)
+    val omniSearchSuggestions = BoolPref("omni_search_suggestions", true)
+    val omniAlwaysSuggest = BoolPref("omni_always_suggest", false)
+
+    // This consent can only be changed in the local settings UI, never by OmniLink.
+    val omniRemoteControl = BoolPref("omni_remote_control", false)
+
     val searchResultShortcuts = BoolPref("pref_searchResultShortcuts", false)
     val searchResultPeople = BoolPref("pref_searchResultPeople", false, recreate)
     val searchResultPixelTips = BoolPref("pref_searchResultPixelTips", false)

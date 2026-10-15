@@ -31,7 +31,7 @@ sealed class QsbSearchProvider(
     val sponsored: Boolean = false,
 ) {
 
-    suspend fun launch(launcher: Launcher) {
+    open suspend fun launch(launcher: Launcher) {
         val prefs = PreferenceManager2.getInstance(launcher)
         val forceWebsite = prefs.hotseatQsbForceWebsite.first()
         launch(launcher, forceWebsite)
@@ -120,6 +120,7 @@ sealed class QsbSearchProvider(
 
         fun values() = listOf(
             AppSearch,
+            Omni,
             Google,
             GoogleGo,
             Youtube,

@@ -2,7 +2,7 @@
 
 # Optimization options.
 -allowaccessmodification
--dontoptimize
+# Let R8 optimize kept and non-kept release code; preserve the Launcher3/Quickstep reflection keep rules below.
 -dontpreverify
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses

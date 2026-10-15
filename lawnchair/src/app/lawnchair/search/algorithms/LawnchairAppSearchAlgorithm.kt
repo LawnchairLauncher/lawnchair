@@ -1,7 +1,6 @@
 package app.lawnchair.search.algorithms
 
 import android.content.Context
-import android.os.Handler
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchTargetCompat
@@ -15,29 +14,37 @@ import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.ModelTaskController
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.search.SearchCallback
-import com.android.launcher3.util.Executors
 import com.patrykmichalik.opto.core.onEach
+import java.util.concurrent.atomic.AtomicLong
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
     private val appState = LauncherAppState.getInstance(context)
-    private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
+    private val generation = AtomicLong()
+
+    @Volatile private var searchJob: Job? = null
 
     // todo maybe use D.I.?
     private val searchTargetFactory = SearchTargetFactory(context)
 
-    private var hiddenApps: Set<String> = setOf()
+    @Volatile private var hiddenApps: Set<String> = setOf()
 
-    private var hiddenAppsInSearch = ""
-    private var enableFuzzySearch = false
-    private var maxResultsCount = 5
+    @Volatile private var hiddenAppsInSearch = ""
+
+    @Volatile private var enableFuzzySearch = false
+
+    @Volatile private var maxResultsCount = 5
 
     private val prefs2 = PreferenceManager2.getInstance(context)
 
-    val coroutineScope = CoroutineScope(context = Dispatchers.IO)
+    val coroutineScope = CoroutineScope(context = Dispatchers.IO + SupervisorJob())
 
     init {
         prefs2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
@@ -55,20 +62,30 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     }
 
     override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
+        val requestGeneration = generation.incrementAndGet()
+        searchJob?.cancel()
         appState.model.enqueueModelUpdateTask(object : LauncherModel.ModelUpdateTask {
             override fun execute(app: ModelTaskController, dataModel: BgDataModel, apps: AllAppsList) {
-                coroutineScope.launch(Dispatchers.Main) {
-                    val results = getResult(apps.data, query)
-                    callback.onSearchResult(query, results)
+                if (generation.get() != requestGeneration) return
+                val snapshot = apps.data.toMutableList()
+                searchJob = coroutineScope.launch {
+                    val results = getResult(snapshot, query)
+                    withContext(Dispatchers.Main) {
+                        if (generation.get() == requestGeneration) callback.onSearchResult(query, results)
+                    }
                 }
             }
         })
     }
 
     override fun cancel(interruptActiveRequests: Boolean) {
-        if (interruptActiveRequests) {
-            resultHandler.removeCallbacksAndMessages(null)
-        }
+        generation.incrementAndGet()
+        searchJob?.cancel()
+    }
+
+    override fun destroy() {
+        cancel(true)
+        coroutineScope.cancel()
     }
 
     private fun getResult(
@@ -100,6 +117,16 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
         }
 
+        val prefs = app.lawnchair.preferences.PreferenceManager.getInstance(context)
+        if (app.lawnchair.omni.OmniSearchPolicy.shouldSuggest(
+                query,
+                prefs.omniSearchSuggestions.get(),
+                prefs.omniAlwaysSuggest.get(),
+                appResults.isNotEmpty(),
+            )
+        ) {
+            searchTargets.add(searchTargetFactory.createOmniAskTarget(query.trim()))
+        }
         searchTargetFactory.createMarketSearchTarget(query)?.let { searchTargets.add(it) }
 
         setFirstItemQuickLaunch(searchTargets)

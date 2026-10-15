@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 Abdelrahman Hussein. Omni Dev Workspace icon; Apache-2.0. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <group android:translateX="-22" android:translateY="-22">
+        <path
+            android:fillColor="#40388A"
+            android:fillType="evenOdd"
+            android:pathData="M 36,34 L 46,34 A 8,8 0 0,1 62,34 L 72,34 A 6,6 0 0,1 78,40 L 78,48 A 6,6 0 0,1 78,60 L 78,68 A 6,6 0 0,1 72,74 L 36,74 A 6,6 0 0,1 30,68 L 30,60 A 6,6 0 0,1 30,48 L 30,40 A 6,6 0 0,1 36,34 Z M 44,46 a 4,4 0 1,0 0,8 a 4,4 0 1,0 0,-8 M 64,46 a 4,4 0 1,0 0,8 a 4,4 0 1,0 0,-8 M 42,60 L 42,66 L 66,66 L 66,60 Z" />
+    </group>
+</vector>

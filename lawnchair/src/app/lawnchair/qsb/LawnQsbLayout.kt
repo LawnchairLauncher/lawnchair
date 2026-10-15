@@ -27,6 +27,7 @@ import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.qsb.providers.AppSearch
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.GoogleGo
+import app.lawnchair.qsb.providers.Omni
 import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.theme.color.ColorOption
@@ -39,6 +40,7 @@ import com.android.launcher3.R
 import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
+import com.patrykmichalik.opto.core.first
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import kotlinx.coroutines.CoroutineScope
@@ -109,7 +111,9 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         setOnClickListener {
             val launcher = context.launcher
             launcher.lifecycleScope.launch {
-                if (preferenceManager2.matchHotseatQsbStyle.firstBlocking()) {
+                if (searchProvider == Omni) {
+                    searchProvider.launch(launcher)
+                } else if (preferenceManager2.matchHotseatQsbStyle.first()) {
                     launcher.appsView.searchUiManager.editText?.showKeyboard()
                     launcher.animateToAllApps()
                 } else {
@@ -243,7 +247,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         ): QsbSearchProvider {
             val provider = preferenceManager.hotseatQsbProvider.firstBlocking()
 
-            return if (provider == AppSearch ||
+            return if (provider == AppSearch || provider == Omni ||
                 resolveIntent(context, provider.createSearchIntent()) ||
                 resolveIntent(context, provider.createWebsiteIntent())
             ) {

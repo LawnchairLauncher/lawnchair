@@ -1,3 +1,26 @@
+# Contributing to the Omni fork
+
+**Fork developer/maintainer:** [Abdelrahman Hussein (عبدالرحمن حسين / Obieda)](https://github.com/obieda-hussien).
+Report Omni-specific issues and propose modifications in [this repository](https://github.com/obieda-hussien/Omni-launcher).
+Target `15-dev`; read [AGENTS.md](AGENTS.md), [Omni integration](docs/OMNI_INTEGRATION.md),
+and [NOTICE.md](NOTICE.md). Preserve upstream copyrights, licenses, namespaces and contributor credits.
+Attribute new Omni work separately; do not replace original authors with the fork maintainer.
+
+```sh
+git clone --recurse-submodules https://github.com/obieda-hussien/Omni-launcher.git
+cd Omni-launcher
+./gradlew assembleLawnWithQuickstepGithubDebug
+./gradlew spotlessCheck
+```
+
+Use a full JDK with `javac` and the configured Android SDK. Verify build/CI and device-sensitive
+changes before merge. Search integration and consent tests are described in the integration guide.
+The original upstream contribution guidance below is preserved as reference; its team, community
+links, translations, versioning and release rules belong to the original Lawnchair project.
+Fork pull requests are reviewed by the Omni maintainer rather than implicitly assigned upstream.
+
+---
+
 # Lawnchair contributing guidelines
 
 <picture>

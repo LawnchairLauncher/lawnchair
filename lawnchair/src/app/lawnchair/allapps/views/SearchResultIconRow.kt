@@ -81,6 +81,9 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         if (boundId == target.id) return
         boundId = target.id
         flags = getFlags(target.extras)
+        // RecyclerView may reuse a web/calculator row for an app or Ask Omni.
+        // Always replace its previous listener before applying target-specific handling.
+        setOnClickListener(icon)
 
         icon.bind(target) {
             title.text = it.title

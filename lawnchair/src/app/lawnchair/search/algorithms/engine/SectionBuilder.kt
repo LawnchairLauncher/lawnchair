@@ -159,11 +159,13 @@ data object ActionsSectionBuilder : SectionBuilder {
         factory: SearchTargetFactory,
         results: List<SearchResult>,
     ): List<SearchTargetCompat> {
+        val omniAsk = results.filterIsInstance<SearchResult.Action.AskOmni>()
         val marketSearch = results.filterIsInstance<SearchResult.Action.MarketSearch>()
         val webSearch = results.filterIsInstance<SearchResult.Action.WebSearch>()
 
         val targets = mutableListOf<SearchTargetCompat>()
 
+        omniAsk.firstOrNull()?.let { targets.add(factory.createOmniAskTarget(it.query)) }
         if (marketSearch.isNotEmpty()) {
             factory.createMarketSearchTarget(marketSearch.first().query)?.let {
                 targets.add(it)

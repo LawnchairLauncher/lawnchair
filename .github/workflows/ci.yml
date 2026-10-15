@@ -29,6 +29,7 @@ on:
 jobs:
   build-debug-apk:
     strategy:
+      fail-fast: false
       matrix:
         build-variant: [ assembleLawnWithQuickstepGithubRelease, assembleLawnWithQuickstepGithubDebug, assembleLawnWithQuickstepPlayDebug ]
     runs-on: ubuntu-latest
@@ -74,6 +75,8 @@ jobs:
           java-version: 21
       - uses: gradle/actions/setup-gradle@v5
       - run: ./gradlew spotlessCheck
+      - name: Verify actual APK Kotlin source inputs
+        run: ./gradlew help --no-configuration-cache --init-script scripts/verify_apk_sources.gradle
 
   send-notifications:
     runs-on: ubuntu-latest

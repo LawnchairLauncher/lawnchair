@@ -46,6 +46,7 @@ fun DrawerSearchPreference(
         label = stringResource(id = R.string.show_app_search_bar),
         modifier = modifier,
     ) {
+        app.lawnchair.omni.OmniIntegrationPreferences()
         PreferenceGroup(heading = stringResource(R.string.general_label)) {
             ExpandAndShrink(visible = hiddenApps.isNotEmpty()) {
                 HiddenAppsInSearchPreference()

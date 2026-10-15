@@ -39,6 +39,10 @@
     <uses-permission android:name="android.permission.STATUS_BAR_SERVICE" tools:ignore="ProtectedPermissions"/>
     <uses-permission android:name="android.permission.SUSPEND_APPS" tools:ignore="ProtectedPermissions" />
 
+    <!-- SDK v3 does not define these signature permissions: OmniDev Workspace owns them.
+         Request only the extension IPC permission; launcher has no need for BIND_AGENT. -->
+    <uses-permission android:name="com.omnilink.sdk.permission.BIND_EXTENSION" />
+
     <!--override minSdk declared in it-->
     <uses-sdk tools:overrideLibrary="com.kieronquinn.app.smartspacer.sdk" />
 
@@ -52,7 +56,32 @@
         android:name="${packageName}.permission.HOTSEAT_EDU"
         tools:node="remove" />
 
+    <queries>
+        <!-- Explicit visibility for on-device, same-signer checks across Workspace flavors. -->
+        <package android:name="com.omnidev.workspace" />
+        <package android:name="com.omnidev.workspace.norm" />
+        <package android:name="com.omnidev.workspace.pro" />
+        <package android:name="com.omnidev.workspace.oem" />
+        <package android:name="com.omnidev.workspace.admin" />
+        <intent>
+            <action android:name="com.omnilink.sdk.action.PUBLIC_OMNI_REQUEST" />
+        </intent>
+    </queries>
+
     <application>
+        <activity
+            android:name="app.lawnchair.omni.OmniAskActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Transparent" />
+        <service
+            android:name="app.lawnchair.omni.OmniLauncherService"
+            android:exported="true"
+            android:permission="com.omnilink.sdk.permission.BIND_EXTENSION">
+            <intent-filter>
+                <action android:name="com.omnilink.sdk.action.EXTENSION_BIND" />
+            </intent-filter>
+        </service>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

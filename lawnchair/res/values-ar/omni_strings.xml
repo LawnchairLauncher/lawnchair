@@ -1,0 +1,18 @@
+<!-- Copyright 2026 Abdelrahman Hussein (عبدالرحمن حسين). Apache-2.0; see LICENSE.txt. -->
+<resources>
+    <string name="omni_search_provider">Omni</string>
+    <string name="omni_ask">اسأل Omni</string>
+    <string name="omni_integration">تكامل Omni</string>
+    <string name="omni_suggestions">اسأل Omni في نتائج البحث</string>
+    <string name="omni_suggestions_description">يظهر عند عدم وجود نتائج محلية. يُرسل السؤال إلى Workspace فقط عند الضغط على اسأل Omni، لتراجعه وترسله هناك.</string>
+    <string name="omni_always_suggest">إظهار اسأل Omni حتى مع وجود نتائج محلية</string>
+    <string name="omni_trust_checking">جارٍ التحقق من شهادة توقيع Omni Workspace…</string>
+    <string name="omni_trust_verified">تم التحقق من الاتصال كتطبيق رسمي: إحدى نسخ Workspace المثبتة تستخدم نفس شهادة توقيع اللانشر. لا تزال العمليات تتطلب موافقة محلية.</string>
+    <string name="omni_trust_unverified">التحكم الرسمي غير متاح: ثبّت نسخة Workspace موقّعة بنفس مفتاح Omni المستخدم للانشر. يظل البحث عبر Omni متاحًا دون توقيع مشترك.</string>
+    <string name="omni_remote_control">السماح لـ Omni Dev بالتحكم في اللانشر</string>
+    <string name="omni_remote_control_description">يتطلب نفس شهادة التوقيع. يسمح بالبحث عن التطبيقات الظاهرة وتعديل إعدادات البحث بعد الموافقة وفتح التطبيقات أو الدرج عندما تكون الشاشة الرئيسية في المقدمة. أوقفه لإلغاء الوصول.</string>
+    <string name="omni_workspace_required">ثبّت أو حدّث Omni Dev Workspace لاستخدام البحث عبر Omni.</string>
+    <string name="omni_choose_workspace">اختيار نسخة Omni Dev Workspace</string>
+    <string name="omni_opening_workspace">جاري فتح Omni Dev Workspace…</string>
+    <string name="omni_workspace_unavailable">تعذّر فتح Omni Dev Workspace. حاول مرة أخرى.</string>
+</resources>

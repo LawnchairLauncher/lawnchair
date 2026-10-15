@@ -152,7 +152,38 @@ final def majorVersion = versionDisplayName.split("\\.")[0]
 final def quickstepMinSdk = "29"
 final def quickstepMaxSdk = "35"
 
+// First-party trust is based on the actual APK signer, never on package name or a manifest flag.
+// Release stays unsigned if no Omni signing credentials are supplied (e.g. public CI artifacts).
+final def omniReleaseSigningKeys = [
+    "OMNI_RELEASE_KEYSTORE", "OMNI_RELEASE_STORE_PASSWORD",
+    "OMNI_RELEASE_KEY_ALIAS", "OMNI_RELEASE_KEY_PASSWORD",
+]
+final def omniReleaseConfigured = omniReleaseSigningKeys.findAll { System.getenv(it)?.trim() }
+if (!omniReleaseConfigured.isEmpty() && omniReleaseConfigured.size() != omniReleaseSigningKeys.size()) {
+    throw new GradleException("Incomplete Omni release signing environment; provide all four OMNI_RELEASE_* values")
+}
+final def omniReleaseSigningReady = omniReleaseConfigured.size() == omniReleaseSigningKeys.size()
+final def omniDebugKeystore = System.getenv("OMNI_DEBUG_KEYSTORE")?.trim()
+
 android {
+    signingConfigs {
+        if (omniDebugKeystore) {
+            omniSharedDebug {
+                storeFile file(omniDebugKeystore)
+                storePassword System.getenv("OMNI_DEBUG_STORE_PASSWORD") ?: "android"
+                keyAlias System.getenv("OMNI_DEBUG_KEY_ALIAS") ?: "androiddebugkey"
+                keyPassword System.getenv("OMNI_DEBUG_KEY_PASSWORD") ?: "android"
+            }
+        }
+        if (omniReleaseSigningReady) {
+            omniSharedRelease {
+                storeFile file(System.getenv("OMNI_RELEASE_KEYSTORE"))
+                storePassword System.getenv("OMNI_RELEASE_STORE_PASSWORD")
+                keyAlias System.getenv("OMNI_RELEASE_KEY_ALIAS")
+                keyPassword System.getenv("OMNI_RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
     namespace "com.android.launcher3"
     defaultConfig {
         // Lawnchair Launcher 15.0 Beta 3
@@ -173,7 +204,7 @@ android {
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
             def channel = variant.productFlavors.last().name
-            outputFileName = "OmniLauncher.${variant.versionName}.$channel.${variant.buildType.name}${variant.buildType.name == 'release' ? '.unsigned' : ''}.apk"
+            outputFileName = "OmniLauncher.${variant.versionName}.$channel.${variant.buildType.name}${variant.buildType.name == 'release' && !omniReleaseSigningReady ? '.unsigned' : ''}.apk"
         }
     }
 
@@ -218,14 +249,17 @@ android {
         }
 
         debug {
-            signingConfig signingConfigs.debug
+            // Use a shared Omni debug certificate when configured; otherwise use the local debug signer.
+            signingConfig = omniDebugKeystore ? signingConfigs.omniSharedDebug : signingConfigs.debug
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Omni Launcher (Debug)")
         }
 
         release {
             // Owner signs the APK locally; never silently fall back to a debug keystore.
-            signingConfig = null
+            signingConfig = omniReleaseSigningReady ? signingConfigs.omniSharedRelease : null
+            // Pseudolocales remain available in debug but do not add unused resources to release APKs.
+            pseudoLocalesEnabled false
             resValue("string", "derived_app_name", "Omni Launcher")
             minifyEnabled true
             shrinkResources true
@@ -287,7 +321,13 @@ android {
         }
 
         lawn {
-            java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
+            // AGP/KGP feed these roots directly to variant compilation. Do not use lawnchair/src:
+            // it also contains test/kotlin, and source-set excludes do not filter that compiler path.
+            java.srcDirs = [
+                'src_flags', 'src_shortcuts_overrides',
+                'lawnchair/src/app', 'lawnchair/src/com', 'lawnchair/src/dev',
+                'tests/shared',
+            ]
             aidl.srcDirs = ['lawnchair/aidl']
             res.srcDirs = ['lawnchair/res', 'platform_frameworks_libs_systemui/animationlib/res']
             manifest.srcFile "lawnchair/AndroidManifest.xml"
@@ -337,6 +377,7 @@ composeCompiler {
 addFrameworkJar('framework-15.jar')
 
 dependencies {
+    lawnImplementation "com.github.obieda-hussien.OmniLinkSDK:omni-link-sdk:v3.0.0"
     implementation projects.iconloaderlib
     implementation projects.searchuilib
     implementation projects.animationlib
@@ -463,6 +504,7 @@ licensee {
     allow(SpdxId.GPL_20_or_later)
     allowDependency(libs.libsu.core)
     allowDependency(libs.libsu.service)
+    allowUrl("https://github.com/obieda-hussien/OmniLinkSDK/blob/main/LICENSE")
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
     allowUrl("https://opensource.org/licenses/mit-license.php")
