@@ -24,7 +24,8 @@ class RootHelperManager(private val context: Context) {
     private val prefs = PreferenceManager.getInstance(context)
     private val isAvailableDeferred by lazy {
         scope.async(Dispatchers.IO) {
-            Shell.rootAccess()
+            // Shell.rootAccess() is false until a root shell has been created
+            Shell.getShell().isRoot
         }
     }
     private var rootHelperDeferred: Deferred<IRootHelper>? = null
@@ -46,7 +47,8 @@ class RootHelperManager(private val context: Context) {
     }
 
     private suspend fun bindImpl(onDisconnected: () -> Unit): IRootHelper {
-        return withContext(Dispatchers.IO) {
+        // RootService.bind() can only be called on the main thread
+        return withContext(Dispatchers.Main) {
             val intent = Intent(context, RootHelper::class.java)
             suspendCoroutine {
                 val connection = object : ServiceConnection {
