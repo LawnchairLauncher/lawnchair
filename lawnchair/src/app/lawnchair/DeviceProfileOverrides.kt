@@ -9,6 +9,7 @@ import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE
 import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE
 import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
@@ -23,14 +24,28 @@ class DeviceProfileOverrides @Inject constructor(
     private val prefs = PreferenceManager.getInstance(context)
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
 
-    private val predefinedGrids = InvariantDeviceProfile.parseAllGridOptions(context)
-        .map { option ->
-            val gridInfo = DBGridInfo(
-                numHotseatColumns = option.numHotseatIcons,
-                numRows = option.numRows,
-                numColumns = option.numColumns,
-            )
-            gridInfo to option.name
+    // LC-Note: The grid options depend on the device type, which InvariantDeviceProfile only sets
+    // at the end of its first initGrid, while this class is first used during it. Parsing them
+    // then kept the phone grids forever, so parse them again whenever the device type changes.
+    @Volatile
+    private var predefinedGridsCache: Pair<Int, List<Pair<DBGridInfo, String>>>? = null
+
+    private val predefinedGrids: List<Pair<DBGridInfo, String>>
+        get() {
+            val deviceType = InvariantDeviceProfile.deviceType
+            predefinedGridsCache?.let { (cachedDeviceType, grids) ->
+                if (cachedDeviceType == deviceType) return grids
+            }
+            return InvariantDeviceProfile.parseAllGridOptions(context)
+                .map { option ->
+                    val gridInfo = DBGridInfo(
+                        numHotseatColumns = option.numHotseatIcons,
+                        numRows = option.numRows,
+                        numColumns = option.numColumns,
+                    )
+                    gridInfo to option.name
+                }
+                .also { predefinedGridsCache = deviceType to it }
         }
 
     fun getGridInfo() = DBGridInfo(prefs)
@@ -40,9 +55,19 @@ class DeviceProfileOverrides @Inject constructor(
         .first
 
     fun getGridName(gridInfo: DBGridInfo): String {
-        val match = predefinedGrids
+        val grids = predefinedGrids
+        val match = grids
             .firstOrNull { it.first.numRows >= gridInfo.numRows && it.first.numColumns >= gridInfo.numColumns }
-            ?: predefinedGrids.last()
+            ?: grids.last()
+        // LC-Note: Grids can have the same size (e.g. 4_by_6 and practical on foldables), so keep
+        // the current one rather than always switching to the first of them.
+        val currentGridName = LauncherPrefs.get(context).get(LauncherPrefs.GRID_NAME)
+        val current = grids.firstOrNull { it.second == currentGridName }
+        if (current != null && current.first.numRows == match.first.numRows &&
+            current.first.numColumns == match.first.numColumns
+        ) {
+            return current.second
+        }
         return match.second
     }
 

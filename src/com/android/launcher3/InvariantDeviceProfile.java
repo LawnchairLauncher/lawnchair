@@ -442,6 +442,9 @@ public class InvariantDeviceProfile {
             DeviceProfileOverrides.DBGridInfo dbGridInfo,
             DeviceProfileOverrides.PreviewOverrides previewOverrides) {
         this.closestProfile = displayOption.grid;
+        // LC-Note: Set before they are read below (numSearchContainerColumns), not after.
+        this.deviceType = displayInfo.getDeviceType();
+        this.displayInfo = displayInfo;
         
         enableTwoLinesInAllApps = Flags.enableTwolineToggle()
                 && Utilities.isEnglishLanguage(context)
@@ -485,8 +488,6 @@ public class InvariantDeviceProfile {
         numAllAppsRowsForCellHeightCalculation =
                 closestProfile.mNumAllAppsRowsForCellHeightCalculation;
         appListAlignedWithWorkspaceRow = closestProfile.mAllAppsAlignedWithWorkspaceRow;
-        this.deviceType = displayInfo.getDeviceType();
-        this.displayInfo = displayInfo;
 
         inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
 
