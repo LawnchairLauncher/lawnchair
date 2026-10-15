@@ -28,6 +28,7 @@ import java.util.UUID
 import java.util.zip.ZipInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -151,27 +152,65 @@ class NovaBackupConverter(
             val stagedDbFile = File(tempDir, NOVA_WORKSPACE_DB)
             val importedDeepShortcuts = createRestoredDb(novaDbFile, stagedDbFile)
 
-            // Publish all grid preferences together before any layout reload can observe them.
-            writeGridToLawnchairPrefs(info)
+            val prefs = withContext(Dispatchers.Main) { PreferenceManager.getInstance(context) }
+            val gridKeys = setOf(prefs.workspaceColumns.key, prefs.workspaceRows.key, prefs.hotseatColumns.key)
+            val selectionKeys = setOf(
+                DeviceGridState.KEY_DB_FILE,
+                DeviceGridState.KEY_WORKSPACE_SIZE,
+                DeviceGridState.KEY_HOTSEAT_COUNT,
+                DeviceGridState.KEY_DEVICE_TYPE,
+                DeviceGridState.KEY_GRID_TYPE,
+            )
+            // Finish already queued grid work before capturing the selection to recover on failure.
+            val previous = withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                prefs.sp.all.filterKeys { it in gridKeys || it in selectionKeys }
+            }
+            try {
+                // Publish all grid preferences together before any layout reload can observe them.
+                writeGridToLawnchairPrefs(info)
 
-            // Let any grid migration finish against the old layout before installing the import.
-            withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
-                // Missing Nova dimensions retain the current grid preference. Publish the
-                // complete effective grid so the controller opens the imported database.
-                val gridState = DeviceGridState(InvariantDeviceProfile.INSTANCE.get(context))
-                gridState.writeToPrefs(context, true)
-                gridState.writeToPrefs(context)
-                val restoredDbFile = context.getDatabasePath(LawnchairBackup.RESTORED_DB_FILE_NAME)
-                restoredDbFile.parentFile?.mkdirs()
-                stagedDbFile.copyTo(restoredDbFile, overwrite = true)
+                // Let any grid migration finish against the old layout before installing the import.
+                withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                    // Missing Nova dimensions retain the current grid preference. Publish the
+                    // complete effective grid so the controller opens the imported database.
+                    val gridState = DeviceGridState(InvariantDeviceProfile.INSTANCE.get(context))
+                    gridState.writeToPrefs(context, true)
+                    gridState.writeToPrefs(context)
+                    val restoredDbFile = context.getDatabasePath(LawnchairBackup.RESTORED_DB_FILE_NAME)
+                    restoredDbFile.parentFile?.mkdirs()
+                    stagedDbFile.copyTo(restoredDbFile, overwrite = true)
 
-                val dbController = ModelDbController(context)
-                try {
-                    check(RestoreDbTask.performRestore(context, dbController)) { "Unable to restore imported layout" }
-                    dbController.clearEmptyDbFlag()
-                } finally {
-                    dbController.db.close()
+                    val dbController = ModelDbController(context)
+                    try {
+                        check(RestoreDbTask.performRestore(context, dbController)) { "Unable to restore imported layout" }
+                        dbController.clearEmptyDbFlag()
+                    } finally {
+                        dbController.db.close()
+                    }
                 }
+            } catch (failure: Throwable) {
+                try {
+                    withContext(NonCancellable) {
+                        withContext(Dispatchers.Main) {
+                            restorePreferences(prefs, gridKeys, previous)
+                            InvariantDeviceProfile.INSTANCE.get(context).onPreferencesChanged(context)
+                        }
+                        // Restoring the grid can queue migration work that writes selection keys.
+                        // Recover the exact old selection only after that work has finished.
+                        withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                            restorePreferences(prefs, selectionKeys, previous)
+                        }
+                    }
+                } catch (rollbackFailure: Throwable) {
+                    failure.addSuppressed(rollbackFailure)
+                }
+                throw failure
+            }
+
+            withContext(Dispatchers.Main) {
+                info.iconPackPackage?.let { prefs.iconPackPackage.set(it) }
+                // An imported desktop owns its top row; don't put onboarding behind its widgets.
+                PreferenceManager2.getInstance(context).enableSmartspace.set(false)
             }
 
             pinImportedDeepShortcuts(importedDeepShortcuts)
@@ -189,16 +228,26 @@ class NovaBackupConverter(
 
     private suspend fun writeGridToLawnchairPrefs(info: NovaBackupInfo) = withContext(Dispatchers.Main) {
         val prefs = PreferenceManager.getInstance(context)
-        // An imported desktop owns its top row; don't put Lawnchair onboarding behind its widgets.
-        val prefs2 = PreferenceManager2.getInstance(context)
-        prefs2.enableSmartspace.set(false)
         prefs.batchEdit {
             info.columns?.let { prefs.workspaceColumns.set(it) }
             info.rows?.let { prefs.workspaceRows.set(it) }
             info.hotseatCount?.let { prefs.hotseatColumns.set(it) }
-            info.iconPackPackage?.let { prefs.iconPackPackage.set(it) }
         }
         InvariantDeviceProfile.INSTANCE.get(context).onPreferencesChanged(context)
+    }
+
+    private fun restorePreferences(prefs: PreferenceManager, keys: Set<String>, previous: Map<String, *>) {
+        val editor = prefs.sp.edit()
+        keys.forEach { key ->
+            when (val value = previous[key]) {
+                null -> editor.remove(key)
+                is Int -> editor.putInt(key, value)
+                is String -> editor.putString(key, value)
+                else -> error("Unexpected grid preference type: $key")
+            }
+            prefs.prefsMap[key]?.invalidate()
+        }
+        check(editor.commit()) { "Unable to restore pre-import preferences" }
     }
 
     private fun parseNovaConfig(xmlFile: File): NovaConfig {
