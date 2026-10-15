@@ -34,6 +34,7 @@ import app.lawnchair.fold.FoldDock
 import app.lawnchair.fold.FoldDrawerLayout
 import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldLandscape
+import app.lawnchair.fold.FoldLayout
 import app.lawnchair.fold.FoldTransitionStyle
 import app.lawnchair.fold.FoldWallpaper
 import app.lawnchair.font.FontCache
@@ -738,7 +739,10 @@ class PreferenceManager2 @Inject constructor(
         parse = { FoldHomeLayout.fromString(it) },
         save = { it.key },
         // "Same as cover" changes the device profiles of the large screen.
-        onSet = { reloadHelper.reloadGrid() },
+        onSet = {
+            FoldLayout.onHomeLayoutSet(it)
+            reloadHelper.reloadGrid()
+        },
     )
 
     val foldDrawerLayout = preference(
