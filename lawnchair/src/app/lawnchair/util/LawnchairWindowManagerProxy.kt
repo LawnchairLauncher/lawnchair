@@ -44,7 +44,6 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
         val displayManager = displayInfoContext.getSystemService(DisplayManager::class.java) ?: return result
 
         val displays = displayManager.displays
-        var internalDisplayInfo: CachedDisplayInfo? = null
 
         for (display in displays) {
             try {
@@ -57,7 +56,6 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
                     val bounds = estimateWindowBounds(contextForDisplay, info)
 
                     result[info] = bounds
-                    if (display.displayId == DEFAULT_DISPLAY) internalDisplayInfo = info
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error estimating bounds for display ${display.displayId}", e)
@@ -68,8 +66,8 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
         // when folded and like a tablet when unfolded, and every fold reloaded the grid. On devices
         // that can fold, add the other states of the internal display, like
         // SystemWindowManagerProxy does, so the device type is the same in all of them.
-        for (info in getInternalDisplayStates(displayInfoContext, internalDisplayInfo)) {
-            if (result.keys.none { it.size == info.size }) {
+        for (info in getInternalDisplayStates(displayInfoContext)) {
+            if (info !in result) {
                 result[info] = estimateWindowBounds(displayInfoContext, info)
             }
         }
@@ -78,19 +76,23 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
     }
 
     /**
-     * Returns the known states of the internal display of a foldable (e.g. both panels), normalized
-     * to [Surface.ROTATION_0]. May not include [current].
+     * Returns the known states of the internal display of a foldable (e.g. both panels), as the
+     * keys that DisplayController.Info looks up for them.
      */
-    private fun getInternalDisplayStates(context: Context, current: CachedDisplayInfo?): List<CachedDisplayInfo> {
-        if (!hasHingeSensor(context)) return emptyList()
+    private fun getInternalDisplayStates(context: Context): List<CachedDisplayInfo> {
+        if (!hasHingeSensor(context) || getDisplay(context)?.displayId != DEFAULT_DISPLAY) return emptyList()
+        // Built like DisplayController.Info#normalizedDisplayInfo, so that it is found in the cache
+        val current = getDisplayInfo(context).normalize(this)
 
-        // The system knows all of them, but only tells the recents provider.
+        // The system knows all of them, but only tells the recents provider. They come from the
+        // physical displays, so they can differ from the keys in use (e.g. with a display size
+        // override): only use them when the current state is one of them.
         val possibleStates = getPossibleMaximumWindowMetrics(context)
             .map { getDisplayInfo(it, Surface.ROTATION_0) }
-        if (possibleStates.size > 1) return possibleStates
+        if (possibleStates.size > 1 && current in possibleStates) return possibleStates
 
         // Otherwise remember the ones seen so far.
-        return if (current != null) rememberInternalDisplayState(context, current) else emptyList()
+        return rememberInternalDisplayState(context, current)
     }
 
     private fun getPossibleMaximumWindowMetrics(context: Context): Set<WindowMetrics> {
@@ -145,7 +147,9 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
     private fun parseDisplayState(value: String): CachedDisplayInfo? {
         val values = value.split(",").map { it.toIntOrNull() ?: return null }
         if (values.size != 6 || values[0] <= 0 || values[1] <= 0) return null
-        val cutout = DisplayCutout(Insets.of(values[2], values[3], values[4], values[5]), null, null, null, null)
+        // Same cutout as getDisplayInfo(WindowMetrics, Int) and rotateCutout() produce
+        val insets = Insets.of(values[2], values[3], values[4], values[5])
+        val cutout = if (insets == Insets.NONE) null else DisplayCutout(insets, null, null, null, null)
         return CachedDisplayInfo(Point(values[0], values[1]), Surface.ROTATION_0, cutout)
     }
 
