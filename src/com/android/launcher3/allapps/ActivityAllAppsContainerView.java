@@ -118,6 +118,7 @@ import static com.topjohnwu.superuser.internal.Utils.context;
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
 import app.lawnchair.fold.FoldDrawerBook;
 import app.lawnchair.fold.FoldDrawerLayouts;
+import app.lawnchair.fold.FoldDrawerState;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -1207,6 +1208,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
+        // LC-Note: on foldables, keep each list's scroll across the rebuild below (it would go
+        // back to the top) and remember where the items were, for the fold transition
+        AllAppsRecyclerView mainRv = mAH.get(AdapterHolder.MAIN).mRecyclerView;
+        AllAppsRecyclerView workRv = mAH.get(AdapterHolder.WORK).mRecyclerView;
+        AllAppsRecyclerView searchRv = mAH.get(AdapterHolder.SEARCH).mRecyclerView;
+        FoldDrawerState.beforeDeviceProfileChange(this, mainRv, workRv, searchRv);
         for (AdapterHolder holder : mAH) {
             holder.mAdapter.setAppsPerRow(dp.numShownAllAppsColumns);
             holder.mAppsList.setNumAppsPerRowAllApps(dp.numShownAllAppsColumns);
@@ -1217,6 +1224,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 holder.mRecyclerView.getRecycledViewPool().clear();
             }
         }
+        FoldDrawerState.afterDeviceProfileChange(mainRv, workRv, searchRv);
         updateBackgroundVisibility(dp);
 
         boolean needsInvalidate = false;
