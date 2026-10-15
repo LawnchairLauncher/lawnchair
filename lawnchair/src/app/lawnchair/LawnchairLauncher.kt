@@ -24,6 +24,7 @@ import android.graphics.Color
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.util.Pair
 import android.view.Display
 import android.view.View
@@ -88,6 +89,9 @@ import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
 import java.util.stream.Stream
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -251,7 +255,20 @@ class LawnchairLauncher : QuickstepLauncher() {
 
         reloadIconsIfNeeded()
 
-        AppDatabase.INSTANCE.get(this).checkpointSync()
+        // Never block the first frame on SQLite WAL fsync/checkpoint. Room initialization
+        // is kept on Main (MainThreadInitializedObject), but actual disk I/O is deferred.
+        val database = AppDatabase.INSTANCE.get(this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(5_000L)
+            try {
+                database.checkpoint()
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                // A failed optional checkpoint must never crash the launcher.
+                Log.w("OmniLauncher", "Deferred database checkpoint failed", error)
+            }
+        }
     }
 
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {
