@@ -18,6 +18,7 @@ package app.lawnchair
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Application
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import androidx.profileinstaller.ProfileInstaller
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.flowerpot.Flowerpot
 import app.lawnchair.preferences.PreferenceManager
@@ -52,6 +54,7 @@ import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherApplication
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.util.Executors
 import com.android.quickstep.RecentsActivity
 import com.android.systemui.shared.system.QuickStepContract
 import java.io.File
@@ -70,6 +73,43 @@ class LawnchairApp : LauncherApplication() {
         QuickStepContract.sRecentsDisabled = !recentsEnabled
         Flowerpot.Manager.getInstance(this)
         registerActivityLifecycleCallbacks(activityHandler)
+        scheduleBaselineProfileInstall()
+    }
+
+    /**
+     * Writes the bundled baseline profile so ART can use it on sideloaded installs. The manifest
+     * removes androidx.startup's InitializationProvider, which also drops
+     * ProfileInstallerInitializer, so this does its job the same way: main process only, a few
+     * seconds after start, on a background thread. It is a no-op once written for this install.
+     */
+    private fun scheduleBaselineProfileInstall() {
+        val isMainProcess = Build.VERSION.SDK_INT < Build.VERSION_CODES.P ||
+            Application.getProcessName() == packageName
+        if (!isMainProcess) return
+        Executors.ORDERED_BG_EXECUTOR.handler.postDelayed(
+            {
+                try {
+                    ProfileInstaller.writeProfile(
+                        this,
+                        { it.run() },
+                        object : ProfileInstaller.DiagnosticsCallback {
+                            override fun onDiagnosticReceived(code: Int, data: Any?) = Unit
+
+                            override fun onResultReceived(code: Int, data: Any?) {
+                                when (code) {
+                                    ProfileInstaller.RESULT_ALREADY_INSTALLED -> Unit
+                                    ProfileInstaller.RESULT_INSTALL_SUCCESS -> Log.d(TAG, "Baseline profile installed")
+                                    else -> Log.w(TAG, "ProfileInstaller result $code", data as? Throwable)
+                                }
+                            }
+                        },
+                    )
+                } catch (e: Exception) {
+                    Log.w(TAG, "ProfileInstaller failed", e)
+                }
+            },
+            PROFILE_INSTALL_DELAY_MS,
+        )
     }
 
     fun hideClockInStatusBar() {
@@ -226,6 +266,7 @@ class LawnchairApp : LauncherApplication() {
 
     companion object {
         private const val TAG = "LawnchairApp"
+        private const val PROFILE_INSTALL_DELAY_MS = 5_000L
 
         @JvmStatic
         lateinit var instance: LawnchairApp
