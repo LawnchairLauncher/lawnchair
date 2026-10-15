@@ -1,17 +1,19 @@
 package app.lawnchair.fold
 
 import android.app.Activity
+import android.app.Application
+import android.os.Bundle
+import android.util.Log
 import android.view.Surface
 import androidx.annotation.MainThread
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.android.launcher3.util.DisplayController
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
@@ -26,6 +28,8 @@ import kotlinx.coroutines.launch
  * Values are only updated while a launcher activity is started; reads are safe from any thread.
  */
 object FoldPosture {
+
+    private const val TAG = "LC-FoldPosture"
 
     /** Whether the hinge is vertical at the natural display rotation, or null if never reported. */
     @Volatile
@@ -88,16 +92,47 @@ object FoldPosture {
         listeners.remove(listener)
     }
 
-    /** Collects the window layout of [activity] while it is started. */
+    /**
+     * Collects the window layout of [activity] between its onStart and onStop.
+     *
+     * This follows the activity callbacks rather than the androidx Lifecycle: the launcher calls
+     * onSaveInstanceState on every configuration change, which moves its Lifecycle to CREATED
+     * without a real onStop, and would cancel a repeatOnLifecycle(STARTED) collection.
+     */
     @JvmStatic
     fun <T> attach(activity: T) where T : Activity, T : LifecycleOwner {
-        activity.lifecycleScope.launch {
-            activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                WindowInfoTracker.getOrCreate(activity)
-                    .windowLayoutInfo(activity)
-                    .collect { update(activity, it) }
-            }
-        }
+        activity.application.registerActivityLifecycleCallbacks(
+            object : Application.ActivityLifecycleCallbacks {
+                private var job: Job? = null
+
+                override fun onActivityStarted(a: Activity) {
+                    if (a !== activity || job?.isActive == true) return
+                    job = activity.lifecycleScope.launch {
+                        WindowInfoTracker.getOrCreate(activity)
+                            .windowLayoutInfo(activity)
+                            .collect { update(activity, it) }
+                    }
+                }
+
+                override fun onActivityStopped(a: Activity) {
+                    if (a !== activity) return
+                    job?.cancel()
+                    job = null
+                }
+
+                override fun onActivityDestroyed(a: Activity) {
+                    if (a !== activity) return
+                    job?.cancel()
+                    job = null
+                    activity.application.unregisterActivityLifecycleCallbacks(this)
+                }
+
+                override fun onActivityCreated(a: Activity, savedInstanceState: Bundle?) {}
+                override fun onActivityResumed(a: Activity) {}
+                override fun onActivityPaused(a: Activity) {}
+                override fun onActivitySaveInstanceState(a: Activity, outState: Bundle) {}
+            },
+        )
     }
 
     @MainThread
@@ -120,6 +155,7 @@ object FoldPosture {
         naturalHingeVertical = newNaturalVertical
         rotation = newRotation
         isTabletop = newTabletop
+        Log.d(TAG, "update: hingeSide=$hingeSide, isTabletop=$newTabletop, rotation=$newRotation, feature=$feature, changed=$changed")
         if (changed) {
             listeners.forEach(Runnable::run)
         }
