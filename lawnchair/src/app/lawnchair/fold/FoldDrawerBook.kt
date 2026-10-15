@@ -3,6 +3,7 @@ package app.lawnchair.fold
 import android.view.View
 import android.view.ViewTreeObserver
 import com.android.launcher3.allapps.AllAppsRecyclerView
+import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.util.ScrollableLayoutManager
 import com.android.launcher3.views.ActivityContext
 import java.util.WeakHashMap
@@ -11,12 +12,14 @@ import java.util.WeakHashMap
  * The second page of the "book" drawer ([FoldDrawerLayout.PAGES]).
  *
  * The A-Z grid is laid out on the fixed half only ([FoldDrawerLayouts.adjustAppsGridPadding]),
- * with one more screenful of rows laid out below the visible ones. Before every frame, the
- * children below the fixed page's bottom edge are moved onto the moving half, one page up, so the
- * moving page always shows exactly what comes after the fixed page. Both pages scroll together,
- * by rows: when a row leaves the top of the moving page it reappears at the bottom of the fixed
- * page. The RecyclerView, its fast scroller, focus and accessibility stay as they are; only view
- * translations change, and touch, drag and accessibility bounds follow them.
+ * with one more screenful of rows laid out below the visible ones. Before every frame, every child
+ * that is not fully visible on the fixed page (its bottom is past the fixed page's bottom edge) is
+ * moved onto the moving half, up by as many whole rows as fit on a page. So the fixed page only
+ * ever shows full rows, the row it cuts is the first row of the moving page, no app is hidden, and
+ * the rows of both pages line up. Both pages scroll together, by rows: when a row becomes fully
+ * visible at the bottom of the fixed page it leaves the top of the moving page. The RecyclerView,
+ * its fast scroller, focus and accessibility stay as they are; only view translations change, and
+ * touch, drag and accessibility bounds follow them.
  *
  * One instance per A-Z RecyclerView (personal and work); it does nothing unless the current
  * profile was built for PAGES.
@@ -28,7 +31,8 @@ class FoldDrawerBook private constructor(
 
     /** Lets a transition add a vertical offset to each child while it plays. */
     fun interface OffsetProvider {
-        fun offsetY(child: View, onMovingPage: Boolean, pageTop: Int, pageHeight: Int): Float
+        /** [movingTop] is the child's top on the moving page (RecyclerView coordinates), if it is there. */
+        fun offsetY(child: View, onMovingPage: Boolean, movingTop: Int, pageTop: Int, pageHeight: Int): Float
     }
 
     var offsetProvider: OffsetProvider? = null
@@ -75,18 +79,31 @@ class FoldDrawerBook private constructor(
             return
         }
         isActive = true
+        val lm = rv.layoutManager ?: return
         val bottom = rv.height - rv.paddingBottom
         pageTop = rv.paddingTop
         pageHeight = (bottom - pageTop).coerceAtLeast(0)
-        (rv.layoutManager as? ScrollableLayoutManager)?.setFoldExtraLayoutSpace(pageHeight)
+        (lm as? ScrollableLayoutManager)?.setFoldExtraLayoutSpace(pageHeight)
+        // Up by whole rows, so the cut row lands where the fixed page's first full row would be
+        // and the rows of both pages line up.
+        var rowHeight = 0
+        for (i in 0 until rv.childCount) {
+            val child = rv.getChildAt(i)
+            if (BaseAllAppsAdapter.isIconViewType(rv.getChildViewHolder(child).itemViewType)) {
+                rowHeight = lm.getDecoratedMeasuredHeight(child)
+                break
+            }
+        }
+        val shiftY = if (rowHeight > 0) (pageHeight / rowHeight).coerceAtLeast(1) * rowHeight else pageHeight
         val shiftX = FoldDrawerLayouts.bookShiftX(dp).toFloat()
         val provider = offsetProvider
         for (i in 0 until rv.childCount) {
             val child = rv.getChildAt(i)
-            val onMovingPage = child.top >= bottom
+            // Not fully visible on the fixed page: it belongs to the moving page.
+            val onMovingPage = lm.getDecoratedBottom(child) > bottom
             val tx = if (onMovingPage) shiftX else 0f
-            var ty = if (onMovingPage) -pageHeight.toFloat() else 0f
-            if (provider != null) ty += provider.offsetY(child, onMovingPage, pageTop, pageHeight)
+            var ty = if (onMovingPage) -shiftY.toFloat() else 0f
+            if (provider != null) ty += provider.offsetY(child, onMovingPage, child.top - shiftY, pageTop, pageHeight)
             if (child.translationX != tx) child.translationX = tx
             if (child.translationY != ty) child.translationY = ty
         }
