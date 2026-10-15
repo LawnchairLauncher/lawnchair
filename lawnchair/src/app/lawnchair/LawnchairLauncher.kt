@@ -36,6 +36,7 @@ import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
 import app.lawnchair.data.wallpaper.service.WallpaperService
 import app.lawnchair.fold.FoldPosture
+import app.lawnchair.fold.FoldTransitionController
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -158,10 +159,17 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     val gestureController by unsafeLazy { GestureController(this) }
 
+    /** Fold/unfold transition engine; foldable views register their [app.lawnchair.fold.FoldProgressListener] here. */
+    val foldTransitionController by unsafeLazy { FoldTransitionController(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         super.onCreate(savedInstanceState)
         FoldPosture.attach(this)
+        foldTransitionController.attach()
+        // The dock merge (HotseatFoldController) follows the engine instead of its own animator
+        hotseat.foldController.animateOnDeviceProfileChange = false
+        foldTransitionController.addListener(hotseat.foldController)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
@@ -255,6 +263,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
 
     override fun onNewIntent(intent: Intent?) {
+        if (intent != null) foldTransitionController.onNewIntent(intent)
         if (intent != null && intent.action == LawnchairShortcutActivity.START_ACTION) {
             val handlerString = intent.getStringExtra(LawnchairShortcutActivity.EXTRA_HANDLER)
             val config = handlerString?.let { GestureHandlerConfig.fromString(it) }
