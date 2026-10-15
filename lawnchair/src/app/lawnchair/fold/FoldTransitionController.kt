@@ -328,7 +328,7 @@ class FoldTransitionController(
         finishNow("restart")
         val scene = FoldScene(launcher, opening, large, reduced)
         val style = when {
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.Q -> NoneFoldStyle()
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || styleType == FoldTransitionStyle.NONE -> NoneFoldStyle()
             reduced -> FoldStyle.createReducedMotion()
             else -> FoldStyle.create(styleType)
         }
