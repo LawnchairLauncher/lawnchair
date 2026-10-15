@@ -222,4 +222,14 @@
         <item name="folderCellHeight">83dp</item>
         <item name="folderCellWidth">58dp</item>
     </style>
+
+    <!-- A tab of the app drawer's suggestion tabs, like the Personal/Work tabs. -->
+    <style name="DrawerSuggestionTab" parent="@style/AllAppsPersonalWorkTabStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>

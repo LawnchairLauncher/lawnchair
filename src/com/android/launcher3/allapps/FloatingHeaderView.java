@@ -481,9 +481,11 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public void setInsets(Rect insets) {
-        var dp =  ActivityContext.lookupContext(getContext()).getDeviceProfile();
-        int leftRightPadding = dp.allAppsPadding.left + dp.allAppsPadding.right;
-        setPadding(leftRightPadding, getPaddingTop(), leftRightPadding, getPaddingBottom());
+        // LC-Note: pad each side like the app lists (AdapterHolder.mPadding), so header rows line
+        // up with the icon columns below. Using left + right on both sides made them narrower.
+        Rect allAppsPadding = ActivityContext.lookupContext(getContext())
+                .getDeviceProfile().allAppsPadding;
+        setPadding(allAppsPadding.left, getPaddingTop(), allAppsPadding.right, getPaddingBottom());
     }
 
     public <T extends FloatingHeaderRow> T findFixedRowByType(Class<T> type) {
