@@ -302,7 +302,7 @@ class NovaBackupConverter(
         return importedDeepShortcuts.mapValues { (_, shortcutIds) -> shortcutIds.toSet() }
     }
 
-    internal fun insertNovaItems(
+    private fun insertNovaItems(
         src: SQLiteDatabase,
         db: SQLiteDatabase,
         profileId: Long,
