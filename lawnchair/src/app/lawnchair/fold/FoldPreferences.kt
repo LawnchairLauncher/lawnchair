@@ -103,7 +103,6 @@ enum class FoldTransitionStyle(
         key = "wave",
         labelResourceId = R.string.fold_transition_wave,
         descriptionResourceId = R.string.fold_transition_wave_description,
-        isImplemented = false,
     ),
     MASS(
         key = "mass",

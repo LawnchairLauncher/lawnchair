@@ -90,4 +90,24 @@ object FoldTunables {
 
     /** Radius of the middle blur band, as a fraction of the full radius. */
     var windowBlurBandSplit = 0.35f
+
+    // WAVE
+
+    /** Width of the band of light. */
+    var waveBandWidthDp = 120f
+
+    /** Peak opacity of the band (screen-blended over the moving half). */
+    var waveBandAlpha = 0.45f
+
+    /** How high an icon rises as the band passes. */
+    var waveLiftDp = 14f
+
+    /** Distance behind the band over which a lifted icon settles back. */
+    var waveSettleDp = 120f
+
+    /** Peak opacity of an icon's glow. */
+    var waveGlowAlpha = 0.6f
+
+    /** Opacity of the moving half ahead of the band (not revealed yet). */
+    var waveDimAlpha = 0.15f
 }
