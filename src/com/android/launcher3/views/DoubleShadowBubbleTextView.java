@@ -113,6 +113,9 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
         }
         int alpha = Color.alpha(getCurrentTextColor());
 
+        // LC-Note: this path skips BubbleTextView#onDraw, which draws the glass blur
+        drawGlassBlurIfNecessary(canvas);
+
         // We enhance the shadow by drawing the shadow twice
         getPaint().setShadowLayer(mShadowInfo.getAmbientShadowBlur(), 0, 0,
                 getTextShadowColor(mShadowInfo.getAmbientShadowColor(), alpha));
