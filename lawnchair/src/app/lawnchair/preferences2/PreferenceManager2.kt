@@ -765,6 +765,7 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = FoldDock.MERGE,
         parse = { FoldDock.fromString(it) },
         save = { it.key },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val foldLandscape = preference(

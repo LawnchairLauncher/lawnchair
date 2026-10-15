@@ -21,9 +21,13 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.model.data.ItemInfo;
 
 import java.util.Objects;
+
+import app.lawnchair.fold.FoldDockLayout;
 
 /**
  * Class for mapping between model position and presenter position.
@@ -34,6 +38,8 @@ public class CellPosMapper {
     private final boolean mHasVerticalHotseat;
     private final int mNumOfHotseat;
     private final int mNumHotseatRows;
+    @Nullable
+    private final FoldDockLayout mFoldDock;
 
     public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat) {
         this(hasVerticalHotseat, numOfHotseat, 1, 1);
@@ -41,9 +47,25 @@ public class CellPosMapper {
 
     public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat, int numHotseatRows,
             int numHotseatPages) {
+        this(hasVerticalHotseat, numOfHotseat, numHotseatRows, numHotseatPages, null);
+    }
+
+    /**
+     * @param foldDock the dock layout of an unfolded foldable, which maps the first row's ranks
+     *                 to cells (see {@link FoldDockLayout}), or null.
+     */
+    public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat, int numHotseatRows,
+            int numHotseatPages, @Nullable FoldDockLayout foldDock) {
         mHasVerticalHotseat = hasVerticalHotseat;
         mNumOfHotseat = numOfHotseat;
         mNumHotseatRows = Math.max(1, numHotseatRows);
+        mFoldDock = foldDock;
+    }
+
+    /** Returns the dock layout of an unfolded foldable, or null. */
+    @Nullable
+    public FoldDockLayout getFoldDockLayout() {
+        return mFoldDock;
     }
 
     private static boolean isHotseatContainer(int container) {
@@ -64,6 +86,9 @@ public class CellPosMapper {
             int local = info.screenId % slotsPerPage;
             int cellX = local % mNumOfHotseat;
             int cellY = local / mNumOfHotseat;
+            if (mFoldDock != null && page == 0 && cellY == 0) {
+                cellX = mFoldDock.rankToCellX(cellX);
+            }
             return new CellPos(cellX, cellY, page);
         }
         return new CellPos(info.cellX, info.cellY, info.screenId);
@@ -81,7 +106,9 @@ public class CellPosMapper {
                 // presenterScreen is the dock page index (0-based)
                 int page = Math.max(0, presenterScreen);
                 int slotsPerPage = Math.max(1, mNumOfHotseat * mNumHotseatRows);
-                int localRank = presenterY * mNumOfHotseat + presenterX;
+                int localX = mFoldDock != null && page == 0 && presenterY == 0
+                        ? mFoldDock.cellXToRank(presenterX) : presenterX;
+                int localRank = presenterY * mNumOfHotseat + localX;
                 presenterScreen = page * slotsPerPage + localRank;
             } else if (!mHasVerticalHotseat) {
                 presenterScreen = presenterX;

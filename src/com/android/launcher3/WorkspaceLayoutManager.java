@@ -59,6 +59,12 @@ public interface WorkspaceLayoutManager {
                 || info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             // Model screenId is a flat rank; presenter screenId is the dock page.
             int rank = info.screenId;
+            if (!getHotseat().isRankShown(rank)) {
+                // e.g. the extra slots of an unfolded foldable's dock, on the cover screen
+                Log.d(TAG, "addInScreenFromBind: hotseat rank " + rank
+                        + " has no cell on this screen, keeping it hidden");
+                return;
+            }
             x = getHotseat().getCellXFromOrder(rank);
             y = getHotseat().getCellYFromOrder(rank);
             screenId = getHotseat().getPageFromOrder(rank);

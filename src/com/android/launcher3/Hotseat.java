@@ -27,6 +27,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
@@ -46,6 +47,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.launcher3.util.MultiPropertyFactory;
@@ -58,7 +60,9 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import app.lawnchair.fold.FoldDockLayout;
 import app.lawnchair.hotseat.DisabledHotseat;
+import app.lawnchair.hotseat.HotseatFoldController;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.hotseat.HotseatPagedView;
 import app.lawnchair.hotseat.LawnchairHotseat;
@@ -76,11 +80,13 @@ public class Hotseat extends FrameLayout implements Insettable {
     public static final int ALPHA_CHANNEL_PREVIEW_RENDERER = 1;
     public static final int ALPHA_CHANNEL_TASKBAR_STASH = 2;
     public static final int ALPHA_CHANNEL_ASSISTANT_VISIBILITY = 3;
-    public static final int ALPHA_CHANNEL_CHANNELS_COUNT = 4;
+    public static final int ALPHA_CHANNEL_FOLD_DOCK = 4;
+    public static final int ALPHA_CHANNEL_CHANNELS_COUNT = 5;
 
     @Retention(RetentionPolicy.RUNTIME)
     @IntDef({ALPHA_CHANNEL_TASKBAR_ALIGNMENT, ALPHA_CHANNEL_PREVIEW_RENDERER,
-            ALPHA_CHANNEL_TASKBAR_STASH, ALPHA_CHANNEL_ASSISTANT_VISIBILITY})
+            ALPHA_CHANNEL_TASKBAR_STASH, ALPHA_CHANNEL_ASSISTANT_VISIBILITY,
+            ALPHA_CHANNEL_FOLD_DOCK})
     public @interface HotseatQsbAlphaId {
     }
 
@@ -116,6 +122,7 @@ public class Hotseat extends FrameLayout implements Insettable {
     private final int mPageIndicatorHeight;
 
     private final ActivityContext mActivity;
+    private final HotseatFoldController mFoldController;
 
     PreferenceManager2 preferenceManager2;
     PreferenceManager preferenceManager;
@@ -196,6 +203,7 @@ public class Hotseat extends FrameLayout implements Insettable {
         mQsbAlphaChannels = new MultiValueAlpha(mQsb, ALPHA_CHANNEL_CHANNELS_COUNT);
         mQsbAlphaChannels.setUpdateVisibility(true);
 
+        mFoldController = new HotseatFoldController(this, mActivity);
         setUpBackground();
         setClipChildren(false);
         setClipToPadding(false);
@@ -225,6 +233,45 @@ public class Hotseat extends FrameLayout implements Insettable {
         InsetDrawable bg = new InsetDrawable(background,
                 insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
         setBackground(bg);
+        mFoldController.setBackgroundStyle(finalColor, cornerRadius, insetHorizontalLeft,
+                insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mActivity instanceof Launcher) {
+            mFoldController.onAttached(mActivity.getDeviceProfile());
+            mActivity.addOnDeviceProfileChangeListener(mFoldController);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mActivity instanceof Launcher) {
+            mActivity.removeOnDeviceProfileChangeListener(mFoldController);
+            mFoldController.onDetached();
+        }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        // The dock background while it merges or splits on a foldable, under the icons
+        mFoldController.drawBackground(canvas);
+        super.dispatchDraw(canvas);
+    }
+
+    /** Returns the controller that merges the dock while a foldable opens or closes. */
+    public HotseatFoldController getFoldController() {
+        return mFoldController;
+    }
+
+    /** Returns the dock layout of an unfolded foldable, or null. */
+    @Nullable
+    public FoldDockLayout getFoldDockLayout() {
+        CellPosMapper mapper = mActivity.getCellPosMapper();
+        return mapper != null ? mapper.getFoldDockLayout() : null;
     }
 
     /** Provides translation X for hotseat icons for the channel. */
@@ -282,6 +329,11 @@ public class Hotseat extends FrameLayout implements Insettable {
         DeviceProfile dp = mActivity.getDeviceProfile();
         int numColumns = dp.numShownHotseatIcons;
         int localRank = getLocalRank(rank, dp);
+        FoldDockLayout foldDock = getFoldDockLayout();
+        if (foldDock != null && rank < numColumns) {
+            // Unfolded foldable: first row of the first page, see FoldDockLayout
+            return foldDock.rankToCellX(rank);
+        }
         return localRank % numColumns;
     }
 
@@ -308,6 +360,21 @@ public class Hotseat extends FrameLayout implements Insettable {
         DeviceProfile dp = mActivity.getDeviceProfile();
         int slotsPerPage = Math.max(1, dp.numShownHotseatIcons * dp.numHotseatRows);
         return rank / slotsPerPage;
+    }
+
+    /**
+     * Whether the hotseat item at {@code rank} has a cell in the current layout. A foldable's
+     * cover dock has fewer cells than the database keeps, so the other items stay hidden there
+     * instead of landing on another item's cell. Always true on other devices.
+     */
+    public boolean isRankShown(int rank) {
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        if (!dp.getDeviceProperties().isMultiDisplay()) {
+            return true;
+        }
+        int slots = dp.isVerticalBarLayout() ? dp.numShownHotseatIcons
+                : dp.numShownHotseatIcons * dp.numHotseatRows * Math.max(1, dp.numHotseatPages);
+        return rank >= 0 && rank < slots;
     }
 
     private static int getLocalRank(int rank, DeviceProfile dp) {
