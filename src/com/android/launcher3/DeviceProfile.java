@@ -381,6 +381,7 @@ public class DeviceProfile {
                 .firstCached(preferenceManager2.getDrawerPaddingTopFactor()), 1f, 2f);
         this.inv = inv;
 
+        boolean allowTwoPanels = !FoldLayout.isHomeMirrored(preferenceManager2);
         mDeviceProperties = DeviceProperties.Factory.createDeviceProperties(
                 info,
                 windowBounds,
@@ -388,8 +389,14 @@ public class DeviceProfile {
                 isMultiDisplay,
                 isMultiWindowMode,
                 isGestureMode,
-                !FoldLayout.isHomeMirrored(preferenceManager2)
+                allowTwoPanels
         );
+        if (isMultiDisplay) {
+            Log.d("LC-FoldLayout", "allowTwoPanels=" + allowTwoPanels
+                    + ", isTwoPanels=" + mDeviceProperties.isTwoPanels()
+                    + ", bounds=" + windowBounds.bounds.toShortString()
+                    + ", typeIndex=" + displayOptionSpec.typeIndex);
+        }
 
         mInsets.set(windowBounds.insets);
         this.mDisplayOptionSpec = displayOptionSpec;
