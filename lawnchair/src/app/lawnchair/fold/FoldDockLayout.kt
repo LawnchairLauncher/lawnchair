@@ -1,7 +1,6 @@
 package app.lawnchair.fold
 
 import android.content.Context
-import android.view.Surface
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.DeviceProfile
@@ -10,7 +9,7 @@ import com.android.launcher3.InvariantDeviceProfile
 /**
  * Tells which half of an unfolded book-style foldable swings when the device folds.
  *
- * Stub until `FoldPosture` (Brief C) is merged: wire it in [FoldDockLayout.hingeSource].
+ * Backed by [FoldPosture] in [FoldDockLayout.hingeSource]; replaceable for tests and previews.
  */
 fun interface FoldDockHingeSource {
     /**
@@ -69,18 +68,20 @@ class FoldDockLayout(
 
     companion object {
         /**
-         * Where the moving half is. The default follows the display rotation: book-style folds
-         * have a vertical fold line in their natural rotation, with the hinge on the left of the
-         * cover screen; upside down it is on the right; sideways the fold line is horizontal.
-         *
-         * TODO(fold): replace with `FoldPosture.hingeSide` (Brief C) once merged.
+         * Where the moving half is, from [FoldPosture]: with the hinge on the left of the cover
+         * screen the moving half is the left one. Half opened on a table, or with a horizontal
+         * fold line (sideways), the dock doesn't merge. Replaceable for tests and previews.
          */
         @JvmStatic
         var hingeSource = FoldDockHingeSource { _, dp ->
-            when (dp.deviceProperties.rotationHint) {
-                Surface.ROTATION_0 -> true
-                Surface.ROTATION_180 -> false
-                else -> null
+            if (FoldPosture.isTabletop) {
+                null
+            } else {
+                when (FoldPosture.getHingeSide(dp.deviceProperties.rotationHint, assumeBookStyle = true)) {
+                    HingeSide.LEFT -> true
+                    HingeSide.RIGHT -> false
+                    HingeSide.UNKNOWN -> null
+                }
             }
         }
 
