@@ -113,7 +113,6 @@ enum class FoldTransitionStyle(
         key = "deep",
         labelResourceId = R.string.fold_transition_deep,
         descriptionResourceId = R.string.fold_transition_deep_description,
-        isImplemented = false,
     ),
     SIMPLE(
         key = "simple",

@@ -125,4 +125,22 @@ object FoldTunables {
     /** Spring stiffness (androidx SpringForce units) and damping ratio of each icon. */
     var massStiffness = 380f
     var massDampingRatio = 0.42f
+
+    // DEEP
+
+    /** Virtual tilt of the moving half at progress 0. */
+    var deepMaxTiltDegrees = 50f
+
+    /** Shift of an icon (depth 1) toward the hinge at full tilt. */
+    var deepMaxShiftDp = 40f
+
+    /** Depth of widgets and of the wallpaper, relative to icons. */
+    var deepWidgetDepth = 0.6f
+    var deepWallpaperDepth = 0.25f
+
+    /** Wallpaper offset (0..1 units) per unit of depth at full tilt. */
+    var deepWallpaperShift = 0.08f
+
+    /** Elevation of an icon at full tilt (its soft shadow). */
+    var deepMaxElevationDp = 10f
 }
