@@ -34,7 +34,7 @@ public class WallpaperOffsetInterpolator {
 
     private final SimpleBroadcastReceiver mWallpaperChangeReceiver;
     private final Workspace<?> mWorkspace;
-    private final boolean mIsRtl;
+    private boolean mIsRtl;
     private final Handler mHandler;
 
     private boolean mRegistered = false;
@@ -53,6 +53,14 @@ public class WallpaperOffsetInterpolator {
         mIsRtl = Utilities.isRtl(workspace.getResources());
         mHandler = new OffsetHandler(workspace.getContext());
         prefs = PreferenceManager.getInstance(workspace.getContext());
+    }
+
+    /**
+     * Sets whether the workspace pages are ordered right to left, when it differs from the UI
+     * language.
+     */
+    public void setIsRtl(boolean isRtl) {
+        mIsRtl = isRtl;
     }
 
     /**

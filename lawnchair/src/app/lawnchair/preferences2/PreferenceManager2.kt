@@ -737,6 +737,8 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = FoldHomeLayout.PAGES,
         parse = { FoldHomeLayout.fromString(it) },
         save = { it.key },
+        // "Same as cover" changes the device profiles of the large screen.
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val foldDrawerLayout = preference(
