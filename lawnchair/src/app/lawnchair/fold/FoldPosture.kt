@@ -41,12 +41,6 @@ object FoldPosture {
 
     private val listeners = CopyOnWriteArrayList<Runnable>()
 
-    /** Whether the device is half opened with a horizontal hinge (laptop-like posture). */
-    @JvmStatic
-    @Volatile
-    var isTabletop = false
-        private set
-
     /**
      * Returns the hinge side for the given display [rotation] (a `Surface.ROTATION_*` value).
      *
@@ -111,7 +105,7 @@ object FoldPosture {
         HingeSide.UNKNOWN -> null
     }
 
-    /** Adds a listener called on the main thread when the hinge side or [isTabletop] may have changed. */
+    /** Adds a listener called on the main thread when the hinge side may have changed. */
     @JvmStatic
     fun addListener(listener: Runnable) {
         listeners.addIfAbsent(listener)
@@ -175,17 +169,12 @@ object FoldPosture {
             val isRotated = newRotation == Surface.ROTATION_90 || newRotation == Surface.ROTATION_270
             newNaturalVertical = isVertical != isRotated
         }
-        val newTabletop = feature != null &&
-            feature.state == FoldingFeature.State.HALF_OPENED &&
-            feature.orientation == FoldingFeature.Orientation.HORIZONTAL
-
-        val changed = newNaturalVertical != naturalHingeVertical ||
-            newRotation != rotation ||
-            newTabletop != isTabletop
+        // A horizontal fold line (half opened on a table, or sideways) is a rotation where
+        // getHingeSide is UNKNOWN: no separate posture flag is needed.
+        val changed = newNaturalVertical != naturalHingeVertical || newRotation != rotation
         naturalHingeVertical = newNaturalVertical
         rotation = newRotation
-        isTabletop = newTabletop
-        Log.d(TAG, "update: hingeSide=${getHingeSide(newRotation)}, isTabletop=$newTabletop, rotation=$newRotation, feature=$feature, changed=$changed")
+        Log.d(TAG, "update: hingeSide=${getHingeSide(newRotation)}, rotation=$newRotation, feature=$feature, changed=$changed")
         if (changed) {
             listeners.forEach(Runnable::run)
         }

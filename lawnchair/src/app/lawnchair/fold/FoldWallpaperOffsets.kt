@@ -2,7 +2,6 @@ package app.lawnchair.fold
 
 import android.content.Context
 import android.os.Build
-import android.view.Gravity
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.InvariantDeviceProfile
@@ -60,13 +59,13 @@ object FoldWallpaperOffsets {
         if (prefs2.foldWallpaper.firstCached(prefs2) != FoldWallpaper.SPAN) return defaultOffset
         val activity: ActivityContext = ActivityContext.lookupContextNoThrow(context) ?: return defaultOffset
         val rotation = activity.deviceProfile.deviceProperties.rotationHint
-        return when (FoldGeometry.movingEdgeFor(rotation)) {
+        return when (FoldPosture.isMovingHalfLeft(rotation)) {
             // The fixed half is the right half: the cover rests on the right end
-            Gravity.LEFT -> 1
+            true -> 1
 
-            Gravity.RIGHT -> 0
+            false -> 0
 
-            else -> defaultOffset
+            null -> defaultOffset
         }
     }
 }

@@ -72,14 +72,7 @@ class FoldDockLayout(
          * left of the cover screen), false when it is the right half, or null when the fold line
          * isn't vertical (half opened on a table, or sideways), so the dock can't merge.
          */
-        private fun isMovingHalfLeft(dp: DeviceProfile): Boolean? {
-            if (FoldPosture.isTabletop) return null
-            return when (FoldPosture.getHingeSide(dp.deviceProperties.rotationHint, assumeBookStyle = true)) {
-                HingeSide.LEFT -> true
-                HingeSide.RIGHT -> false
-                HingeSide.UNKNOWN -> null
-            }
-        }
+        private fun isMovingHalfLeft(dp: DeviceProfile): Boolean? = FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint)
 
         /**
          * Returns the dock layout of [dp], or null when [dp] isn't an unfolded foldable with a

@@ -48,8 +48,8 @@ class FoldScene internal constructor(
  *
  * The hinge is assumed to be at the middle of the window. Book-style foldables (Pixel Fold,
  * Galaxy Z Fold, the 7.6" emulator) have the hinge on the left of the cover screen, so in the
- * natural orientation the newly revealed (moving) half is the left one; rotation moves it. Brief C
- * adds `FoldPosture.hingeSide`; once merged, [movingEdgeFor] should read the side from there.
+ * natural orientation the newly revealed (moving) half is the left one; rotation moves it.
+ * [movingEdgeFor] reads the side from [FoldPosture].
  *
  * Styles work in "hinge space": `u` is the distance from the hinge toward the free edge
  * (0..[halfSpan]) and `v` runs along the hinge (0..[hingeLength]). [toRootX]/[toRootY] map it back.
@@ -206,13 +206,13 @@ class FoldGeometry {
          * The moving half for a display rotation. [Surface.ROTATION_90] means the device was turned
          * counter-clockwise, so the natural left edge is now at the bottom.
          */
-        fun movingEdgeFor(rotation: Int): Int = when (FoldPosture.getHingeSide(rotation, assumeBookStyle = true)) {
-            HingeSide.LEFT -> Gravity.LEFT
+        fun movingEdgeFor(rotation: Int): Int = when (FoldPosture.isMovingHalfLeft(rotation)) {
+            true -> Gravity.LEFT
 
-            HingeSide.RIGHT -> Gravity.RIGHT
+            false -> Gravity.RIGHT
 
-            // Horizontal fold line (or no hinge seen yet): fall back to the rotation of a book-style hinge
-            HingeSide.UNKNOWN -> when (rotation) {
+            // Horizontal fold line: fall back to the rotation of a book-style hinge
+            null -> when (rotation) {
                 Surface.ROTATION_90 -> Gravity.BOTTOM
                 Surface.ROTATION_180 -> Gravity.RIGHT
                 Surface.ROTATION_270 -> Gravity.TOP

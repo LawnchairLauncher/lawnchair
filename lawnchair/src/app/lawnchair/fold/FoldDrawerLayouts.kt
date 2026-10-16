@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Point
 import android.graphics.Rect
 import android.util.Log
-import android.view.Gravity
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.DeviceProfile
@@ -48,7 +47,7 @@ object FoldDrawerLayouts {
     /** Whether these are the properties of a foldable's large screen with a vertical fold line. */
     fun isLargeFoldable(properties: DeviceProperties): Boolean = properties.isTablet &&
         properties.isMultiDisplay &&
-        FoldPosture.getHingeSide(properties.rotationHint, assumeBookStyle = true) != HingeSide.UNKNOWN
+        FoldPosture.isMovingHalfLeft(properties.rotationHint) != null
 
     /** Columns of the drawer grid; the cover's for PAGES and BIG_ICONS. Called from `DeviceProfile`. */
     @JvmStatic
@@ -167,8 +166,11 @@ object FoldDrawerLayouts {
         return profiles.firstOrNull { isLargeFoldable(it.deviceProperties) && it.deviceProperties.rotationHint == rotation }
     }
 
-    /** Whether the newly revealed half of [dp]'s window is its left half (else its right half). */
-    fun isMovingHalfLeft(dp: DeviceProfile): Boolean = FoldGeometry.movingEdgeFor(dp.deviceProperties.rotationHint) == Gravity.LEFT
+    /**
+     * Whether the newly revealed half of [dp]'s window is its left half (else its right half).
+     * Only meaningful for an [isLargeFoldable] profile, where the side is known.
+     */
+    fun isMovingHalfLeft(dp: DeviceProfile): Boolean = FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) ?: false
 
     /**
      * Side paddings of the A-Z apps grids (not the search results). PAGES puts the grid on the
