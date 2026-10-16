@@ -3,6 +3,7 @@ package app.lawnchair.fold
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.deviceprofile.DeviceProperties
 
 /**
  * The foldable layout: its preferences, read from the cache for the launcher3 code, and how the
@@ -53,12 +54,16 @@ object FoldLayout {
     @JvmStatic
     fun coverScaleOnLarge(cover: DeviceProfile, large: DeviceProfile): Float = large.deviceProperties.widthPx / 2f / cover.deviceProperties.widthPx
 
+    /** Whether these are the properties of a foldable's large screen with a vertical fold line. */
+    fun isLargeFoldable(properties: DeviceProperties): Boolean = properties.foldScreen == FoldScreen.LARGE &&
+        FoldPosture.isMovingHalfLeft(properties.rotationHint) != null
+
     /**
-     * The cover screen's profile matching [dp]: [dp] itself on the cover, else the cover's profile
-     * in the same rotation, else its portrait one. The cover is the device's phone-sized screen.
+     * The cover screen's profile matching [dp]: [dp] itself unless it is the large screen's, else
+     * the cover's profile in the same rotation, else its portrait one.
      */
     fun coverProfileOf(dp: DeviceProfile): DeviceProfile? {
-        if (!dp.deviceProperties.isTablet) return dp
+        if (dp.deviceProperties.foldScreen != FoldScreen.LARGE) return dp
         return findCoverProfile(dp.inv.supportedProfiles, dp.deviceProperties.rotationHint)
     }
 
@@ -68,7 +73,7 @@ object FoldLayout {
         var any: DeviceProfile? = null
         for (profile in profiles) {
             val properties = profile.deviceProperties
-            if (properties.isTablet) continue
+            if (properties.foldScreen != FoldScreen.COVER) continue
             if (properties.rotationHint == rotation) return profile
             if (portrait == null && !properties.isLandscape) portrait = profile
             if (any == null) any = profile
@@ -78,10 +83,10 @@ object FoldLayout {
 
     /** The large profile matching the cover profile [dp], in the same rotation (itself when [dp] is large). */
     fun largeProfileOf(dp: DeviceProfile): DeviceProfile? {
-        if (dp.deviceProperties.isTablet) return dp
+        if (dp.deviceProperties.foldScreen == FoldScreen.LARGE) return dp
         val rotation = dp.deviceProperties.rotationHint
         return dp.inv.supportedProfiles.firstOrNull {
-            FoldDrawerLayouts.isLargeFoldable(it.deviceProperties) && it.deviceProperties.rotationHint == rotation
+            isLargeFoldable(it.deviceProperties) && it.deviceProperties.rotationHint == rotation
         }
     }
 }

@@ -547,11 +547,12 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                     + Favorites.TABLE_NAME + " WHERE " + coverTopLevel + ")";
             String level2 = Favorites.CONTAINER + " IN (SELECT " + Favorites._ID + " FROM "
                     + Favorites.TABLE_NAME + " WHERE " + level1 + ")";
-            // Above every id in use (ModelWriter hands out ids before it writes the rows), and
-            // the copies' ids are reserved at once, so an id handed out meanwhile can't be one.
+            // Above every id in use (ModelWriter hands out ids before it writes the rows): the
+            // copies get offset + their id, offset = max(current, dbMax) + 1, and every id up to
+            // offset + dbMax is reserved at once, so an id handed out meanwhile can't be one.
             int dbMax = initializeMaxItemId(db);
-            int offset = Math.max(dbMax,
-                    mMaxItemId.getAndUpdate(current -> Math.max(current, dbMax) + 1 + dbMax)) + 1;
+            int reserved = mMaxItemId.updateAndGet(current -> Math.max(current, dbMax) + 1 + dbMax);
+            int offset = reserved - dbMax;
             String appWidget = Favorites.ITEM_TYPE + " = " + Favorites.ITEM_TYPE_APPWIDGET
                     + " AND " + Favorites.APPWIDGET_ID + " > "
                     + LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;

@@ -1086,7 +1086,7 @@
     <string name="fold_home_expand">Expand</string>
     <string name="fold_home_expand_description">One wide page across both halves, swiped as one. Items and widgets stay on one side of the fold, so the cover screen keeps them exactly as they are.</string>
     <string name="fold_home_mirror">Same as cover</string>
-    <string name="fold_home_mirror_description">The exact layout of the cover screen, just larger. No need to arrange two screens.</string>
+    <string name="fold_home_mirror_description">The exact layout of the cover screen, just larger. No need to arrange two screens. The app drawer keeps its own layout setting.</string>
     <string name="fold_home_independent">Independent</string>
     <string name="fold_home_independent_description">A separate layout for the large screen. It starts as a copy of the cover screen, and widgets may need to be set up again there.</string>
 

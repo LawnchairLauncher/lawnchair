@@ -35,6 +35,7 @@ import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
 import app.lawnchair.data.wallpaper.service.WallpaperService
+import app.lawnchair.fold.FoldDrawerState
 import app.lawnchair.fold.FoldDualWallpaper
 import app.lawnchair.fold.FoldPosture
 import app.lawnchair.fold.FoldTransitionController
@@ -501,6 +502,12 @@ class LawnchairLauncher : QuickstepLauncher() {
                 }
             },
         )
+    }
+
+    override fun dispatchDeviceProfileChanged() {
+        // Before any listener hears of the change: the drawer still shows the old layout
+        FoldDrawerState.capture(this)
+        super.dispatchDeviceProfileChanged()
     }
 
     override fun onStateSetEnd(state: LauncherState) {

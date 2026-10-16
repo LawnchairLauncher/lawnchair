@@ -275,6 +275,14 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         // accurate, and we should use mSynchronouslyBoundPages that's set during initial binding.
         val visibleIds =
             when {
+                // LC-Note: a bind of the other item set reopens that set's own page. A new
+                // activity's first bind has bound nothing yet and keeps its saved pages.
+                launcher.cellPosMapper.isInnerItemSet != FoldItemSets.isInnerSetShown &&
+                    !(workspaceLoading && synchronouslyBoundPages.isEmpty) ->
+                    launcher.workspace.swapItemSetPages(
+                        if (workspaceLoading) synchronouslyBoundPages
+                        else launcher.workspace.currentPageScreenIds,
+                    )
                 !pagesToBindSynchronously.isEmpty -> pagesToBindSynchronously
                 !workspaceLoading -> launcher.workspace.screenIdsToKeepOnRebind
                 else -> synchronouslyBoundPages
@@ -489,7 +497,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
 
         // LC-Note: bind only the item set shown on this screen, see FoldItemSets, then tell the
         // model tasks which one it is (until then it is the set of the last bind, which
-        // Workspace.getScreenIdsToKeepOnRebind compares with this one).
+        // getPagesToBindSynchronously compares with this one).
         val innerSet = launcher.cellPosMapper.isInnerItemSet
         val orderedScreenIds = itemIdMap.collectWorkspaceScreens(launcher, innerSet)
         val (currentScreenIds, anchorScreenId) = getPagesToBindSynchronously(orderedScreenIds)

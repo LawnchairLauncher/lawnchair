@@ -83,7 +83,7 @@ object FoldItemSets {
      * every bind (a fold or unfold rebinds) from `CellPosMapper.isInnerItemSet`, so model tasks
      * read it on any thread without asking the activity, and it outlives a launcher being
      * recreated. Until a bind sets it, it is the set of the pages on screen, which
-     * `Workspace.getScreenIdsToKeepOnRebind` compares with the set about to be bound.
+     * `ModelCallbacks.getPagesToBindSynchronously` compares with the set about to be bound.
      */
     @JvmStatic
     @Volatile

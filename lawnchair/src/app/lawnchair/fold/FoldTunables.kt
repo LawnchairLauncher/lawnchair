@@ -1,5 +1,7 @@
 package app.lawnchair.fold
 
+import com.android.app.animation.Interpolators
+
 /**
  * Every number the fold transition engine and its styles depend on, in one place.
  *
@@ -146,4 +148,10 @@ object FoldTunables {
 
     /** EXPAND "river": how far the path of an app bulges. */
     const val DRAWER_RIVER_ARC_DP = 24f
+
+    /** Share of the progress the last item waits before it moves: the river's last app, the book's bottom row. */
+    const val DRAWER_MAX_DELAY = 0.5f
+
+    /** Curve of the drawer transitions: the river, the bar, the header, the zoom and the book. */
+    val DRAWER_EASE = Interpolators.EMPHASIZED_DECELERATE
 }

@@ -92,10 +92,7 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
      */
     private fun getInternalDisplayStates(context: Context): List<CachedDisplayInfo> {
         if (getDisplay(context)?.displayId != DEFAULT_DISPLAY) return emptyList()
-        if (!isFoldable(context)) {
-            warnIfFoldsWithoutHingeFeature(context)
-            return emptyList()
-        }
+        if (!isFoldable(context)) return emptyList()
         // Built like DisplayController.Info#normalizedDisplayInfo, so that it is found in the cache
         val current = getDisplayInfo(context).normalize(this)
 
@@ -374,24 +371,7 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
         return (dp * resources.displayMetrics.density).toInt()
     }
 
-    /**
-     * Logs once when the internal display has several states (a foldable) although the device
-     * doesn't declare the hinge feature: then [isFoldable] is false and the device type changes
-     * on every fold, the behaviour the display states above prevent.
-     */
-    private fun warnIfFoldsWithoutHingeFeature(context: Context) {
-        if (checkedHingeFeature) return
-        checkedHingeFeature = true
-        val states = getPossibleMaximumWindowMetrics(context).map { getDisplayInfo(it, Surface.ROTATION_0) }.toSet()
-        if (states.size > 1) {
-            Log.w(TAG, "internal display has ${states.size} states but no FEATURE_SENSOR_HINGE_ANGLE: the device type may change on fold")
-        }
-    }
-
     companion object {
-        @Volatile
-        private var checkedHingeFeature = false
-
         /** Whether this device folds: the single check, for DisplayController too. */
         @JvmStatic
         fun isFoldable(context: Context): Boolean = Utilities.ATLEAST_R &&

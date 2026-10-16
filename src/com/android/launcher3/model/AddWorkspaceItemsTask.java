@@ -46,7 +46,6 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -130,11 +129,12 @@ public class AddWorkspaceItemsTask implements ModelUpdateTask {
             // item sets; other items (pinned shortcuts, widgets) go to the set on screen.
             boolean independent = FoldItemSets.isIndependent(context);
             boolean innerShown = independent && FoldItemSets.isInnerSetShown();
-            IntArray innerWorkspaceScreens = independent
-                    ? IntArray.wrap(Arrays.stream(dataModel.itemsIdMap
-                            .collectWorkspaceScreens(context, true).toArray())
-                            .map(id -> FoldItemSets.toModelScreenId(id, true)).toArray())
-                    : null;
+            IntArray innerWorkspaceScreens = independent ? new IntArray() : null;
+            if (independent) {
+                for (int id : dataModel.itemsIdMap.collectWorkspaceScreens(context, true)) {
+                    innerWorkspaceScreens.add(FoldItemSets.toModelScreenId(id, true));
+                }
+            }
             IntArray addedInnerScreensFinal = new IntArray();
             for (ItemInfo item : filteredItems) {
                 boolean innerOnly = innerShown

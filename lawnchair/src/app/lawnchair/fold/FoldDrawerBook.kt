@@ -4,7 +4,6 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
-import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
@@ -163,8 +162,8 @@ class FoldDrawerBook private constructor(
     /** How far below its place a second-page child whose top is at [movingTop] still is. */
     private fun riseOffset(movingTop: Int): Float {
         val depth = ((movingTop - pageTop).toFloat() / pageHeight).coerceIn(0f, 1f)
-        val local = ((transitionProgress - depth * RISE_DELAY) / (1f - RISE_DELAY)).coerceIn(0f, 1f)
-        return (1f - Interpolators.EMPHASIZED_DECELERATE.getInterpolation(local)) * pageHeight
+        val local = ((transitionProgress - depth * FoldTunables.DRAWER_MAX_DELAY) / (1f - FoldTunables.DRAWER_MAX_DELAY)).coerceIn(0f, 1f)
+        return (1f - FoldTunables.DRAWER_EASE.getInterpolation(local)) * pageHeight
     }
 
     /** Clips the top [hidden] pixels of [child] (none when [hidden] <= 0). */
@@ -247,9 +246,6 @@ class FoldDrawerBook private constructor(
     }
 
     companion object {
-        /** Share of the progress the second page's bottom row waits before it rises. */
-        private const val RISE_DELAY = 0.5f
-
         /** Moves a focus outline [rect] (in the list's coordinates) to where [view] is drawn. */
         @JvmStatic
         fun offsetFocusRect(view: View, rect: Rect) {

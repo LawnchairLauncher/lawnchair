@@ -861,22 +861,26 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     /**
      * Returns the screens to keep showing when the workspace is rebound. LC-Note: when the large
      * screen of a foldable folds, this is the panel last touched if the cover should open on it.
-     * With "Independent" (FoldItemSets), page ids of one item set mean nothing in the other one:
-     * when the bind shows the other set, this remembers the page on screen for its set and
-     * returns the page last shown in the other set (last panel doesn't cross sets).
      */
     public IntSet getScreenIdsToKeepOnRebind() {
-        boolean innerSet = getCellPosMapper().isInnerItemSet();
-        if (innerSet != FoldItemSets.isInnerSetShown()) {
-            mLastPagesBySet[innerSet ? 0 : 1] = getCurrentPageScreenIds();
-            return mLastPagesBySet[innerSet ? 1 : 0];
-        }
         int screenId = mLastTouchedPanelScreenId;
         if (screenId != -1 && !isTwoPanelEnabled()
                 && FoldLayout.opensLastPanelAfterFold(mPreferenceManager2)) {
             return IntSet.wrap(screenId);
         }
         return getCurrentPageScreenIds();
+    }
+
+    /**
+     * LC-Note: with "Independent" (FoldItemSets), page ids of one item set mean nothing in the
+     * other one. Called by the bind that shows the other set: remembers {@code previous}, the
+     * pages of the set it replaces, and returns the pages last shown in the set it binds (last
+     * panel doesn't cross sets).
+     */
+    public IntSet swapItemSetPages(IntSet previous) {
+        boolean innerSet = getCellPosMapper().isInnerItemSet();
+        mLastPagesBySet[innerSet ? 0 : 1] = previous;
+        return mLastPagesBySet[innerSet ? 1 : 0];
     }
 
     public void deferRemoveExtraEmptyScreen() {
