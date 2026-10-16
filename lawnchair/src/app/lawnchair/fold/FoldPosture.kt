@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
-import com.android.launcher3.DeviceProfile
 import com.android.launcher3.util.DisplayController
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlinx.coroutines.Job
@@ -24,7 +23,8 @@ import kotlinx.coroutines.launch
  * inner screen carries the cover screen. So the hinge orientation at the natural display rotation
  * is learned from the first [FoldingFeature] reported, and kept while folded. Every book-style
  * foldable has its hinge on the left of the cover screen when held upright, so at the natural
- * rotation the fixed half is the right half ([HingeSide.LEFT]); upside down it is the left half.
+ * rotation the moving half is the left half and the fixed half the right one; upside down it is
+ * the other way round.
  *
  * Values are only updated while a launcher activity is started; reads are safe from any thread.
  */
@@ -42,67 +42,23 @@ object FoldPosture {
     private val listeners = CopyOnWriteArrayList<Runnable>()
 
     /**
-     * Returns the hinge side for the given display [rotation] (a `Surface.ROTATION_*` value).
+     * Returns whether the moving half of the large screen is its left half at display [rotation]
+     * (a `Surface.ROTATION_*` value), or null when the hinge is horizontal. The single answer to
+     * "which half is fixed": the fixed half is the other one.
      *
-     * With [assumeBookStyle], a device whose hinge was not reported yet is treated as a book-style
-     * foldable, whose hinge is vertical at the natural rotation. Use it only when the current layout
-     * already shows two panels, for example right after unfolding, before androidx.window reports.
+     * A device whose hinge was not reported yet is taken for a book-style foldable, whose hinge is
+     * vertical at the natural rotation: this is for layouts that already show two panels, for
+     * example right after unfolding, before androidx.window reports.
      */
     @JvmStatic
-    @JvmOverloads
-    fun getHingeSide(rotation: Int, assumeBookStyle: Boolean = false): HingeSide {
-        val vertical = naturalHingeVertical ?: assumeBookStyle
-        if (!vertical) {
-            // Never reported, or a horizontal hinge at the natural rotation (flip phones).
-            return HingeSide.UNKNOWN
-        }
+    fun isMovingHalfLeft(rotation: Int): Boolean? {
+        // A horizontal hinge at the natural rotation (flip phones) has no left or right half
+        if (naturalHingeVertical == false) return null
         return when (rotation) {
-            Surface.ROTATION_0 -> HingeSide.LEFT
-
-            Surface.ROTATION_180 -> HingeSide.RIGHT
-
-            // The hinge is horizontal: there is no left or right half.
-            else -> HingeSide.UNKNOWN
+            Surface.ROTATION_0 -> true
+            Surface.ROTATION_180 -> false
+            else -> null // sideways the hinge is horizontal
         }
-    }
-
-    /**
-     * The cover screen's profile matching [dp]: [dp] itself on the cover, else the cover's profile
-     * in the same rotation, else its portrait one. The cover is the device's phone-sized screen.
-     */
-    @JvmStatic
-    fun coverProfileOf(dp: DeviceProfile): DeviceProfile? {
-        if (!dp.deviceProperties.isTablet) return dp
-        val profiles = dp.inv?.supportedProfiles ?: return null
-        return findCoverProfile(profiles, dp.deviceProperties.rotationHint)
-    }
-
-    /** The cover profile among [profiles] for a screen in [rotation], see [coverProfileOf]. */
-    @JvmStatic
-    fun findCoverProfile(profiles: List<DeviceProfile>, rotation: Int): DeviceProfile? {
-        var portrait: DeviceProfile? = null
-        var any: DeviceProfile? = null
-        for (profile in profiles) {
-            val properties = profile.deviceProperties
-            if (properties.isTablet) continue
-            if (properties.rotationHint == rotation) return profile
-            if (portrait == null && !properties.isLandscape) portrait = profile
-            if (any == null) any = profile
-        }
-        return portrait ?: any
-    }
-
-    /**
-     * Returns whether the moving half of the large screen is its left half at display [rotation],
-     * or null when the hinge is horizontal or its side is unknown. The single answer to "which half
-     * is fixed": the fixed half is the other one. Like [getHingeSide] with `assumeBookStyle`, for
-     * layouts that already show two panels.
-     */
-    @JvmStatic
-    fun isMovingHalfLeft(rotation: Int): Boolean? = when (getHingeSide(rotation, assumeBookStyle = true)) {
-        HingeSide.LEFT -> true
-        HingeSide.RIGHT -> false
-        HingeSide.UNKNOWN -> null
     }
 
     /** Adds a listener called on the main thread when the hinge side may have changed. */
@@ -170,11 +126,11 @@ object FoldPosture {
             newNaturalVertical = isVertical != isRotated
         }
         // A horizontal fold line (half opened on a table, or sideways) is a rotation where
-        // getHingeSide is UNKNOWN: no separate posture flag is needed.
+        // isMovingHalfLeft is null: no separate posture flag is needed.
         val changed = newNaturalVertical != naturalHingeVertical || newRotation != rotation
         naturalHingeVertical = newNaturalVertical
         rotation = newRotation
-        Log.d(TAG, "update: hingeSide=${getHingeSide(newRotation)}, rotation=$newRotation, feature=$feature, changed=$changed")
+        Log.d(TAG, "update: naturalHingeVertical=$newNaturalVertical, rotation=$newRotation, feature=$feature, changed=$changed")
         if (changed) {
             listeners.forEach(Runnable::run)
         }

@@ -4,7 +4,10 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.DeviceProfile
 
-/** Reads the foldable layout preferences from the cache, for the launcher3 code. */
+/**
+ * The foldable layout: its preferences, read from the cache for the launcher3 code, and how the
+ * cover screen's profiles map onto the large screen's.
+ */
 object FoldLayout {
 
     /**
@@ -12,20 +15,18 @@ object FoldLayout {
      * both halves instead of two panels.
      */
     @JvmStatic
-    fun isHomeMirrored(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.MIRROR
+    fun isHomeMirrored(prefs2: PreferenceManager2): Boolean = prefs2.foldHomeLayout.firstCached(prefs2) == FoldHomeLayout.MIRROR
 
     /**
      * Whether the large screen shows one wide page per pair of cover pages ("Expand"): cover pages
      * 2n and 2n + 1 side by side, twice the columns, scrolled one wide page at a time.
      */
     @JvmStatic
-    fun isHomeExpanded(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.EXPAND
+    fun isHomeExpanded(prefs2: PreferenceManager2): Boolean = prefs2.foldHomeLayout.firstCached(prefs2) == FoldHomeLayout.EXPAND
 
     /** Whether the large screen has its own items ("Independent"), see [FoldItemSets]. */
     @JvmStatic
-    fun isHomeIndependent(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.INDEPENDENT
-
-    private fun currentHomeLayout(prefs2: PreferenceManager2): FoldHomeLayout = prefs2.foldHomeLayout.firstCached(prefs2)
+    fun isHomeIndependent(prefs2: PreferenceManager2): Boolean = prefs2.foldHomeLayout.firstCached(prefs2) == FoldHomeLayout.INDEPENDENT
 
     /**
      * Whether a wide "Expand" page shows its even cover page on the end half (cells >= columns, the
@@ -51,4 +52,36 @@ object FoldLayout {
      */
     @JvmStatic
     fun coverScaleOnLarge(cover: DeviceProfile, large: DeviceProfile): Float = large.deviceProperties.widthPx / 2f / cover.deviceProperties.widthPx
+
+    /**
+     * The cover screen's profile matching [dp]: [dp] itself on the cover, else the cover's profile
+     * in the same rotation, else its portrait one. The cover is the device's phone-sized screen.
+     */
+    fun coverProfileOf(dp: DeviceProfile): DeviceProfile? {
+        if (!dp.deviceProperties.isTablet) return dp
+        return findCoverProfile(dp.inv.supportedProfiles, dp.deviceProperties.rotationHint)
+    }
+
+    /** The cover profile among [profiles] for a screen in [rotation], see [coverProfileOf]. */
+    fun findCoverProfile(profiles: List<DeviceProfile>, rotation: Int): DeviceProfile? {
+        var portrait: DeviceProfile? = null
+        var any: DeviceProfile? = null
+        for (profile in profiles) {
+            val properties = profile.deviceProperties
+            if (properties.isTablet) continue
+            if (properties.rotationHint == rotation) return profile
+            if (portrait == null && !properties.isLandscape) portrait = profile
+            if (any == null) any = profile
+        }
+        return portrait ?: any
+    }
+
+    /** The large profile matching the cover profile [dp], in the same rotation (itself when [dp] is large). */
+    fun largeProfileOf(dp: DeviceProfile): DeviceProfile? {
+        if (dp.deviceProperties.isTablet) return dp
+        val rotation = dp.deviceProperties.rotationHint
+        return dp.inv.supportedProfiles.firstOrNull {
+            FoldDrawerLayouts.isLargeFoldable(it.deviceProperties) && it.deviceProperties.rotationHint == rotation
+        }
+    }
 }

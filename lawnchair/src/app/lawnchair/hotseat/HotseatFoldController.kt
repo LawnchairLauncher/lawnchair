@@ -8,8 +8,7 @@ import android.graphics.RectF
 import android.view.View
 import android.view.ViewTreeObserver
 import app.lawnchair.fold.FoldDockLayout
-import app.lawnchair.fold.FoldPosture
-import app.lawnchair.fold.FoldProgressListener
+import app.lawnchair.fold.FoldLayout
 import com.android.launcher3.CellLayout
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Hotseat
@@ -48,8 +47,7 @@ import kotlin.math.roundToInt
 class HotseatFoldController(
     private val hotseat: Hotseat,
     private val activity: ActivityContext,
-) : FoldProgressListener,
-    DeviceProfile.OnDeviceProfileChangeListener,
+) : DeviceProfile.OnDeviceProfileChangeListener,
     ViewTreeObserver.OnPreDrawListener {
 
     private var isActive = false
@@ -115,7 +113,7 @@ class HotseatFoldController(
         foldDock = null
     }
 
-    override fun onFoldStart(opening: Boolean) {
+    fun onFoldStart(opening: Boolean) {
         progress = if (opening) 0f else 1f
         if (!isActive) {
             isActive = true
@@ -124,13 +122,13 @@ class HotseatFoldController(
         hotseat.invalidate()
     }
 
-    override fun onFoldProgress(progress: Float, opening: Boolean) {
+    fun onFoldProgress(progress: Float, opening: Boolean) {
         if (!isActive) onFoldStart(opening)
         this.progress = progress.coerceIn(0f, 1f)
         hotseat.invalidate()
     }
 
-    override fun onFoldEnd(opening: Boolean) {
+    fun onFoldEnd(opening: Boolean) {
         if (!isActive) return
         isActive = false
         hotseat.viewTreeObserver.removeOnPreDrawListener(this)
@@ -235,7 +233,7 @@ class HotseatFoldController(
         // Where the cover dock's icons sit, with the cover screen over the fixed half
         val width = hotseat.width.toFloat()
         val coverIcons = layout.coverIcons
-        val cover = FoldPosture.coverProfileOf(activity.deviceProfile)
+        val cover = FoldLayout.coverProfileOf(activity.deviceProfile)
         val coverWidth: Float
         val coverFirstCenter: Float
         val coverStep: Float

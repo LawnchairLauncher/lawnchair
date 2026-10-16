@@ -211,7 +211,7 @@ class WindowFoldStyle : SplitFoldStyle() {
     @RequiresApi(Build.VERSION_CODES.S)
     private fun buildMovingBlurLevels(scene: FoldScene): Array<RenderEffect?> {
         val maxRadius = scene.dpToPx(FoldTunables.WINDOW_MAX_BLUR_DP)
-        val levels = FoldTunables.WINDOW_BLUR_LEVELS.coerceIn(1, MAX_BLUR_LEVELS)
+        val levels = FoldTunables.WINDOW_BLUR_LEVELS
         if (maxRadius < MIN_BLUR_RADIUS) return emptyArray()
         val geometry = scene.geometry
         val rect = geometry.movingRect
@@ -222,7 +222,7 @@ class WindowFoldStyle : SplitFoldStyle() {
         val hingeY = geometry.toRootY(0f, 0f) - rect.top
         val freeX = geometry.toRootX(maskSpan, 0f) - rect.left
         val freeY = geometry.toRootY(maskSpan, 0f) - rect.top
-        val split = FoldTunables.WINDOW_BLUR_BAND_SPLIT.coerceIn(0.05f, 0.95f)
+        val split = FoldTunables.WINDOW_BLUR_BAND_SPLIT
 
         val sharpColors = IntArray(MASK_STOPS)
         val middleColors = IntArray(MASK_STOPS)
@@ -284,7 +284,6 @@ class WindowFoldStyle : SplitFoldStyle() {
         const val SHADE_AT_HINGE = 0.1f
         const val MASK_STOPS = 16
         const val FIXED_BLUR_LEVELS = 6
-        const val MAX_BLUR_LEVELS = 32
         const val MIN_BLUR_RADIUS = 0.5f
     }
 }

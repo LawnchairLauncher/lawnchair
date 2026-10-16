@@ -42,8 +42,6 @@ object FoldDrawerLayouts {
 
     private val applied: MutableMap<DeviceProfile, Applied> = Collections.synchronizedMap(WeakHashMap())
 
-    fun currentLayout(prefs2: PreferenceManager2): FoldDrawerLayout = prefs2.foldDrawerLayout.firstCached(prefs2)
-
     /** Whether these are the properties of a foldable's large screen with a vertical fold line. */
     fun isLargeFoldable(properties: DeviceProperties): Boolean = properties.foldScreen == FoldScreen.LARGE &&
         FoldPosture.isMovingHalfLeft(properties.rotationHint) != null
@@ -57,7 +55,7 @@ object FoldDrawerLayouts {
         columns: Int,
     ): Int {
         if (!isLargeFoldable(properties)) return columns
-        return when (currentLayout(prefs2)) {
+        return when (prefs2.foldDrawerLayout.firstCached(prefs2)) {
             FoldDrawerLayout.EXPAND -> columns
             FoldDrawerLayout.PAGES, FoldDrawerLayout.BIG_ICONS -> inv.numAllAppsColumns
         }
@@ -70,12 +68,13 @@ object FoldDrawerLayouts {
     @JvmStatic
     fun applyToProfiles(context: Context, profiles: List<DeviceProfile>) {
         if (InvariantDeviceProfile.deviceType != InvariantDeviceProfile.TYPE_MULTI_DISPLAY) return
-        val layout = currentLayout(PreferenceManager2.getInstance(context))
+        val prefs2 = PreferenceManager2.getInstance(context)
+        val layout = prefs2.foldDrawerLayout.firstCached(prefs2)
         if (layout == FoldDrawerLayout.EXPAND) return
         for (dp in profiles) {
             val properties = dp.deviceProperties
             if (!isLargeFoldable(properties)) continue
-            val cover = FoldPosture.findCoverProfile(profiles, properties.rotationHint)
+            val cover = FoldLayout.findCoverProfile(profiles, properties.rotationHint)
             if (cover == null) {
                 Log.w(TAG, "no cover profile for ${properties.widthPx}x${properties.heightPx}, drawer stays expanded")
                 continue
@@ -91,8 +90,7 @@ object FoldDrawerLayouts {
 
     /** Fixed page = the cover's drawer: its profile, its side padding, a full-width sheet. */
     private fun applyPages(dp: DeviceProfile, cover: DeviceProfile): Float {
-        val halfWidth = dp.deviceProperties.widthPx / 2f
-        val scale = halfWidth / cover.deviceProperties.widthPx
+        val scale = FoldLayout.coverScaleOnLarge(cover, dp)
         val profile = cover.allAppsProfile
         dp.setAllAppsProfile(profile.copy(borderSpacePx = Point(profile.borderSpacePx.x, profile.borderSpacePx.y)))
         dp.updateAllAppsDotRenderer()
@@ -105,7 +103,7 @@ object FoldDrawerLayouts {
     /** The cover's grid zoomed to the whole width: same columns, larger icons and labels. */
     private fun applyBigIcons(dp: DeviceProfile, cover: DeviceProfile): Float {
         val widthScale = dp.deviceProperties.widthPx.toFloat() / cover.deviceProperties.widthPx
-        val scale = widthScale.coerceIn(1f, FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE.coerceAtLeast(1f))
+        val scale = widthScale.coerceIn(1f, FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE)
         val profile = cover.allAppsProfile
         dp.setAllAppsProfile(
             profile.copy(
@@ -141,8 +139,9 @@ object FoldDrawerLayouts {
     @JvmStatic
     fun getIconCacheBitmapSize(context: Context, iconBitmapSize: Int, allAppsIconBitmapSize: Int): Int {
         if (InvariantDeviceProfile.deviceType != InvariantDeviceProfile.TYPE_MULTI_DISPLAY) return iconBitmapSize
-        if (currentLayout(PreferenceManager2.getInstance(context)) != FoldDrawerLayout.BIG_ICONS) return iconBitmapSize
-        val zoomed = (allAppsIconBitmapSize * FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE.coerceAtLeast(1f)).roundToInt()
+        val prefs2 = PreferenceManager2.getInstance(context)
+        if (prefs2.foldDrawerLayout.firstCached(prefs2) != FoldDrawerLayout.BIG_ICONS) return iconBitmapSize
+        val zoomed = (allAppsIconBitmapSize * FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE).roundToInt()
         return maxOf(iconBitmapSize, zoomed)
     }
 
@@ -157,39 +156,22 @@ object FoldDrawerLayouts {
         return applied[dp]?.layout ?: FoldDrawerLayout.EXPAND
     }
 
-    /** The large profile matching the cover profile [dp] (itself when [dp] is large). */
-    fun largeProfileOf(dp: DeviceProfile): DeviceProfile? {
-        if (dp.deviceProperties.isTablet) return dp
-        val rotation = dp.deviceProperties.rotationHint
-        val profiles = dp.inv?.supportedProfiles ?: return null
-        return profiles.firstOrNull { isLargeFoldable(it.deviceProperties) && it.deviceProperties.rotationHint == rotation }
-    }
-
     /**
-     * Whether the newly revealed half of [dp]'s window is its left half (else its right half).
-     * Only meaningful for an [isLargeFoldable] profile, where the side is known.
-     */
-    fun isMovingHalfLeft(dp: DeviceProfile): Boolean = FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) ?: false
-
-    /**
-     * Side paddings of the A-Z apps grids (not the search results). PAGES puts the grid on the
-     * fixed half: the moving half's width is added on its side. Called from the drawer container.
+     * Side paddings of the A-Z apps grids (not the search results) and of the header rows above
+     * them. PAGES puts both on the fixed half: the moving half's width is added on its side. Called
+     * from the drawer container and its header.
      */
     @JvmStatic
     fun adjustAppsGridPadding(dp: DeviceProfile, padding: Rect) {
         if (applied[dp]?.layout != FoldDrawerLayout.PAGES) return
         val half = dp.deviceProperties.widthPx / 2
-        if (isMovingHalfLeft(dp)) padding.left += half else padding.right += half
+        if (FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) == true) padding.left += half else padding.right += half
     }
-
-    /** Side paddings of the drawer header (predictions, tabs): on the fixed half for PAGES. */
-    @JvmStatic
-    fun adjustHeaderPadding(dp: DeviceProfile, padding: Rect) = adjustAppsGridPadding(dp, padding)
 
     /** Horizontal shift from the fixed page to the moving page (PAGES), in pixels. */
     fun bookShiftX(dp: DeviceProfile): Int {
         val half = dp.deviceProperties.widthPx / 2
-        return if (isMovingHalfLeft(dp)) -half else half
+        return if (FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) == true) -half else half
     }
 
     /**
@@ -200,7 +182,6 @@ object FoldDrawerLayouts {
     fun getSearchBarPadding(context: Context, dp: DeviceProfile): Int {
         val pages = applied[dp]?.takeIf { it.layout == FoldDrawerLayout.PAGES }
             ?: return dp.getAllAppsIconStartMargin(context)
-        val scale = dp.deviceProperties.widthPx / 2f / pages.cover.deviceProperties.widthPx
-        return (pages.cover.getAllAppsIconStartMargin(context) * scale).roundToInt()
+        return (pages.cover.getAllAppsIconStartMargin(context) * FoldLayout.coverScaleOnLarge(pages.cover, dp)).roundToInt()
     }
 }

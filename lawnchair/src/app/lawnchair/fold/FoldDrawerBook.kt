@@ -4,6 +4,8 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
+import com.android.app.animation.Interpolators
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsRecyclerView
@@ -29,38 +31,37 @@ import com.android.launcher3.views.ActivityContext
  * Keyboard and accessibility follow the visual order, fixed page rows then second page rows: in
  * layout order the second page's rows already come right after the fixed page's, so the default
  * focus search (up, down, tab) and the accessibility traversal (children sorted by layout position)
- * read the pages in order. As a [ScrollableLayoutManager.FoldBookDelegate] the book also moves
+ * read the pages in order. Called by the list's [ScrollableLayoutManager], the book also moves
  * left/right focus across the hinge by where the items are drawn, keeps the list still when a
  * focused item is already visible on the second page, and scrolls only as much as needed when it
  * is cut there. The focus outline follows the item ([offsetFocusRect]).
  *
+ * While a drawer transition plays on the book ([transitionProgress]), its second page's apps rise
+ * from one page below into place, top row first.
+ *
  * One instance per A-Z RecyclerView (personal and work) of a foldable, kept on the list itself (a
- * view tag), so it lives exactly as long as the list. It does nothing unless the current profile
- * was built for PAGES.
+ * view tag), so it lives exactly as long as the list. It listens to frames only while the current
+ * profile is built for PAGES ([onDeviceProfileChanged]); while a drawer transition plays, the
+ * transition drives [update] instead.
  */
 class FoldDrawerBook private constructor(
     private val rv: AllAppsRecyclerView,
 ) : ViewTreeObserver.OnPreDrawListener,
-    View.OnAttachStateChangeListener,
-    ScrollableLayoutManager.FoldBookDelegate {
+    View.OnAttachStateChangeListener {
 
-    /** Lets a transition add a vertical offset to each child while it plays. */
-    fun interface OffsetProvider {
-        /** [movingTop] is the child's top on the moving page (RecyclerView coordinates), if it is there. */
-        fun offsetY(child: View, onMovingPage: Boolean, movingTop: Int, pageTop: Int, pageHeight: Int): Float
-    }
-
-    var offsetProvider: OffsetProvider? = null
+    /**
+     * Progress of the drawer transition playing on the book (0 = the second page still one page
+     * below), or NaN when none plays. While it is set, the transition calls [update] every frame.
+     */
+    var transitionProgress = Float.NaN
 
     /** Whether the book is laid out (the current profile was built for PAGES). */
     var isActive = false
         private set
 
     /** Top of both pages' grids and their height, in RecyclerView coordinates, while active. */
-    var pageTop = 0
-        private set
-    var pageHeight = 0
-        private set
+    private var pageTop = 0
+    private var pageHeight = 0
 
     private var observer: ViewTreeObserver? = null
 
@@ -76,27 +77,46 @@ class FoldDrawerBook private constructor(
         if (rv.isAttachedToWindow) onViewAttachedToWindow(rv)
     }
 
-    override fun onViewAttachedToWindow(v: View) {
-        val vto = rv.viewTreeObserver
-        vto.addOnPreDrawListener(this)
-        observer = vto
-    }
+    override fun onViewAttachedToWindow(v: View) = onDeviceProfileChanged()
 
-    override fun onViewDetachedFromWindow(v: View) {
-        observer?.let { if (it.isAlive) it.removeOnPreDrawListener(this) }
-        observer = null
-    }
+    override fun onViewDetachedFromWindow(v: View) = listen(false)
 
     override fun onPreDraw(): Boolean {
-        update()
+        if (transitionProgress.isNaN()) update()
         return true
     }
 
+    /**
+     * Listens to frames only while the profile is built for PAGES, and puts the children back when
+     * it no longer is. Called when the list is attached and after each profile change.
+     */
+    fun onDeviceProfileChanged() {
+        val pages = isPages(deviceProfile())
+        listen(pages && rv.isAttachedToWindow)
+        if (!pages && isActive) deactivate()
+    }
+
+    private fun listen(on: Boolean) {
+        if (on == (observer != null)) return
+        if (on) {
+            observer = rv.viewTreeObserver.also { it.addOnPreDrawListener(this) }
+        } else {
+            observer?.let { if (it.isAlive) it.removeOnPreDrawListener(this) }
+            observer = null
+        }
+    }
+
+    private fun deviceProfile(): DeviceProfile {
+        val activity: ActivityContext = ActivityContext.lookupContext(rv.context)
+        return activity.deviceProfile
+    }
+
+    private fun isPages(dp: DeviceProfile) = FoldDrawerLayouts.drawerLayoutOf(dp) == FoldDrawerLayout.PAGES
+
     /** Places the children on their page. Safe to call any time. */
     fun update() {
-        val activity: ActivityContext = ActivityContext.lookupContext(rv.context)
-        val dp = activity.deviceProfile
-        if (FoldDrawerLayouts.drawerLayoutOf(dp) != FoldDrawerLayout.PAGES || rv.height == 0) {
+        val dp = deviceProfile()
+        if (!isPages(dp) || rv.height == 0) {
             if (isActive) deactivate()
             return
         }
@@ -105,10 +125,7 @@ class FoldDrawerBook private constructor(
         val bottom = rv.height - rv.paddingBottom
         pageTop = rv.paddingTop
         pageHeight = (bottom - pageTop).coerceAtLeast(0)
-        (lm as? ScrollableLayoutManager)?.let {
-            it.setFoldExtraLayoutSpace(pageHeight)
-            it.setFoldBookDelegate(this)
-        }
+        (lm as? ScrollableLayoutManager)?.setFoldExtraLayoutSpace(pageHeight)
         // Up by whole rows, so the cut row lands where the fixed page's first full row would be
         // and the rows of both pages line up.
         var rowHeight = 0
@@ -121,14 +138,14 @@ class FoldDrawerBook private constructor(
         }
         shiftY = if (rowHeight > 0) (pageHeight / rowHeight).coerceAtLeast(1) * rowHeight else pageHeight
         val shiftX = FoldDrawerLayouts.bookShiftX(dp).toFloat()
-        val provider = offsetProvider
+        val rising = !transitionProgress.isNaN() && pageHeight > 0
         for (i in 0 until rv.childCount) {
             val child = rv.getChildAt(i)
             // Not fully visible on the fixed page: it belongs to the moving page.
             val onMovingPage = lm.getDecoratedBottom(child) > bottom
             val tx = if (onMovingPage) shiftX else 0f
             var ty = if (onMovingPage) -shiftY.toFloat() else 0f
-            if (provider != null) ty += provider.offsetY(child, onMovingPage, child.top - shiftY, pageTop, pageHeight)
+            if (onMovingPage && rising) ty += riseOffset(child.top - shiftY)
             if (child.translationX != tx) child.translationX = tx
             if (child.translationY != ty) child.translationY = ty
             clipAbovePage(child, if (onMovingPage) pageTop - (child.top + ty) else 0f)
@@ -141,6 +158,13 @@ class FoldDrawerBook private constructor(
                 clipped.removeAt(i)
             }
         }
+    }
+
+    /** How far below its place a second-page child whose top is at [movingTop] still is. */
+    private fun riseOffset(movingTop: Int): Float {
+        val depth = ((movingTop - pageTop).toFloat() / pageHeight).coerceIn(0f, 1f)
+        val local = ((transitionProgress - depth * RISE_DELAY) / (1f - RISE_DELAY)).coerceIn(0f, 1f)
+        return (1f - Interpolators.EMPHASIZED_DECELERATE.getInterpolation(local)) * pageHeight
     }
 
     /** Clips the top [hidden] pixels of [child] (none when [hidden] <= 0). */
@@ -156,10 +180,7 @@ class FoldDrawerBook private constructor(
 
     private fun deactivate() {
         isActive = false
-        (rv.layoutManager as? ScrollableLayoutManager)?.let {
-            it.setFoldExtraLayoutSpace(0)
-            it.setFoldBookDelegate(null)
-        }
+        (rv.layoutManager as? ScrollableLayoutManager)?.setFoldExtraLayoutSpace(0)
         for (i in 0 until rv.childCount) {
             val child = rv.getChildAt(i)
             child.translationX = 0f
@@ -181,7 +202,8 @@ class FoldDrawerBook private constructor(
         return top + child.height > pageTop && top < pageTop + pageHeight
     }
 
-    override fun onInterceptFocusSearch(focused: View, direction: Int): View? {
+    /** A child to focus instead of the default search result, or null for the default. */
+    fun onInterceptFocusSearch(focused: View, direction: Int): View? {
         if (!isActive || (direction != View.FOCUS_LEFT && direction != View.FOCUS_RIGHT)) return null
         val item = rv.findContainingItemView(focused) ?: return null
         val left = item.left + item.translationX
@@ -207,12 +229,8 @@ class FoldDrawerBook private constructor(
         return best
     }
 
-    override fun requestChildRectangleOnScreen(
-        parent: RecyclerView,
-        child: View,
-        rect: Rect,
-        immediate: Boolean,
-    ): Boolean? {
+    /** Brings [child] on screen. Returns null to use the default behaviour, else whether the list scrolled. */
+    fun requestChildRectangleOnScreen(parent: RecyclerView, child: View, immediate: Boolean): Boolean? {
         if (!isActive || !isOnMovingPage(child)) return null
         // On the second page: no scroll while it shows there whole, else just enough to show it.
         val top = child.top - shiftY
@@ -229,6 +247,9 @@ class FoldDrawerBook private constructor(
     }
 
     companion object {
+        /** Share of the progress the second page's bottom row waits before it rises. */
+        private const val RISE_DELAY = 0.5f
+
         /** Moves a focus outline [rect] (in the list's coordinates) to where [view] is drawn. */
         @JvmStatic
         fun offsetFocusRect(view: View, rect: Rect) {
@@ -245,6 +266,7 @@ class FoldDrawerBook private constructor(
         }
 
         /** The book of [rv], if it has one. */
-        fun of(rv: AllAppsRecyclerView?): FoldDrawerBook? = rv?.getTag(R.id.fold_drawer_book) as? FoldDrawerBook
+        @JvmStatic
+        fun of(rv: RecyclerView?): FoldDrawerBook? = rv?.getTag(R.id.fold_drawer_book) as? FoldDrawerBook
     }
 }

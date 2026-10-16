@@ -67,7 +67,7 @@ class WaveFoldStyle : SplitFoldStyle() {
             Shader.TileMode.CLAMP,
         )
         // Behind the band (toward the hinge) revealed, ahead of it dim.
-        val dim = FoldTunables.WAVE_DIM_ALPHA.coerceIn(0f, 1f)
+        val dim = FoldTunables.WAVE_DIM_ALPHA
         maskPaint.shader = LinearGradient(
             -bandHalf,
             0f,
@@ -101,11 +101,11 @@ class WaveFoldStyle : SplitFoldStyle() {
             clipDragLayerToFixedHalf(scene)
             // From the hinge (half of the band shows there) to past the free edge.
             bandCenter = p * (span + bandHalf)
-            bandPaint.alpha = (FoldTunables.WAVE_BAND_ALPHA * 255f).roundToInt().coerceIn(0, 255)
+            bandPaint.alpha = (FoldTunables.WAVE_BAND_ALPHA * 255f).roundToInt()
         } else {
             // Cover: from past the far edge back to past the hinge edge.
             bandCenter = -bandHalf + p * (span + 2f * bandHalf)
-            bandPaint.alpha = (FoldTunables.WAVE_BAND_ALPHA * COVER_FACTOR * 255f).roundToInt().coerceIn(0, 255)
+            bandPaint.alpha = (FoldTunables.WAVE_BAND_ALPHA * COVER_FACTOR * 255f).roundToInt()
         }
 
         tracker.update(scene)
