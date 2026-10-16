@@ -1139,4 +1139,5 @@
     <string name="fold_wallpaper_span_description">One image stretched across both screens, so the transition looks continuous.</string>
     <string name="fold_wallpaper_each">Per screen</string>
     <string name="fold_wallpaper_each_description">A separate image for each screen.</string>
+    <string name="fold_unfolded_grid_mirror_note">Not used while Foldable screen › Home screen is set to “Same as cover”: the large screen then uses the folded grid.</string>
 </resources>
