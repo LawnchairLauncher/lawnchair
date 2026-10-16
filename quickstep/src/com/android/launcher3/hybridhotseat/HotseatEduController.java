@@ -97,7 +97,9 @@ public class HotseatEduController {
             }
         }
         if (pageId == -1) {
-            pageId = mLauncher.getModel().getModelDbController().getNewScreenId();
+            // LC-Note: numbered within the shown item set of "Independent" (FoldItemSets).
+            pageId = mLauncher.getModel().getModelDbController()
+                    .getNewScreenId(mLauncher.getDeviceProfile().isInnerItemSet);
         }
         boolean isPortrait = !mLauncher.getDeviceProfile().isVerticalBarLayout();
         int numColumns = mLauncher.getDeviceProfile().inv.numColumns;

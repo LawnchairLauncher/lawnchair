@@ -49,6 +49,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import app.lawnchair.fold.FoldItemSets;
+import app.lawnchair.fold.FoldLayout;
+import app.lawnchair.preferences2.PreferenceManager2;
+
 /**
  * Task to add auto-created workspace items.
  */
@@ -123,10 +127,26 @@ public class AddWorkspaceItemsTask implements ModelUpdateTask {
             LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
 
             ModelWriter writer = taskController.getModelWriter();
+            // LC-Note: with the "Independent" home layout (see FoldItemSets), new apps go to both
+            // item sets; other items (pinned shortcuts, widgets) go to the set on screen.
+            boolean independent = FoldLayout.isHomeIndependent(PreferenceManager2.INSTANCE.get(context));
+            boolean innerShown = independent && FoldItemSets.isInnerSetShown();
+            IntArray innerWorkspaceScreens = independent
+                    ? FoldItemSets.toInnerModelScreenIds(
+                            dataModel.itemsIdMap.collectWorkspaceScreens(context, true))
+                    : null;
+            IntArray addedInnerScreensFinal = new IntArray();
             for (ItemInfo item : filteredItems) {
+                boolean innerOnly = innerShown
+                        && item.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
                 // Find appropriate space for the item.
-                int[] coords = mItemSpaceFinder.findSpaceForItem(workspaceScreens,
-                        addedWorkspaceScreensFinal, addedItemsFinal, item.spanX, item.spanY, context);
+                int[] coords = innerOnly
+                        ? mItemSpaceFinder.findSpaceForItem(innerWorkspaceScreens,
+                                addedInnerScreensFinal, addedItemsFinal, item.spanX, item.spanY,
+                                context, FoldItemSets.INNER_SCREEN_BASE)
+                        : mItemSpaceFinder.findSpaceForItem(workspaceScreens,
+                                addedWorkspaceScreensFinal, addedItemsFinal, item.spanX, item.spanY,
+                                context);
                 int screenId = coords[0];
 
                 ItemInfo itemInfo;
@@ -198,6 +218,20 @@ public class AddWorkspaceItemsTask implements ModelUpdateTask {
                         LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId,
                         coords[1], coords[2]);
                 addedItemsFinal.add(itemInfo);
+
+                if (independent && !innerOnly
+                        && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                        && itemInfo instanceof WorkspaceItemInfo coverItem) {
+                    // LC-Note: the same app on the inner screen, in that set's first free cell.
+                    WorkspaceItemInfo innerItem = new WorkspaceItemInfo(coverItem);
+                    int[] innerCoords = mItemSpaceFinder.findSpaceForItem(innerWorkspaceScreens,
+                            addedInnerScreensFinal, addedItemsFinal, innerItem.spanX,
+                            innerItem.spanY, context, FoldItemSets.INNER_SCREEN_BASE);
+                    writer.updateItemInfoProps(innerItem,
+                            LauncherSettings.Favorites.CONTAINER_DESKTOP, innerCoords[0],
+                            innerCoords[1], innerCoords[2]);
+                    addedItemsFinal.add(innerItem);
+                }
 
                 // log bitmap and label
                 FileLog.d(LOG, "Adding item info to workspace: " + itemInfo);

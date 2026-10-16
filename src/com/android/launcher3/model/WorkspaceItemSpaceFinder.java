@@ -61,6 +61,18 @@ public class WorkspaceItemSpaceFinder {
      */
     public int[] findSpaceForItem(IntArray workspaceScreens, IntArray addedWorkspaceScreensFinal,
             ArrayList<ItemInfo> addItemsFinal, int spanX, int spanY, Context context) {
+        return findSpaceForItem(workspaceScreens, addedWorkspaceScreensFinal, addItemsFinal,
+                spanX, spanY, context, 0);
+    }
+
+    /**
+     * LC-Note: same, within one item set of the "Independent" home layout: {@code itemSetBase} is
+     * the set's first model screen id (see FoldItemSets), and {@code workspaceScreens} are model
+     * screen ids of that set.
+     */
+    public int[] findSpaceForItem(IntArray workspaceScreens, IntArray addedWorkspaceScreensFinal,
+            ArrayList<ItemInfo> addItemsFinal, int spanX, int spanY, Context context,
+            int itemSetBase) {
         LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
 
         // Use sBgItemsIdMap as all the items are already loaded.
@@ -101,7 +113,7 @@ public class WorkspaceItemSpaceFinder {
         PreferenceManager2 prefs = PreferenceManager2.INSTANCE.get(context);
         boolean smartspaceEnabled = PreferenceCacheExtensionsKt.firstCached(prefs.getEnableSmartspace());
         if (smartspaceEnabled) {
-            screensToExclude.add(FIRST_SCREEN_ID);
+            screensToExclude.add(itemSetBase + FIRST_SCREEN_ID);
         }
 
         for (int screen = 0; screen < screenCount; screen++) {
@@ -116,7 +128,9 @@ public class WorkspaceItemSpaceFinder {
 
         if (!found) {
             // Still no position found. Add a new screen to the end.
-            screenId = mModel.getModelDbController().getNewScreenId();
+            screenId = itemSetBase == 0
+                    ? mModel.getModelDbController().getNewScreenId()
+                    : mModel.getModelDbController().getNewScreenId(true) + itemSetBase;
 
             // Save the screen id for binding in the workspace
             workspaceScreens.add(screenId);
