@@ -30,11 +30,16 @@ fun interface FoldDockHingeSource {
  * in the database never change.
  *
  * Hinge on the right (the moving half is the right one) keeps the plain order: rank n is cell n.
+ *
+ * With [isSide] ([FoldDock.SIDE]) the same dock stands as a column on the outer edge of the fixed
+ * half, as if the merged dock had turned around the bottom outer corner: the cover's outer edge
+ * icon is at the bottom, next to the corner, and the extra slots are at the top ([rankToCellY]).
  */
 class FoldDockLayout(
     val coverIcons: Int,
     val dockIcons: Int,
     val isMovingHalfLeft: Boolean,
+    val isSide: Boolean = false,
 ) {
     val extraIcons: Int get() = dockIcons - coverIcons
 
@@ -58,13 +63,22 @@ class FoldDockLayout(
         }
     }
 
+    /** Returns the side dock's cell, from the top, of the hotseat item at [rank]. */
+    fun rankToCellY(rank: Int): Int {
+        val cellX = rankToCellX(rank)
+        return if (isMovingHalfLeft) cellX else dockIcons - 1 - cellX
+    }
+
+    /** Returns the hotseat rank of the side dock's cell [cellY]. Inverse of [rankToCellY]. */
+    fun cellYToRank(cellY: Int): Int = cellXToRank(if (isMovingHalfLeft) cellY else dockIcons - 1 - cellY)
+
     /** Returns the slot of [cellX] in the cover dock, or -1 if [cellX] is an extra cell. */
     fun coverSlotOf(cellX: Int): Int {
         val rank = cellXToRank(cellX)
         return if (rank in 0 until coverIcons) rank else -1
     }
 
-    override fun toString() = "FoldDockLayout(cover=$coverIcons, dock=$dockIcons, movingHalfLeft=$isMovingHalfLeft)"
+    override fun toString() = "FoldDockLayout(cover=$coverIcons, dock=$dockIcons, movingHalfLeft=$isMovingHalfLeft, side=$isSide)"
 
     companion object {
         /**
@@ -101,7 +115,24 @@ class FoldDockLayout(
                 coverIcons = coverIcons,
                 dockIcons = if (merges) dockIcons else coverIcons,
                 isMovingHalfLeft = movingHalfLeft,
+                isSide = dp.isSideDock,
             )
+        }
+
+        /**
+         * Returns whether the side dock ([FoldDock.SIDE]) is on the left edge, or null when [dp]
+         * has no side dock: not an unfolded foldable, no vertical fold line, the dock disabled, or
+         * another option. The column goes on the outer edge of the fixed half, opposite the
+         * moving half. Called while [dp] is being built: it only reads its device properties.
+         */
+        @JvmStatic
+        fun getSideDockOnLeft(context: Context, dp: DeviceProfile): Boolean? {
+            if (!dp.deviceProperties.isTwoPanels || dp.isVerticalBarLayout) return null
+            val prefs2 = PreferenceManager2.getInstance(context)
+            if (prefs2.foldDock.firstCached(prefs2) != FoldDock.SIDE) return null
+            if (!prefs2.isHotseatEnabled.firstCached(prefs2)) return null
+            val movingHalfLeft = hingeSource.isMovingHalfLeft(context, dp) ?: return null
+            return !movingHalfLeft
         }
 
         /**

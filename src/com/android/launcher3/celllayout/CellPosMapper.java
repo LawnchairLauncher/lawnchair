@@ -79,6 +79,10 @@ public class CellPosMapper {
     public CellPos mapModelToPresenter(ItemInfo info) {
         if (isHotseatContainer(info.container) && mNumOfHotseat > 0) {
             if (mHasVerticalHotseat) {
+                if (mFoldDock != null && mFoldDock.isSide()) {
+                    // LC-Note: foldable side dock, see FoldDockLayout#rankToCellY
+                    return new CellPos(0, mFoldDock.rankToCellY(info.screenId), 0);
+                }
                 return new CellPos(0, mNumOfHotseat - info.screenId - 1, 0);
             }
             int slotsPerPage = Math.max(1, mNumOfHotseat * mNumHotseatRows);
@@ -101,7 +105,8 @@ public class CellPosMapper {
             int container) {
         if (isHotseatContainer(container)) {
             if (mHasVerticalHotseat && mNumOfHotseat > 0) {
-                presenterScreen = mNumOfHotseat - presenterY - 1;
+                presenterScreen = mFoldDock != null && mFoldDock.isSide()
+                        ? mFoldDock.cellYToRank(presenterY) : mNumOfHotseat - presenterY - 1;
             } else if (!mHasVerticalHotseat && mNumOfHotseat > 0) {
                 // presenterScreen is the dock page index (0-based)
                 int page = Math.max(0, presenterScreen);
