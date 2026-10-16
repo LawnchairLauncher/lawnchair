@@ -3796,7 +3796,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             mLauncher.getModelWriter().persistWorkspaceScreenOrderSync(getPersistableScreenOrder());
             mDeferStripEmptyScreensForScreenRemap = true;
             mLauncher.getModelWriter().moveWorkspaceScreensInDatabase(
-                    screenSwapMap, this::onWorkspaceScreenRemapFinished);
+                    toModelScreenSwapMap(screenSwapMap), this::onWorkspaceScreenRemapFinished);
         }
         int remappedDefaultPage = mScreenOrder.indexOf(defaultScreenId);
         if (remappedDefaultPage >= 0 && remappedDefaultPage != defaultPage) {
@@ -4062,6 +4062,26 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mScreenOrder.clear();
         mScreenOrder.addAll(reordered);
         applyScreenOrderToChildViews();
+    }
+
+    /**
+     * LC-Note: page ids of the shown item set ("Independent", see FoldItemSets) as model screen
+     * ids, so the database remap never touches the other set.
+     */
+    private SparseIntArray toModelScreenSwapMap(SparseIntArray screenSwapMap) {
+        int base = getCellPosMapper().getItemSetBase();
+        if (base == 0) {
+            return screenSwapMap;
+        }
+        SparseIntArray modelSwapMap = new SparseIntArray(screenSwapMap.size());
+        for (int i = 0; i < screenSwapMap.size(); i++) {
+            int from = screenSwapMap.keyAt(i);
+            int to = screenSwapMap.valueAt(i);
+            if (from >= 0 && to >= 0) {
+                modelSwapMap.put(from + base, to + base);
+            }
+        }
+        return modelSwapMap;
     }
 
     @VisibleForTesting

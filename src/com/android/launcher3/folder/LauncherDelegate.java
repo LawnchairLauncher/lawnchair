@@ -23,6 +23,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -76,12 +77,18 @@ public class LauncherDelegate {
                     if (itemCount == 1) {
                         // Move the item from the folder to the workspace, in the position of the
                         // folder
+                        CellPos presenterPos =
+                                mLauncher.getCellPosMapper().mapModelToPresenter(info);
                         CellLayout cellLayout = mLauncher.getCellLayout(info.container,
-                                mLauncher.getCellPosMapper().mapModelToPresenter(info).screenId);
+                                presenterPos.screenId);
                         finalItem =  info.getContents().remove(0);
                         newIcon = mLauncher.getItemInflater().inflateItem(finalItem, cellLayout);
+                        // LC-Note: the writer maps presenter positions to the model, so pass the
+                        // folder's presenter position (model ids would be mapped twice for the
+                        // inner item set of "Independent", or a dock page index).
                         mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,
-                                info.container, info.screenId, info.cellX, info.cellY);
+                                info.container, presenterPos.screenId, presenterPos.cellX,
+                                presenterPos.cellY);
                     }
 
                     // Remove the folder

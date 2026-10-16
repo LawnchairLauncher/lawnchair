@@ -1,8 +1,10 @@
 package app.lawnchair.fold
 
+import app.lawnchair.LawnchairLauncher
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.util.IntArray as LIntArray
 
 /**
  * The two item sets of the "Independent" home layout, in one database.
@@ -31,5 +33,19 @@ object FoldItemSets {
     fun isInActiveSet(item: ItemInfo, innerSetActive: Boolean): Boolean {
         if (item.container != CONTAINER_DESKTOP && item.container != CONTAINER_HOTSEAT) return true
         return isInnerItem(item) == innerSetActive
+    }
+
+    /** Whether the launcher currently shows the inner set (on any thread, best effort). */
+    @JvmStatic
+    fun isInnerSetShown(): Boolean = LawnchairLauncher.instance?.deviceProfile?.isInnerItemSet == true
+
+    /** Inner set page ids, numbered from 0, as model screen ids. */
+    @JvmStatic
+    fun toInnerModelScreenIds(screenIds: LIntArray): LIntArray {
+        val result = LIntArray(screenIds.size())
+        for (i in 0 until screenIds.size()) {
+            result.add(screenIds[i] + INNER_SCREEN_BASE)
+        }
+        return result
     }
 }
