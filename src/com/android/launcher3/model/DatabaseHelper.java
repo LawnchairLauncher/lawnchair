@@ -63,6 +63,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
+import app.lawnchair.fold.FoldItemSets;
+
 /**
  * SqLite database for launcher home-screen model
  * The class is subclassed in tests to create an in-memory db.
@@ -498,10 +500,26 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
      * existing screen IDs
      */
     public int getNewScreenId() {
-        return getMaxId(getWritableDatabase(),
-                "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= 0",
-                Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
-                Favorites.CONTAINER_DESKTOP) + 1;
+        return getNewScreenId(false);
+    }
+
+    /**
+     * LC-Note: new screen id within one item set of the "Independent" home layout, numbered from
+     * 0 in each set (see FoldItemSets). The cover set ignores the inner screens, so a database
+     * without inner items gives the same id as before.
+     */
+    public int getNewScreenId(boolean innerSet) {
+        int base = FoldItemSets.INNER_SCREEN_BASE;
+        return innerSet
+                ? getMaxId(getWritableDatabase(),
+                        "SELECT MAX(%1$s) - %5$d FROM %2$s WHERE %3$s = %4$d AND %1$s >= %5$d",
+                        Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
+                        Favorites.CONTAINER_DESKTOP, base) + 1
+                : getMaxId(getWritableDatabase(),
+                        "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= 0"
+                                + " AND %1$s < %5$d",
+                        Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
+                        Favorites.CONTAINER_DESKTOP, base) + 1;
     }
 
     public int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
