@@ -82,61 +82,52 @@ fun FolderPreferences(
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
+            val columnsLabel = stringResource(id = R.string.max_folder_columns)
+            val rowsLabel = stringResource(id = R.string.max_folder_rows)
+            // "Same as cover" uses the folded folder grid on the large screen too
+            val homeMirrored = isFoldable && isFoldHomeMirrored()
+            val folderColumnsAdapter = prefs2.folderColumns.getAdapter()
+            SliderPreference(
+                label = if (isFoldable) stringResource(id = R.string.state_folded, columnsLabel) else columnsLabel,
+                adapter = folderColumnsAdapter,
+                step = 1,
+                valueRange = 2..5,
+            )
             if (isFoldable) {
-                // "Same as cover" uses the folded folder grid on the large screen too
-                val homeMirrored = isFoldHomeMirrored()
-                val folderColumnsAdapter = prefs2.folderColumns.getAdapter()
-                SliderPreference(
-                    label = stringResource(id = R.string.state_folded, stringResource(id = R.string.max_folder_columns)),
-                    adapter = folderColumnsAdapter,
-                    step = 1,
-                    valueRange = 2..5,
-                )
                 // The unfolded columns follow the folded columns until set, and their default is
                 // read from the preference cache: read them again when the folded columns change.
                 key(folderColumnsAdapter.state.value) {
                     SliderPreference(
-                        label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.max_folder_columns)),
+                        label = stringResource(id = R.string.state_unfolded, columnsLabel),
                         adapter = prefs2.folderColumnsUnfolded.getAdapter(),
                         step = 1,
                         valueRange = 2..6,
                         enabled = !homeMirrored,
                     )
                 }
-                val folderRowsAdapter = prefs.folderRows.getAdapter()
-                SliderPreference(
-                    label = stringResource(id = R.string.state_folded, stringResource(id = R.string.max_folder_rows)),
-                    adapter = folderRowsAdapter,
-                    step = 1,
-                    valueRange = 2..5,
-                )
+            }
+            val folderRowsAdapter = prefs.folderRows.getAdapter()
+            SliderPreference(
+                label = if (isFoldable) stringResource(id = R.string.state_folded, rowsLabel) else rowsLabel,
+                adapter = folderRowsAdapter,
+                step = 1,
+                valueRange = 2..5,
+            )
+            if (isFoldable) {
                 // The unfolded rows follow the folded rows until set, and their adapter only
                 // listens to its own key: read it again when the folded rows change.
                 key(folderRowsAdapter.state.value) {
                     SliderPreference(
-                        label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.max_folder_rows)),
+                        label = stringResource(id = R.string.state_unfolded, rowsLabel),
                         adapter = prefs.folderRowsUnfolded.getAdapter(),
                         step = 1,
                         valueRange = 2..5,
                         enabled = !homeMirrored,
                     )
                 }
-                if (homeMirrored) {
-                    FoldMirrorNote()
-                }
-            } else {
-                SliderPreference(
-                    label = stringResource(id = R.string.max_folder_columns),
-                    adapter = prefs2.folderColumns.getAdapter(),
-                    step = 1,
-                    valueRange = 2..5,
-                )
-                SliderPreference(
-                    label = stringResource(id = R.string.max_folder_rows),
-                    adapter = prefs.folderRows.getAdapter(),
-                    step = 1,
-                    valueRange = 2..5,
-                )
+            }
+            if (homeMirrored) {
+                FoldMirrorNote()
             }
         }
 
