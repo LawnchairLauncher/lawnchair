@@ -19,16 +19,23 @@ import app.lawnchair.fold.FoldTransitionStyle
 import app.lawnchair.fold.FoldWallpaper
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences.rememberTransformAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.FoldMirrorNote
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.isFoldHomeMirrored
+import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.layout.ProvideDescriptionTextStyle
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
+import kotlin.math.abs
 
 @Composable
 fun FoldablePreferences(
@@ -82,11 +89,36 @@ fun FoldablePreferences(
                 options = FoldDock.entries,
                 label = stringResource(id = R.string.fold_dock),
             )
+            val landscapeAdapter = prefs2.foldLandscape.getAdapter()
             FoldListPreference(
-                adapter = prefs2.foldLandscape.getAdapter(),
+                adapter = landscapeAdapter,
                 options = FoldLandscape.entries,
                 label = stringResource(id = R.string.fold_landscape),
             )
+            val isFoldable = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY
+            val landscapeOwn = isFoldable && landscapeAdapter.state.value == FoldLandscape.OWN
+            // "Same as cover" shows one page, which doesn't use the two-panel landscape profile
+            val homeMirrored = isFoldHomeMirrored()
+            ExpandAndShrink(visible = landscapeOwn) {
+                FoldLandscapeSizePreference(
+                    label = stringResource(id = R.string.fold_landscape_icon_size),
+                    ownAdapter = prefs2.foldLandscapeIconSizeFactor.getAdapter(),
+                    portraitAdapter = prefs2.homeIconSizeFactor.getAdapter(),
+                    enabled = !homeMirrored,
+                )
+            }
+            val showLabels = prefs2.showIconLabelsOnHomeScreen.getAdapter().state.value
+            ExpandAndShrink(visible = landscapeOwn && showLabels) {
+                FoldLandscapeSizePreference(
+                    label = stringResource(id = R.string.fold_landscape_label_size),
+                    ownAdapter = prefs2.foldLandscapeIconLabelSizeFactor.getAdapter(),
+                    portraitAdapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
+                    enabled = !homeMirrored,
+                )
+            }
+            ExpandAndShrink(visible = landscapeOwn && homeMirrored) {
+                FoldMirrorNote()
+            }
             FoldListPreference(
                 adapter = prefs2.foldWallpaper.getAdapter(),
                 options = FoldWallpaper.entries,
@@ -130,6 +162,33 @@ private fun <T> FoldListPreference(
             stringResource(id = selected.labelResourceId),
             stringResource(id = selected.descriptionResourceId),
         ),
+    )
+}
+
+/**
+ * A size factor of the large screen in landscape ([FoldLandscape.OWN]). Its stored default, a
+ * negative value, means "as in portrait": the slider then shows the portrait value, and choosing the
+ * portrait value again goes back to following it.
+ */
+@Composable
+private fun FoldLandscapeSizePreference(
+    label: String,
+    ownAdapter: PreferenceAdapter<Float>,
+    portraitAdapter: PreferenceAdapter<Float>,
+    enabled: Boolean,
+) {
+    val adapter = rememberTransformAdapter(
+        adapter = ownAdapter,
+        transformGet = { if (it < 0f) portraitAdapter.state.value else it },
+        transformSet = { if (abs(it - portraitAdapter.state.value) < 0.001f) -1f else it },
+    )
+    SliderPreference(
+        label = label,
+        adapter = adapter,
+        step = 0.1f,
+        valueRange = 0.5F..1.5F,
+        showAsPercentage = true,
+        enabled = enabled,
     )
 }
 

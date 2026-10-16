@@ -199,7 +199,6 @@ enum class FoldLandscape(
         key = "own",
         labelResourceId = R.string.fold_landscape_own,
         descriptionResourceId = R.string.fold_landscape_own_description,
-        isImplemented = false,
     ),
     ;
 
