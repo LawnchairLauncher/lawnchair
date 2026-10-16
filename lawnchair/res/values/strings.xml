@@ -386,17 +386,29 @@
 
     <!-- Icon pack settings -->
     <string name="icon_pack">Icon pack</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="icon_packs_applied_order_description">Icon packs are applied in order, from the top to the bottom.</string>
     <string name="themed_icon_pack">Themed icon source</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">System icons</string>
     <string name="force_monochrome_label">Force monochrome</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
 
     <string name="themed_icon_title">Themed icons</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Off</string>
     <string name="themed_icons_home_label">Home screen</string>
     <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">No supported icon packs</string>
+
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
+    <string name="automatically_reload_icons_description">When theme or accent color changes</string>
 
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Add fonts</string>
