@@ -91,8 +91,8 @@ object FoldDrawerState {
      */
     fun capture(launcher: LawnchairLauncher) {
         if (!isFoldable()) return
-        val container = launcher.appsView
-        val root = launcher.dragLayer
+        val container = launcher.appsView ?: return
+        val root = launcher.dragLayer ?: return
         val centers = SparseArray<FloatArray>()
         var anchor = RecyclerView.NO_POSITION
         val list = container.activeRecyclerView
