@@ -458,10 +458,15 @@ class FoldTransitionController(
         var failure: Throwable? = null
         try {
             detachFromViews(r)
+        } catch (t: Throwable) {
+            Log.e(TAG, "detaching the transition failed", t)
+            failure = t
+        }
+        try {
             r.style.onEnd(r.scene)
         } catch (t: Throwable) {
             Log.e(TAG, "${r.style.javaClass.simpleName}.onEnd failed", t)
-            failure = t
+            failure = failure ?: t
         } finally {
             // What a style that throws could leave on the whole launcher: the DragLayer's clip and
             // blur. Nothing else in the launcher sets either.
