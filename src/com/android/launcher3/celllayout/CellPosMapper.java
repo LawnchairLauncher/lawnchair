@@ -86,15 +86,10 @@ public class CellPosMapper {
     }
 
     /**
-     * LC-Note: dock rank of a dock item (or prediction) within the shown item set, the rank the
-     * {@code Hotseat} order helpers expect.
+     * LC-Note: page or dock rank of a desktop or dock item within the shown item set (the rank
+     * the {@code Hotseat} order helpers expect).
      */
-    public int getPresenterHotseatRank(ItemInfo info) {
-        return toPresenterScreenId(info);
-    }
-
-    /** LC-Note: model screen id or dock rank, from the shown item set's own numbering. */
-    private int toPresenterScreenId(ItemInfo info) {
+    public int toPresenterScreenId(ItemInfo info) {
         if (mInnerItemSet
                 && (info.container == CONTAINER_DESKTOP || info.container == CONTAINER_HOTSEAT)) {
             return FoldItemSets.toPresenterScreenId(info.screenId);

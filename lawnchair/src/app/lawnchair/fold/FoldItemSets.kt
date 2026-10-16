@@ -15,7 +15,6 @@ import com.android.launcher3.R
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
-import com.android.launcher3.util.IntArray as LIntArray
 import com.patrykmichalik.opto.core.setBlocking
 
 /**
@@ -121,15 +120,5 @@ object FoldItemSets {
             Log.i(TAG, "Inner set created from the cover layout: $copied items")
             MAIN_EXECUTOR.execute { model.forceReload() }
         }
-    }
-
-    /** Inner set page ids, numbered from 0, as model screen ids. */
-    @JvmStatic
-    fun toInnerModelScreenIds(screenIds: LIntArray): LIntArray {
-        val result = LIntArray(screenIds.size())
-        for (i in 0 until screenIds.size()) {
-            result.add(toModelScreenId(screenIds[i], inner = true))
-        }
-        return result
     }
 }
