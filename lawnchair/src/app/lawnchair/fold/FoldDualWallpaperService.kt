@@ -1,10 +1,11 @@
 package app.lawnchair.fold
 
+import android.annotation.SuppressLint
 import android.app.WallpaperColors
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ImageDecoder
 import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Build
@@ -16,6 +17,7 @@ import android.util.Log
 import android.view.SurfaceHolder
 import androidx.annotation.RequiresApi
 import app.lawnchair.fold.FoldDualWallpaper.Screen
+import java.io.File
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -235,28 +237,27 @@ class FoldDualWallpaperService : WallpaperService() {
         const val FALLBACK_COLOR = Color.BLACK
         const val COLORS_SIZE = 128
 
-        /** Decodes [path] scaled and center-cropped to exactly [width] x [height]. */
-        fun decodeCenterCrop(path: String, width: Int, height: Int): Bitmap? {
-            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-            BitmapFactory.decodeFile(path, bounds)
-            if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
-            val scale = max(width.toFloat() / bounds.outWidth, height.toFloat() / bounds.outHeight)
-            var sample = 1
-            while (scale * sample * 2 <= 1f) sample *= 2
-            val decoded = BitmapFactory.decodeFile(path, BitmapFactory.Options().apply { inSampleSize = sample }) ?: return null
-            if (decoded.width == width && decoded.height == height) return decoded
-            return try {
-                val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-                val src = Rect()
-                centerCrop(decoded.width, decoded.height, width, height, src)
-                Canvas(result).drawBitmap(decoded, src, Rect(0, 0, width, height), Paint(Paint.FILTER_BITMAP_FLAG))
-                result
-            } catch (e: OutOfMemoryError) {
-                Log.w(TAG, "out of memory decoding the wallpaper", e)
-                null
-            } finally {
-                decoded.recycle()
+        /**
+         * Decodes [path] scaled and center-cropped to exactly [width] x [height], into one bitmap of
+         * that size. Null when it can't (a missing or broken file, no memory): the engine then shows
+         * the other image, else [FALLBACK_COLOR].
+         */
+        @SuppressLint("NewApi") // ImageDecoder is API 28; the service is enabled on foldables only
+        fun decodeCenterCrop(path: String, width: Int, height: Int): Bitmap? = try {
+            ImageDecoder.decodeBitmap(ImageDecoder.createSource(File(path))) { decoder, info, _ ->
+                val scale = max(width.toFloat() / info.size.width, height.toFloat() / info.size.height)
+                // At least the target size, so the crop always fits
+                val scaledWidth = (info.size.width * scale).roundToInt().coerceAtLeast(width)
+                val scaledHeight = (info.size.height * scale).roundToInt().coerceAtLeast(height)
+                decoder.setTargetSize(scaledWidth, scaledHeight)
+                val left = (scaledWidth - width) / 2
+                val top = (scaledHeight - height) / 2
+                decoder.crop = Rect(left, top, left + width, top + height)
+                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
             }
+        } catch (t: Throwable) {
+            Log.w(TAG, "can't decode the wallpaper at ${width}x$height", t)
+            null
         }
 
         /** The part of a [srcWidth] x [srcHeight] image that fills [width] x [height], centered. */
