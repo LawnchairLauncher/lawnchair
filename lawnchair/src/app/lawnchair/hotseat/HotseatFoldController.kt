@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.view.View
 import android.view.ViewTreeObserver
 import app.lawnchair.fold.FoldDockLayout
+import app.lawnchair.fold.FoldLayout
 import app.lawnchair.fold.FoldPosture
 import app.lawnchair.fold.FoldProgressListener
 import com.android.launcher3.CellLayout
@@ -232,25 +233,24 @@ class HotseatFoldController(
         val pageX = container.left + pagedView.left + page.left - pagedView.scrollX
         val pageY = container.top + pagedView.top + page.top
 
-        // Where the cover dock's icons sit, with the cover screen over the fixed half
+        // Where the cover dock's icons sit, with the cover screen scaled to fill the fixed half
+        // as the drawer places it (FoldLayout.coverScaleOnLarge)
         val width = hotseat.width.toFloat()
         val coverIcons = layout.coverIcons
         val cover = FoldPosture.coverProfileOf(activity.deviceProfile)
-        val coverWidth: Float
+        val coverWidth = width / 2f
         val coverFirstCenter: Float
         val coverStep: Float
         if (cover != null) {
+            val scale = FoldLayout.coverScaleOnLarge(cover, activity.deviceProfile)
             val padding = cover.getHotseatLayoutPadding(hotseat.context)
-            val coverWidthPx = cover.deviceProperties.widthPx
-            val contentWidth = coverWidthPx - padding.left - padding.right
+            val contentWidth = cover.deviceProperties.widthPx - padding.left - padding.right
             val border = cover.hotseatBorderSpace
             val cellWidth = DeviceProfile.calculateCellWidth(contentWidth, border, coverIcons)
             val unused = contentWidth - coverIcons * cellWidth - (coverIcons - 1) * border
-            coverWidth = coverWidthPx.toFloat()
-            coverStep = (cellWidth + border).toFloat()
-            coverFirstCenter = padding.left + ceil(unused / 2f) + cellWidth / 2f
+            coverStep = (cellWidth + border) * scale
+            coverFirstCenter = (padding.left + ceil(unused / 2f) + cellWidth / 2f) * scale
         } else {
-            coverWidth = width / 2f
             coverStep = coverWidth / coverIcons
             coverFirstCenter = coverStep / 2f
         }
