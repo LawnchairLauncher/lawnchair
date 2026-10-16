@@ -19,8 +19,11 @@ interface FoldOption {
     @get:StringRes
     val descriptionResourceId: Int
 
-    /** Whether some phase already implements this option. Options that are not are shown as "coming soon". */
-    val isImplemented: Boolean
+    /**
+     * Whether the option can be selected. Options that can't are shown disabled as "coming soon";
+     * only [FoldHomeLayout.INDEPENDENT] in release builds is one.
+     */
+    val isImplemented: Boolean get() = true
 }
 
 /** Home screen layout on the large (unfolded) screen. */
@@ -64,7 +67,6 @@ enum class FoldDrawerLayout(
     override val key: String,
     @StringRes override val labelResourceId: Int,
     @StringRes override val descriptionResourceId: Int,
-    override val isImplemented: Boolean = true,
 ) : FoldOption {
     EXPAND(
         key = "expand",
@@ -93,7 +95,6 @@ enum class FoldTransitionStyle(
     override val key: String,
     @StringRes override val labelResourceId: Int,
     @StringRes override val descriptionResourceId: Int,
-    override val isImplemented: Boolean = true,
 ) : FoldOption {
     WINDOW(
         key = "window",
@@ -137,7 +138,6 @@ enum class FoldAfterFold(
     override val key: String,
     @StringRes override val labelResourceId: Int,
     @StringRes override val descriptionResourceId: Int,
-    override val isImplemented: Boolean = true,
 ) : FoldOption {
     LAST_PANEL(
         key = "last_panel",
@@ -161,7 +161,6 @@ enum class FoldDock(
     override val key: String,
     @StringRes override val labelResourceId: Int,
     @StringRes override val descriptionResourceId: Int,
-    override val isImplemented: Boolean = true,
 ) : FoldOption {
     MERGE(
         key = "merge",
@@ -190,7 +189,6 @@ enum class FoldLandscape(
     override val key: String,
     @StringRes override val labelResourceId: Int,
     @StringRes override val descriptionResourceId: Int,
-    override val isImplemented: Boolean = true,
 ) : FoldOption {
     AUTO(
         key = "auto",
@@ -214,7 +212,6 @@ enum class FoldWallpaper(
     override val key: String,
     @StringRes override val labelResourceId: Int,
     @StringRes override val descriptionResourceId: Int,
-    override val isImplemented: Boolean = true,
 ) : FoldOption {
     SPAN(
         key = "span",
