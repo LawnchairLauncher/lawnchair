@@ -1209,11 +1209,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         // LC-Note: on foldables, keep each list's scroll across the rebuild below (it would go
-        // back to the top) and remember where the items were, for the fold transition
+        // back to the top)
         AllAppsRecyclerView mainRv = mAH.get(AdapterHolder.MAIN).mRecyclerView;
         AllAppsRecyclerView workRv = mAH.get(AdapterHolder.WORK).mRecyclerView;
         AllAppsRecyclerView searchRv = mAH.get(AdapterHolder.SEARCH).mRecyclerView;
-        FoldDrawerState.beforeDeviceProfileChange(this, mainRv, workRv, searchRv);
+        FoldDrawerState.beforeDeviceProfileChange(mainRv, workRv, searchRv);
         for (AdapterHolder holder : mAH) {
             holder.mAdapter.setAppsPerRow(dp.numShownAllAppsColumns);
             holder.mAppsList.setNumAppsPerRowAllApps(dp.numShownAllAppsColumns);

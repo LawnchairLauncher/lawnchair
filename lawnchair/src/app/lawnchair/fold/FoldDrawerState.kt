@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import app.lawnchair.LawnchairLauncher
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import com.android.launcher3.allapps.ActivityAllAppsContainerView
-import com.android.launcher3.views.ActivityContext
 import java.util.WeakHashMap
 
 /**
@@ -17,12 +15,12 @@ import java.util.WeakHashMap
  * The drawer container rebuilds every item view on a profile change (`swapAdapter` and a cleared
  * pool), which sends each list back to its top. Here each list's first visible item and its offset
  * are saved before that and restored after, so a fold or unfold keeps the drawer, the search
- * results and their scroll exactly where they were. What the drawer showed ([Capture]) goes to the
- * fold transition engine, which hears of the same change right after the drawer and hands it to
- * [DrawerFoldStyle]. The book drawer ([FoldDrawerBook]) hears of the change from here too.
+ * results and their scroll exactly where they were. The book drawer ([FoldDrawerBook]) hears of the
+ * change from here too. What the drawer showed ([Capture]) is taken by [capture] before the change
+ * is dispatched and goes to the fold transition engine, which hands it to [DrawerFoldStyle].
  *
- * Called by the drawer container (`ActivityAllAppsContainerView.onDeviceProfileChanged`) on
- * foldables only; phones and tablets are unchanged.
+ * Called by the drawer container (`ActivityAllAppsContainerView.onDeviceProfileChanged`) and by
+ * [LawnchairLauncher], on foldables only; phones and tablets are unchanged.
  */
 object FoldDrawerState {
 
@@ -47,19 +45,11 @@ object FoldDrawerState {
     private val coords = FloatArray(2)
 
     @JvmStatic
-    fun beforeDeviceProfileChange(
-        container: ActivityAllAppsContainerView<*>,
-        main: RecyclerView?,
-        work: RecyclerView?,
-        search: RecyclerView?,
-    ) {
+    fun beforeDeviceProfileChange(main: RecyclerView?, work: RecyclerView?, search: RecyclerView?) {
         if (!isFoldable()) return
         saveScroll(main)
         saveScroll(work)
         saveScroll(search)
-        val activity: ActivityContext = ActivityContext.lookupContext(container.context)
-        val root = activity.dragLayer ?: return
-        (activity as? LawnchairLauncher)?.foldTransitionController?.drawerCapture = capture(container, root)
     }
 
     @JvmStatic
@@ -94,7 +84,15 @@ object FoldDrawerState {
         lm.scrollToPositionWithOffset(scroll.position, scroll.offset)
     }
 
-    private fun capture(container: ActivityAllAppsContainerView<*>, root: View): Capture {
+    /**
+     * Hands what the drawer shows to the launcher's fold transition engine. [LawnchairLauncher]
+     * calls this before it dispatches a profile change, so before any listener hears of it and
+     * before any view is laid out again.
+     */
+    fun capture(launcher: LawnchairLauncher) {
+        if (!isFoldable()) return
+        val container = launcher.appsView
+        val root = launcher.dragLayer
         val centers = SparseArray<FloatArray>()
         var anchor = RecyclerView.NO_POSITION
         val list = container.activeRecyclerView
@@ -120,6 +118,6 @@ object FoldDrawerState {
             barLeft = coords[0] + bar.paddingLeft
             barRight = coords[0] + bar.width - bar.paddingRight
         }
-        return Capture(root.width, anchor, centers, barLeft, barRight)
+        launcher.foldTransitionController.drawerCapture = Capture(root.width, anchor, centers, barLeft, barRight)
     }
 }

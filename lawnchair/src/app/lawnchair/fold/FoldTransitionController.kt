@@ -104,8 +104,8 @@ class FoldTransitionController(
     private var run: Run? = null
 
     /**
-     * What the drawer showed before the profile change being dispatched: [FoldDrawerState] sets it
-     * (the drawer hears of the change first) and the next [onDeviceProfileChanged] takes it.
+     * What the drawer showed before the profile change being dispatched: [FoldDrawerState.capture]
+     * sets it before the launcher dispatches the change, and the next [onDeviceProfileChanged] takes it.
      */
     internal var drawerCapture: FoldDrawerState.Capture? = null
 
