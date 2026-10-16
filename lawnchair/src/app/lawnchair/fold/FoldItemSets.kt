@@ -32,6 +32,17 @@ object FoldItemSets {
     /** First model screen id (and dock rank) of the inner set. */
     const val INNER_SCREEN_BASE = 1_000_000
 
+    /**
+     * The model screen id of page (or dock rank) [presenterId] of the inner set if [inner], else
+     * of the cover set. Negative ids (no page) are left as they are.
+     */
+    @JvmStatic
+    fun toModelScreenId(presenterId: Int, inner: Boolean): Int = if (inner && presenterId >= 0) presenterId + INNER_SCREEN_BASE else presenterId
+
+    /** The page (or dock rank) within its item set of a desktop or dock item's model screen id. */
+    @JvmStatic
+    fun toPresenterScreenId(modelId: Int): Int = if (modelId >= INNER_SCREEN_BASE) modelId - INNER_SCREEN_BASE else modelId
+
     /** Whether this is a top-level desktop or dock item of the inner set. */
     @JvmStatic
     fun isInnerItem(item: ItemInfo): Boolean = (item.container == CONTAINER_DESKTOP || item.container == CONTAINER_HOTSEAT) &&
@@ -102,7 +113,7 @@ object FoldItemSets {
     fun toInnerModelScreenIds(screenIds: LIntArray): LIntArray {
         val result = LIntArray(screenIds.size())
         for (i in 0 until screenIds.size()) {
-            result.add(screenIds[i] + INNER_SCREEN_BASE)
+            result.add(toModelScreenId(screenIds[i], inner = true))
         }
         return result
     }

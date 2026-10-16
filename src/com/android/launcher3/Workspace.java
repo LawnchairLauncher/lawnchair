@@ -152,6 +152,7 @@ import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.fold.FoldItemSets;
 import app.lawnchair.fold.FoldLayout;
 import app.lawnchair.fold.FoldPosture;
 import app.lawnchair.fold.FoldSideDockPages;
@@ -4049,8 +4050,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * ids, so the database remap never touches the other set.
      */
     private SparseIntArray toModelScreenSwapMap(SparseIntArray screenSwapMap) {
-        int base = getCellPosMapper().getItemSetBase();
-        if (base == 0) {
+        if (getCellPosMapper().getItemSetBase() == 0) {
             return screenSwapMap;
         }
         SparseIntArray modelSwapMap = new SparseIntArray(screenSwapMap.size());
@@ -4058,7 +4058,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             int from = screenSwapMap.keyAt(i);
             int to = screenSwapMap.valueAt(i);
             if (from >= 0 && to >= 0) {
-                modelSwapMap.put(from + base, to + base);
+                modelSwapMap.put(FoldItemSets.toModelScreenId(from, true),
+                        FoldItemSets.toModelScreenId(to, true));
             }
         }
         return modelSwapMap;

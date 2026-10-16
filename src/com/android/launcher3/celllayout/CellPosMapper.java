@@ -28,6 +28,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import java.util.Objects;
 
 import app.lawnchair.fold.FoldDockLayout;
+import app.lawnchair.fold.FoldItemSets;
 
 /**
  * Class for mapping between model position and presenter position.
@@ -92,18 +93,18 @@ public class CellPosMapper {
 
     /** LC-Note: model screen id or dock rank, from the shown item set's own numbering. */
     private int toPresenterScreenId(ItemInfo info) {
-        if (mItemSetBase > 0 && info.screenId >= mItemSetBase
+        if (mItemSetBase > 0
                 && (info.container == CONTAINER_DESKTOP || info.container == CONTAINER_HOTSEAT)) {
-            return info.screenId - mItemSetBase;
+            return FoldItemSets.toPresenterScreenId(info.screenId);
         }
         return info.screenId;
     }
 
     /** LC-Note: the reverse of {@link #toPresenterScreenId}. */
     private int toModelScreenId(int screenId, int container) {
-        if (mItemSetBase > 0 && screenId >= 0
+        if (mItemSetBase > 0
                 && (container == CONTAINER_DESKTOP || container == CONTAINER_HOTSEAT)) {
-            return screenId + mItemSetBase;
+            return FoldItemSets.toModelScreenId(screenId, true);
         }
         return screenId;
     }

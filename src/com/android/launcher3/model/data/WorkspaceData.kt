@@ -58,10 +58,9 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
         val smartspaceEnabled = prefs2.enableSmartspace.firstCached()
 
         val screenSet = IntSet()
-        val base = if (innerSet) FoldItemSets.INNER_SCREEN_BASE else 0
         forEach {
             if (it.container == CONTAINER_DESKTOP && FoldItemSets.isInnerItem(it) == innerSet) {
-                screenSet.add(it.screenId - base)
+                screenSet.add(FoldItemSets.toPresenterScreenId(it.screenId))
             }
         }
         if (smartspaceEnabled || screenSet.isEmpty) {

@@ -552,7 +552,7 @@ public class GridSizeMigrationDBController {
                 entry.id = c.getInt(indexId);
                 entry.itemType = c.getInt(indexItemType);
                 // LC-Note: rank within the item set.
-                entry.screenId = c.getInt(indexScreen) - mItemSetBase;
+                entry.screenId = FoldItemSets.toPresenterScreenId(c.getInt(indexScreen));
                 entry.itemSetBase = mItemSetBase;
 
                 try {
@@ -632,7 +632,7 @@ public class GridSizeMigrationDBController {
                 entry.id = c.getInt(indexId);
                 entry.itemType = c.getInt(indexItemType);
                 // LC-Note: page within the item set.
-                entry.screenId = c.getInt(indexScreen) - mItemSetBase;
+                entry.screenId = FoldItemSets.toPresenterScreenId(c.getInt(indexScreen));
                 entry.itemSetBase = mItemSetBase;
                 mLastScreenId = Math.max(mLastScreenId, entry.screenId);
                 entry.cellX = c.getInt(indexCellX);

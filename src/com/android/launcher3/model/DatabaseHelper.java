@@ -512,10 +512,10 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     public int getNewScreenId(boolean innerSet) {
         int base = FoldItemSets.INNER_SCREEN_BASE;
         return innerSet
-                ? getMaxId(getWritableDatabase(),
-                        "SELECT MAX(%1$s) - %5$d FROM %2$s WHERE %3$s = %4$d AND %1$s >= %5$d",
+                ? FoldItemSets.toPresenterScreenId(getMaxId(getWritableDatabase(),
+                        "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= %5$d",
                         Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
-                        Favorites.CONTAINER_DESKTOP, base) + 1
+                        Favorites.CONTAINER_DESKTOP, base)) + 1
                 : getMaxId(getWritableDatabase(),
                         "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= 0"
                                 + " AND %1$s < %5$d",

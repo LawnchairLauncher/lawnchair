@@ -363,7 +363,6 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         val innerSet = launcher.deviceProfile.isInnerItemSet
         val items = allItems.filter { FoldItemSets.isInActiveSet(it, innerSet) }
         if (items.isEmpty()) return
-        val itemSetBase = launcher.cellPosMapper.itemSetBase
         val newScreens = LIntSet()
         val nonAnimatedItems = mutableListOf<ItemInfo>()
         val animatedItems = mutableListOf<ItemInfo>()
@@ -377,7 +376,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             when (it.container) {
                 CONTAINER_HOTSEAT -> nonAnimatedItems.add(it)
                 CONTAINER_DESKTOP -> {
-                    newScreens.add(it.screenId - itemSetBase)
+                    newScreens.add(FoldItemSets.toPresenterScreenId(it.screenId))
                     if (it.screenId == lastScreen) animatedItems.add(it)
                     else nonAnimatedItems.add(it)
                 }
@@ -531,7 +530,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
                 if (!innerSet) {
                     currentScreenIds
                 } else {
-                    IntSet().apply { currentScreenIds.forEach { add(it + FoldItemSets.INNER_SCREEN_BASE) } }
+                    IntSet().apply { currentScreenIds.forEach { add(FoldItemSets.toModelScreenId(it, true)) } }
                 },
             )
         itemIdMap.forEach { item: ItemInfo ->

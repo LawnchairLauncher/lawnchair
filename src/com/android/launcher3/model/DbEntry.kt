@@ -18,6 +18,7 @@ package com.android.launcher3.model
 import android.content.ContentValues
 import android.content.Intent
 import android.util.Log
+import app.lawnchair.fold.FoldItemSets
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.LauncherSettings.Favorites.CELLX
 import com.android.launcher3.LauncherSettings.Favorites.CELLY
@@ -69,7 +70,7 @@ class DbEntry : ItemInfo(), Comparable<DbEntry> {
      */
     fun updateContentValues(values: ContentValues) =
         values.apply {
-            put(SCREEN, screenId + itemSetBase)
+            put(SCREEN, FoldItemSets.toModelScreenId(screenId, itemSetBase > 0))
             put(CELLX, cellX)
             put(CELLY, cellY)
             put(SPANX, spanX)

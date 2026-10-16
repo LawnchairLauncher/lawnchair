@@ -141,7 +141,7 @@ public class AddWorkspaceItemsTask implements ModelUpdateTask {
                 int[] coords = innerOnly
                         ? mItemSpaceFinder.findSpaceForItem(innerWorkspaceScreens,
                                 addedInnerScreensFinal, addedItemsFinal, item.spanX, item.spanY,
-                                context, FoldItemSets.INNER_SCREEN_BASE)
+                                context, true)
                         : mItemSpaceFinder.findSpaceForItem(workspaceScreens,
                                 addedWorkspaceScreensFinal, addedItemsFinal, item.spanX, item.spanY,
                                 context);
@@ -224,7 +224,7 @@ public class AddWorkspaceItemsTask implements ModelUpdateTask {
                     WorkspaceItemInfo innerItem = new WorkspaceItemInfo(coverItem);
                     int[] innerCoords = mItemSpaceFinder.findSpaceForItem(innerWorkspaceScreens,
                             addedInnerScreensFinal, addedItemsFinal, innerItem.spanX,
-                            innerItem.spanY, context, FoldItemSets.INNER_SCREEN_BASE);
+                            innerItem.spanY, context, true);
                     writer.updateItemInfoProps(innerItem,
                             LauncherSettings.Favorites.CONTAINER_DESKTOP, innerCoords[0],
                             innerCoords[1], innerCoords[2]);
