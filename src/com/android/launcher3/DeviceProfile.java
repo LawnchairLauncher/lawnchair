@@ -293,6 +293,8 @@ public class DeviceProfile {
     public int flingToDeleteThresholdVelocity;
 
     private int mHotseatQsbSpaceBase; // LC-Note: This is to keep QSB space as a reference to be used later.
+    // LC-Note: scale of the responsive cell specs' icon size (FoldLandscape.OWN)
+    private float mResponsiveIconScale = 1f;
 
     /** Used only as an alternative to mocking when null values cannot be used. */
     @VisibleForTesting
@@ -380,7 +382,9 @@ public class DeviceProfile {
             @NonNull final ViewScaleProvider viewScaleProvider,
             @NonNull final Consumer<DeviceProfile> dimensionOverrideProvider,
             boolean isTransientTaskbar, DisplayOptionSpec displayOptionSpec) {
-        mTextFactors = DeviceProfileOverrides.INSTANCE.get(context).getTextFactors();
+        // LC-Note: per profile type: a foldable's large screen in landscape can have its own labels
+        mTextFactors = DeviceProfileOverrides.INSTANCE.get(context)
+                .getTextFactors(displayOptionSpec.typeIndex);
 
         preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
         allAppsCellHeightMultiplier = PreferenceCacheExtensionsKt
@@ -461,6 +465,8 @@ public class DeviceProfile {
         mIconSizeSteps = new IconSizeSteps(res);
 
         mTypeIndex = displayOptionSpec.typeIndex;
+        mResponsiveIconScale = DeviceProfileOverrides.INSTANCE.get(context)
+                .getResponsiveIconScale(mTypeIndex);
 
         mTaskbarProfile = TaskbarProfile.Factory.createTaskbarProfile(
                 res,
@@ -647,7 +653,7 @@ public class DeviceProfile {
         mHotseatQsbSpaceBase = hotseatQsbSpace;
 
         if (mIsResponsiveGrid) {
-            updateHotseatSizes(mResponsiveWorkspaceCellSpec.getIconSize());
+            updateHotseatSizes(getResponsiveIconSizePx());
         } else {
             updateHotseatSizes(pxFromDp(inv.iconSize[mTypeIndex], mMetrics));
         }
@@ -1220,7 +1226,7 @@ public class DeviceProfile {
         iconCenterVertically = (mIsScalableGrid || mIsResponsiveGrid) && isVerticalBarLayout();
 
         if (mIsResponsiveGrid) {
-            iconSizePx = mResponsiveWorkspaceCellSpec.getIconSize();
+            iconSizePx = getResponsiveIconSizePx();
             iconTextSizePx = mResponsiveWorkspaceCellSpec.getIconTextSize();
             mIconDrawablePaddingOriginalPx = mResponsiveWorkspaceCellSpec.getIconDrawablePadding();
             maxIconTextLineCount = mResponsiveWorkspaceCellSpec.getIconTextMaxLineCount();
@@ -1263,6 +1269,12 @@ public class DeviceProfile {
         }
 
         return Math.round(extraHeight);
+    }
+
+    /** LC-Note: the responsive cell specs' icon size, scaled by {@link #mResponsiveIconScale}. */
+    private int getResponsiveIconSizePx() {
+        return Math.max(1, Math.round(
+                mResponsiveWorkspaceCellSpec.getIconSize() * mResponsiveIconScale));
     }
 
     private int getCellLayoutHeightSpecification() {
@@ -1589,7 +1601,7 @@ public class DeviceProfile {
     private void updateFolderCellSize(float scale, Resources res) {
         int minLabelTextSize = pxFromSp(MIN_FOLDER_TEXT_SIZE_SP, mMetrics, scale);
         if (mIsResponsiveGrid) {
-            folderChildIconSizePx = mResponsiveWorkspaceCellSpec.getIconSize();
+            folderChildIconSizePx = getResponsiveIconSizePx();
             folderChildTextSizePx = mResponsiveWorkspaceCellSpec.getIconTextSize();
             folderLabelTextSizePx = Math.max(minLabelTextSize,
                     (int) (folderChildTextSizePx * folderLabelTextScale));

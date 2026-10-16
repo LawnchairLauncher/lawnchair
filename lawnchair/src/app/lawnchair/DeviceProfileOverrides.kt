@@ -1,6 +1,7 @@
 package app.lawnchair
 
 import android.content.Context
+import app.lawnchair.fold.FoldLayout
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
@@ -93,6 +94,35 @@ class DeviceProfileOverrides @Inject constructor(
     )
 
     fun getTextFactors() = TextFactors(preferenceManager2)
+
+    /**
+     * The text factors of the profile of type [typeIndex]: the large screen of a foldable in
+     * landscape has its own label size with [app.lawnchair.fold.FoldLandscape.OWN].
+     */
+    fun getTextFactors(typeIndex: Int): TextFactors {
+        val textFactors = TextFactors(preferenceManager2)
+        if (!isLandscapeOwn(typeIndex)) return textFactors
+        val showLabels = preferenceManager2.showIconLabelsOnHomeScreen.firstCached()
+        return textFactors.copy(
+            iconTextSizeFactor = if (showLabels) FoldLayout.landscapeLabelSizeFactor(preferenceManager2) else 0f,
+        )
+    }
+
+    /**
+     * Scale of the responsive grids' icon size for the profile of type [typeIndex]. Responsive
+     * grids take their icon size from their cell specs, not from the icon size factor, so the large
+     * screen in landscape with [app.lawnchair.fold.FoldLandscape.OWN] is scaled relative to portrait.
+     */
+    fun getResponsiveIconScale(typeIndex: Int): Float {
+        if (!isLandscapeOwn(typeIndex)) return 1f
+        val portrait = preferenceManager2.homeIconSizeFactor.firstCached()
+        if (portrait <= 0f) return 1f
+        return FoldLayout.landscapeIconSizeFactor(preferenceManager2) / portrait
+    }
+
+    private fun isLandscapeOwn(typeIndex: Int) = typeIndex == INDEX_TWO_PANEL_LANDSCAPE &&
+        InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY &&
+        FoldLayout.isLandscapeOwn(preferenceManager2)
     override fun close() {
         TODO("Not yet implemented")
     }
@@ -124,6 +154,8 @@ class DeviceProfileOverrides @Inject constructor(
         val folderGridInLandscape: Boolean = false,
 
         val iconSizeFactor: Float,
+        // The large screen of a foldable in landscape ([INDEX_TWO_PANEL_LANDSCAPE])
+        val landscapeIconSizeFactor: Float,
         val allAppsIconSizeFactor: Float,
         val allAppsIconTextSizeFactor: Float,
 
@@ -153,6 +185,12 @@ class DeviceProfileOverrides @Inject constructor(
                 deviceType == InvariantDeviceProfile.TYPE_DESKTOP,
 
             iconSizeFactor = prefs2.homeIconSizeFactor.firstCached(),
+            landscapeIconSizeFactor =
+            if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY && FoldLayout.isLandscapeOwn(prefs2)) {
+                FoldLayout.landscapeIconSizeFactor(prefs2)
+            } else {
+                prefs2.homeIconSizeFactor.firstCached()
+            },
             allAppsIconSizeFactor = prefs2.drawerIconSizeFactor.firstCached(),
             allAppsIconTextSizeFactor =
             if (prefs2.showIconLabelsInDrawer.firstCached()) {
@@ -240,7 +278,7 @@ class DeviceProfileOverrides @Inject constructor(
             idp.iconSize[INDEX_DEFAULT] *= iconSizeFactor
             idp.iconSize[INDEX_LANDSCAPE] *= iconSizeFactor
             idp.iconSize[INDEX_TWO_PANEL_PORTRAIT] *= iconSizeFactor
-            idp.iconSize[INDEX_TWO_PANEL_LANDSCAPE] *= iconSizeFactor
+            idp.iconSize[INDEX_TWO_PANEL_LANDSCAPE] *= landscapeIconSizeFactor
 
             idp.allAppsIconSize[INDEX_DEFAULT] *= allAppsIconSizeFactor
             idp.allAppsIconSize[INDEX_LANDSCAPE] *= allAppsIconSizeFactor
