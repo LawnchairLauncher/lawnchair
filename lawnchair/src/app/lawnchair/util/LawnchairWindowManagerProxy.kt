@@ -94,7 +94,11 @@ class LawnchairWindowManagerProxy @Inject constructor(
      * keys that DisplayController.Info looks up for them.
      */
     private fun getInternalDisplayStates(context: Context): List<CachedDisplayInfo> {
-        if (!hasHingeSensor(context) || getDisplay(context)?.displayId != DEFAULT_DISPLAY) return emptyList()
+        if (getDisplay(context)?.displayId != DEFAULT_DISPLAY) return emptyList()
+        if (!isFoldable(context)) {
+            warnIfFoldsWithoutHingeFeature(context)
+            return emptyList()
+        }
         // Built like DisplayController.Info#normalizedDisplayInfo, so that it is found in the cache
         val current = getDisplayInfo(context).normalize(this)
 
@@ -121,9 +125,6 @@ class LawnchairWindowManagerProxy @Inject constructor(
             emptySet()
         }
     }
-
-    private fun hasHingeSensor(context: Context): Boolean = Utilities.ATLEAST_R &&
-        context.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_HINGE_ANGLE)
 
     /**
      * Adds [current] to the states of the internal display seen on this device, and returns them all,
@@ -376,7 +377,29 @@ class LawnchairWindowManagerProxy @Inject constructor(
         return (dp * resources.displayMetrics.density).toInt()
     }
 
+    /**
+     * Logs once when the internal display has several states (a foldable) although the device
+     * doesn't declare the hinge feature: then [isFoldable] is false and the device type changes
+     * on every fold, the behaviour the display states above prevent.
+     */
+    private fun warnIfFoldsWithoutHingeFeature(context: Context) {
+        if (checkedHingeFeature) return
+        checkedHingeFeature = true
+        val states = getPossibleMaximumWindowMetrics(context).map { getDisplayInfo(it, Surface.ROTATION_0) }.toSet()
+        if (states.size > 1) {
+            Log.w(TAG, "internal display has ${states.size} states but no FEATURE_SENSOR_HINGE_ANGLE: the device type may change on fold")
+        }
+    }
+
     companion object {
+        @Volatile
+        private var checkedHingeFeature = false
+
+        /** Whether this device folds: the single check, for DisplayController too. */
+        @JvmStatic
+        fun isFoldable(context: Context): Boolean = Utilities.ATLEAST_R &&
+            context.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_HINGE_ANGLE)
+
         private const val KEY_INTERNAL_DISPLAY_STATES = "lc_internal_display_states"
         private const val STATE_SEPARATOR = ";"
         private const val MAX_INTERNAL_DISPLAY_STATES = 4

@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.util;
 
-import static android.content.pm.PackageManager.FEATURE_SENSOR_HINGE_ANGLE;
 import static android.content.res.Configuration.UI_MODE_NIGHT_MASK;
 import static android.content.res.Configuration.UI_MODE_NIGHT_YES;
 import static android.view.Display.DEFAULT_DISPLAY;
@@ -57,6 +56,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
 
+import app.lawnchair.util.LawnchairWindowManagerProxy;
 import com.android.launcher3.InvariantDeviceProfile.DeviceType;
 import com.android.launcher3.LauncherPrefChangeListener;
 import com.android.launcher3.LauncherPrefs;
@@ -598,9 +598,8 @@ public class DisplayController implements DesktopVisibilityListener {
             navigationMode = wmProxy.getNavigationMode(displayInfoContext);
             mIsNightModeActive = isNightModeActiveCompat(config);
 
-            // LC: Hacky stuff but it work!
-            mIsFoldable = Utilities.ATLEAST_R && displayInfoContext.getPackageManager()
-                .hasSystemFeature(FEATURE_SENSOR_HINGE_ANGLE);
+            // LC-Note: the single "does this device fold" check (LawnchairWindowManagerProxy).
+            mIsFoldable = LawnchairWindowManagerProxy.isFoldable(displayInfoContext);
             
             mPerDisplayBounds.putAll(perDisplayBoundsCache);
             List<WindowBounds> cachedValue = getCurrentBounds();
