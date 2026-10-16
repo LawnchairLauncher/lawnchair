@@ -25,10 +25,12 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.FoldMirrorNote
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.isFoldHomeMirrored
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -81,6 +83,8 @@ fun FolderPreferences(
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             if (isFoldable) {
+                // "Same as cover" uses the folded folder grid on the large screen too
+                val homeMirrored = isFoldHomeMirrored()
                 SliderPreference(
                     label = stringResource(id = R.string.state_folded, stringResource(id = R.string.max_folder_columns)),
                     adapter = prefs2.folderColumns.getAdapter(),
@@ -92,6 +96,7 @@ fun FolderPreferences(
                     adapter = prefs2.folderColumnsUnfolded.getAdapter(),
                     step = 1,
                     valueRange = 2..6,
+                    enabled = !homeMirrored,
                 )
                 val folderRowsAdapter = prefs.folderRows.getAdapter()
                 SliderPreference(
@@ -108,7 +113,11 @@ fun FolderPreferences(
                         adapter = prefs.folderRowsUnfolded.getAdapter(),
                         step = 1,
                         valueRange = 2..5,
+                        enabled = !homeMirrored,
                     )
+                }
+                if (homeMirrored) {
+                    FoldMirrorNote()
                 }
             } else {
                 SliderPreference(
