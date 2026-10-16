@@ -753,6 +753,17 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadGridWithNewValue() },
     )
 
+    /**
+     * Folder rows on the unfolded screen of a foldable. Defaults to the folded rows (the old
+     * preferences' folderRows): the unfolded screen is about as tall as the cover. Its key is the
+     * one it had in the old preferences, from which [SharedPreferencesMigration] moves it.
+     */
+    val folderRowsUnfolded = idpPreference(
+        key = intPreferencesKey(name = "pref_folderRowsUnfolded"),
+        defaultSelector = { LawnchairPreferenceManager.getInstance(context).folderRows.get(this) },
+        onSet = { reloadGridWithNewValue() },
+    )
+
     val additionalFonts = preference(
         key = stringPreferencesKey(name = "additional_fonts"),
         defaultValue = "",

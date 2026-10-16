@@ -93,9 +93,9 @@ fun FolderPreferences(
                 step = 1,
                 valueRange = 2..5,
             )
+            // The unfolded columns and rows follow the folded ones until set, but their sliders don't
+            // see a folded change by themselves: read them again when the folded value changes.
             if (isFoldable) {
-                // The unfolded columns follow the folded columns until set, and their default is
-                // read from the preference cache: read them again when the folded columns change.
                 key(folderColumnsAdapter.state.value) {
                     SliderPreference(
                         label = stringResource(id = R.string.state_unfolded, columnsLabel),
@@ -114,12 +114,10 @@ fun FolderPreferences(
                 valueRange = 2..5,
             )
             if (isFoldable) {
-                // The unfolded rows follow the folded rows until set, and their adapter only
-                // listens to its own key: read it again when the folded rows change.
                 key(folderRowsAdapter.state.value) {
                     SliderPreference(
                         label = stringResource(id = R.string.state_unfolded, rowsLabel),
-                        adapter = prefs.folderRowsUnfolded.getAdapter(),
+                        adapter = prefs2.folderRowsUnfolded.getAdapter(),
                         step = 1,
                         valueRange = 2..5,
                         enabled = !homeMirrored,

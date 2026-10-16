@@ -224,7 +224,7 @@ class DeviceProfileOverrides @Inject constructor(
                 -1
             },
             foldableFolderRows = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
-                prefs.folderRowsUnfolded.get(defaultGrid)
+                prefs2.folderRowsUnfolded.firstCached(gridOption = defaultGrid)
             } else {
                 -1
             },
