@@ -188,6 +188,12 @@ class DrawerFoldStyle(
     }
 
     override fun onEnd(scene: FoldScene) {
+        // First, so the book drives itself again whatever happens below
+        book?.let {
+            it.offsetProvider = null
+            it.update()
+        }
+        book = null
         if (barActive) barStretch?.restore()
         barActive = false
         barStretch = null
@@ -213,10 +219,6 @@ class DrawerFoldStyle(
                     view.translationY = 0f
                 }
             }
-            book?.let {
-                it.offsetProvider = null
-                it.update()
-            }
             if (zoomActive) {
                 resetZoom(list)
                 resetZoom(header)
@@ -229,7 +231,6 @@ class DrawerFoldStyle(
         riverActive = false
         riverMoved.clear()
         zoomActive = false
-        book = null
     }
 
     // Search bar

@@ -19,7 +19,7 @@ import java.util.WeakHashMap
  * are saved before that and restored after, so a fold or unfold keeps the drawer, the search
  * results and their scroll exactly where they were. What the drawer showed ([Capture]) goes to the
  * fold transition engine, which hears of the same change right after the drawer and hands it to
- * [DrawerFoldStyle].
+ * [DrawerFoldStyle]. The book drawer ([FoldDrawerBook]) hears of the change from here too.
  *
  * Called by the drawer container (`ActivityAllAppsContainerView.onDeviceProfileChanged`) on
  * foldables only; phones and tablets are unchanged.
@@ -68,6 +68,8 @@ object FoldDrawerState {
         restoreScroll(main)
         restoreScroll(work)
         restoreScroll(search)
+        FoldDrawerBook.of(main)?.onDeviceProfileChanged()
+        FoldDrawerBook.of(work)?.onDeviceProfileChanged()
     }
 
     private fun isFoldable() = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY

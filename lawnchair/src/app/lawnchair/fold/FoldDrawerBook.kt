@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsRecyclerView
@@ -35,8 +36,9 @@ import com.android.launcher3.views.ActivityContext
  * is cut there. The focus outline follows the item ([offsetFocusRect]).
  *
  * One instance per A-Z RecyclerView (personal and work) of a foldable, kept on the list itself (a
- * view tag), so it lives exactly as long as the list. It does nothing unless the current profile
- * was built for PAGES.
+ * view tag), so it lives exactly as long as the list. It listens to frames only while the current
+ * profile is built for PAGES ([onDeviceProfileChanged]); while a drawer transition plays, the
+ * transition drives [update] instead.
  */
 class FoldDrawerBook private constructor(
     private val rv: AllAppsRecyclerView,
@@ -44,7 +46,7 @@ class FoldDrawerBook private constructor(
     View.OnAttachStateChangeListener,
     ScrollableLayoutManager.FoldBookDelegate {
 
-    /** Lets a transition add a vertical offset to each child while it plays. */
+    /** Lets a transition add a vertical offset to each child while it plays; it then calls [update]. */
     fun interface OffsetProvider {
         /** [movingTop] is the child's top on the moving page (RecyclerView coordinates), if it is there. */
         fun offsetY(child: View, onMovingPage: Boolean, movingTop: Int, pageTop: Int, pageHeight: Int): Float
@@ -76,27 +78,46 @@ class FoldDrawerBook private constructor(
         if (rv.isAttachedToWindow) onViewAttachedToWindow(rv)
     }
 
-    override fun onViewAttachedToWindow(v: View) {
-        val vto = rv.viewTreeObserver
-        vto.addOnPreDrawListener(this)
-        observer = vto
-    }
+    override fun onViewAttachedToWindow(v: View) = onDeviceProfileChanged()
 
-    override fun onViewDetachedFromWindow(v: View) {
-        observer?.let { if (it.isAlive) it.removeOnPreDrawListener(this) }
-        observer = null
-    }
+    override fun onViewDetachedFromWindow(v: View) = listen(false)
 
     override fun onPreDraw(): Boolean {
-        update()
+        if (offsetProvider == null) update()
         return true
     }
 
+    /**
+     * Listens to frames only while the profile is built for PAGES, and puts the children back when
+     * it no longer is. Called when the list is attached and after each profile change.
+     */
+    fun onDeviceProfileChanged() {
+        val pages = isPages(deviceProfile())
+        listen(pages && rv.isAttachedToWindow)
+        if (!pages && isActive) deactivate()
+    }
+
+    private fun listen(on: Boolean) {
+        if (on == (observer != null)) return
+        if (on) {
+            observer = rv.viewTreeObserver.also { it.addOnPreDrawListener(this) }
+        } else {
+            observer?.let { if (it.isAlive) it.removeOnPreDrawListener(this) }
+            observer = null
+        }
+    }
+
+    private fun deviceProfile(): DeviceProfile {
+        val activity: ActivityContext = ActivityContext.lookupContext(rv.context)
+        return activity.deviceProfile
+    }
+
+    private fun isPages(dp: DeviceProfile) = FoldDrawerLayouts.drawerLayoutOf(dp) == FoldDrawerLayout.PAGES
+
     /** Places the children on their page. Safe to call any time. */
     fun update() {
-        val activity: ActivityContext = ActivityContext.lookupContext(rv.context)
-        val dp = activity.deviceProfile
-        if (FoldDrawerLayouts.drawerLayoutOf(dp) != FoldDrawerLayout.PAGES || rv.height == 0) {
+        val dp = deviceProfile()
+        if (!isPages(dp) || rv.height == 0) {
             if (isActive) deactivate()
             return
         }
@@ -245,6 +266,6 @@ class FoldDrawerBook private constructor(
         }
 
         /** The book of [rv], if it has one. */
-        fun of(rv: AllAppsRecyclerView?): FoldDrawerBook? = rv?.getTag(R.id.fold_drawer_book) as? FoldDrawerBook
+        fun of(rv: RecyclerView?): FoldDrawerBook? = rv?.getTag(R.id.fold_drawer_book) as? FoldDrawerBook
     }
 }
