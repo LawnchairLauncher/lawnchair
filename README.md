@@ -89,13 +89,13 @@ SDK version bump. [Payloads, setup, errors, privacy and test matrix](docs/OMNI_I
 <!-- OMNI_METRICS_START -->
 | Metric | Count |
 | --- | ---: |
-| Tracked files | **5,005** |
-| Production source files | **2,186** |
-| Production source lines | **469,631** |
-| Test source files | **657** |
-| Test source lines | **112,347** |
-| Kotlin files | **1,184** |
-| Kotlin lines | **164,164** |
+| Tracked files | **5,008** |
+| Production source files | **2,188** |
+| Production source lines | **469,827** |
+| Test source files | **658** |
+| Test source lines | **112,517** |
+| Kotlin files | **1,187** |
+| Kotlin lines | **164,530** |
 | Markdown documents | **40** |
 <!-- OMNI_METRICS_END -->
 

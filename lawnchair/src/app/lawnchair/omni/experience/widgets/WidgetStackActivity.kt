@@ -42,21 +42,33 @@ import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.DeviceTier
 import app.lawnchair.util.DeviceTierManager
 import com.android.launcher3.R
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class WidgetStackActivity : ComponentActivity() {
     private val errors = kotlinx.coroutines.CoroutineExceptionHandler { _, error ->
-        android.util.Log.w("OmniWidgetStack", "Widget configuration unavailable", error)
-        runOnUiThread {
-            Toast.makeText(this, R.string.omni_action_unavailable, Toast.LENGTH_LONG).show()
-            finish()
-        }
+        android.util.Log.w("OmniWidgetStack", "Widget editor operation failed", error)
+        busy = false
+        loading = false
+        failed = true
     }
+    private val calls = BoundedWidgetCalls.shared
     private var outerId = -1
     private var pendingId = -1
-    private lateinit var host: StackHost
+    private var host: StackHost? = null
+    private var loadJob: Job? = null
+    private var labelJob: Job? = null
+    private var operationJob: Job? = null
+    private var loadVersion = 0
+    private var loading by mutableStateOf(true)
+    private var failed by mutableStateOf(false)
+    private var limit by mutableIntStateOf(4)
+    private var validStack by mutableStateOf(false)
     private var members by mutableStateOf<List<Pair<Int, String>>?>(null)
     private var selected by mutableIntStateOf(0)
     private var busy by mutableStateOf(false)
@@ -66,45 +78,98 @@ class WidgetStackActivity : ComponentActivity() {
         setResult(Activity.RESULT_CANCELED)
         outerId = savedInstanceState?.getInt("outer") ?: intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
         pendingId = savedInstanceState?.getInt("pending") ?: -1
-        host = StackHost(this, outerId)
         setContent {
             LawnchairTheme {
                 EdgeToEdge()
                 StackEditor()
             }
         }
-        lifecycleScope.launch(errors) {
-            val info = withContext(Dispatchers.IO) { AppWidgetManager.getInstance(this@WidgetStackActivity).getAppWidgetInfo(outerId) }
-            if (outerId <= 0 || info?.provider != OmniWidgetStack.component(this@WidgetStackActivity)) {
-                finish()
-                return@launch
-            }
-            render()
-        }
-    }
-    private suspend fun render() {
-        val stack = withContext(Dispatchers.IO) {
-            ExperienceStore.get(this@WidgetStackActivity).read().stacks.firstOrNull { it.outerId == outerId } ?: WidgetStack(outerId)
-        }
-        val labels = withContext(Dispatchers.IO) {
-            stack.widgetIds.map { id ->
-                val info = AppWidgetManager.getInstance(this@WidgetStackActivity).getAppWidgetInfo(id)
-                id to (info?.loadLabel(packageManager) ?: getString(R.string.omni_action_unavailable))
-            }
-        }
-        members = labels
-        selected = stack.selected
+        load()
     }
 
-    private fun mutate(operation: suspend () -> Unit) {
-        if (busy) return
+    private fun showError(error: Exception) {
+        if (error is CancellationException && error !is TimeoutCancellationException) throw error
+        android.util.Log.w("OmniWidgetStack", "Widget editor unavailable", error)
+        failed = true
+    }
+
+    private fun load() {
+        val version = ++loadVersion
+        loadJob?.cancel()
+        labelJob?.cancel()
+        loadJob = lifecycleScope.launch(errors) {
+            loading = true
+            failed = false
+            try {
+                render()
+            } catch (error: Exception) {
+                showError(error)
+            } finally {
+                if (version == loadVersion) loading = false
+            }
+        }
+    }
+
+    /** Only strings/IDs reach Compose. No system-service query or tier detection in composition. */
+    private suspend fun render() {
+        val app = applicationContext
+        val id = outerId
+        validStack = false
+        val (stack, capacity) = calls.call {
+            require(id > 0 && AppWidgetManager.getInstance(app).getAppWidgetInfo(id)?.provider == OmniWidgetStack.component(app)) { "Stack is no longer bound" }
+            val capacity = if (DeviceTierManager.getInstance(app).tier == DeviceTier.LOW) 4 else 8
+            // The blocking bridge is confined to the bounded worker, never the main dispatcher.
+            val saved = runBlocking { ExperienceStore.get(app).read().stacks.firstOrNull { it.outerId == id } ?: WidgetStack(id) }
+            saved to capacity
+        }
+        limit = capacity
+        validStack = true
+        val ids = stack.widgetIds.distinct().take(8)
+        selected = stack.selected.coerceIn(0, (ids.size - 1).coerceAtLeast(0))
+        members = ids.mapIndexed { index, widgetId -> widgetId to getString(R.string.omni_stack_member, index + 1) }
+        // Show usable controls immediately. A slow or removed provider cannot hold the page open.
+        loading = false
+        labelJob?.cancel()
+        labelJob = lifecycleScope.launch {
+            for (widgetId in ids) {
+                val fallback = members.orEmpty().firstOrNull { it.first == widgetId }?.second.orEmpty()
+                val label = try {
+                    calls.call(timeoutMillis = 1_000) {
+                        AppWidgetManager.getInstance(app).getAppWidgetInfo(widgetId)?.loadLabel(app.packageManager) ?: fallback
+                    }
+                } catch (error: Exception) {
+                    if (error is CancellationException && error !is TimeoutCancellationException) throw error
+                    android.util.Log.w("OmniWidgetStack", "Widget label unavailable: $widgetId", error)
+                    fallback
+                }
+                members = members.orEmpty().map { if (it.first == widgetId) widgetId to label else it }
+            }
+        }
+    }
+
+    private suspend fun editorHost(): StackHost {
+        host?.let { return it }
+        val app = applicationContext
+        val id = outerId
+        return calls.call { StackHost(app, id) }.also { host = it }
+    }
+
+    private fun mutate(refresh: Boolean = true, operation: suspend () -> Unit) {
+        if (busy || loading || !validStack) return
+        ++loadVersion
+        loadJob?.cancel()
+        labelJob?.cancel()
         busy = true
-        lifecycleScope.launch(errors) {
+        failed = false
+        operationJob = lifecycleScope.launch(errors) {
             try {
                 operation()
-                render()
+                if (refresh) render()
+            } catch (error: Exception) {
+                showError(error)
             } finally {
                 busy = false
+                loading = false
             }
         }
     }
@@ -120,17 +185,21 @@ class WidgetStackActivity : ComponentActivity() {
     private fun StackEditor() {
         PreferenceScaffold(label = stringResource(R.string.omni_widget_stacks), isExpandedScreen = false) { padding ->
             Column(Modifier.fillMaxSize().padding(padding)) {
-                if (busy || members == null) LinearProgressIndicator(Modifier.fillMaxWidth())
+                if (busy || loading) LinearProgressIndicator(Modifier.fillMaxWidth())
                 LazyColumn(contentPadding = PaddingValues(bottom = 24.dp)) {
                     item {
                         PreferenceGroup(description = stringResource(R.string.omni_stack_help)) {
                             Column(Modifier.padding(16.dp)) {
-                                val limit = if (DeviceTierManager.getInstance(this@WidgetStackActivity).tier == DeviceTier.LOW) 4 else 8
-                                Text(stringResource(R.string.omni_selected_apps, members.orEmpty().size, limit))
+                                Text(if (loading && members == null) stringResource(R.string.omni_stack_loading) else stringResource(R.string.omni_selected_apps, members.orEmpty().size, limit))
+                                if (failed) {
+                                    Text(stringResource(R.string.omni_stack_load_failed))
+                                    TextButton(enabled = !busy && !loading, onClick = ::load) { Text(stringResource(R.string.omni_retry)) }
+                                }
                                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    Button(enabled = !busy && members != null && members.orEmpty().size < limit && pendingId < 0, onClick = {
-                                        mutate {
-                                            pendingId = withContext(Dispatchers.IO) { host.allocateAppWidgetId() }
+                                    Button(enabled = !busy && !loading && validStack && members != null && members.orEmpty().size < limit && pendingId < 0, onClick = {
+                                        mutate(refresh = false) {
+                                            val widgetHost = editorHost()
+                                            pendingId = calls.call(discard = { abandoned -> widgetHost.deleteAppWidgetId(abandoned) }) { widgetHost.allocateAppWidgetId() }
                                             try {
                                                 startActivityForResult(Intent(AppWidgetManager.ACTION_APPWIDGET_PICK).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, pendingId), PICK)
                                             } catch (_: Exception) {
@@ -138,7 +207,7 @@ class WidgetStackActivity : ComponentActivity() {
                                             }
                                         }
                                     }) { Text(stringResource(R.string.omni_stack_add)) }
-                                    TextButton(enabled = !busy && members != null, onClick = {
+                                    TextButton(enabled = !busy && !loading && validStack && members != null, onClick = {
                                         setResult(Activity.RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, outerId))
                                         finish()
                                     }) { Text(stringResource(R.string.omni_done)) }
@@ -148,17 +217,19 @@ class WidgetStackActivity : ComponentActivity() {
                     }
                     if (members?.isEmpty() == true) {
                         item {
-                            PreferenceGroup(description = stringResource(R.string.omni_stack_empty)) {}
+                            PreferenceGroup(showDividers = false) {
+                                Text(stringResource(R.string.omni_stack_empty), Modifier.padding(16.dp))
+                            }
                         }
                     }
                     itemsIndexed(members.orEmpty(), key = { _, member -> member.first }) { index, (id, label) ->
                         PreferenceGroup(heading = label) {
                             Column {
-                                SwitchPreference(checked = index == selected, onCheckedChange = { if (it) mutate { changeStack { stack -> stack.copy(selected = index) } } }, label = stringResource(R.string.omni_stack_show), enabled = !busy)
+                                SwitchPreference(checked = index == selected, onCheckedChange = { if (it) mutate { changeStack { stack -> stack.copy(selected = index) } } }, label = stringResource(R.string.omni_stack_show), enabled = !busy && !loading)
                                 FlowRow(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    TextButton(enabled = !busy && index > 0, onClick = { mutate { changeStack { it.moveMember(index, index - 1) } } }) { Text(stringResource(R.string.omni_move_up)) }
-                                    TextButton(enabled = !busy && index < members.orEmpty().lastIndex, onClick = { mutate { changeStack { it.moveMember(index, index + 1) } } }) { Text(stringResource(R.string.omni_move_down)) }
-                                    TextButton(enabled = !busy, onClick = { removing = id }) { Text(stringResource(R.string.omni_remove)) }
+                                    TextButton(enabled = !busy && !loading && index > 0, onClick = { mutate { changeStack { it.moveMember(index, index - 1) } } }) { Text(stringResource(R.string.omni_move_up)) }
+                                    TextButton(enabled = !busy && !loading && index < members.orEmpty().lastIndex, onClick = { mutate { changeStack { it.moveMember(index, index + 1) } } }) { Text(stringResource(R.string.omni_move_down)) }
+                                    TextButton(enabled = !busy && !loading, onClick = { removing = id }) { Text(stringResource(R.string.omni_remove)) }
                                 }
                             }
                         }
@@ -172,7 +243,8 @@ class WidgetStackActivity : ComponentActivity() {
                     removing = null
                     mutate {
                         changeStack { it.removeMember(id) }
-                        withContext(Dispatchers.IO) { host.deleteAppWidgetId(id) }
+                        val widgetHost = editorHost()
+                        calls.call { widgetHost.deleteAppWidgetId(id) }
                     }
                 }) { Text(stringResource(R.string.omni_remove)) }
             }, dismissButton = { TextButton(onClick = { removing = null }) { Text(stringResource(android.R.string.cancel)) } })
@@ -183,59 +255,77 @@ class WidgetStackActivity : ComponentActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode !in setOf(PICK, BIND, CONFIGURE)) return
-        lifecycleScope.launch(errors) {
-            if (resultCode != Activity.RESULT_OK || pendingId <= 0) {
-                discard()
-                render()
-                return@launch
-            }
-            val manager = AppWidgetManager.getInstance(this@WidgetStackActivity)
-            var info = withContext(Dispatchers.IO) { manager.getAppWidgetInfo(pendingId) }
-            if (info == null && requestCode == PICK) {
-                val component = data?.getParcelableExtra<android.content.ComponentName>(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER)
-                if (component == null) {
+        ++loadVersion
+        loadJob?.cancel()
+        labelJob?.cancel()
+        val previousOperation = operationJob
+        operationJob = lifecycleScope.launch(errors) {
+            previousOperation?.join()
+            busy = true
+            failed = false
+            try {
+                if (resultCode != Activity.RESULT_OK || pendingId <= 0) {
                     discard()
                     render()
                     return@launch
                 }
-                try {
-                    startActivityForResult(Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, pendingId).putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, component), BIND)
-                } catch (_: Exception) {
+                val app = applicationContext
+                val candidateId = pendingId
+                val info = calls.call { AppWidgetManager.getInstance(app).getAppWidgetInfo(candidateId) }
+                if (info == null && requestCode == PICK) {
+                    val component = data?.getParcelableExtra<android.content.ComponentName>(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER)
+                    if (component == null) {
+                        discard()
+                        render()
+                        return@launch
+                    }
+                    try {
+                        startActivityForResult(Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, pendingId).putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, component), BIND)
+                    } catch (_: Exception) {
+                        discard()
+                        render()
+                    }
+                    return@launch
+                }
+                if (info == null || info.provider == OmniWidgetStack.component(this@WidgetStackActivity)) {
                     discard()
                     render()
+                    return@launch
                 }
-                return@launch
-            }
-            if (info == null || info.provider == OmniWidgetStack.component(this@WidgetStackActivity)) {
-                discard()
+                if (requestCode != CONFIGURE && info.configure != null) {
+                    try {
+                        editorHost().startAppWidgetConfigureActivityForResult(this@WidgetStackActivity, pendingId, 0, CONFIGURE, null)
+                    } catch (_: Exception) {
+                        discard()
+                        render()
+                    }
+                    return@launch
+                }
+                val id = pendingId
+                withContext(Dispatchers.IO) {
+                    ExperienceStore.get(this@WidgetStackActivity).update { state ->
+                        val old = state.stacks.firstOrNull { it.outerId == outerId } ?: WidgetStack(outerId)
+                        require(old.widgetIds.size < limit)
+                        state.copy(stacks = state.stacks.filterNot { it.outerId == outerId } + old.copy(widgetIds = (old.widgetIds + id).distinct()))
+                    }
+                }
+                pendingId = -1
                 render()
-                return@launch
+            } catch (error: Exception) {
+                showError(error)
+            } finally {
+                busy = false
+                loading = false
             }
-            if (requestCode != CONFIGURE && info.configure != null) {
-                try {
-                    host.startAppWidgetConfigureActivityForResult(this@WidgetStackActivity, pendingId, 0, CONFIGURE, null)
-                } catch (_: Exception) {
-                    discard()
-                    render()
-                }
-                return@launch
-            }
-            val id = pendingId
-            withContext(Dispatchers.IO) {
-                ExperienceStore.get(this@WidgetStackActivity).update { state ->
-                    val old = state.stacks.firstOrNull { it.outerId == outerId } ?: WidgetStack(outerId)
-                    val limit = if (DeviceTierManager.getInstance(this@WidgetStackActivity).tier == DeviceTier.LOW) 4 else 8
-                    require(old.widgetIds.size < limit)
-                    state.copy(stacks = state.stacks.filterNot { it.outerId == outerId } + old.copy(widgetIds = (old.widgetIds + id).distinct()))
-                }
-            }
-            pendingId = -1
-            render()
         }
     }
     private suspend fun discard() {
-        if (pendingId > 0) withContext(Dispatchers.IO) { host.deleteAppWidgetId(pendingId) }
-        pendingId = -1
+        if (pendingId > 0) {
+            val id = pendingId
+            val widgetHost = editorHost()
+            calls.call { widgetHost.deleteAppWidgetId(id) }
+            pendingId = -1
+        }
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -245,8 +335,20 @@ class WidgetStackActivity : ComponentActivity() {
     override fun onDestroy() {
         if (isFinishing && pendingId > 0) {
             val id = pendingId
-            kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch { runCatching { host.deleteAppWidgetId(id) } }
+            val app = applicationContext
+            val stackId = outerId
+            val worker = calls
+            kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch {
+                runCatching {
+                    worker.call {
+                        val committed = runBlocking { ExperienceStore.get(app).read().stacks.any { id in it.widgetIds } }
+                        if (!committed) StackHost(app, stackId).deleteAppWidgetId(id)
+                    }
+                }
+            }
         }
+        loadJob?.cancel()
+        labelJob?.cancel()
         super.onDestroy()
     }
     companion object {

@@ -14,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE = Path(os.environ.get("OMNI_TEST_CACHE", str(Path(tempfile.gettempdir()) / "omni-experience-jvm")))
 CACHE.mkdir(parents=True, exist_ok=True)
 ARTIFACTS = {
+    # Match the APK runtime instead of the older coroutines bundled inside ktlint.
+    "coroutines.jar": "org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.10.2/kotlinx-coroutines-core-jvm-1.10.2.jar",
     "ktlint.jar": "com/pinterest/ktlint/ktlint-cli/1.8.0/ktlint-cli-1.8.0-all.jar",
     "junit.jar": "junit/junit/4.13.2/junit-4.13.2.jar",
     "hamcrest.jar": "org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar",
@@ -40,6 +42,9 @@ sources = [
     base + "omni/experience/ExperienceCapabilityNames.kt",
     base + "omni/OmniLauncherAccessPolicy.kt",
     base + "omni/OmniSearchPolicy.kt",
+    base + "omni/experience/widgets/BoundedWidgetCalls.kt",
+    base + "ui/preferences/components/layout/DividerLayoutMetrics.kt",
+    "lawnchair/src/test/kotlin/app/lawnchair/omni/experience/WidgetLoadingTest.kt",
     "lawnchair/src/test/kotlin/app/lawnchair/omni/experience/ExperienceRulesTest.kt",
     "lawnchair/src/test/kotlin/app/lawnchair/omni/OmniLauncherAccessPolicyTest.kt",
     "lawnchair/src/test/kotlin/app/lawnchair/omni/OmniSearchPolicyTest.kt",
@@ -52,4 +57,4 @@ with tempfile.TemporaryDirectory(prefix="omni-test-classes-") as output:
     formatter.write_text((ROOT / (base + "smartspace/CalendarDateFormatter.kt")).read_text().replace("import android.icu.", "import com.ibm.icu."))
     sources.append(str(formatter))
     subprocess.run([java, "-cp", classpath, "org.jetbrains.kotlin.cli.jvm.K2JVMCompiler", "-no-stdlib", "-no-reflect", "-classpath", classpath, "-d", output] + sources, cwd=ROOT, check=True)
-    subprocess.run([java, "-cp", output + os.pathsep + classpath, "org.junit.runner.JUnitCore", "app.lawnchair.omni.experience.ExperienceRulesTest", "app.lawnchair.omni.OmniLauncherAccessPolicyTest", "app.lawnchair.omni.OmniSearchPolicyTest", "app.lawnchair.omni.experience.CalendarDateFormatterTest"], cwd=ROOT, check=True)
+    subprocess.run([java, "-cp", output + os.pathsep + classpath, "org.junit.runner.JUnitCore", "app.lawnchair.omni.experience.ExperienceRulesTest", "app.lawnchair.omni.OmniLauncherAccessPolicyTest", "app.lawnchair.omni.OmniSearchPolicyTest", "app.lawnchair.omni.experience.CalendarDateFormatterTest", "app.lawnchair.omni.experience.WidgetLoadingTest"], cwd=ROOT, check=True)

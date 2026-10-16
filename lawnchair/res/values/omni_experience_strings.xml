@@ -128,4 +128,8 @@
     <string name="omni_recents_integration">Recents integration</string>
     <string name="omni_status_available">Available</string>
     <string name="omni_status_unavailable">Not available on this setup</string>
+    <string name="omni_stack_member">Widget %1$d</string>
+    <string name="omni_stack_loading">Loading widget stack…</string>
+    <string name="omni_stack_load_failed">Could not load widget details. You can go back or try again.</string>
+    <string name="omni_retry">Try again</string>
 </resources>

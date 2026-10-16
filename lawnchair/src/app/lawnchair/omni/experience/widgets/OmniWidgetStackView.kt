@@ -150,7 +150,7 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
         scope = work
         collection = work.launch {
             owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                val widgetHost = StackHost(context, outerId)
+                val widgetHost = StackHost(context.applicationContext, outerId)
                 host = widgetHost
                 try {
                     widgetHost.startListening()
@@ -176,10 +176,15 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
                         }
                     }
                 } finally {
-                    runCatching { widgetHost.stopListening() }
                     widgetHost.releaseViews()
                     content.removeAllViews()
                     host = null
+                    // Opening the editor stops Home. Never block that same main thread on
+                    // a slow system-server stopListening Binder call during the transition.
+                    withContext(kotlinx.coroutines.NonCancellable) {
+                        runCatching { BoundedWidgetCalls.shared.call { widgetHost.stopListening() } }
+                            .onFailure { android.util.Log.w("OmniWidgetStack", "Widget listener cleanup delayed", it) }
+                    }
                 }
             }
         }

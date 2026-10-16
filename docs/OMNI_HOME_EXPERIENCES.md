@@ -94,6 +94,19 @@ switching and stops listening while Home is not visible. LOW tier offers up to f
 other tiers allow eight. No blur is added. Removing an outer stack deletes its child host IDs.
 Widget grants may need rebinding after reinstall/restore, as with other Android widget hosts.
 
+#### Widget editor loading and recovery
+
+The editor no longer constructs its AppWidgetHost before the first frame or queries the device tier from Compose. The initial binding/store/tier snapshot runs on a process-scoped worker with two threads, eight queued calls and a 2.5-second deadline. Host creation is deferred until a host operation needs it, on that worker. A stuck Binder can outlive a cancelled request, so the waiter detaches on timeout and late responses cannot update the closed screen. Outstanding native work remains bounded rather than creating more threads on every retry.
+
+Home's nested host also releases its views before stopping the listener off Main with a bounded wait; opening the editor no longer makes the Home-stop transition wait synchronously for system-server cleanup. The nested host holds application context so delayed cleanup cannot retain the Home Activity.
+
+Widget IDs and placeholder names make the controls usable before provider names load. Each name has its own 1-second wait and a fallback; missing/slow providers do not hold the whole editor open. Loading errors stop the progress state and offer Retry/Back. Mutation submissions are serialized; allocation abandoned after cancellation is cleaned off Main. Closing configuration does not delete an ID already committed to a stack.
+
+The theme's accent/style reads now collect asynchronously with safe initial colors; saved colors replace them when available. Other preference consumers keep their existing initialization semantics. Shared preference-group layout also handles zero children with zero dividers, measures rows without multiplying the parent's minimum height, and counts only dividers actually placed. The empty-stack message is a real text child, not an empty divider layout.
+
+Six executable regressions simulate an uninterruptible provider, cancellation/late allocation, saturation, queued cancellation, failure/retry and empty/skipped divider geometry. These are JVM event-loop/concurrency tests, not an Android device reproduction. The supplied screenshot identifies the loading page but contains no ANR thread dump, so the precise device blocking stack is still unconfirmed. Recheck opening an empty stack, returning from the widget picker, Back during load, retry and slow/removed providers on the Infinix.
+
+
 ## OmniLink and OEM integration
 
 Install both Launcher PR #16 and Workspace PR #194 with matching signing keys, and enable the

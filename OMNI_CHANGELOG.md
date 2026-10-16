@@ -5,6 +5,14 @@ updates, modifications and ecosystem integration. Original Lawnchair/AOSP author
 credits and rights; see [NOTICE.md](NOTICE.md). Upstream GITHUB_CHANGELOG.md and
 TELEGRAM_CHANGELOG.txt remain historical upstream release notes.
 
+## Widget editor responsiveness — 16 October 2026
+
+- Bound initial widget loading and Binder waits; keep cancellation and late callbacks from holding the editor open.
+- Move host construction and tier checks out of first-frame/composition work; load provider names after controls become available.
+- Add retryable loading failure, serialize picker/mutation work and protect committed IDs during configuration cleanup.
+- Collect theme accent/style asynchronously and fix negative empty-group/skipped-divider layout heights.
+- Add six executable concurrency/layout regressions; the full standalone suite now has 34 tests. The exact reported ANR stack is not available from the screenshot.
+
 ## Theme-consistent Hub and Hijri dates — 16 October 2026
 
 - Replace Hub chip navigation with a native preference overview and focused feature screens; use the same preference theme in the widget editor and Shelf media controls.

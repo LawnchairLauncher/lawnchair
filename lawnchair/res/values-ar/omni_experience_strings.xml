@@ -128,4 +128,8 @@
     <string name="omni_recents_integration">تكامل التطبيقات الأخيرة</string>
     <string name="omni_status_available">متاح</string>
     <string name="omni_status_unavailable">غير متاح بالإعداد الحالي</string>
+    <string name="omni_stack_member">ويدجت %1$d</string>
+    <string name="omni_stack_loading">جارٍ تحميل مجموعة الويدجت…</string>
+    <string name="omni_stack_load_failed">تعذر تحميل تفاصيل الويدجت. يمكنك الرجوع أو إعادة المحاولة.</string>
+    <string name="omni_retry">إعادة المحاولة</string>
 </resources>

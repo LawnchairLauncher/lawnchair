@@ -35,7 +35,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - name: Run launcher rules, Unicode search and receiver policy tests
+      - name: Run search, widget loading, layout and receiver policy tests
         run: python3 scripts/test_omni_experience.py
 
   build-debug-apk:
