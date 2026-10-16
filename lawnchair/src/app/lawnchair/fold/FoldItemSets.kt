@@ -2,16 +2,19 @@ package app.lawnchair.fold
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
+import com.android.launcher3.R
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.util.IntArray as LIntArray
+import com.patrykmichalik.opto.core.setBlocking
 
 /**
  * The two item sets of the "Independent" home layout, in one database.
@@ -67,17 +70,23 @@ object FoldItemSets {
      * thread after pending writes, copies in one transaction (see
      * `DatabaseHelper.cloneCoverItemSetToInnerSet`), gives the inner set the cover's page order,
      * then reloads the model once so the copies (and pending widgets) are loaded and bound. An
-     * inner set that already has items is left as it is; nothing is ever deleted.
+     * inner set that already has items is left as it is; nothing is ever deleted. If the copy
+     * fails, the home layout goes back to [revertTo] and a toast says why, so "Independent" is
+     * never left on with an empty inner screen.
      */
     @JvmStatic
-    fun createInnerSetIfEmpty(context: Context) {
+    fun createInnerSetIfEmpty(context: Context, revertTo: FoldHomeLayout) {
         val appContext = context.applicationContext
         MODEL_EXECUTOR.execute {
             val model = LauncherAppState.getInstance(appContext).model
             val copied = try {
                 model.modelDbController.cloneCoverItemSetToInnerSet()
             } catch (e: Exception) {
-                Log.e(TAG, "Couldn't copy the cover layout into the inner set", e)
+                Log.e(TAG, "Couldn't copy the cover layout into the inner set, back to $revertTo", e)
+                PreferenceManager2.INSTANCE.get(appContext).foldHomeLayout.setBlocking(revertTo)
+                MAIN_EXECUTOR.execute {
+                    Toast.makeText(appContext, R.string.fold_independent_copy_failed, Toast.LENGTH_LONG).show()
+                }
                 return@execute
             }
             if (copied <= 0) return@execute

@@ -1153,5 +1153,6 @@
     <string name="fold_wallpaper_dual_inactive">Opens the system\'s live wallpaper chooser</string>
     <string name="fold_unfolded_grid_mirror_note">Not used while Foldable screen › Home screen is set to “Same as cover”: the large screen then uses the folded grid.</string>
     <string name="fold_independent_after_fold_note">Not used with “Independent”: each screen has its own pages and opens on the page you used there last.</string>
+    <string name="fold_independent_copy_failed">Couldn\'t copy the cover layout to the large screen, so “Independent” wasn\'t turned on</string>
     <string name="fold_independent_dock_note">With “Independent” the large screen has its own dock, so “Merge” shows it as a normal dock; the side dock and “Same as cover” still apply.</string>
 </resources>

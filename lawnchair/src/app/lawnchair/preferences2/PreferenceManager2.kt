@@ -761,13 +761,23 @@ class PreferenceManager2 @Inject constructor(
         save = { it.key },
         // "Same as cover" changes the device profiles of the large screen.
         onSet = {
+            val previous = lastFoldHomeLayout
+            lastFoldHomeLayout = it
             if (it == FoldHomeLayout.INDEPENDENT) {
-                // The inner screen starts as a copy of the cover layout.
-                FoldItemSets.createInnerSetIfEmpty(context)
+                // The inner screen starts as a copy of the cover layout. If the copy fails, the
+                // previous layout comes back rather than an empty inner screen.
+                FoldItemSets.createInnerSetIfEmpty(
+                    context,
+                    revertTo = if (previous == FoldHomeLayout.INDEPENDENT) FoldHomeLayout.PAGES else previous,
+                )
             }
             reloadGridWithNewValue()
         },
     )
+
+    // The last value of foldHomeLayout, for its onSet (the cache may already hold the new one).
+    @Volatile
+    private var lastFoldHomeLayout: FoldHomeLayout = foldHomeLayout.firstCached(this)
 
     val foldDrawerLayout = preference(
         key = stringPreferencesKey("fold_drawer_layout"),
