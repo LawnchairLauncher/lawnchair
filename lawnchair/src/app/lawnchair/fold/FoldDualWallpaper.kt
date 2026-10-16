@@ -1,15 +1,14 @@
 package app.lawnchair.fold
 
+import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -144,24 +143,17 @@ object FoldDualWallpaper {
     }
 
     /** Decodes [uri] the right way up (EXIF) and no larger than [MAX_STORED_SIDE]. */
-    private fun decodeUpright(context: Context, uri: Uri): Bitmap? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val source = ImageDecoder.createSource(context.contentResolver, uri)
-            return ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
-                val longest = max(info.size.width, info.size.height)
-                if (longest > MAX_STORED_SIDE) {
-                    val scale = MAX_STORED_SIDE.toFloat() / longest
-                    decoder.setTargetSize((info.size.width * scale).roundToInt(), (info.size.height * scale).roundToInt())
-                }
-                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+    @SuppressLint("NewApi") // ImageDecoder is API 28; the dual wallpaper is for foldables, all API 29+
+    private fun decodeUpright(context: Context, uri: Uri): Bitmap {
+        val source = ImageDecoder.createSource(context.contentResolver, uri)
+        return ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+            val longest = max(info.size.width, info.size.height)
+            if (longest > MAX_STORED_SIDE) {
+                val scale = MAX_STORED_SIDE.toFloat() / longest
+                decoder.setTargetSize((info.size.width * scale).roundToInt(), (info.size.height * scale).roundToInt())
             }
+            decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
         }
-        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
-        var sample = 1
-        while (max(bounds.outWidth, bounds.outHeight) / (sample * 2) >= MAX_STORED_SIDE) sample *= 2
-        val options = BitmapFactory.Options().apply { inSampleSize = sample }
-        return context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, options) }
     }
 
     private const val JPEG_QUALITY = 92
