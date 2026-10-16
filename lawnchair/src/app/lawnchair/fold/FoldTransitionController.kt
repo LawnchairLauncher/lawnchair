@@ -95,7 +95,6 @@ class FoldTransitionController(
 
     private var attached = false
     private var resumed = false
-    private var lastLarge = false
     private var lastScreen = NO_SCREEN
     private var restAngle = Float.NaN
     private var pendingReplay: ReplayMode? = null
@@ -113,7 +112,6 @@ class FoldTransitionController(
     fun attach() {
         if (attached || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         attached = true
-        lastLarge = launcher.deviceProfile.deviceProperties.foldScreen == FoldScreen.LARGE
         lastScreen = screenOf(launcher.deviceProfile)
         launcher.addOnDeviceProfileChangeListener(this)
         launcher.registerActivityLifecycleCallbacks(this)
@@ -155,28 +153,27 @@ class FoldTransitionController(
     // Triggers
 
     override fun onDeviceProfileChanged(dp: DeviceProfile) {
-        val large = dp.deviceProperties.foldScreen == FoldScreen.LARGE
-        val wasLarge = lastLarge
         val screen = screenOf(dp)
-        val switchedScreen = screen != NO_SCREEN && lastScreen != NO_SCREEN && screen != lastScreen
-        lastLarge = large
+        val previous = lastScreen
         lastScreen = screen
         restAngle = Float.NaN
         updateHingeSensor()
-        // Same size class (insets, rotation, grid): a running transition picks up the new geometry.
-        if (large == wasLarge) return
+        // Same screen (insets, rotation, grid, a window): a running transition picks up the new geometry.
+        if (screen == NO_SCREEN || previous == NO_SCREEN || screen == previous) return
 
+        val large = isLarge()
         val current = run
         val foldTrackedOnInner = current != null && !large && current.scene.largeLayout &&
             !current.scene.opening && current.drivenByHinge
         finishNow(if (large) "unfolded" else "folded")
-        if (foldTrackedOnInner || !switchedScreen) return
+        // A fold or unfold moves to the smaller or larger screen and switches the layout with it
+        if (foldTrackedOnInner || large != (screen > previous)) return
         if (!isEngineEnabled() || !canRunNow()) return
         startForLayoutChange(opening = large)
     }
 
     override fun onHingeAngleChanged(angle: Float) {
-        if (run != null || !lastLarge) return
+        if (run != null || !isLarge()) return
         if (restAngle.isNaN() || angle > restAngle) {
             restAngle = angle
             return
@@ -541,6 +538,7 @@ class FoldTransitionController(
         val r = run ?: return
         run = null
         Choreographer.getInstance().removeFrameCallback(frameCallback)
+        val large = isLarge()
         var failure: Throwable? = null
         try {
             detachFromViews(r)
@@ -557,17 +555,17 @@ class FoldTransitionController(
         }
         if (r.notify) {
             try {
-                r.progress = if (lastLarge) 1f else 0f
+                r.progress = if (large) 1f else 0f
                 dispatchProgress(r)
-                dispatchEnd(lastLarge)
+                dispatchEnd(large)
             } catch (t: Throwable) {
                 Log.e(TAG, "listener failed at the end", t)
                 failure = failure ?: t
             }
         }
         launcher.rootView.invalidate()
-        if (lastLarge) restAngle = hinge.angle
-        Log.i(TAG, "end: ${r.reason} ($reason), large=$lastLarge, hinge=${r.drivenByHinge}, ${r.ageNanos / NANOS_PER_MILLI}ms")
+        if (large) restAngle = hinge.angle
+        Log.i(TAG, "end: ${r.reason} ($reason), large=$large, hinge=${r.drivenByHinge}, ${r.ageNanos / NANOS_PER_MILLI}ms")
         // Debug builds surface the failure once the final layout shows
         if (BuildConfig.DEBUG && failure != null) throw failure
     }
@@ -578,11 +576,11 @@ class FoldTransitionController(
         if (BuildConfig.DEBUG) throw t
     }
 
-    private fun notifyInstant(opening: Boolean) {
+    private fun notifyInstant(large: Boolean) {
         try {
-            dispatchStart(opening)
-            dispatchProgress(if (lastLarge) 1f else 0f, opening)
-            dispatchEnd(lastLarge)
+            dispatchStart(large)
+            dispatchProgress(if (large) 1f else 0f, large)
+            dispatchEnd(large)
         } catch (t: Throwable) {
             Log.e(TAG, "listener failed", t)
             if (BuildConfig.DEBUG) throw t
@@ -637,14 +635,18 @@ class FoldTransitionController(
      * before the transition). On the cover nothing reads it.
      */
     private fun updateHingeSensor() {
-        if (resumed && lastLarge && shouldTrackHinge()) hinge.start() else hinge.stop()
+        if (resumed && isLarge() && shouldTrackHinge()) hinge.start() else hinge.stop()
     }
+
+    /** Whether the launcher shows the large screen's layout. */
+    private fun isLarge(): Boolean = launcher.deviceProfile.deviceProperties.foldScreen == FoldScreen.LARGE
 
     private fun isReducedMotion(): Boolean = !ValueAnimator.areAnimatorsEnabled()
 
     /**
      * The screen [dp] fills, as its size in pixels in any rotation: a fold or unfold changes it, a
-     * rotation or a display size change does not. [NO_SCREEN] for a window (multi-window mode).
+     * rotation or a display size change does not; the larger screen compares greater. [NO_SCREEN]
+     * for a window (multi-window mode).
      */
     private fun screenOf(dp: DeviceProfile): Long {
         val properties = dp.deviceProperties
