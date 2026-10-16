@@ -236,12 +236,12 @@ class FoldTransitionController(
     /**
      * Plays the selected style in place on the current layout, timer-driven, on any device.
      * On the large layout: unfold = 0 -> 1; fold = 1 -> 0, a short hold, then back to 1, so the
-     * layout ends as it started. On the cover layout (or off foldables): fold = the cover-side 1 -> 0;
+     * layout ends as it started. On the cover layout (or a phone): fold = the cover-side 1 -> 0;
      * unfold = the large-layout visuals drawn on this screen, without dock events (the layout
      * does not actually change, so the dock must not be told it is unfolded).
      */
     fun replay(mode: ReplayMode) {
-        val large = isLarge()
+        val large = launcher.deviceProfile.deviceProperties.isTablet
         if (mode.opening) {
             startRun("replay $mode", opening = true, notify = large, slow = mode.slow)
         } else {
