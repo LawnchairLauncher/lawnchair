@@ -6,9 +6,13 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.R
+import com.android.launcher3.Reorderable
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.AllAppsRecyclerView
 import com.android.launcher3.allapps.BaseAllAppsAdapter
+import com.android.launcher3.allapps.FloatingHeaderView
+import com.android.launcher3.appprediction.PredictionRowView
 import com.android.launcher3.util.ScrollableLayoutManager
 import kotlin.math.abs
 import kotlin.math.hypot
@@ -32,6 +36,10 @@ import kotlin.math.roundToInt
  * - [FoldDrawerLayout.BIG_ICONS], "zoom": the grid scales from the cover's size up to the full
  *   width, anchored at the outer edge of the fixed half, so it grows across the hinge.
  *
+ * The header rows follow: in EXPAND the predictions slide with row 1 from their cover columns to their
+ * new ones (the extra ones fade in from the hinge side) and the personal/work tabs stretch; in
+ * BIG_ICONS they zoom with the grid; in PAGES they stay on the fixed half, so they do not move.
+ *
  * The search bar only stretches (or contracts) between its two widths; while searching nothing else
  * moves, and the query, results and scroll stay. Folding plays the same path backwards: on the inner
  * display when the fold is tracked, else on the cover after the switch (river from the captured
@@ -44,7 +52,7 @@ class DrawerFoldStyle(
     FoldDrawerBook.OffsetProvider {
 
     private var list: AllAppsRecyclerView? = null
-    private var header: View? = null
+    private var header: FloatingHeaderView? = null
     private var bar: View? = null
     private var searching = false
     private var prepared = false
@@ -80,6 +88,18 @@ class DrawerFoldStyle(
     private var arcPx = 0f
     private var useCaptured = false
     private var riverActive = false
+
+    // Header rows (EXPAND): prediction icons slide, the tabs stretch
+    private val predictionViews = ArrayList<View>()
+    private var predictionFrom = FloatArray(0)
+    private var predictionTo = FloatArray(0)
+    private var predictionEnterX = 0f
+    private var tabs: View? = null
+    private var tabsFromLeft = 0
+    private var tabsFromRight = 0
+    private var tabsToLeft = 0
+    private var tabsToRight = 0
+    private var headerActive = false
 
     // Book
     private var book: FoldDrawerBook? = null
@@ -136,7 +156,10 @@ class DrawerFoldStyle(
             if (!searching) {
                 val onLarge = launcher.deviceProfile === large
                 when (layout) {
-                    FoldDrawerLayout.EXPAND -> prepareRiver(scene, list, onLarge)
+                    FoldDrawerLayout.EXPAND -> {
+                        prepareRiver(scene, list, onLarge)
+                        prepareHeader(scene, onLarge)
+                    }
 
                     FoldDrawerLayout.PAGES -> if (onLarge && scene.largeLayout) {
                         book = FoldDrawerBook.of(list)?.takeIf { it.isActive }
@@ -151,6 +174,7 @@ class DrawerFoldStyle(
         val t = if (scene.largeLayout) this.progress else 1f - this.progress
         book?.update()
         applyBar(t)
+        if (headerActive) applyHeader(t)
         if (riverActive) applyRiver(scene, list, t)
         if (zoomActive) applyZoom(scene, list, t)
     }
@@ -158,6 +182,16 @@ class DrawerFoldStyle(
     override fun onEnd(scene: FoldScene) {
         bar?.let { if (barActive) it.setPadding(barToLeft, it.paddingTop, barToRight, it.paddingBottom) }
         barActive = false
+        if (headerActive) {
+            for (i in predictionViews.indices) {
+                val view = predictionViews[i]
+                (view as? Reorderable)?.translateDelegate?.setTranslation(FoldItem.TRANSLATE_INDEX, 0f, 0f)
+                view.alpha = 1f
+            }
+            tabs?.let { it.setPadding(tabsToLeft, it.paddingTop, tabsToRight, it.paddingBottom) }
+        }
+        predictionViews.clear()
+        headerActive = false
         val list = list
         if (list != null) {
             if (riverActive) {
@@ -247,6 +281,100 @@ class DrawerFoldStyle(
     private fun isSearchActive(): Boolean {
         val bar = bar ?: return false
         return searching || bar.hasFocus()
+    }
+
+    // Header rows (EXPAND)
+
+    /**
+     * The predictions row and the tabs between the cover's header and the large one. The header's
+     * content box of the other screen is rebuilt from that screen's profile (the header is padded
+     * by the drawer's side paddings, see FloatingHeaderView#setInsets) and mapped onto this one.
+     */
+    private fun prepareHeader(scene: FoldScene, onLarge: Boolean) {
+        val header = header ?: return
+        val cover = cover ?: return
+        val large = large ?: return
+        if (!header.isShown || header.width == 0 || scene.largeLayout != onLarge) return
+        val root = scene.dragLayer
+        coords[0] = 0f
+        coords[1] = 0f
+        Utilities.getDescendantCoordRelativeToAncestor(header, root, coords, false, true)
+        val contentLeft = coords[0] + header.paddingLeft
+        val contentRight = coords[0] + header.width - header.paddingRight
+        val other = if (scene.largeLayout) cover else large
+        val otherPadding = (other.allAppsPadding.left + other.allAppsPadding.right).toFloat()
+        val otherWidth = other.deviceProperties.widthPx.toFloat()
+        val otherLeft = if (scene.largeLayout) toLarge(otherPadding) else toCover(otherPadding)
+        val otherRight = if (scene.largeLayout) toLarge(otherWidth - otherPadding) else toCover(otherWidth - otherPadding)
+
+        val row = header.findFixedRowByType(PredictionRowView::class.java)
+        if (row != null && row.isShown && row.childCount > 0) {
+            coords[0] = 0f
+            coords[1] = 0f
+            Utilities.getDescendantCoordRelativeToAncestor(row, root, coords, false, true)
+            val rowLeft = coords[0] + row.paddingLeft
+            val rowRight = coords[0] + row.width - row.paddingRight
+            val boxLeft = otherLeft + (rowLeft - contentLeft)
+            val boxRight = max(boxLeft, otherRight - (contentRight - rowRight))
+            val otherColumns = other.numShownAllAppsColumns.coerceAtLeast(1)
+            val cell = (boxRight - boxLeft) / otherColumns
+            val count = row.childCount
+            predictionFrom = FloatArray(count)
+            predictionTo = FloatArray(count)
+            for (i in 0 until count) {
+                val child = row.getChildAt(i)
+                predictionViews.add(child)
+                coords[0] = child.width / 2f
+                coords[1] = child.height / 2f
+                Utilities.getDescendantCoordRelativeToAncestor(child, root, coords, false, true)
+                predictionTo[i] = coords[0]
+                predictionFrom[i] = when {
+                    i >= otherColumns -> Float.NaN
+                    rtl -> boxRight - (i + 0.5f) * cell
+                    else -> boxLeft + (i + 0.5f) * cell
+                }
+            }
+            // Predictions the cover did not show come in from its row's hinge-side end
+            predictionEnterX = if (movingLeft) boxLeft else boxRight
+            headerActive = true
+        }
+
+        val tabs = header.findViewById<View>(R.id.tabs)
+        if (tabs != null && tabs.isShown && tabs.width > 0) {
+            coords[0] = 0f
+            coords[1] = 0f
+            Utilities.getDescendantCoordRelativeToAncestor(tabs, root, coords, false, true)
+            val tabsLeft = coords[0]
+            val tabsRight = tabsLeft + tabs.width
+            tabsToLeft = tabs.paddingLeft
+            tabsToRight = tabs.paddingRight
+            val fromLeft = otherLeft + (tabsLeft + tabsToLeft - contentLeft)
+            val fromRight = otherRight - (contentRight - (tabsRight - tabsToRight))
+            tabsFromLeft = (fromLeft - tabsLeft).roundToInt().coerceAtLeast(0)
+            tabsFromRight = (tabsRight - fromRight).roundToInt().coerceAtLeast(0)
+            if (tabsFromLeft != tabsToLeft || tabsFromRight != tabsToRight) {
+                this.tabs = tabs
+                headerActive = true
+            }
+        }
+    }
+
+    private fun applyHeader(t: Float) {
+        // Like row 1 of the river: straight and right away
+        val e = EASE.getInterpolation(t)
+        for (i in predictionViews.indices) {
+            val view = predictionViews[i]
+            val from = predictionFrom[i]
+            val entering = from.isNaN()
+            val dx = ((if (entering) predictionEnterX else from) - predictionTo[i]) * (1f - e)
+            (view as? Reorderable)?.translateDelegate?.setTranslation(FoldItem.TRANSLATE_INDEX, dx, 0f)
+            if (entering) view.alpha = e
+        }
+        tabs?.let {
+            val left = (tabsFromLeft + (tabsToLeft - tabsFromLeft) * e).roundToInt()
+            val right = (tabsFromRight + (tabsToRight - tabsFromRight) * e).roundToInt()
+            if (left != it.paddingLeft || right != it.paddingRight) it.setPadding(left, it.paddingTop, right, it.paddingBottom)
+        }
     }
 
     // River (EXPAND)
