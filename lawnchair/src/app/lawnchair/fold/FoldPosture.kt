@@ -46,16 +46,6 @@ object FoldPosture {
     var isTabletop = false
         private set
 
-    /** Whether a hinge was reported by androidx.window in this process. */
-    @JvmStatic
-    val hasHinge: Boolean
-        get() = naturalHingeVertical != null
-
-    /** Hinge side for the last known display rotation. [HingeSide.UNKNOWN] if no hinge was seen. */
-    @JvmStatic
-    val hingeSide: HingeSide
-        get() = getHingeSide(rotation, assumeBookStyle = false)
-
     /**
      * Returns the hinge side for the given display [rotation] (a `Surface.ROTATION_*` value).
      *
@@ -81,7 +71,20 @@ object FoldPosture {
         }
     }
 
-    /** Adds a listener called on the main thread when [hingeSide] or [isTabletop] may have changed. */
+    /**
+     * Returns whether the moving half of the large screen is its left half at display [rotation],
+     * or null when the hinge is horizontal or its side is unknown. The single answer to "which half
+     * is fixed": the fixed half is the other one. Like [getHingeSide] with `assumeBookStyle`, for
+     * layouts that already show two panels.
+     */
+    @JvmStatic
+    fun isMovingHalfLeft(rotation: Int): Boolean? = when (getHingeSide(rotation, assumeBookStyle = true)) {
+        HingeSide.LEFT -> true
+        HingeSide.RIGHT -> false
+        HingeSide.UNKNOWN -> null
+    }
+
+    /** Adds a listener called on the main thread when the hinge side or [isTabletop] may have changed. */
     @JvmStatic
     fun addListener(listener: Runnable) {
         listeners.addIfAbsent(listener)
@@ -155,7 +158,7 @@ object FoldPosture {
         naturalHingeVertical = newNaturalVertical
         rotation = newRotation
         isTabletop = newTabletop
-        Log.d(TAG, "update: hingeSide=$hingeSide, isTabletop=$newTabletop, rotation=$newRotation, feature=$feature, changed=$changed")
+        Log.d(TAG, "update: hingeSide=${getHingeSide(newRotation)}, isTabletop=$newTabletop, rotation=$newRotation, feature=$feature, changed=$changed")
         if (changed) {
             listeners.forEach(Runnable::run)
         }
