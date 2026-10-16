@@ -153,6 +153,7 @@ import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.fold.FoldLayout;
 import app.lawnchair.fold.FoldPosture;
+import app.lawnchair.fold.FoldSideDockPages;
 import app.lawnchair.fold.HingeSide;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -399,7 +400,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
 
         Rect padding = grid.workspacePadding;
-        setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        // LC-Note: with a foldable's side dock only the fixed half's page makes room for it
+        int sideDockInset = grid.getSideDockPageInset();
+        setPadding(padding.left - sideDockInset, padding.top, padding.right - sideDockInset,
+                padding.bottom);
         mInsets.set(insets);
 
         if (mWorkspaceFadeInAdjacentScreens) {
@@ -2000,6 +2004,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWallpaperOffset.setWindowToken(null);
         mLauncher.getStateManager().removeStateListener(mAccessibilityDropListener);
         FoldPosture.removeListener(mFoldPostureListener);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // LC-Note: the page on the fixed half makes room for a foldable's side dock
+        FoldSideDockPages.applyPagePadding(this, mLauncher.getDeviceProfile());
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
