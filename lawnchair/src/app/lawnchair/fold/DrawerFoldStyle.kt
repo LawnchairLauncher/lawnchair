@@ -242,9 +242,7 @@ class DrawerFoldStyle(
         if (bar.width == 0) return
         barToLeft = bar.paddingLeft
         barToRight = bar.paddingRight
-        coords[0] = 0f
-        coords[1] = 0f
-        Utilities.getDescendantCoordRelativeToAncestor(bar, scene.dragLayer, coords, false, true)
+        locate(scene, bar)
         val barLeft = coords[0]
         val barRight = barLeft + bar.width
         val captured = capture?.takeIf { !it.searchBarLeft.isNaN() }
@@ -311,10 +309,7 @@ class DrawerFoldStyle(
         val cover = cover ?: return
         val large = large ?: return
         if (!header.isShown || header.width == 0 || scene.largeLayout != onLarge) return
-        val root = scene.dragLayer
-        coords[0] = 0f
-        coords[1] = 0f
-        Utilities.getDescendantCoordRelativeToAncestor(header, root, coords, false, true)
+        locate(scene, header)
         val contentLeft = coords[0] + header.paddingLeft
         val contentRight = coords[0] + header.width - header.paddingRight
         val other = if (scene.largeLayout) cover else large
@@ -325,9 +320,7 @@ class DrawerFoldStyle(
 
         val row = header.findFixedRowByType(PredictionRowView::class.java)
         if (row != null && row.isShown && row.childCount > 0) {
-            coords[0] = 0f
-            coords[1] = 0f
-            Utilities.getDescendantCoordRelativeToAncestor(row, root, coords, false, true)
+            locate(scene, row)
             val rowLeft = coords[0] + row.paddingLeft
             val rowRight = coords[0] + row.width - row.paddingRight
             val boxLeft = otherLeft + (rowLeft - contentLeft)
@@ -340,9 +333,7 @@ class DrawerFoldStyle(
             for (i in 0 until count) {
                 val child = row.getChildAt(i)
                 predictionViews.add(child)
-                coords[0] = child.width / 2f
-                coords[1] = child.height / 2f
-                Utilities.getDescendantCoordRelativeToAncestor(child, root, coords, false, true)
+                locate(scene, child, center = true)
                 predictionTo[i] = coords[0]
                 predictionFrom[i] = when {
                     i >= otherColumns -> Float.NaN
@@ -357,9 +348,7 @@ class DrawerFoldStyle(
 
         val tabs = header.findViewById<View>(R.id.tabs)
         if (tabs != null && tabs.isShown && tabs.width > 0) {
-            coords[0] = 0f
-            coords[1] = 0f
-            Utilities.getDescendantCoordRelativeToAncestor(tabs, root, coords, false, true)
+            locate(scene, tabs)
             val tabsLeft = coords[0]
             val tabsRight = tabsLeft + tabs.width
             tabsToLeft = tabs.paddingLeft
@@ -503,9 +492,7 @@ class DrawerFoldStyle(
             val child = list.getChildAt(i)
             val position = list.getChildAdapterPosition(child)
             if (position == RecyclerView.NO_POSITION) continue
-            coords[0] = child.width / 2f
-            coords[1] = child.height / 2f
-            Utilities.getDescendantCoordRelativeToAncestor(child, scene.dragLayer, coords, false, true)
+            locate(scene, child, center = true)
             val toX = coords[0]
             val toY = coords[1]
             val fromX: Float
@@ -576,9 +563,7 @@ class DrawerFoldStyle(
         if (abs(zoomFrom - 1f) < 0.01f) return
         // Pivot: the outer edge of the fixed half, at the top of the drawer content
         val top = header ?: list
-        coords[0] = 0f
-        coords[1] = 0f
-        Utilities.getDescendantCoordRelativeToAncestor(top, scene.dragLayer, coords, false, true)
+        locate(scene, top)
         zoomPivotRootX = outerEdge
         zoomPivotRootY = coords[1]
         savedClipChildren = list.clipChildren
@@ -594,9 +579,7 @@ class DrawerFoldStyle(
 
     private fun zoomView(scene: FoldScene, view: View?, scale: Float) {
         view ?: return
-        coords[0] = 0f
-        coords[1] = 0f
-        Utilities.getDescendantCoordRelativeToAncestor(view, scene.dragLayer, coords, false, true)
+        locate(scene, view)
         val pivotX = zoomPivotRootX - coords[0]
         val pivotY = zoomPivotRootY - coords[1]
         if (view.pivotX != pivotX) view.pivotX = pivotX
@@ -622,10 +605,15 @@ class DrawerFoldStyle(
     // Coordinates
 
     private fun layoutCenterY(scene: FoldScene, child: View): Float {
-        coords[0] = child.width / 2f
-        coords[1] = child.height / 2f
-        Utilities.getDescendantCoordRelativeToAncestor(child, scene.dragLayer, coords, false, true)
+        locate(scene, child, center = true)
         return coords[1]
+    }
+
+    /** Sets [coords] to [view]'s top left corner, or its [center], in DragLayer coordinates and without transforms. */
+    private fun locate(scene: FoldScene, view: View, center: Boolean = false) {
+        coords[0] = if (center) view.width / 2f else 0f
+        coords[1] = if (center) view.height / 2f else 0f
+        Utilities.getDescendantCoordRelativeToAncestor(view, scene.dragLayer, coords, false, true)
     }
 
     /** Cover x (cover window) to the large screen, where the cover maps onto the fixed half. */
