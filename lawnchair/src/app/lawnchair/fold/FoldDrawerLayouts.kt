@@ -42,10 +42,6 @@ object FoldDrawerLayouts {
 
     private val applied: MutableMap<DeviceProfile, Applied> = Collections.synchronizedMap(WeakHashMap())
 
-    /** Whether these are the properties of a foldable's large screen with a vertical fold line. */
-    fun isLargeFoldable(properties: DeviceProperties): Boolean = properties.foldScreen == FoldScreen.LARGE &&
-        FoldPosture.isMovingHalfLeft(properties.rotationHint) != null
-
     /** Columns of the drawer grid; the cover's for PAGES and BIG_ICONS. Called from `DeviceProfile`. */
     @JvmStatic
     fun getShownAllAppsColumns(
@@ -54,7 +50,7 @@ object FoldDrawerLayouts {
         properties: DeviceProperties,
         columns: Int,
     ): Int {
-        if (!isLargeFoldable(properties)) return columns
+        if (!FoldLayout.isLargeFoldable(properties)) return columns
         return when (prefs2.foldDrawerLayout.firstCached(prefs2)) {
             FoldDrawerLayout.EXPAND -> columns
             FoldDrawerLayout.PAGES, FoldDrawerLayout.BIG_ICONS -> inv.numAllAppsColumns
@@ -73,7 +69,7 @@ object FoldDrawerLayouts {
         if (layout == FoldDrawerLayout.EXPAND) return
         for (dp in profiles) {
             val properties = dp.deviceProperties
-            if (!isLargeFoldable(properties)) continue
+            if (!FoldLayout.isLargeFoldable(properties)) continue
             val cover = FoldLayout.findCoverProfile(profiles, properties.rotationHint)
             if (cover == null) {
                 Log.w(TAG, "no cover profile for ${properties.widthPx}x${properties.heightPx}, drawer stays expanded")
@@ -152,7 +148,7 @@ object FoldDrawerLayouts {
     /** The drawer layout [dp] was built for, or null when [dp] is not a foldable's large screen. */
     @JvmStatic
     fun drawerLayoutOf(dp: DeviceProfile): FoldDrawerLayout? {
-        if (!isLargeFoldable(dp.deviceProperties)) return null
+        if (!FoldLayout.isLargeFoldable(dp.deviceProperties)) return null
         return applied[dp]?.layout ?: FoldDrawerLayout.EXPAND
     }
 
