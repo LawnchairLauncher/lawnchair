@@ -69,7 +69,8 @@ import kotlin.math.min
  * the two never animate the same views. The debug replay works everywhere.
  *
  * Reduced motion (animator duration scale 0): no motion, a [FoldTunables.REDUCED_MOTION_DURATION_MILLIS]
- * crossfade. Any failure ends the transition at once with the final layout showing.
+ * crossfade. Any failure ends the transition at once with the final layout showing; debug builds
+ * then rethrow it.
  *
  * While the app drawer is open, [DrawerFoldStyle] (river, book or zoom, after `foldDrawerLayout`)
  * replaces the selected home style for that transition.
@@ -540,15 +541,19 @@ class FoldTransitionController(
         val r = run ?: return
         run = null
         Choreographer.getInstance().removeFrameCallback(frameCallback)
+        var failure: Throwable? = null
         try {
             detachFromViews(r)
-        } catch (t: Throwable) {
-            Log.e(TAG, "detach failed", t)
-        }
-        try {
             r.style.onEnd(r.scene)
         } catch (t: Throwable) {
             Log.e(TAG, "${r.style.javaClass.simpleName}.onEnd failed", t)
+            failure = t
+        } finally {
+            // What a style that throws could leave on the whole launcher: the DragLayer's clip and
+            // blur. Nothing else in the launcher sets either.
+            val dragLayer = launcher.dragLayer
+            dragLayer.clipBounds = null
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dragLayer.setRenderEffect(null)
         }
         if (r.notify) {
             try {
@@ -557,16 +562,20 @@ class FoldTransitionController(
                 dispatchEnd(lastLarge)
             } catch (t: Throwable) {
                 Log.e(TAG, "listener failed at the end", t)
+                failure = failure ?: t
             }
         }
         launcher.rootView.invalidate()
         if (lastLarge) restAngle = hinge.angle
         Log.i(TAG, "end: ${r.reason} ($reason), large=$lastLarge, hinge=${r.drivenByHinge}, ${r.ageNanos / NANOS_PER_MILLI}ms")
+        // Debug builds surface the failure once the final layout shows
+        if (BuildConfig.DEBUG && failure != null) throw failure
     }
 
     private fun fail(where: String, t: Throwable) {
         Log.e(TAG, "fold transition failed in $where, showing the final layout", t)
         finishNow("failure")
+        if (BuildConfig.DEBUG) throw t
     }
 
     private fun notifyInstant(opening: Boolean) {
@@ -576,6 +585,7 @@ class FoldTransitionController(
             dispatchEnd(lastLarge)
         } catch (t: Throwable) {
             Log.e(TAG, "listener failed", t)
+            if (BuildConfig.DEBUG) throw t
         }
     }
 
