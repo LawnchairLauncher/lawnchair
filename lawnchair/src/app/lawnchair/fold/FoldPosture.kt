@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.util.DisplayController
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlinx.coroutines.Job
@@ -79,6 +80,32 @@ object FoldPosture {
             // The hinge is horizontal: there is no left or right half.
             else -> HingeSide.UNKNOWN
         }
+    }
+
+    /**
+     * The cover screen's profile matching [dp]: [dp] itself on the cover, else the cover's profile
+     * in the same rotation, else its portrait one. The cover is the device's phone-sized screen.
+     */
+    @JvmStatic
+    fun coverProfileOf(dp: DeviceProfile): DeviceProfile? {
+        if (!dp.deviceProperties.isTablet) return dp
+        val profiles = dp.inv?.supportedProfiles ?: return null
+        return findCoverProfile(profiles, dp.deviceProperties.rotationHint)
+    }
+
+    /** The cover profile among [profiles] for a screen in [rotation], see [coverProfileOf]. */
+    @JvmStatic
+    fun findCoverProfile(profiles: List<DeviceProfile>, rotation: Int): DeviceProfile? {
+        var portrait: DeviceProfile? = null
+        var any: DeviceProfile? = null
+        for (profile in profiles) {
+            val properties = profile.deviceProperties
+            if (properties.isTablet) continue
+            if (properties.rotationHint == rotation) return profile
+            if (portrait == null && !properties.isLandscape) portrait = profile
+            if (any == null) any = profile
+        }
+        return portrait ?: any
     }
 
     /** Adds a listener called on the main thread when [hingeSide] or [isTabletop] may have changed. */

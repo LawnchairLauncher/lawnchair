@@ -130,7 +130,7 @@ class DrawerFoldStyle(
         bar = appsView.searchView
         rtl = Utilities.isRtl(launcher.resources)
         val dp = launcher.deviceProfile
-        cover = FoldDrawerLayouts.coverProfileOf(dp)
+        cover = FoldPosture.coverProfileOf(dp)
         large = FoldDrawerLayouts.largeProfileOf(dp)
         val large = large
         val cover = cover

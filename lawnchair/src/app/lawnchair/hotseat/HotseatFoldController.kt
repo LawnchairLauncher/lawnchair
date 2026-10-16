@@ -11,6 +11,7 @@ import android.graphics.RectF
 import android.view.View
 import android.view.ViewTreeObserver
 import app.lawnchair.fold.FoldDockLayout
+import app.lawnchair.fold.FoldPosture
 import app.lawnchair.fold.FoldProgressListener
 import com.android.app.animation.Interpolators
 import com.android.launcher3.CellLayout
@@ -281,7 +282,7 @@ class HotseatFoldController(
         // Where the cover dock's icons sit, with the cover screen over the fixed half
         val width = hotseat.width.toFloat()
         val coverIcons = layout.coverIcons
-        val cover = findCoverProfile(activity.deviceProfile)
+        val cover = FoldPosture.coverProfileOf(activity.deviceProfile)
         val coverWidth: Float
         val coverFirstCenter: Float
         val coverStep: Float
@@ -459,11 +460,6 @@ class HotseatFoldController(
         val delegate = (icon as? Reorderable)?.translateDelegate ?: return
         delegate.getTranslationX(INDEX_FOLD_DOCK_ANIM).value = translationX
         delegate.getTranslationY(INDEX_FOLD_DOCK_ANIM).value = translationY
-    }
-
-    /** Returns the cover screen's profile: the portrait one-panel profile of this device. */
-    private fun findCoverProfile(dp: DeviceProfile): DeviceProfile? = dp.inv.supportedProfiles.firstOrNull {
-        !it.deviceProperties.isTwoPanels && !it.deviceProperties.isLandscape && !it.isVerticalBarLayout
     }
 
     private fun lerp(start: Float, end: Float, fraction: Float) = start + (end - start) * fraction

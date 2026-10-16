@@ -95,9 +95,7 @@ object FoldDrawerLayouts {
         for (dp in profiles) {
             val properties = dp.deviceProperties
             if (!isLargeFoldable(properties)) continue
-            val cover = profiles.firstOrNull {
-                !it.deviceProperties.isTablet && it.deviceProperties.rotationHint == properties.rotationHint
-            } ?: profiles.firstOrNull { !it.deviceProperties.isTablet }
+            val cover = FoldPosture.findCoverProfile(profiles, properties.rotationHint)
             if (cover == null) {
                 Log.w(TAG, "no cover profile for ${properties.widthPx}x${properties.heightPx}, drawer stays expanded")
                 continue
@@ -177,16 +175,6 @@ object FoldDrawerLayouts {
     fun drawerLayoutOf(dp: DeviceProfile): FoldDrawerLayout? {
         if (!isLargeFoldable(dp.deviceProperties)) return null
         return applied[dp]?.layout ?: FoldDrawerLayout.EXPAND
-    }
-
-    /** The cover profile matching [dp] (itself when [dp] is the cover), for the drawer transitions. */
-    fun coverProfileOf(dp: DeviceProfile): DeviceProfile? {
-        applied[dp]?.let { return it.cover }
-        if (!dp.deviceProperties.isTablet) return dp
-        val rotation = dp.deviceProperties.rotationHint
-        val profiles = dp.inv?.supportedProfiles ?: return null
-        return profiles.firstOrNull { !it.deviceProperties.isTablet && it.deviceProperties.rotationHint == rotation }
-            ?: profiles.firstOrNull { !it.deviceProperties.isTablet }
     }
 
     /** The large profile matching the cover profile [dp] (itself when [dp] is large). */
