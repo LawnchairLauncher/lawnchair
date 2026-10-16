@@ -348,6 +348,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     // Lawnchair: screen of the panel last touched in the visible pair (FoldAfterFold.LAST_PANEL).
     private int mLastTouchedPanelScreenId = -1;
     private int mFoldPairMarkersCount = -1;
+    // Lawnchair: screens shown on the large screen only to complete a pair of screen ids. They are
+    // left out of the persisted screen order while empty, so the cover screen doesn't gain blank
+    // pages. Pages with items are always persisted.
+    private final IntSet mPairCompletionScreenIds = new IntSet();
     private final Runnable mFoldPostureListener = this::updatePageDirection;
 
     /**
@@ -970,6 +974,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
         mLastTouchedPanelScreenId = -1;
+        mPairCompletionScreenIds.clear();
 
         // Ensure there is always at least one page during bind lifecycle.
         bindAndInitFirstWorkspaceScreen();
@@ -1257,9 +1262,30 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         mWorkspaceScreens.put(newScreenId, cl);
         mScreenOrder.add(newScreenId);
+        if (isTwoPanelEnabled()) {
+            // LC-Note: two panels commit a pair of pages; the one that stays empty only completes
+            // the pair, don't persist it until it gets items.
+            mPairCompletionScreenIds.add(newScreenId);
+        }
         persistCurrentScreenOrderSync();
 
         return newScreenId;
+    }
+
+    /**
+     * Lawnchair: marks a screen added only to complete a pair of screen ids on two panels.
+     */
+    public void addPairCompletionScreenId(int screenId) {
+        mPairCompletionScreenIds.add(screenId);
+    }
+
+    private boolean isEmptyPairCompletionScreen(int screenId) {
+        if (!mPairCompletionScreenIds.contains(screenId)) {
+            return false;
+        }
+        CellLayout screen = mWorkspaceScreens.get(screenId);
+        return screen != null && screen.getShortcutsAndWidgets().getChildCount() == 0
+                && !screen.isDropPending();
     }
 
     @Override
@@ -3670,6 +3696,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (pageGroupStart < 0 || pageGroupStart + panelCount > mScreenOrder.size()) {
             return false;
         }
+        // LC-Note: on foldables pairs may start on odd pages; only full pairs swap with each other,
+        // a page alone at either end stays where it is.
+        for (int i = 0; i < panelCount; i++) {
+            if (getLeftmostVisiblePageForIndex(pageGroupStart + i) != pageGroupStart) {
+                return false;
+            }
+        }
         for (int i = 0; i < panelCount; i++) {
             if (isExtraEmptyScreen(mScreenOrder.get(pageGroupStart + i))) {
                 return false;
@@ -3731,6 +3764,18 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public IntArray getReorderablePageGroupStarts() {
         IntArray starts = new IntArray();
+        if (getFoldPairParity() != 0) {
+            // LC-Note: pairs start on odd pages on foldables. List every pair the user can scroll
+            // to, including a page alone at either end, so the strip matches the workspace.
+            int lastStart = getLastFoldPairStart();
+            for (int page = 0; page <= lastStart; page++) {
+                if (getLeftmostVisiblePageForIndex(page) == page
+                        && !isExtraEmptyScreen(mScreenOrder.get(page))) {
+                    starts.add(page);
+                }
+            }
+            return starts;
+        }
         int panelCount = getPanelCount();
         IntArray candidateStarts = getPageGroupStarts(mScreenOrder, panelCount);
         for (int i = 0; i < candidateStarts.size(); i++) {
@@ -3796,7 +3841,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         IntArray persistableOrder = new IntArray();
         for (int i = 0; i < mScreenOrder.size(); i++) {
             int screenId = mScreenOrder.get(i);
-            if (!isExtraEmptyScreen(screenId)) {
+            // LC-Note: also skip empty pages that only complete a pair on two panels.
+            if (!isExtraEmptyScreen(screenId) && !isEmptyPairCompletionScreen(screenId)) {
                 persistableOrder.add(screenId);
             }
         }
@@ -4294,6 +4340,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             return getContext().getString(R.string.home_screen);
         }
         int panelCount = getPanelCount();
+        if (getFoldPairParity() != 0) {
+            // LC-Note: pairs start on odd pages on foldables, so count pairs, not page / 2. The
+            // first page alone is pair 1, then (1, 2) is pair 2...
+            int lastPage = extraScreenId >= 0 ? Math.max(0, extraScreenId - 1) : getChildCount() - 1;
+            int lastStart = Math.min(getLeftmostVisiblePageForIndex(lastPage),
+                    getLastFoldPairStart());
+            int currentStart = Math.min(getLeftmostVisiblePageForIndex(page), lastStart);
+            return getContext().getString(R.string.workspace_scroll_format,
+                    (currentStart + 1) / 2 + 1, (lastStart + 1) / 2 + 1);
+        }
         int currentPage = (page / panelCount) + 1;
         int totalPages = nScreens / panelCount + nScreens % panelCount;
 
