@@ -86,7 +86,7 @@ internal object HomeLayoutController {
                                             put("title", item.title?.toString().orEmpty().take(80))
                                             put(
                                                 "visibleAppCount",
-                                                item.contents.count { child ->
+                                                item.getContents().count { child ->
                                                     child.targetComponent?.let { com.android.launcher3.util.ComponentKey(it, child.user).toString() in visible } == true
                                                 },
                                             )
