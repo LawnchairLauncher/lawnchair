@@ -228,7 +228,7 @@ public class WallpaperOffsetInterpolator {
     }
 
     /**
-     * Lawnchair: shifts the wallpaper by {@code offset} (in offset units) on top of the scroll
+     * LC-Note: shifts the wallpaper by {@code offset} (in offset units) on top of the scroll
      * offset, until it is set back to 0. Used by the fold transition's parallax. Applied on the
      * offset handler thread like every other update.
      */
@@ -354,7 +354,7 @@ public class WallpaperOffsetInterpolator {
         }
 
         private void setOffsetSafely(IBinder token) {
-            // Lawnchair: the fold parallax shift, mirrored when it would leave the range
+            // LC-Note: the fold parallax shift, mirrored when it would leave the range
             float offset = mCurrentOffset + mExtraOffset;
             if (offset < 0f || offset > 1f) {
                 offset = Utilities.boundToRange(mCurrentOffset - mExtraOffset, 0f, 1f);

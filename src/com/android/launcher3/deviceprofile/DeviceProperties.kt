@@ -48,7 +48,7 @@ data class DeviceProperties(
             isMultiDisplay: Boolean,
             isMultiWindowMode: Boolean,
             isGestureMode: Boolean,
-            // Lawnchair: false when a foldable shows one page on its large screen ("Same as cover").
+            // LC-Note: false when a foldable shows one page on its large screen ("Same as cover").
             allowTwoPanels: Boolean = true,
         ): DeviceProperties {
             val isTablet = info.isTablet(windowBounds)

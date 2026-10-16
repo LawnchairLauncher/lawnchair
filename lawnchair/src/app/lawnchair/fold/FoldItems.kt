@@ -18,7 +18,7 @@ import kotlin.math.min
  * styles (WAVE, MASS, DEEP).
  *
  * Styles move items only through the [TRANSLATE_INDEX] channel of their [MultiTranslateDelegate],
- * which adds to every other translation (reorder, D's dock, C's pages) instead of replacing it.
+ * which adds to every other translation (reorder, the dock merge, page pairing) instead of replacing it.
  * That channel belongs to AOSP's unfold animation, which never runs while this engine does (the
  * engine is off when Lawnchair is the recents provider).
  */
