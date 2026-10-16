@@ -34,6 +34,7 @@ import app.lawnchair.fold.FoldDock
 import app.lawnchair.fold.FoldDrawerLayout
 import app.lawnchair.fold.FoldDrawerLayouts
 import app.lawnchair.fold.FoldHomeLayout
+import app.lawnchair.fold.FoldItemSets
 import app.lawnchair.fold.FoldLandscape
 import app.lawnchair.fold.FoldLayout
 import app.lawnchair.fold.FoldTransitionStyle
@@ -754,6 +755,10 @@ class PreferenceManager2 @Inject constructor(
         // "Same as cover" changes the device profiles of the large screen.
         onSet = {
             FoldLayout.onHomeLayoutSet(it)
+            if (it == FoldHomeLayout.INDEPENDENT) {
+                // The inner screen starts as a copy of the cover layout.
+                FoldItemSets.createInnerSetIfEmpty(context)
+            }
             reloadHelper.reloadGrid()
         },
     )

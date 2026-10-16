@@ -1,9 +1,15 @@
 package app.lawnchair.fold
 
+import android.content.Context
+import android.util.Log
 import app.lawnchair.LawnchairLauncher
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.util.Executors.MAIN_EXECUTOR
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.util.IntArray as LIntArray
 
 /**
@@ -16,6 +22,8 @@ import com.android.launcher3.util.IntArray as LIntArray
  * `CellPosMapper`; the other set stays in the model, never bound and never deleted.
  */
 object FoldItemSets {
+
+    private const val TAG = "LC-FoldItemSets"
 
     /** First model screen id (and dock rank) of the inner set. */
     const val INNER_SCREEN_BASE = 1_000_000
@@ -38,6 +46,33 @@ object FoldItemSets {
     /** Whether the launcher currently shows the inner set (on any thread, best effort). */
     @JvmStatic
     fun isInnerSetShown(): Boolean = LawnchairLauncher.instance?.deviceProfile?.isInnerItemSet == true
+
+    /**
+     * Creates the inner set from the cover layout when "Independent" is selected and the inner
+     * set has no items yet (the first time, or after the user emptied it). Runs on the model
+     * thread after pending writes, copies in one transaction (see
+     * `DatabaseHelper.cloneCoverItemSetToInnerSet`), gives the inner set the cover's page order,
+     * then reloads the model once so the copies (and pending widgets) are loaded and bound. An
+     * inner set that already has items is left as it is; nothing is ever deleted.
+     */
+    @JvmStatic
+    fun createInnerSetIfEmpty(context: Context) {
+        val appContext = context.applicationContext
+        MODEL_EXECUTOR.execute {
+            val model = LauncherAppState.getInstance(appContext).model
+            val copied = try {
+                model.modelDbController.cloneCoverItemSetToInnerSet()
+            } catch (e: Exception) {
+                Log.e(TAG, "Couldn't copy the cover layout into the inner set", e)
+                return@execute
+            }
+            if (copied <= 0) return@execute
+            val prefs = LauncherPrefs.get(appContext)
+            prefs.putSync(LauncherPrefs.INNER_WORKSPACE_SCREEN_ORDER.to(prefs.get(LauncherPrefs.WORKSPACE_SCREEN_ORDER)))
+            Log.i(TAG, "Inner set created from the cover layout: $copied items")
+            MAIN_EXECUTOR.execute { model.forceReload() }
+        }
+    }
 
     /** Inner set page ids, numbered from 0, as model screen ids. */
     @JvmStatic

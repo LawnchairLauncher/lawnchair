@@ -255,6 +255,16 @@ public class ModelDbController {
         return mOpenHelper.getNewScreenId();
     }
 
+    /**
+     * LC-Note: copies the cover item set into the inner one of "Independent" if that one has no
+     * items yet, see {@link DatabaseHelper#cloneCoverItemSetToInnerSet()}.
+     */
+    @WorkerThread
+    public int cloneCoverItemSetToInnerSet() {
+        createDbIfNotExists();
+        return mOpenHelper.cloneCoverItemSetToInnerSet();
+    }
+
     /** LC-Note: new screen id within one item set of "Independent", see FoldItemSets. */
     public int getNewScreenId(boolean innerSet) {
         createDbIfNotExists();
