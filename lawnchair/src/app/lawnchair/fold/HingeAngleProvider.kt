@@ -57,7 +57,11 @@ class HingeAngleProvider(
     var isOpening = false
         private set
 
-    /** [SystemClock.uptimeMillis] of the last event that moved the hinge by at least [MOVE_EPSILON] degrees. */
+    /**
+     * [SystemClock.uptimeMillis] of the last event that moved the hinge by at least [MOVE_EPSILON]
+     * degrees, or of the first event after [start]: the sensor starts with an unfold, so its first
+     * reading may already be the hinge opening.
+     */
     var lastMoveUptimeMillis = 0L
         private set
 
@@ -97,7 +101,7 @@ class HingeAngleProvider(
             }
         }
         if (moveAnchor.isNaN() || abs(value - moveAnchor) >= MOVE_EPSILON) {
-            if (!moveAnchor.isNaN()) lastMoveUptimeMillis = SystemClock.uptimeMillis()
+            lastMoveUptimeMillis = SystemClock.uptimeMillis()
             moveAnchor = value
         }
         angle = value

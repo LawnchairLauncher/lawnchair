@@ -519,6 +519,11 @@ class FoldTransitionController(
         r.interpolator = Interpolators.STANDARD
     }
 
+    /**
+     * Whether the hinge moved since [r] started, while opening the inner screen. The sensor starts
+     * with the unfold (large screen only), so with no reading at the start ([Run.startAngle] NaN)
+     * its first reading counts when it lies between the inner screen's on angle and fully open.
+     */
     private fun hingeMovedSince(r: Run): Boolean {
         val angle = hinge.angle
         if (angle.isNaN() || hinge.lastMoveUptimeMillis <= r.startUptimeMillis) return false
