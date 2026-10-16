@@ -1151,6 +1151,7 @@
     <string name="fold_wallpaper_set_dual">Set Lawnchair\'s dual wallpaper</string>
     <string name="fold_wallpaper_dual_active">In use</string>
     <string name="fold_wallpaper_dual_inactive">Opens the system\'s live wallpaper chooser</string>
+    <string name="fold_wallpaper_chooser_failed">Couldn\'t open the system\'s live wallpaper chooser</string>
     <string name="fold_unfolded_grid_mirror_note">Not used while Foldable screen › Home screen is set to “Same as cover”: the large screen then uses the folded grid.</string>
     <string name="fold_independent_after_fold_note">Not used with “Independent”: each screen has its own pages and opens on the page you used there last.</string>
     <string name="fold_independent_copy_failed">Couldn\'t copy the cover layout to the large screen, so “Independent” wasn\'t turned on</string>

@@ -56,7 +56,9 @@ object FoldDualWallpaper {
     /** Whether the dual wallpaper is the current home wallpaper. */
     fun isActive(context: Context): Boolean = try {
         WallpaperManager.getInstance(context).wallpaperInfo?.component == component(context)
-    } catch (e: Exception) {
+    } catch (e: RuntimeException) {
+        // What the wallpaper service throws: it is gone (DeadSystemException) or refuses the query
+        Log.w(TAG, "can't read the current wallpaper", e)
         false
     }
 

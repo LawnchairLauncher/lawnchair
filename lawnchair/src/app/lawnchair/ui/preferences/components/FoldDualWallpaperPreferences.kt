@@ -47,6 +47,7 @@ fun FoldDualWallpaperPreferences(
     val hasInner = remember(refresh) { FoldDualWallpaper.hasImage(context, Screen.INNER) }
     val active = remember(refresh) { FoldDualWallpaper.isActive(context) }
     val failed = stringResource(id = R.string.fold_wallpaper_image_failed)
+    val chooserFailed = stringResource(id = R.string.fold_wallpaper_chooser_failed)
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         val screen = picking ?: return@rememberLauncherForActivityResult
         picking = null
@@ -83,7 +84,11 @@ fun FoldDualWallpaperPreferences(
             subtitle = stringResource(
                 id = if (active) R.string.fold_wallpaper_dual_active else R.string.fold_wallpaper_dual_inactive,
             ),
-            onClick = { FoldDualWallpaper.openChooser(context) },
+            onClick = {
+                if (!FoldDualWallpaper.openChooser(context)) {
+                    Toast.makeText(context, chooserFailed, Toast.LENGTH_SHORT).show()
+                }
+            },
         )
     }
 }
