@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.destinations
 
+import android.os.Build
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.Icon
@@ -142,8 +143,11 @@ fun FoldablePreferences(
             }
         }
 
-        // Elsewhere Lawnchair's dual live wallpaper shows one image per screen
-        if (wallpaper.state.value == FoldWallpaper.EACH && !FoldWallpaperOffsets.systemHasWallpaperPerScreen) {
+        // Elsewhere Lawnchair's dual live wallpaper shows one image per screen. It needs API 28,
+        // which every foldable has; older devices only open this page with fold_force_show_settings.
+        if (wallpaper.state.value == FoldWallpaper.EACH && !FoldWallpaperOffsets.systemHasWallpaperPerScreen &&
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+        ) {
             FoldDualWallpaperPreferences()
         }
     }

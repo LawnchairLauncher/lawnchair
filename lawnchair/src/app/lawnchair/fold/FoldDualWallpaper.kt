@@ -1,6 +1,5 @@
 package app.lawnchair.fold
 
-import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.content.ComponentName
 import android.content.Context
@@ -9,9 +8,11 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.util.Executors
 import java.io.File
@@ -110,6 +111,7 @@ object FoldDualWallpaper {
     }
 
     /** Copies the image at [uri] for [screen]. Blocking: call it off the main thread. */
+    @RequiresApi(Build.VERSION_CODES.P)
     fun setImage(context: Context, screen: Screen, uri: Uri): Boolean {
         val bitmap = try {
             decodeUpright(context, uri)
@@ -145,7 +147,7 @@ object FoldDualWallpaper {
     }
 
     /** Decodes [uri] the right way up (EXIF) and no larger than [MAX_STORED_SIDE]. */
-    @SuppressLint("NewApi") // ImageDecoder is API 28; Lawnchair only sees a foldable on API 30+ (isFoldable)
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun decodeUpright(context: Context, uri: Uri): Bitmap {
         val source = ImageDecoder.createSource(context.contentResolver, uri)
         return ImageDecoder.decodeBitmap(source) { decoder, info, _ ->

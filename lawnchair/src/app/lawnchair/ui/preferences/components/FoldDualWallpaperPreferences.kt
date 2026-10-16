@@ -1,9 +1,11 @@
 package app.lawnchair.ui.preferences.components
 
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,6 +32,7 @@ import kotlinx.coroutines.withContext
  * screen, picked with the system photo picker (no storage permission), and the action that opens
  * the system's live wallpaper chooser on it.
  */
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun FoldDualWallpaperPreferences(
     modifier: Modifier = Modifier,
