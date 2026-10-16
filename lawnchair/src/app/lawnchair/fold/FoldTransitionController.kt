@@ -558,7 +558,7 @@ class FoldTransitionController(
 
     /** The drawer layout of the large screen, also when the transition plays on the cover. */
     private fun drawerLayout(): FoldDrawerLayout {
-        val large = FoldDrawerLayouts.largeProfileOf(launcher.deviceProfile) ?: return FoldDrawerLayout.EXPAND
+        val large = FoldLayout.largeProfileOf(launcher.deviceProfile) ?: return FoldDrawerLayout.EXPAND
         return FoldDrawerLayouts.drawerLayoutOf(large) ?: FoldDrawerLayout.EXPAND
     }
 

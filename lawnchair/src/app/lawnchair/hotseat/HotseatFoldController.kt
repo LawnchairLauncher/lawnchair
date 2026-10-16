@@ -8,7 +8,7 @@ import android.graphics.RectF
 import android.view.View
 import android.view.ViewTreeObserver
 import app.lawnchair.fold.FoldDockLayout
-import app.lawnchair.fold.FoldPosture
+import app.lawnchair.fold.FoldLayout
 import com.android.launcher3.CellLayout
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Hotseat
@@ -233,7 +233,7 @@ class HotseatFoldController(
         // Where the cover dock's icons sit, with the cover screen over the fixed half
         val width = hotseat.width.toFloat()
         val coverIcons = layout.coverIcons
-        val cover = FoldPosture.coverProfileOf(activity.deviceProfile)
+        val cover = FoldLayout.coverProfileOf(activity.deviceProfile)
         val coverWidth: Float
         val coverFirstCenter: Float
         val coverStep: Float
