@@ -226,7 +226,8 @@ enum class FoldWallpaper(
         key = "each",
         labelResourceId = R.string.fold_wallpaper_each,
         descriptionResourceId = R.string.fold_wallpaper_each_description,
-        isImplemented = false,
+        // Only the system can show a separate image per screen (Samsung One UI does; AOSP can't)
+        isImplemented = FoldWallpaperOffsets.systemHasWallpaperPerScreen,
     ),
     ;
 
