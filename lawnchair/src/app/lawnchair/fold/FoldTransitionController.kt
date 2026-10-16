@@ -102,12 +102,6 @@ class FoldTransitionController(
     private var preDrawObserver: ViewTreeObserver? = null
     private var run: Run? = null
 
-    /** Whether a transition is playing. */
-    val isRunning: Boolean get() = run != null
-
-    /** Current progress, or the rest value of the current layout when idle. */
-    val progress: Float get() = run?.progress ?: if (lastLarge) 1f else 0f
-
     /**
      * Registers this controller with the launcher. Call once from `onCreate`, after `super.onCreate`.
      *
@@ -126,10 +120,6 @@ class FoldTransitionController(
 
     fun addListener(listener: FoldProgressListener) {
         if (listener !in listeners) listeners.add(listener)
-    }
-
-    fun removeListener(listener: FoldProgressListener) {
-        listeners.remove(listener)
     }
 
     // Lifecycle

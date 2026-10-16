@@ -788,26 +788,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     /**
-     * LC-Note: index of the page on the fixed half of an unfolded foldable, or
-     * {@link #INVALID_PAGE} when two panels are not shown.
-     */
-    public int getFoldFixedPage() {
-        return isTwoPanelEnabled() ? getNextPage() : INVALID_PAGE;
-    }
-
-    /**
-     * LC-Note: index of the page on the moving half of an unfolded foldable, or
-     * {@link #INVALID_PAGE} when two panels are not shown or that half is empty.
-     */
-    public int getFoldMovingPage() {
-        if (!isTwoPanelEnabled()) {
-            return INVALID_PAGE;
-        }
-        int page = getNextPage() + 1;
-        return page < getChildCount() ? page : INVALID_PAGE;
-    }
-
-    /**
      * LC-Note: remembers which panel of the visible pair is touched (FoldAfterFold.LAST_PANEL),
      * when the cover screen will still have it: it has items or is persisted (an empty,
      * unpersisted page is stripped on the cover). Decided here, on the main thread, so the rebind

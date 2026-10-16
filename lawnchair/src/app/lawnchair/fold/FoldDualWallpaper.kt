@@ -131,10 +131,6 @@ object FoldDualWallpaper {
         }
     }
 
-    fun clearImage(context: Context, screen: Screen) {
-        if (file(context, screen).delete()) notifyChanged()
-    }
-
     fun addListener(listener: Runnable) {
         listeners.add(listener)
     }

@@ -38,7 +38,7 @@ object FoldDrawerLayouts {
 
     private const val TAG = "LC-FoldDrawer"
 
-    private class Applied(val layout: FoldDrawerLayout, val cover: DeviceProfile, val sizeScale: Float)
+    private class Applied(val layout: FoldDrawerLayout, val cover: DeviceProfile)
 
     private val applied: MutableMap<DeviceProfile, Applied> = Collections.synchronizedMap(WeakHashMap())
 
@@ -85,7 +85,7 @@ object FoldDrawerLayouts {
                 FoldDrawerLayout.PAGES -> applyPages(dp, cover)
                 else -> applyBigIcons(dp, cover)
             }
-            applied[dp] = Applied(layout, cover, scale)
+            applied[dp] = Applied(layout, cover)
             Log.d(TAG, "$layout on ${properties.widthPx}x${properties.heightPx}: ${dp.numShownAllAppsColumns} columns, scale $scale")
         }
     }
