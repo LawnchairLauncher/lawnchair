@@ -40,6 +40,8 @@ sources = [
     base + "search/algorithms/engine/provider/apps/AppMatcher.kt",
     base + "omni/experience/ExperienceModels.kt",
     base + "omni/experience/AppInventoryLabel.kt",
+    base + "omni/experience/HomeLayoutPolicy.kt",
+    "lawnchair/src/test/kotlin/app/lawnchair/omni/experience/HomeLayoutPolicyTest.kt",
     base + "omni/experience/ExperienceCapabilityNames.kt",
     base + "omni/OmniLauncherAccessPolicy.kt",
     base + "omni/OmniSearchPolicy.kt",
@@ -58,4 +60,4 @@ with tempfile.TemporaryDirectory(prefix="omni-test-classes-") as output:
     formatter.write_text((ROOT / (base + "smartspace/CalendarDateFormatter.kt")).read_text().replace("import android.icu.", "import com.ibm.icu."))
     sources.append(str(formatter))
     subprocess.run([java, "-cp", classpath, "org.jetbrains.kotlin.cli.jvm.K2JVMCompiler", "-no-stdlib", "-no-reflect", "-classpath", classpath, "-d", output] + sources, cwd=ROOT, check=True)
-    subprocess.run([java, "-cp", output + os.pathsep + classpath, "org.junit.runner.JUnitCore", "app.lawnchair.omni.experience.ExperienceRulesTest", "app.lawnchair.omni.OmniLauncherAccessPolicyTest", "app.lawnchair.omni.OmniSearchPolicyTest", "app.lawnchair.omni.experience.CalendarDateFormatterTest", "app.lawnchair.omni.experience.WidgetLoadingTest"], cwd=ROOT, check=True)
+    subprocess.run([java, "-cp", output + os.pathsep + classpath, "org.junit.runner.JUnitCore", "app.lawnchair.omni.experience.ExperienceRulesTest", "app.lawnchair.omni.OmniLauncherAccessPolicyTest", "app.lawnchair.omni.OmniSearchPolicyTest", "app.lawnchair.omni.experience.CalendarDateFormatterTest", "app.lawnchair.omni.experience.WidgetLoadingTest", "app.lawnchair.omni.experience.HomeLayoutPolicyTest"], cwd=ROOT, check=True)

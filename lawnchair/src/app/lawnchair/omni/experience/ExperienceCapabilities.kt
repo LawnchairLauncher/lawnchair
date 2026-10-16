@@ -29,6 +29,10 @@ object ExperienceCapabilities {
     private val json = Json { ignoreUnknownKeys = false }
     private data class Spec(val name: String, val description: String, val fields: Map<String, String>, val required: List<String> = emptyList())
     private val specs = listOf(
+        Spec("launcher.get_layout", "Read paged Home grid/occupied cells and revision. Only visible application icons are movable. Screen IDs and zero-based cells are model coordinates, not RTL presentation positions.", mapOf("offset" to "integer", "limit" to "integer")),
+        Spec("launcher.move_items", "Atomically reposition 1-40 existing visible Home app icons on existing screens, including swaps. Read get_layout first; stale revisions and occupied cells are rejected. Widgets/folders/dock remain fixed. Verify with get_layout after reload.", mapOf("expectedRevision" to "string", "moves" to "array"), listOf("expectedRevision", "moves")),
+        Spec("launcher.set_grid", "Change Home rows/columns via the standard grid migration (3-10, or up to 20 if locally enabled). Existing icons/widgets can reflow; requires get_layout revision. Verify get_layout after asynchronous reload.", mapOf("expectedRevision" to "string", "rows" to "integer", "columns" to "integer"), listOf("expectedRevision", "rows", "columns")),
+        Spec("launcher.create_folder", "Create a drawer rule folder (not a Home icon folder) for a name/package/category rule. Does not move/delete installed apps.", mapOf("title" to "string", "nameContains" to "string", "packagePrefix" to "string", "category" to "integer"), listOf("title")),
         Spec("launcher.list_actions", "Find local launcher actions. Typing or listing never executes them.", mapOf("query" to "string")),
         Spec("launcher.open_action", "Open a known built-in action. Resumed Home required.", mapOf("id" to "string"), listOf("id")),
         Spec("launcher.list_scenes", "List saved Home scenes and their names.", emptyMap()),
@@ -50,11 +54,55 @@ object ExperienceCapabilities {
             name = spec.name, description = spec.description,
             requiresConfirmation = mutation, risk = if (mutation) CapabilityRisk.MEDIUM else CapabilityRisk.LOW,
             communicationDirection = CommunicationDirection.OMNI_TO_APP_ONLY,
-            idempotency = if (spec.name in setOf("launcher.open_action", "launcher.save_scene")) IdempotencySemantics.NON_IDEMPOTENT else IdempotencySemantics.IDEMPOTENT,
+            idempotency = if (spec.name in setOf("launcher.open_action", "launcher.save_scene", "launcher.create_folder")) IdempotencySemantics.NON_IDEMPOTENT else IdempotencySemantics.IDEMPOTENT,
             supportsDryRun = mutation, maxInlinePayloadBytes = 16 * 1024,
             inputSchema = buildJsonObject {
                 put("type", "object")
-                putJsonObject("properties") { spec.fields.forEach { (key, type) -> putJsonObject(key) { put("type", type) } } }
+                putJsonObject("properties") {
+                    spec.fields.forEach { (key, type) ->
+                        putJsonObject(key) {
+                            put("type", type)
+                            if (key == "rule") {
+                                putJsonObject("properties") {
+                                    putJsonObject("folderId") { put("type", "integer") }
+                                    listOf("nameContains", "packagePrefix").forEach { field -> putJsonObject(field) { put("type", "string") } }
+                                    putJsonObject("category") {
+                                        put(
+                                            "type",
+                                            buildJsonArray {
+                                                add(JsonPrimitive("integer"))
+                                                add(JsonPrimitive("null"))
+                                            },
+                                        )
+                                    }
+                                    listOf("include", "exclude").forEach { field ->
+                                        putJsonObject(field) {
+                                            put("type", "array")
+                                            put("maxItems", 100)
+                                            putJsonObject("items") { put("type", "string") }
+                                        }
+                                    }
+                                }
+                                put("required", buildJsonArray { add(JsonPrimitive("folderId")) })
+                                put("additionalProperties", false)
+                            }
+                            if (key in setOf("rows", "columns")) {
+                                put("minimum", 3)
+                                put("maximum", 20)
+                            }
+                            if (key == "moves") {
+                                put("minItems", 1)
+                                put("maxItems", 40)
+                                putJsonObject("items") {
+                                    put("type", "object")
+                                    putJsonObject("properties") { listOf("id", "screenId", "cellX", "cellY").forEach { field -> putJsonObject(field) { put("type", "integer") } } }
+                                    put("required", buildJsonArray { listOf("id", "screenId", "cellX", "cellY").forEach { add(JsonPrimitive(it)) } })
+                                    put("additionalProperties", false)
+                                }
+                            }
+                        }
+                    }
+                }
                 put("required", buildJsonArray { spec.required.forEach { add(JsonPrimitive(it)) } })
                 put("additionalProperties", false)
             },
@@ -79,6 +127,23 @@ object ExperienceCapabilities {
             fun integer(key: String) = (payload[key] as? JsonPrimitive)?.takeUnless { it.isString }?.intOrNull ?: error("invalid_payload")
             val store = ExperienceStore.get(context)
             val data = when (request.name) {
+                "launcher.get_layout", "launcher.move_items", "launcher.set_grid" -> HomeLayoutController.execute(context, request.name, payload, request.dryRun, ::checkAccess)
+
+                "launcher.create_folder" -> {
+                    val title = text("title", 80).also { require(it.isNotBlank()) }
+                    val name = if ("nameContains" in payload) text("nameContains", 80) else ""
+                    val prefix = if ("packagePrefix" in payload) text("packagePrefix", 120) else ""
+                    val category = if ("category" in payload) integer("category").also { require(it in -1..8) } else null
+                    require(name.isNotBlank() || prefix.isNotBlank() || category != null)
+                    val rule = FolderRule(0, name, prefix, category)
+                    checkAccess()
+                    val id = if (request.dryRun) -1 else FolderService.INSTANCE.get(context).createRuleFolder(title, rule, ::checkAccess)
+                    buildJsonObject {
+                        put("folderId", id)
+                        put("title", title)
+                    }
+                }
+
                 "launcher.list_actions" -> buildJsonObject {
                     val query = payload["query"]?.let { text("query", 200) }.orEmpty()
                     val normalized = app.lawnchair.search.algorithms.engine.provider.apps.SearchTextNormalizer.normalize(query)
@@ -311,7 +376,7 @@ object ExperienceCapabilities {
                     "invalid_payload"
                 } else {
                     when (error.message) {
-                        "control_disabled", "deadline_exceeded", "foreground_required", "device_owner_required", "system_refused" -> error.message!!
+                        "control_disabled", "deadline_exceeded", "foreground_required", "device_owner_required", "system_refused", "stale_layout", "cell_occupied", "item_unavailable", "home_unavailable", "model_loading", "storage_failed" -> error.message!!
                         else -> "operation_unavailable"
                     }
                 },

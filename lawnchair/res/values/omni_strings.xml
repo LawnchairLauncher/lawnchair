@@ -10,7 +10,7 @@
     <string name="omni_trust_verified">Verified first-party connection: an installed Workspace app shares this launcher’s signing certificate. Actions still require local consent.</string>
     <string name="omni_trust_unverified">First-party control unavailable: install Workspace signed with the same Omni key as this launcher. Search handoff still works without shared signing.</string>
     <string name="omni_remote_control">Allow Omni Dev to control the launcher</string>
-    <string name="omni_remote_control_description">Requires the same signing certificate. Allows visible app lookup, approved search settings changes, and opening apps or the drawer while Home is in the foreground. Turn off to revoke access.</string>
+    <string name="omni_remote_control_description">Requires a matching signing certificate and local approval. Grants visible app lookup, search settings, Home icon placement and grid changes, scenes, folder rules, aliases, Shelf publishing and existing widget selection. Opening apps or the drawer requires visible Home. Turn off to revoke access.</string>
     <string name="omni_workspace_required">Install or update Omni Dev Workspace to use the Omni search entry point.</string>
     <string name="omni_choose_workspace">Choose Omni Dev Workspace</string>
     <string name="omni_opening_workspace">Opening Omni Dev Workspace…</string>

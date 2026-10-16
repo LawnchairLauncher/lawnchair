@@ -115,6 +115,10 @@ remote control. The existing public draft handoff still works separately.
 
 | New capability | Inputs | Scope |
 | --- | --- | --- |
+| launcher.get_layout | offset, limit | Home grid, paged occupancy, visible app IDs and snapshot revision |
+| launcher.move_items | expectedRevision, moves[] | Atomic existing Home app moves/swaps; rejects overlap/stale state |
+| launcher.set_grid | expectedRevision, rows, columns | Existing standard grid migration; verify after reload |
+| launcher.create_folder | title, optional nameContains/packagePrefix/category | New drawer rule folder; at least one condition required |
 | launcher.list_actions | optional query | Built-in actions; no execution |
 | launcher.open_action | id | Known action, resumed Home required |
 | launcher.list_scenes | empty | Names and IDs |
@@ -154,3 +158,32 @@ returned optional profileSerial to open_app; omitting it preserves current-profi
   size-reduction or device-compatibility measurement.
 
 See [OMNI_PERFORMANCE_VALIDATION.md](OMNI_PERFORMANCE_VALIDATION.md) for reproducible Infinix checks.
+
+
+### Diagnosing a missing catalog and controlling Home
+
+Launcher and Workspace PRs #16/#194 must both be installed from the matching builds; protocolVersion 5
+alone does not identify the capability catalog. `launcher.health` now reports versionName/versionCode,
+capabilityCatalogVersion=2 and capabilityCount=24. An installed six-capability APK cannot acquire new
+commands through refresh or an SDK upgrade alone. Keep the same signing certificate when updating.
+
+Use `discover_capabilities` with the exact Launcher extension_id and refresh=true, follow next_offset
+until null, then find_capability for the selected full schema. Workspace reports advertised_count and
+allowed_count separately, so an older APK is distinguishable from a host flavor ceiling. NORM reads
+layout; PRO/OEM/ADMIN may mutate it after approval and local Launcher opt-in. Lite remains unchanged.
+
+`get_layout` returns zero-based model cell coordinates and actual screen IDs, including opaque occupied
+rectangles for protected items. Do not mirror the model cell coordinates for RTL. It does not expose
+hidden app identities, folder contents, or widget data. A paged read must retain the same revision.
+Submit up to 40 moves of existing visible application icons; swaps are validated together. Destination
+screens must already exist. All destinations are checked against stationary icons, hidden items,
+folders, widgets and each other before the transaction. No icons are added/deleted, no dock/folder/widget
+items are moved. The existing model DB controller commits one atomic transaction on the model thread;
+in-memory positions change only after commit and the existing loader rebinds Home. A stale_layout
+error requires a fresh read and replanning, not blind retry. UI cancellation discards queued work.
+
+`set_grid` commits both existing preference keys together and invokes standard IDP migration/reload.
+It uses the same 3–10 limits as local settings (up to 20 only when locally enabled). Shrinking a grid
+may reflow existing content; inspect a dry run, approve, then refetch layout after reload. Responses
+say reloadScheduled rather than pretending asynchronous UI binding is complete. App placement, grid
+migration, large widgets, RTL and concurrent user interaction still require real-device validation.

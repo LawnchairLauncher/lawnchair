@@ -163,6 +163,11 @@ class OmniLauncherService : ExtensionService() {
                     put("packageName", packageName)
                     put("protocolVersion", maxSupportedVersion)
                     put("requiresSameSigner", true)
+                    put("versionName", com.android.launcher3.BuildConfig.VERSION_NAME)
+                    put("versionCode", com.android.launcher3.BuildConfig.VERSION_CODE)
+                    put("capabilityCatalogVersion", 2)
+                    put("capabilityCount", capabilities.size)
+                    put("homeControlAvailable", capabilities.any { it.name == "launcher.move_items" })
                 },
             )
 

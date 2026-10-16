@@ -150,7 +150,7 @@
     <string name="omni_always_suggest_short">إظهار اسأل Omni دائمًا</string>
     <string name="omni_always_suggest_summary">يظهر أيضًا عند وجود نتائج محلية.</string>
     <string name="omni_remote_control_short">التحكم في اللانشر</string>
-    <string name="omni_remote_control_short_summary">إجراءات بموافقتك أثناء ظهور الشاشة الرئيسية. أوقفه لإلغاء الوصول.</string>
+    <string name="omni_remote_control_short_summary">إجراءات بموافقتك للتحكم في اللانشر. أوقفه لإلغاء الوصول.</string>
     <string name="omni_control_signer_verified">تم التحقق من شهادة توقيع Workspace</string>
     <string name="omni_control_signer_missing">يتطلب Workspace بنفس مفتاح توقيع اللانشر</string>
     <string name="omni_integration_load_failed">تعذّر التحقق من قدرات أندرويد. حاول مرة أخرى.</string>

@@ -33,6 +33,16 @@ class OmniLauncherAccessPolicyTest {
     }
 
     @Test
+    fun layoutWritesRequireControlTierAndReadRemainsAvailableToNorm() {
+        assertTrue(OmniLauncherAccessPolicy.allows("com.omnidev.workspace.norm", "launcher.get_layout"))
+        listOf("launcher.move_items", "launcher.set_grid", "launcher.create_folder").forEach { action ->
+            assertFalse(OmniLauncherAccessPolicy.allows("com.omnidev.workspace.norm", action))
+            assertFalse(OmniLauncherAccessPolicy.allows("com.omnidev.workspace", action))
+            listOf("pro", "oem", "admin").forEach { assertTrue(OmniLauncherAccessPolicy.allows("com.omnidev.workspace.$it", action)) }
+        }
+    }
+
+    @Test
     fun rejectsImpersonatedPackagesAndUnknownCapabilities() {
         assertFalse(OmniLauncherAccessPolicy.allows("com.omnidev.workspace.evil", "launcher.health"))
         assertFalse(OmniLauncherAccessPolicy.allows("com.omnidev.workspace.admin", "launcher.clear_home"))

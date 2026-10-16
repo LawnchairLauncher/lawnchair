@@ -49,11 +49,15 @@ class FolderService(val context: Context) : SafeCloseable {
         folderDao.insertFolder(FolderInfoEntity(title = folderInfo.title.toString()))
     }
 
-    suspend fun createRuleFolder(title: String, rule: FolderRule): Int = withContext(Dispatchers.IO) {
+    suspend fun createRuleFolder(title: String, rule: FolderRule, checkAccess: () -> Unit = {}): Int = withContext(Dispatchers.IO) {
         require(title.isNotBlank() && title.length <= 80)
+        checkAccess()
         val id = folderDao.insertFolder(FolderInfoEntity(title = title)).toInt()
         try {
-            experience.update { it.copy(rules = it.rules + rule.copy(folderId = id)) }
+            experience.update {
+                checkAccess()
+                it.copy(rules = it.rules + rule.copy(folderId = id))
+            }
         } catch (error: Exception) {
             folderDao.deleteFolder(id)
             throw error

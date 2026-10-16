@@ -5,6 +5,14 @@ updates, modifications and ecosystem integration. Original Lawnchair/AOSP author
 credits and rights; see [NOTICE.md](NOTICE.md). Upstream GITHUB_CHANGELOG.md and
 TELEGRAM_CHANGELOG.txt remain historical upstream release notes.
 
+## OmniLink discovery and Home control — 16 October 2026
+
+- Advertise 24 capabilities and report app/catalog versions in launcher.health to identify an old installed APK.
+- Add paged Home layout snapshots, revision-checked atomic moves of existing visible app icons, normal Home grid migration and drawer rule-folder creation.
+- Preserve widget/folder/dock/hidden-item positions during app moves; reject overlapping, out-of-grid, stale and duplicate requests before writes. Use existing model executor/DB transaction APIs without changing AOSP sources.
+- Publish complete nested move/rule schemas; retain receiver tier ceilings, local opt-in, approval, dry-run and late queued-work checks.
+- Expand the direct Launcher suite to 44 tests; companion Workspace fixes scoped discovery, update/reconnect cache invalidation and dry-run transport.
+
 ## App identity and integration settings — 16 October 2026
 
 - Populate localized app titles in the shared inventory: AppInfo construction alone leaves title null. This fixes labels, name-based folder rules, picker search, Shelf discovery and OmniLink app names together.

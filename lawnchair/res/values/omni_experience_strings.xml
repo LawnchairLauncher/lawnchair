@@ -150,7 +150,7 @@
     <string name="omni_always_suggest_short">Always show Ask Omni</string>
     <string name="omni_always_suggest_summary">Also show it when local results are available.</string>
     <string name="omni_remote_control_short">Launcher control</string>
-    <string name="omni_remote_control_short_summary">Approved actions while Home is visible. Turn off to revoke.</string>
+    <string name="omni_remote_control_short_summary">Approved launcher actions. Turn off to revoke access.</string>
     <string name="omni_control_signer_verified">Workspace signing certificate verified</string>
     <string name="omni_control_signer_missing">Requires Workspace signed with the same launcher key</string>
     <string name="omni_integration_load_failed">Could not check Android capabilities. Try again.</string>
