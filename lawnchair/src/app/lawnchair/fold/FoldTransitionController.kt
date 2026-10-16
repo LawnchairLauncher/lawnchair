@@ -97,6 +97,7 @@ class FoldTransitionController(
     private var attached = false
     private var resumed = false
     private var lastScreen = NO_SCREEN
+    private var lastFoldScreen = FoldScreen.NONE
     private var restAngle = Float.NaN
     private var pendingReplay: ReplayMode? = null
     private var replayOpenedDrawer = false
@@ -120,6 +121,7 @@ class FoldTransitionController(
         if (attached || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         attached = true
         lastScreen = screenOf(launcher.deviceProfile)
+        lastFoldScreen = launcher.deviceProfile.deviceProperties.foldScreen
         launcher.addOnDeviceProfileChangeListener(this)
         launcher.registerActivityLifecycleCallbacks(this)
     }
@@ -160,10 +162,14 @@ class FoldTransitionController(
         val screen = screenOf(dp)
         val previous = lastScreen
         lastScreen = screen
+        val foldScreen = dp.deviceProperties.foldScreen
+        val previousFoldScreen = lastFoldScreen
+        lastFoldScreen = foldScreen
         restAngle = Float.NaN
         updateHingeSensor()
-        // Same screen (insets, rotation, grid, a window): a running transition picks up the new geometry.
-        if (screen == NO_SCREEN || previous == NO_SCREEN || screen == previous) return
+        // Same screen (insets, rotation, grid, a window, a resolution change on one screen): a
+        // running transition picks up the new geometry.
+        if (screen == NO_SCREEN || previous == NO_SCREEN || screen == previous || foldScreen == previousFoldScreen) return
 
         val large = isLarge()
         val current = run
@@ -545,9 +551,9 @@ class FoldTransitionController(
     private fun isReducedMotion(): Boolean = !ValueAnimator.areAnimatorsEnabled()
 
     /**
-     * The screen [dp] fills, as its size in pixels in any rotation: a fold or unfold changes it, a
-     * rotation or a display size change does not; the larger screen compares greater. [NO_SCREEN]
-     * for a window (multi-window mode).
+     * The screen [dp] fills, as its size in pixels in any rotation: a fold or unfold changes it (and
+     * the profile's [FoldScreen] with it), a rotation does not; the larger screen compares greater.
+     * [NO_SCREEN] for a window (multi-window mode).
      */
     private fun screenOf(dp: DeviceProfile): Long {
         val properties = dp.deviceProperties
