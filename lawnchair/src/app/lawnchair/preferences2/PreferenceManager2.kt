@@ -111,11 +111,13 @@ class PreferenceManager2 @Inject constructor(
         key: Preferences.Key<Int>,
         defaultSelector: InvariantDeviceProfile.GridOption.() -> Int,
         onSet: (Int) -> Unit = {},
+        handOverOnSet: Boolean = false,
     ): IdpPreference = IdpPreference(
         key = key,
         defaultSelector = defaultSelector,
         preferencesDataStore = preferencesDataStore,
         onSet = onSet,
+        handOverOnSet = handOverOnSet,
     )
 
     override val preferencesDataStore = context.preferencesDataStore
@@ -713,10 +715,12 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // The grid reload reads the folder columns from the cache, which may not have them yet.
     val folderColumns = idpPreference(
         key = intPreferencesKey(name = "folder_columns"),
         defaultSelector = { numFolderColumns[INDEX_DEFAULT] },
         onSet = { reloadHelper.reloadGrid() },
+        handOverOnSet = true,
     )
 
     val additionalFonts = preference(
