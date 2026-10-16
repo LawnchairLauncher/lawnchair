@@ -140,7 +140,7 @@ class DrawerFoldStyle(
             val width = large.deviceProperties.widthPx
             movingLeft = FoldDrawerLayouts.isMovingHalfLeft(large)
             fixedLeft = if (movingLeft) width / 2f else 0f
-            coverScale = width / 2f / cover.deviceProperties.widthPx
+            coverScale = FoldLayout.coverScaleOnLarge(cover, large)
         }
         // The zoom needs more rows laid out below before the first frame, so its first, smallest
         // frame is full.

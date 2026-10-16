@@ -91,8 +91,7 @@ object FoldDrawerLayouts {
 
     /** Fixed page = the cover's drawer: its profile, its side padding, a full-width sheet. */
     private fun applyPages(dp: DeviceProfile, cover: DeviceProfile): Float {
-        val halfWidth = dp.deviceProperties.widthPx / 2f
-        val scale = halfWidth / cover.deviceProperties.widthPx
+        val scale = FoldLayout.coverScaleOnLarge(cover, dp)
         val profile = cover.allAppsProfile
         dp.setAllAppsProfile(profile.copy(borderSpacePx = Point(profile.borderSpacePx.x, profile.borderSpacePx.y)))
         dp.updateAllAppsDotRenderer()
@@ -200,7 +199,6 @@ object FoldDrawerLayouts {
     fun getSearchBarPadding(context: Context, dp: DeviceProfile): Int {
         val pages = applied[dp]?.takeIf { it.layout == FoldDrawerLayout.PAGES }
             ?: return dp.getAllAppsIconStartMargin(context)
-        val scale = dp.deviceProperties.widthPx / 2f / pages.cover.deviceProperties.widthPx
-        return (pages.cover.getAllAppsIconStartMargin(context) * scale).roundToInt()
+        return (pages.cover.getAllAppsIconStartMargin(context) * FoldLayout.coverScaleOnLarge(pages.cover, dp)).roundToInt()
     }
 }
