@@ -752,7 +752,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             // LC-Note: "Expand" home layout (or FOLDABLE_SINGLE_PAGE): cover pages 2n and 2n + 1
             // form wide page 2n. Keep the dock mapping, and the even page on the fixed half.
             mCellPosMapper = new TwoPanelCellPosMapper(mDeviceProfile.inv.numColumns,
-                    mDeviceProfile.isVerticalBarLayout(), mDeviceProfile.numShownHotseatIcons,
+                    mDeviceProfile.hasVerticalHotseat(), mDeviceProfile.numShownHotseatIcons,
                     mDeviceProfile.numHotseatRows, mDeviceProfile.numHotseatPages,
                     FoldDockLayout.create(this, mDeviceProfile),
                     FoldLayout.isEvenCoverPageOnEnd(this, mDeviceProfile));
