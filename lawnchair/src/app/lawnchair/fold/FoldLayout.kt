@@ -63,4 +63,13 @@ object FoldLayout {
         val own = prefs2.foldLandscapeIconLabelSizeFactor.firstCached(prefs2)
         return if (own < 0f) prefs2.homeIconLabelSizeFactor.firstCached(prefs2) else own
     }
+
+    /**
+     * Scale that puts the cover screen over the fixed half of the large screen: the cover's width
+     * fills the half exactly (Pixel 9 Pro Fold: cover 1080 px, half 1038 px). The dock, the drawer
+     * and every transition place the cover with this one scale, so their icons start from the same
+     * spot.
+     */
+    @JvmStatic
+    fun coverScaleOnLarge(cover: DeviceProfile, large: DeviceProfile): Float = large.deviceProperties.widthPx / 2f / cover.deviceProperties.widthPx
 }
