@@ -167,8 +167,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         super.onCreate(savedInstanceState)
         FoldPosture.attach(this)
         foldTransitionController.attach()
-        // The dock merge (HotseatFoldController) follows the engine instead of its own animator
-        hotseat.foldController.animateOnDeviceProfileChange = false
+        // The dock merge (HotseatFoldController) follows the engine
         foldTransitionController.addListener(hotseat.foldController)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)

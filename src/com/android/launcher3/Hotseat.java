@@ -252,7 +252,6 @@ public class Hotseat extends FrameLayout implements Insettable {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (mActivity instanceof Launcher) {
-            mFoldController.onAttached(mActivity.getDeviceProfile());
             mActivity.addOnDeviceProfileChangeListener(mFoldController);
         }
     }
