@@ -481,7 +481,7 @@ class DrawerFoldStyle(
     }
 
     private fun staggerFor(movers: Int): Float {
-        val nominal = FoldTunables.DRAWER_RIVER_STAGGER_MILLIS / FoldTunables.UNFOLD_DURATION_MILLIS.coerceAtLeast(1L).toFloat()
+        val nominal = FoldTunables.DRAWER_RIVER_STAGGER_MILLIS / FoldTunables.UNFOLD_DURATION_MILLIS.toFloat()
         return if (movers <= 1) 0f else minOf(nominal, MAX_DELAY / (movers - 1))
     }
 

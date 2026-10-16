@@ -103,7 +103,7 @@ object FoldDrawerLayouts {
     /** The cover's grid zoomed to the whole width: same columns, larger icons and labels. */
     private fun applyBigIcons(dp: DeviceProfile, cover: DeviceProfile): Float {
         val widthScale = dp.deviceProperties.widthPx.toFloat() / cover.deviceProperties.widthPx
-        val scale = widthScale.coerceIn(1f, FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE.coerceAtLeast(1f))
+        val scale = widthScale.coerceIn(1f, FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE)
         val profile = cover.allAppsProfile
         dp.setAllAppsProfile(
             profile.copy(
@@ -141,7 +141,7 @@ object FoldDrawerLayouts {
         if (InvariantDeviceProfile.deviceType != InvariantDeviceProfile.TYPE_MULTI_DISPLAY) return iconBitmapSize
         val prefs2 = PreferenceManager2.getInstance(context)
         if (prefs2.foldDrawerLayout.firstCached(prefs2) != FoldDrawerLayout.BIG_ICONS) return iconBitmapSize
-        val zoomed = (allAppsIconBitmapSize * FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE.coerceAtLeast(1f)).roundToInt()
+        val zoomed = (allAppsIconBitmapSize * FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE).roundToInt()
         return maxOf(iconBitmapSize, zoomed)
     }
 

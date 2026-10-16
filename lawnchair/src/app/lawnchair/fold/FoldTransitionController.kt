@@ -569,9 +569,7 @@ class FoldTransitionController(
 
     private fun angleToProgress(angle: Float): Float {
         val closed = FoldTunables.INNER_DISPLAY_ON_ANGLE
-        val open = FoldTunables.FULLY_OPEN_ANGLE
-        if (open <= closed) return if (angle >= open) 1f else 0f
-        return ((angle - closed) / (open - closed)).coerceIn(0f, 1f)
+        return ((angle - closed) / (FoldTunables.FULLY_OPEN_ANGLE - closed)).coerceIn(0f, 1f)
     }
 
     /**
