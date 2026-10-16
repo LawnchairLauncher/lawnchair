@@ -1085,7 +1085,7 @@
     <string name="fold_home_pages">Two pages</string>
     <string name="fold_home_pages_description">The page you were on stays in place and the next one opens beside it, like a book.</string>
     <string name="fold_home_expand">Expand</string>
-    <string name="fold_home_expand_description">One wide page. Widgets can span both screens and swiping covers the full width.</string>
+    <string name="fold_home_expand_description">One wide page across both halves, swiped as one. Items and widgets stay on one side of the fold, so the cover screen keeps them exactly as they are.</string>
     <string name="fold_home_mirror">Same as cover</string>
     <string name="fold_home_mirror_description">The exact layout of the cover screen, just larger. No need to arrange two screens.</string>
     <string name="fold_home_independent">Independent</string>
