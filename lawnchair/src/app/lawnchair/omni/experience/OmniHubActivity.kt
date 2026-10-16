@@ -22,17 +22,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
@@ -46,7 +42,6 @@ import androidx.compose.material.icons.rounded.Widgets
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -55,11 +50,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -76,7 +69,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -158,7 +150,7 @@ private fun Hub(initialPage: String, draft: String?, newNote: Boolean) {
                     key(page) {
                         when (page) {
                             "scenes" -> ScenesScreen(current, store, work)
-                            "folders" -> RulesScreen(current, store, work)
+                            "folders" -> RulesScreen(current, store)
                             "aliases" -> AliasesScreen(current, store)
                             "widgets" -> StacksScreen(current)
                             "system" -> SystemScreen(work)
@@ -437,7 +429,7 @@ private fun SceneEditor(scene: HomeScene, onDismiss: () -> Unit, onSave: suspend
 private fun timeString(minute: Int) = String.format(java.util.Locale.ROOT, "%02d:%02d", minute / 60, minute % 60)
 
 @Composable
-private fun RulesScreen(state: ExperienceState, store: ExperienceStore, work: Work) {
+private fun RulesScreen(state: ExperienceState, store: ExperienceStore) {
     val context = LocalContext.current
     var create by rememberSaveable { mutableStateOf(false) }
     var editingId by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -488,6 +480,9 @@ private fun RuleEditor(rule: FolderRule?, onDismiss: () -> Unit, onSave: suspend
     var include by rememberStringSet(rule?.include.orEmpty())
     var exclude by rememberStringSet(rule?.exclude.orEmpty())
     val apps by produceState<List<AppInfo>>(emptyList()) { value = OmniAppInventory.get(context).visible() }
+    val inventory = remember { OmniAppInventory.get(context) }
+    val preview = FolderRule(rule?.folderId ?: 0, name, pkg, if (games) android.content.pm.ApplicationInfo.CATEGORY_GAME else null, include, exclude)
+    val matching = apps.count { preview.matches(it.toComponentKey().toString(), it.title.toString(), it.componentName?.packageName.orEmpty(), inventory.category(it)) }
     var query by rememberSaveable { mutableStateOf("") }
     SaveDialog(
         title = stringResource(R.string.omni_rule_folders),
@@ -588,7 +583,9 @@ private fun SystemScreen(work: Work) {
         item {
             Panel(stringResource(R.string.omni_system), stringResource(R.string.omni_oem_help)) {
                 status?.let {
-                    Text(stringResource(R.string.omni_system_status, it.systemApp, it.deviceOwner || it.profileOwner, it.quickstep))
+                    SystemStatus(R.string.omni_system_app, it.systemApp)
+                    SystemStatus(R.string.omni_enterprise_owner, it.deviceOwner || it.profileOwner)
+                    SystemStatus(R.string.omni_recents_integration, it.quickstep)
                 }
                 TextButton(onClick = { work { withContext(Dispatchers.Main) { context.startActivity(Intent(Settings.ACTION_HOME_SETTINGS)) } } }) { Text(stringResource(R.string.omni_default_home)) }
             }
@@ -620,7 +617,7 @@ private fun TextEditor(
 ) {
     var first by rememberSaveable { mutableStateOf(initialFirst) }
     var second by rememberSaveable { mutableStateOf(initialSecond) }
-    SaveDialog(title = title, onDismiss = onDismiss, valid = allowEmpty || first.isNotBlank() || second.isNotBlank(), onSave = { onSave(first.trim(), second.trim()) }) {
+    SaveDialog(title = title, onDismiss = onDismiss, valid = allowEmpty || first.isNotBlank() || second.isNotBlank(), onSave = { onSave(first.trim(), second) }) {
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(first, { first = it.take(200) }, label = { Text(firstLabel) })
             if (secondLabel != null) OutlinedTextField(second, { second = it.take(4000) }, label = { Text(secondLabel) }, minLines = 3, maxLines = 6)
@@ -630,7 +627,7 @@ private fun TextEditor(
 
 private fun matchesApp(app: AppInfo, query: String, aliases: String = ""): Boolean {
     val needle = SearchTextNormalizer.normalize(query.trim())
-    return needle.isBlank() || SearchTextNormalizer.normalize("${app.title} ${app.componentName.packageName} $aliases").contains(needle)
+    return needle.isBlank() || SearchTextNormalizer.normalize("${app.title} ${app.componentName?.packageName.orEmpty()} $aliases").contains(needle)
 }
 
 @Composable
@@ -693,3 +690,12 @@ private fun ConfirmRemoval(title: String, onDismiss: () -> Unit, remove: suspend
 private fun rememberStringSet(initial: Set<String>) = rememberSaveable(
     stateSaver = listSaver<Set<String>, String>(save = { it.toList() }, restore = { it.toSet() }),
 ) { mutableStateOf(initial) }
+
+@Composable
+private fun SystemStatus(label: Int, available: Boolean) {
+    PreferenceTemplate(
+        title = { Text(stringResource(label)) },
+        description = { Text(stringResource(if (available) R.string.omni_status_available else R.string.omni_status_unavailable)) },
+        applyPaddings = false,
+    )
+}

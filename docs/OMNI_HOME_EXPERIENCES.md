@@ -37,7 +37,7 @@ Under **Omni Hub → Date and time**, or the existing **At a Glance → Date and
 - Choose full/short/numeric month format, system/Arabic/English date language, system/Arabic/Latin numerals, weekday, year and calendar-era markers.
 - Hijri uses Android's built-in ICU calendars: Umm al-Qura (default), civil tabular or astronomical calculation. A bounded −2…+2 calendar-day adjustment only changes the Hijri date; today's weekday and Gregorian date stay correct, including across DST.
 - Dual dates can put Hijri or Gregorian first, inline or on two lines. Directional isolation keeps mixed Arabic/Latin date fragments in order.
-- The Hub preview uses the exact same view and preferences as the built-in Home/At a Glance date; no separate preview-only formatting logic. Existing 12/24-hour and date/time toggles still apply.
+- The Hub preview uses the exact same view and preferences as the built-in Home/At a Glance date and Google-widget fallback date; no separate preview-only formatting logic. Existing 12/24-hour and date/time toggles still apply.
 - Formatting is cached per attached view and rebuilt on preference, locale, time or timezone changes. The ticker updates each minute and is removed on detach; no polling service, network dependency, permission or bundled calendar library is added to the APK.
 - Calculated Hijri dates can differ from local moon sightings; adjust the Hijri day to match the locally observed calendar. External widgets and Smartspacer retain their own formatting. Very large fonts/long inline dates may truncate within the existing fixed Smartspace cell; use two lines or the short format.
 
@@ -86,7 +86,7 @@ membership and renaming.
 
 Choose Hub → Widget stacks → Add stack to Home, or select **Widget stacks** in the normal widget
 picker. Configure the stack by adding real widgets with Android's binding/configuration flows.
-The editor uses the launcher preference theme, supports selection and reordering, preserves the selected widget identity when moving/removing other members and confirms removal. Previous/next and swipes mirror in RTL. Use the arrows or swipe the toolbar to select a member; the widget content retains its own touch
+The editor uses the launcher preference theme, supports selection and reordering, preserves the selected widget identity when moving/removing other members and confirms removal. Previous/next and swipes mirror in RTL. Rapid navigation updates the stored selection atomically so consecutive taps are not lost. Use the arrows or swipe the toolbar to select a member; the widget content retains its own touch
 handling. Editing can remove individual members. Recursive Omni stacks are rejected.
 
 Only the selected child widget view is inflated. The nested host clears view references when

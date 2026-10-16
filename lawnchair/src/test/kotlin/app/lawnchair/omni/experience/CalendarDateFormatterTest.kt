@@ -116,5 +116,8 @@ class CalendarDateFormatterTest {
         assertEquals(2, removed.widgetIds[removed.selected])
         assertEquals(0, WidgetStack(1, listOf(5), 0).removeMember(5).selected)
         assertEquals(stack, stack.moveMember(-1, 5))
+        assertEquals(0, stack.advance(1).advance(1).selected)
+        assertEquals(2, stack.copy(selected = 0).advance(-1).selected)
+        assertEquals(WidgetStack(1), WidgetStack(1).advance(1))
     }
 }

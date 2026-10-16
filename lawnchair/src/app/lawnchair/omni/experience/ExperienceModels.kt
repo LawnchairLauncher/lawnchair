@@ -63,6 +63,7 @@ data class HomeScene(
 
 @Serializable
 data class WidgetStack(val outerId: Int, val widgetIds: List<Int> = emptyList(), val selected: Int = 0) {
+    fun advance(delta: Int): WidgetStack = if (widgetIds.isEmpty()) this else copy(selected = Math.floorMod(selected + delta, widgetIds.size))
     fun moveMember(from: Int, to: Int): WidgetStack {
         if (from !in widgetIds.indices || to !in widgetIds.indices) return this
         val active = widgetIds.getOrNull(selected)

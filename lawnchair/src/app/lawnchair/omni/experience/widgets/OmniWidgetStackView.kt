@@ -125,9 +125,8 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
     private fun move(delta: Int) {
         val count = currentIds.size
         if (count < 2) return
-        val index = Math.floorMod(currentIndex + delta, count)
         scope?.launch(Dispatchers.IO) {
-            ExperienceStore.get(context).update { state -> state.copy(stacks = state.stacks.map { if (it.outerId == outerId) it.copy(selected = index) else it }) }
+            ExperienceStore.get(context).update { state -> state.copy(stacks = state.stacks.map { if (it.outerId == outerId) it.advance(delta) else it }) }
         }
     }
     override fun onAttachedToWindow() {

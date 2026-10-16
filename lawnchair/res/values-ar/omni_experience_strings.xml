@@ -123,4 +123,9 @@
     <string name="omni_scene_priority">يتم فحص المشاهد التلقائية من أعلى لأسفل، ويطبق أول مشهد مطابق.</string>
     <string name="omni_media">يعمل الآن</string>
     <string name="omni_media_next">المقطع التالي</string>
+    <string name="omni_system_app">التثبيت كتطبيق نظام</string>
+    <string name="omni_enterprise_owner">دور إدارة الجهاز أو ملف العمل</string>
+    <string name="omni_recents_integration">تكامل التطبيقات الأخيرة</string>
+    <string name="omni_status_available">متاح</string>
+    <string name="omni_status_unavailable">غير متاح بالإعداد الحالي</string>
 </resources>

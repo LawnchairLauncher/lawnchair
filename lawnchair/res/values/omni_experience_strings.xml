@@ -123,4 +123,9 @@
     <string name="omni_scene_priority">Automatic scenes are checked from top to bottom. The first match wins.</string>
     <string name="omni_media">Now playing</string>
     <string name="omni_media_next">Next track</string>
+    <string name="omni_system_app">System installation</string>
+    <string name="omni_enterprise_owner">Enterprise management role</string>
+    <string name="omni_recents_integration">Recents integration</string>
+    <string name="omni_status_available">Available</string>
+    <string name="omni_status_unavailable">Not available on this setup</string>
 </resources>
