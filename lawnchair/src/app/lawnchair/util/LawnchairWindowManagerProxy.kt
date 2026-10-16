@@ -127,8 +127,10 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
      */
     @Synchronized
     private fun rememberInternalDisplayState(context: Context, current: CachedDisplayInfo): List<CachedDisplayInfo> {
+        // Its own file: LauncherPrefs listeners (DisplayController registers one in its constructor and
+        // reads its Info from it) would fire on a write made while DisplayController is being built.
         val prefs = context.createDeviceProtectedStorageContext()
-            .getSharedPreferences(LauncherPrefs.BOOT_AWARE_PREFS_KEY, Context.MODE_PRIVATE)
+            .getSharedPreferences(DISPLAY_STATES_PREFS, Context.MODE_PRIVATE)
         val saved = prefs.getString(KEY_INTERNAL_DISPLAY_STATES, null)
         val savedStates = saved?.split(STATE_SEPARATOR)?.mapNotNull { parseDisplayState(it) }.orEmpty()
 
@@ -377,6 +379,7 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
         fun isFoldable(context: Context): Boolean = Utilities.ATLEAST_R &&
             context.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_HINGE_ANGLE)
 
+        private const val DISPLAY_STATES_PREFS = "lc_display_states"
         private const val KEY_INTERNAL_DISPLAY_STATES = "lc_internal_display_states"
         private const val STATE_SEPARATOR = ";"
         private const val MAX_INTERNAL_DISPLAY_STATES = 4
