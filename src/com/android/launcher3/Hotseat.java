@@ -319,6 +319,7 @@ public class Hotseat extends FrameLayout implements Insettable {
      * LC-Note: returns the controller that merges the dock while a foldable opens or closes, or
      * null when the device doesn't fold.
      */
+    @Nullable
     public HotseatFoldController getFoldController() {
         return mFoldController;
     }

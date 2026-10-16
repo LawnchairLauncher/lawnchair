@@ -2279,7 +2279,7 @@ public class DeviceProfile {
     /**
      * LC-Note: with the side dock and two paired pages, the workspace keeps its normal side
      * margins: this width comes off both sides of its padding, and only the page on the fixed half
-     * takes it back, on its outer edge (app.lawnchair.fold.FoldSideDockPages). The moving half's
+     * takes it back, on its outer edge (Workspace#updateCellLayoutMeasures). The moving half's
      * page gets the full half. 0 otherwise, e.g. with "Expand" (one wide page across the hinge
      * keeps the margins on both sides so its columns still split at the hinge).
      */
