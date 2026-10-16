@@ -778,7 +778,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             int requestCode, Intent intent, int appWidgetId, PendingRequestArgs info) {
         CellPos cellPos = getCellPosMapper().mapModelToPresenter(info);
         int screenId = cellPos.screenId;
-        if (info.container == CONTAINER_DESKTOP) {
+        // LC-Note: a widget being set up again on the item set that isn't shown keeps its page.
+        if (info.container == CONTAINER_DESKTOP && isInShownItemSet(info)) {
             // When the screen id represents an actual screen (as opposed to a rank) we make sure
             // that the drop page actually exists.
             screenId = ensurePendingDropLayoutExists(cellPos.screenId);
@@ -843,6 +844,28 @@ public class Launcher extends StatefulActivity<LauncherState>
                         this.getString(R.string.set_default_home_app,
                                 this.getString(R.string.derived_app_name)),
                         Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
+
+        // LC-Note: an item dropped on one item set of "Independent" (FoldItemSets), whose setup
+        // returns after a fold or unfold showed the other set, has its position in the hidden set.
+        // Never place it on a page of the shown set: a widget being configured is already saved
+        // in its own set (pending, "tap to set up" there), anything else is cancelled.
+        boolean isWidgetSetup = requestCode == REQUEST_PICK_APPWIDGET
+                || requestCode == REQUEST_CREATE_APPWIDGET;
+        if (resultCode != RESULT_CANCELED && mPendingRequestArgs != null
+                && (isWidgetSetup || requestCode == REQUEST_CREATE_SHORTCUT
+                        || requestCode == REQUEST_BIND_APPWIDGET)
+                && !isInShownItemSet(mPendingRequestArgs)) {
+            // No drop animation: its page isn't on screen.
+            mDragLayer.clearAnimatedView();
+            if (isWidgetSetup && enableAddAppWidgetViaConfigActivityV2()) {
+                setWaitingForResult(null);
+                mWorkspace.removeExtraEmptyScreenDelayed(ON_ACTIVITY_RESULT_ANIMATION_DELAY, false,
+                        () -> getStateManager().goToState(NORMAL));
+            } else {
+                handleActivityResult(requestCode, RESULT_CANCELED, data);
             }
             return;
         }
@@ -957,6 +980,11 @@ public class Launcher extends StatefulActivity<LauncherState>
             final int requestCode, final int resultCode, final Intent data) {
         mPendingActivityRequestCode = -1;
         handleActivityResult(requestCode, resultCode, data);
+    }
+
+    /** LC-Note: whether {@code info} is in the item set on screen ("Independent", FoldItemSets). */
+    private boolean isInShownItemSet(ItemInfo info) {
+        return FoldItemSets.isInActiveSet(info, getCellPosMapper().getItemSetBase() > 0);
     }
 
     /**
