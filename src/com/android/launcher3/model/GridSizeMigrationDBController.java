@@ -533,6 +533,7 @@ public class GridSizeMigrationDBController {
                             LauncherSettings.Favorites.SCREEN},              // 3
                     LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                            // LC-Note: this reader's item set.
                             + " AND " + FoldItemSets.whereItemSet(mInnerItemSet));
 
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
@@ -605,6 +606,7 @@ public class GridSizeMigrationDBController {
                             LauncherSettings.Favorites.APPWIDGET_ID},        // 9
                     LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_DESKTOP
+                            // LC-Note: this reader's item set.
                             + " AND " + FoldItemSets.whereItemSet(mInnerItemSet));
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);

@@ -58,7 +58,8 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     /**
      * Refreshes the shortcuts shown on the workspace.
      *
-     * Implementation of the method from LauncherModel.Callbacks.
+     * Implementation of the method from LauncherModel.Callbacks. LC-Note: [anchorScreenId] is the
+     * screen the bind starts on, see Workspace.setFoldAnchorScreenId.
      */
     private fun startBinding(anchorScreenId: Int) {
         TraceHelper.INSTANCE.beginSection("startBinding")

@@ -70,6 +70,7 @@ class DbEntry : ItemInfo(), Comparable<DbEntry> {
      */
     fun updateContentValues(values: ContentValues) =
         values.apply {
+            // LC-Note: back to the model id within this entry's item set.
             put(SCREEN, FoldItemSets.toModelScreenId(screenId, innerItemSet))
             put(CELLX, cellX)
             put(CELLY, cellY)
