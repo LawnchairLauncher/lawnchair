@@ -763,7 +763,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                     mDeviceProfile.numShownHotseatIcons, mDeviceProfile.numHotseatRows,
                     mDeviceProfile.numHotseatPages, FoldDockLayout.create(mDeviceProfile),
                     // LC-Note: "Independent" shows the inner item set on the large screen.
-                    mDeviceProfile.isInnerItemSet ? FoldItemSets.INNER_SCREEN_BASE : 0);
+                    mDeviceProfile.isInnerItemSet);
         }
         mModelWriter = mModel.getWriter(true, mCellPosMapper, this);
         updateFixedLandscape();
@@ -984,7 +984,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     /** LC-Note: whether {@code info} is in the item set on screen ("Independent", FoldItemSets). */
     private boolean isInShownItemSet(ItemInfo info) {
-        return FoldItemSets.isInActiveSet(info, getCellPosMapper().getItemSetBase() > 0);
+        return FoldItemSets.isInActiveSet(info, getCellPosMapper().isInnerItemSet());
     }
 
     /**

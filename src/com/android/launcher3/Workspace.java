@@ -346,10 +346,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     PreferenceManager mPreferenceManger;
 
     // LC-Note: on the large screen of a foldable, pairs start at this screen, the page the user
-    // was looking at when the workspace was bound, so it sits on the fixed half.
-    private int mFoldAnchorScreenId = -1;
+    // was looking at when the workspace was bound, so it sits on the fixed half. Set when a bind
+    // starts; the next bind (possibly on the model thread) reads it.
+    private volatile int mFoldAnchorScreenId = -1;
     // LC-Note: screen of the panel last touched in the visible pair (FoldAfterFold.LAST_PANEL).
     private volatile int mLastTouchedPanelScreenId = -1;
+    // LC-Note: the page last shown in each item set of "Independent" (cover, inner; see
+    // FoldItemSets), so each screen reopens on its own page. Read and written by the bind.
+    private final IntSet[] mLastPagesBySet =
+            {IntSet.wrap(FIRST_SCREEN_ID), IntSet.wrap(FIRST_SCREEN_ID)};
     private int mFoldPairMarkersCount = -1;
     // LC-Note: screens shown on the large screen only to complete a pair of screen ids. They are
     // left out of the persisted screen order while empty, so the cover screen doesn't gain blank
@@ -619,6 +624,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
     }
 
+    /** LC-Note: the screen that starts a pair on the large screen of a foldable, or -1. */
+    public int getFoldAnchorScreenId() {
+        return mFoldAnchorScreenId;
+    }
+
     /**
      * Returns 1 when pairs start on odd pages (the first page is then alone), 0 for even pairs.
      */
@@ -831,8 +841,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     /**
      * Returns the screens to keep showing when the workspace is rebound. LC-Note: when the large
      * screen of a foldable folds, this is the panel last touched if the cover should open on it.
+     * With "Independent" (FoldItemSets), page ids of one item set mean nothing in the other one:
+     * when the bind shows the other set, this remembers the page on screen for its set and
+     * returns the page last shown in the other set (last panel doesn't cross sets).
      */
     public IntSet getScreenIdsToKeepOnRebind() {
+        boolean innerSet = getCellPosMapper().isInnerItemSet();
+        if (innerSet != FoldItemSets.isInnerSetShown()) {
+            mLastPagesBySet[innerSet ? 0 : 1] = getCurrentPageScreenIds();
+            return mLastPagesBySet[innerSet ? 1 : 0];
+        }
         int screenId = mLastTouchedPanelScreenId;
         if (screenId != -1 && !isTwoPanelEnabled()
                 && FoldLayout.opensLastPanelAfterFold(mPreferenceManager2)) {
@@ -1268,7 +1286,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         int newScreenId = LauncherAppState.getInstance(getContext())
                 .getModel().getModelDbController()
                 // LC-Note: numbered within the shown item set of "Independent".
-                .getNewScreenId(mLauncher.getDeviceProfile().isInnerItemSet);
+                .getNewScreenId(getCellPosMapper().isInnerItemSet());
         // Launcher database isn't aware of empty pages that are already bound, so we need to
         // skip those IDs manually.
         // LC-Note: a wide "Expand" page needs an even id, the odd one is its second cover page.
@@ -3929,8 +3947,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     /** LC-Note: each item set of the "Independent" home layout has its own page order. */
     private ConstantItem<String> getScreenOrderPref() {
-        return mLauncher.getDeviceProfile().isInnerItemSet
-                ? LauncherPrefs.INNER_WORKSPACE_SCREEN_ORDER : LauncherPrefs.WORKSPACE_SCREEN_ORDER;
+        return FoldItemSets.screenOrderPref(getCellPosMapper().isInnerItemSet());
     }
 
     private IntArray getPersistedWorkspaceScreenOrder() {
@@ -4030,7 +4047,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * ids, so the database remap never touches the other set.
      */
     private SparseIntArray toModelScreenSwapMap(SparseIntArray screenSwapMap) {
-        if (getCellPosMapper().getItemSetBase() == 0) {
+        if (!getCellPosMapper().isInnerItemSet()) {
             return screenSwapMap;
         }
         SparseIntArray modelSwapMap = new SparseIntArray(screenSwapMap.size());

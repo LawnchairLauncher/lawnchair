@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import app.lawnchair.preferences2.PreferenceManager2
+import com.android.launcher3.ConstantItem
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherPrefs
@@ -51,6 +52,10 @@ object FoldItemSets {
     @JvmStatic
     fun whereItemSet(inner: Boolean): String = "$SCREEN ${if (inner) ">=" else "<"} $INNER_SCREEN_BASE"
 
+    /** The persisted page order of the inner set if [inner], else of the cover set. */
+    @JvmStatic
+    fun screenOrderPref(inner: Boolean): ConstantItem<String> = if (inner) LauncherPrefs.INNER_WORKSPACE_SCREEN_ORDER else LauncherPrefs.WORKSPACE_SCREEN_ORDER
+
     /** Whether this is a top-level desktop or dock item of the inner set. */
     @JvmStatic
     fun isInnerItem(item: ItemInfo): Boolean = (item.container == CONTAINER_DESKTOP || item.container == CONTAINER_HOTSEAT) &&
@@ -76,8 +81,10 @@ object FoldItemSets {
 
     /**
      * Whether the launcher shows the inner set, as of its last bind. Set by `ModelCallbacks` on
-     * every bind (a fold or unfold rebinds), so model tasks read it on any thread without asking
-     * the activity, and it outlives a launcher being recreated.
+     * every bind (a fold or unfold rebinds) from `CellPosMapper.isInnerItemSet`, so model tasks
+     * read it on any thread without asking the activity, and it outlives a launcher being
+     * recreated. Until a bind sets it, it is the set of the pages on screen, which
+     * `Workspace.getScreenIdsToKeepOnRebind` compares with the set about to be bound.
      */
     @JvmStatic
     @Volatile
