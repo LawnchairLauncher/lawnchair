@@ -9,6 +9,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
+import com.android.launcher3.LauncherSettings.Favorites.SCREEN
 import com.android.launcher3.R
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
@@ -42,6 +43,13 @@ object FoldItemSets {
     /** The page (or dock rank) within its item set of a desktop or dock item's model screen id. */
     @JvmStatic
     fun toPresenterScreenId(modelId: Int): Int = if (modelId >= INNER_SCREEN_BASE) modelId - INNER_SCREEN_BASE else modelId
+
+    /**
+     * SQL condition selecting the desktop and dock rows of the inner set if [inner], else of the
+     * cover set; combine it with a container condition. Folder contents follow their folder.
+     */
+    @JvmStatic
+    fun whereItemSet(inner: Boolean): String = "$SCREEN ${if (inner) ">=" else "<"} $INNER_SCREEN_BASE"
 
     /** Whether this is a top-level desktop or dock item of the inner set. */
     @JvmStatic

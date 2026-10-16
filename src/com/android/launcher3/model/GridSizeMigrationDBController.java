@@ -500,9 +500,9 @@ public class GridSizeMigrationDBController {
         final String mTableName;
         final Context mContext;
         int mLastScreenId = -1;
-        // LC-Note: first model screen id and dock rank of the item set this reader reads (see
-        // FoldItemSets). Its entries are numbered from 0 within the set, see DbEntry.itemSetBase.
-        final int mItemSetBase;
+        // LC-Note: whether this reader reads the inner item set (see FoldItemSets). Its entries
+        // are numbered from 0 within the set, see DbEntry.innerItemSet.
+        final boolean mInnerItemSet;
 
         Map<Integer, List<DbEntry>> mWorkspaceEntriesByScreenId =
                 new ArrayMap<>();
@@ -520,13 +520,7 @@ public class GridSizeMigrationDBController {
             mDb = db;
             mTableName = tableName;
             mContext = context;
-            mItemSetBase = innerItemSet ? FoldItemSets.INNER_SCREEN_BASE : 0;
-        }
-
-        /** LC-Note: selects the top-level items of this reader's item set. */
-        private String itemSetSelection() {
-            return " AND " + LauncherSettings.Favorites.SCREEN
-                    + (mItemSetBase > 0 ? " >= " : " < ") + FoldItemSets.INNER_SCREEN_BASE;
+            mInnerItemSet = innerItemSet;
         }
 
         protected List<DbEntry> loadHotseatEntries() {
@@ -539,7 +533,7 @@ public class GridSizeMigrationDBController {
                             LauncherSettings.Favorites.SCREEN},              // 3
                     LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                            + itemSetSelection());
+                            + " AND " + FoldItemSets.whereItemSet(mInnerItemSet));
 
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
@@ -553,7 +547,7 @@ public class GridSizeMigrationDBController {
                 entry.itemType = c.getInt(indexItemType);
                 // LC-Note: rank within the item set.
                 entry.screenId = FoldItemSets.toPresenterScreenId(c.getInt(indexScreen));
-                entry.itemSetBase = mItemSetBase;
+                entry.innerItemSet = mInnerItemSet;
 
                 try {
                     // calculate weight
@@ -611,7 +605,7 @@ public class GridSizeMigrationDBController {
                             LauncherSettings.Favorites.APPWIDGET_ID},        // 9
                     LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_DESKTOP
-                            + itemSetSelection());
+                            + " AND " + FoldItemSets.whereItemSet(mInnerItemSet));
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
             final int indexScreen = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
@@ -633,7 +627,7 @@ public class GridSizeMigrationDBController {
                 entry.itemType = c.getInt(indexItemType);
                 // LC-Note: page within the item set.
                 entry.screenId = FoldItemSets.toPresenterScreenId(c.getInt(indexScreen));
-                entry.itemSetBase = mItemSetBase;
+                entry.innerItemSet = mInnerItemSet;
                 mLastScreenId = Math.max(mLastScreenId, entry.screenId);
                 entry.cellX = c.getInt(indexCellX);
                 entry.cellY = c.getInt(indexCellY);
