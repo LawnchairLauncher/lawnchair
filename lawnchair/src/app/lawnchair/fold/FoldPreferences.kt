@@ -1,7 +1,6 @@
 package app.lawnchair.fold
 
 import androidx.annotation.StringRes
-import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
 /**
@@ -52,8 +51,6 @@ enum class FoldHomeLayout(
         key = "independent",
         labelResourceId = R.string.fold_home_independent,
         descriptionResourceId = R.string.fold_home_independent_description,
-        // Selectable in debug builds while it is being built and tested, see FoldItemSets.
-        isImplemented = BuildConfig.DEBUG,
     ),
     ;
 

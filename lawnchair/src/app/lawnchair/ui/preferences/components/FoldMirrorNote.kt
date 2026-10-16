@@ -24,8 +24,27 @@ fun isFoldHomeMirrored(): Boolean {
 /** Explains why the "when unfolded" grid settings are disabled while "Same as cover" is selected. */
 @Composable
 fun FoldMirrorNote(modifier: Modifier = Modifier) {
+    FoldNote(text = stringResource(id = R.string.fold_unfolded_grid_mirror_note), modifier = modifier)
+}
+
+/**
+ * Whether the large screen of a foldable has its own layout ("Independent"): the dock doesn't merge
+ * and each screen reopens on its own page, so those settings don't apply.
+ */
+@Composable
+fun isFoldHomeIndependent(): Boolean {
+    val homeLayout by preferenceManager2().foldHomeLayout.asState()
+    return homeLayout == FoldHomeLayout.INDEPENDENT
+}
+
+/** A note under a foldable setting that doesn't apply with the current home layout. */
+@Composable
+fun FoldNote(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     WarningPreference(
-        text = stringResource(id = R.string.fold_unfolded_grid_mirror_note),
+        text = text,
         modifier = modifier,
         iconTint = MaterialTheme.colorScheme.onSurfaceVariant,
         textColor = MaterialTheme.colorScheme.onSurfaceVariant,

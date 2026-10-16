@@ -204,21 +204,26 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
 
         private val VERSION_COUNTER = AtomicInteger()
 
+        /**
+         * LC-Note: the one parser of a persisted page order ("2,0,1"): valid, non-negative ids in
+         * order, without duplicates.
+         */
+        @JvmStatic
+        fun parseScreenOrder(persistedOrder: String?): IntArray {
+            val order = IntArray()
+            persistedOrder
+                ?.split(",")
+                ?.mapNotNull { it.trim().toIntOrNull() }
+                ?.filter { it >= 0 }
+                ?.forEach { if (!order.contains(it)) order.add(it) }
+            return order
+        }
+
         @VisibleForTesting
         fun mergeWorkspaceScreens(itemScreens: IntArray, persistedOrder: String): IntArray {
             if (persistedOrder.isBlank()) return itemScreens
 
-            val merged = IntArray()
-            val persistedScreens =
-                persistedOrder
-                    .split(",")
-                    .mapNotNull { it.trim().toIntOrNull() }
-                    .filter { it >= 0 }
-            persistedScreens.forEach { screenId ->
-                if (!merged.contains(screenId)) {
-                    merged.add(screenId)
-                }
-            }
+            val merged = parseScreenOrder(persistedOrder)
             itemScreens.forEach { screenId ->
                 if (!merged.contains(screenId)) {
                     merged.add(screenId)

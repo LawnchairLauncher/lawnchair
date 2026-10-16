@@ -27,6 +27,7 @@ import android.os.PersistableBundle
 import android.os.Process
 import android.os.UserManager
 import android.text.TextUtils
+import app.lawnchair.fold.FoldItemSets
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER
@@ -148,7 +149,11 @@ object LauncherDbUtils {
     @JvmStatic
     fun shiftWorkspaceByXCells(db: SQLiteDatabase, x: Int, toTable: String) {
         db.run {
-            execSQL("UPDATE $toTable SET cellY = cellY + $x WHERE container = $CONTAINER_DESKTOP")
+            // LC-Note: the inner item set of "Independent" (FoldItemSets) is left untouched.
+            execSQL(
+                "UPDATE $toTable SET cellY = cellY + $x WHERE container = $CONTAINER_DESKTOP" +
+                    " AND screen < ${FoldItemSets.INNER_SCREEN_BASE}",
+            )
         }
     }
 

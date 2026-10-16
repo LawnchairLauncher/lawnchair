@@ -82,6 +82,14 @@ public class CellPosMapper {
         return mItemSetBase;
     }
 
+    /**
+     * LC-Note: dock rank of a dock item (or prediction) within the shown item set, the rank the
+     * {@code Hotseat} order helpers expect.
+     */
+    public int getPresenterHotseatRank(ItemInfo info) {
+        return toPresenterScreenId(info);
+    }
+
     /** LC-Note: model screen id or dock rank, from the shown item set's own numbering. */
     private int toPresenterScreenId(ItemInfo info) {
         if (mItemSetBase > 0 && info.screenId >= mItemSetBase

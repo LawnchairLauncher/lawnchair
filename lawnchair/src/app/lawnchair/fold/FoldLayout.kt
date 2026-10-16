@@ -1,10 +1,8 @@
 package app.lawnchair.fold
 
-import android.content.Context
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.DeviceProfile
-import com.android.launcher3.Utilities
 
 /** Reads the foldable layout preferences from the cache, for the launcher3 code. */
 object FoldLayout {
@@ -30,18 +28,15 @@ object FoldLayout {
     private fun currentHomeLayout(prefs2: PreferenceManager2): FoldHomeLayout = prefs2.foldHomeLayout.firstCached(prefs2)
 
     /**
-     * Whether a wide "Expand" page shows its even cover page on the end half (the right half in a
-     * left-to-right layout). The even page goes on the fixed half when the hinge side is known, like
+     * Whether a wide "Expand" page shows its even cover page on the end half (cells >= columns, the
+     * physical right half). The even page goes on the fixed half when the hinge side is known, like
      * the page the user was on with "Two pages"; otherwise on the start half, as AOSP does.
      */
     @JvmStatic
-    fun isEvenCoverPageOnEnd(context: Context, dp: DeviceProfile): Boolean {
-        val fixedHalfIsRight = when (FoldPosture.getHingeSide(dp.deviceProperties.rotationHint, assumeBookStyle = true)) {
-            HingeSide.LEFT -> true
-            HingeSide.RIGHT -> false
-            HingeSide.UNKNOWN -> return false
-        }
-        return fixedHalfIsRight != Utilities.isRtl(context.resources)
+    fun isEvenCoverPageOnEnd(dp: DeviceProfile): Boolean {
+        // CellLayout cells don't mirror in RTL (only folder pages invert), so the end half is
+        // always the physical right half: the even page goes there when the moving half is left.
+        return FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) ?: false
     }
 
     /** Whether the cover screen opens on the panel last touched on the large screen. */

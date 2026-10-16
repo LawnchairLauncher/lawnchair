@@ -25,10 +25,12 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.FoldDualWallpaperPreferences
 import app.lawnchair.ui.preferences.components.FoldMirrorNote
+import app.lawnchair.ui.preferences.components.FoldNote
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.isFoldHomeIndependent
 import app.lawnchair.ui.preferences.components.isFoldHomeMirrored
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
@@ -77,12 +79,17 @@ fun FoldablePreferences(
             )
         }
 
+        val homeIndependent = isFoldHomeIndependent()
         PreferenceGroup(heading = stringResource(id = R.string.fold_group_after_fold)) {
             FoldListPreference(
                 adapter = prefs2.foldAfterFold.getAdapter(),
                 options = FoldAfterFold.entries,
                 label = stringResource(id = R.string.fold_cover_opens_on),
+                enabled = !homeIndependent,
             )
+            ExpandAndShrink(visible = homeIndependent) {
+                FoldNote(text = stringResource(id = R.string.fold_independent_after_fold_note))
+            }
             FoldInfoPreference(text = stringResource(id = R.string.fold_extra_dock_info))
         }
 
@@ -92,6 +99,9 @@ fun FoldablePreferences(
                 options = FoldDock.entries,
                 label = stringResource(id = R.string.fold_dock),
             )
+            ExpandAndShrink(visible = homeIndependent) {
+                FoldNote(text = stringResource(id = R.string.fold_independent_dock_note))
+            }
             val landscapeAdapter = prefs2.foldLandscape.getAdapter()
             FoldListPreference(
                 adapter = landscapeAdapter,
@@ -149,6 +159,7 @@ private fun <T> FoldListPreference(
     options: List<T>,
     label: String,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) where T : Enum<T>, T : FoldOption {
     val entries = remember(options) {
         options.map { option ->
@@ -168,6 +179,7 @@ private fun <T> FoldListPreference(
         entries = entries,
         label = label,
         modifier = modifier,
+        enabled = enabled,
         description = stringResource(
             id = R.string.fold_option_summary,
             stringResource(id = selected.labelResourceId),

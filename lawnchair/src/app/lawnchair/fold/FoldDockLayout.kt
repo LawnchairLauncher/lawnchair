@@ -89,6 +89,9 @@ class FoldDockLayout(
         @JvmStatic
         fun create(dp: DeviceProfile): FoldDockLayout? {
             if (!dp.deviceProperties.isTwoPanels || dp.isVerticalBarLayout) return null
+            // With "Independent" the large screen has its own dock (FoldItemSets): nothing merges
+            // into it from the cover, so it is a plain dock unless it stands at the side.
+            if (dp.isInnerItemSet && !dp.isSideDock) return null
             val movingHalfLeft = isMovingHalfLeft(dp) ?: return null
             val dockIcons = dp.numShownHotseatIcons
             val coverIcons = dp.inv.numShownHotseatIcons.coerceIn(1, dockIcons.coerceAtLeast(1))
