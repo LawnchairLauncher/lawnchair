@@ -87,6 +87,7 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.DeviceProfileOverrides;
@@ -268,7 +269,9 @@ public class DeviceProfile {
 
     // Notification dots
     public final DotRenderer mDotRendererWorkSpace;
-    public final DotRenderer mDotRendererAllApps;
+    // LC-Note: not final, the foldable "zoom" drawer re-creates it (updateAllAppsDotRenderer)
+    public DotRenderer mDotRendererAllApps;
+    private IntFunction<DotRenderer> mAllAppsDotRendererFactory;
 
     // Taskbar
     private final TaskbarProfile mTaskbarProfile;
@@ -775,6 +778,21 @@ public class DeviceProfile {
         mDotRendererWorkSpace = createDotRenderer(themeManager, iconSizePx, dotRendererCache, showNotificationCount, typeface, dotColor, countColor);
         mDotRendererAllApps = createDotRenderer(themeManager,
                 getAllAppsProfile().getIconSizePx(), dotRendererCache, showNotificationCount, typeface, dotColor, countColor);
+        // LC-Note: lets the foldable "zoom" drawer size its dots for its larger icons
+        final Typeface dotTypeface = typeface;
+        mAllAppsDotRendererFactory = size -> createDotRenderer(themeManager, size,
+                dotRendererCache, showNotificationCount, dotTypeface, dotColor, countColor);
+    }
+
+    /**
+     * LC-Note: re-creates the all-apps notification dots for the current all-apps icon size, after
+     * the foldable drawer layouts (app.lawnchair.fold.FoldDrawerLayouts) changed it.
+     */
+    public void updateAllAppsDotRenderer() {
+        if (mAllAppsDotRendererFactory != null) {
+            mDotRendererAllApps = mAllAppsDotRendererFactory.apply(
+                    getAllAppsProfile().getIconSizePx());
+        }
     }
 
     public DeviceProperties getDeviceProperties() {

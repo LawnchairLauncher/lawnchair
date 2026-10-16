@@ -117,6 +117,7 @@ object FoldDrawerLayouts {
         val scale = halfWidth / cover.deviceProperties.widthPx
         val profile = cover.allAppsProfile
         dp.setAllAppsProfile(profile.copy(borderSpacePx = Point(profile.borderSpacePx.x, profile.borderSpacePx.y)))
+        dp.updateAllAppsDotRenderer()
         dp.allAppsLeftRightMargin = 0
         dp.allAppsPadding.left = (cover.allAppsPadding.left * scale).roundToInt()
         dp.allAppsPadding.right = (cover.allAppsPadding.right * scale).roundToInt()
@@ -141,11 +142,18 @@ object FoldDrawerLayouts {
                 cellWidthPx = (profile.cellWidthPx * widthScale).roundToInt(),
             ),
         )
+        // Notification dots follow the larger icons (drawer folders use them too, see FolderIcon).
+        // Folder previews already follow the all-apps icon size (PreviewBackground).
+        dp.updateAllAppsDotRenderer()
         dp.allAppsLeftRightMargin = 0
         dp.allAppsPadding.left = (cover.allAppsPadding.left * widthScale).roundToInt()
         dp.allAppsPadding.right = (cover.allAppsPadding.right * widthScale).roundToInt()
         return scale
     }
+
+    /** Whether [dp] was built for the zoom drawer ([FoldDrawerLayout.BIG_ICONS]). */
+    @JvmStatic
+    fun isZoomDrawer(dp: DeviceProfile): Boolean = applied[dp]?.layout == FoldDrawerLayout.BIG_ICONS
 
     /** The drawer layout [dp] was built for, or null when [dp] is not a foldable's large screen. */
     @JvmStatic
