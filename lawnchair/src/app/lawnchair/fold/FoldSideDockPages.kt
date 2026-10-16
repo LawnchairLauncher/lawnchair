@@ -9,7 +9,7 @@ import com.android.launcher3.Workspace
  *
  * The workspace keeps its normal side margins: [DeviceProfile.getSideDockPageInset] comes off
  * both sides of its padding, so both pages stay exactly one half wide and meet at the hinge. Each
- * pair's first page, the one on the fixed half (Worker C's pairing, see
+ * pair's first page, the one on the fixed half (the workspace's fold pairing, see
  * [Workspace.getLeftmostVisiblePageForIndex]), takes that width back as extra padding on its
  * outer edge, under the column. The moving half's page keeps the full half.
  */
