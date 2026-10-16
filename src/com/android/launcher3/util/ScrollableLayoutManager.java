@@ -21,13 +21,14 @@ import android.util.SparseIntArray;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.State;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
+import app.lawnchair.fold.FoldDrawerBook;
 
 /**
  * Extension of {@link GridLayoutManager} with support for smooth scrolling
@@ -56,27 +57,6 @@ public class ScrollableLayoutManager extends GridLayoutManager {
 
     // LC-Note: extra rows laid out below the visible ones (foldable "book" drawer, its zoom)
     private int mFoldExtraLayoutSpacePx = 0;
-
-    /**
-     * LC-Note: lets the foldable "book" drawer (app.lawnchair.fold.FoldDrawerBook), whose children
-     * are drawn away from their layout position, steer focus by where they are drawn.
-     */
-    public interface FoldBookDelegate {
-        /** A child to focus instead of the default search result, or null for the default. */
-        @Nullable
-        View onInterceptFocusSearch(@NonNull View focused, int direction);
-
-        /**
-         * Brings {@code child} on screen. Returns null to use the default behaviour, else whether
-         * the list scrolled.
-         */
-        @Nullable
-        Boolean requestChildRectangleOnScreen(@NonNull RecyclerView parent, @NonNull View child,
-                @NonNull Rect rect, boolean immediate);
-    }
-
-    @Nullable
-    private FoldBookDelegate mFoldBookDelegate;
 
     public ScrollableLayoutManager(Context context) {
         super(context, 1, GridLayoutManager.VERTICAL, false);
@@ -161,32 +141,25 @@ public class ScrollableLayoutManager extends GridLayoutManager {
         }
     }
 
-    /** LC-Note: see {@link FoldBookDelegate}. */
-    public void setFoldBookDelegate(@Nullable FoldBookDelegate delegate) {
-        mFoldBookDelegate = delegate;
-    }
-
+    // LC-Note: the foldable "book" drawer (app.lawnchair.fold.FoldDrawerBook) draws children away
+    // from their layout position and steers focus by where they are drawn.
     @Override
     public View onInterceptFocusSearch(@NonNull View focused, int direction) {
-        if (mFoldBookDelegate != null) {
-            View next = mFoldBookDelegate.onInterceptFocusSearch(focused, direction);
-            if (next != null) {
-                return next;
-            }
-        }
-        return super.onInterceptFocusSearch(focused, direction);
+        FoldDrawerBook book = FoldDrawerBook.of(mRv);
+        View next = book != null ? book.onInterceptFocusSearch(focused, direction) : null;
+        return next != null ? next : super.onInterceptFocusSearch(focused, direction);
     }
 
+    // LC-Note: see onInterceptFocusSearch
     @Override
     public boolean requestChildRectangleOnScreen(@NonNull RecyclerView parent,
             @NonNull View child, @NonNull Rect rect, boolean immediate,
             boolean focusedChildVisible) {
-        if (mFoldBookDelegate != null) {
-            Boolean scrolled = mFoldBookDelegate.requestChildRectangleOnScreen(parent, child, rect,
-                    immediate);
-            if (scrolled != null) {
-                return scrolled;
-            }
+        FoldDrawerBook book = FoldDrawerBook.of(parent);
+        Boolean scrolled = book != null
+                ? book.requestChildRectangleOnScreen(parent, child, immediate) : null;
+        if (scrolled != null) {
+            return scrolled;
         }
         return super.requestChildRectangleOnScreen(parent, child, rect, immediate,
                 focusedChildVisible);

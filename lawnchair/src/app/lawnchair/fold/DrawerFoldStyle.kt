@@ -51,15 +51,13 @@ import kotlin.math.roundToInt
 class DrawerFoldStyle(
     private val layout: FoldDrawerLayout,
     private val capture: FoldDrawerState.Capture?,
-) : FoldStyle(),
-    FoldDrawerBook.OffsetProvider {
+) : FoldStyle() {
 
     private var list: AllAppsRecyclerView? = null
     private var header: FloatingHeaderView? = null
     private var bar: View? = null
     private var searching = false
     private var prepared = false
-    private var progress = 0f
 
     // Profiles and the mapping between cover and large-screen coordinates
     private var cover: DeviceProfile? = null
@@ -124,8 +122,6 @@ class DrawerFoldStyle(
     override fun onStart(scene: FoldScene): Boolean {
         val launcher = scene.launcher
         val appsView = launcher.appsView ?: return false
-        // The book reads the progress before this style's first frame
-        progress = if (scene.largeLayout && !scene.opening) 1f else 0f
         searching = appsView.isSearching
         list = appsView.activeRecyclerView
         header = appsView.floatingHeaderView
@@ -155,7 +151,7 @@ class DrawerFoldStyle(
     }
 
     override fun onPreDraw(scene: FoldScene, progress: Float) {
-        this.progress = progress.coerceIn(0f, 1f)
+        val p = progress.coerceIn(0f, 1f)
         val launcher = scene.launcher
         val list = list ?: return
         if (!prepared) {
@@ -171,7 +167,6 @@ class DrawerFoldStyle(
 
                     FoldDrawerLayout.PAGES -> if (onLarge && scene.largeLayout) {
                         book = FoldDrawerBook.of(list)?.takeIf { it.isActive }
-                        book?.offsetProvider = this
                     }
 
                     FoldDrawerLayout.BIG_ICONS -> prepareZoom(scene, list, onLarge)
@@ -179,8 +174,11 @@ class DrawerFoldStyle(
             }
         }
         // 0 = the other screen's look, 1 = this layout at rest
-        val t = if (scene.largeLayout) this.progress else 1f - this.progress
-        book?.update()
+        val t = if (scene.largeLayout) p else 1f - p
+        book?.let {
+            it.transitionProgress = p
+            it.update()
+        }
         applyBar(t)
         if (headerActive) applyHeader(t)
         if (riverActive) applyRiver(scene, list, t)
@@ -190,7 +188,7 @@ class DrawerFoldStyle(
     override fun onEnd(scene: FoldScene) {
         // First, so the book drives itself again whatever happens below
         book?.let {
-            it.offsetProvider = null
+            it.transitionProgress = Float.NaN
             it.update()
         }
         book = null
@@ -536,16 +534,6 @@ class DrawerFoldStyle(
         }
     }
 
-    // Book (PAGES)
-
-    override fun offsetY(child: View, onMovingPage: Boolean, movingTop: Int, pageTop: Int, pageHeight: Int): Float {
-        if (!onMovingPage || pageHeight <= 0) return 0f
-        // Top row of the second page first
-        val depth = ((movingTop - pageTop).toFloat() / pageHeight).coerceIn(0f, 1f)
-        val local = ((progress - depth * MAX_DELAY) / (1f - MAX_DELAY)).coerceIn(0f, 1f)
-        return (1f - EASE.getInterpolation(local)) * pageHeight
-    }
-
     // Zoom (BIG_ICONS)
 
     private fun prepareZoom(scene: FoldScene, list: AllAppsRecyclerView, onLarge: Boolean) {
@@ -623,7 +611,7 @@ class DrawerFoldStyle(
     private fun toCover(x: Float): Float = (x - fixedLeft) / max(coverScale, 0.01f)
 
     private companion object {
-        /** Share of the progress the last item of a river or a book waits before it moves. */
+        /** Share of the progress the last item of a river waits before it moves. */
         const val MAX_DELAY = 0.5f
 
         /** Arcs of long paths bulge the full [FoldTunables.DRAWER_RIVER_ARC_DP]; short ones less. */
