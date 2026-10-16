@@ -89,6 +89,9 @@ class DrawerFoldStyle(
     private var useCaptured = false
     private var riverActive = false
 
+    /** Every item view the river moved, also those recycled since (see [onEnd]). */
+    private val riverMoved = ArrayList<View>()
+
     // Header rows (EXPAND): prediction icons slide, the tabs stretch
     private val predictionViews = ArrayList<View>()
     private var predictionFrom = FloatArray(0)
@@ -195,12 +198,12 @@ class DrawerFoldStyle(
         val list = list
         if (list != null) {
             if (riverActive) {
-                for (i in 0 until list.childCount) {
-                    val child = list.getChildAt(i)
-                    child.translationX = 0f
-                    child.translationY = 0f
-                    child.scaleX = 1f
-                    child.scaleY = 1f
+                // Not only the attached children: a view recycled mid-transition (into the pool or
+                // the view cache) is bound again without its translation being reset.
+                for (i in riverMoved.indices) {
+                    val view = riverMoved[i]
+                    view.translationX = 0f
+                    view.translationY = 0f
                 }
             }
             book?.let {
@@ -217,6 +220,7 @@ class DrawerFoldStyle(
             }
         }
         riverActive = false
+        riverMoved.clear()
         zoomActive = false
         book = null
     }
@@ -525,6 +529,7 @@ class DrawerFoldStyle(
                 x += nx * bulge
                 y += ny * bulge
             }
+            if (child.translationX == 0f && child.translationY == 0f && !riverMoved.contains(child)) riverMoved.add(child)
             if (abs(child.translationX - x) > 0.1f) child.translationX = x
             if (abs(child.translationY - y) > 0.1f) child.translationY = y
         }
