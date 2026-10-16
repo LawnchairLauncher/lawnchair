@@ -39,6 +39,7 @@ sources = [
     base + "search/algorithms/ProgressiveSearch.kt",
     base + "search/algorithms/engine/provider/apps/AppMatcher.kt",
     base + "omni/experience/ExperienceModels.kt",
+    base + "omni/experience/AppInventoryLabel.kt",
     base + "omni/experience/ExperienceCapabilityNames.kt",
     base + "omni/OmniLauncherAccessPolicy.kt",
     base + "omni/OmniSearchPolicy.kt",

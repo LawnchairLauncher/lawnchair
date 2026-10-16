@@ -132,4 +132,26 @@
     <string name="omni_stack_loading">Loading widget stack…</string>
     <string name="omni_stack_load_failed">Could not load widget details. You can go back or try again.</string>
     <string name="omni_retry">Try again</string>
+    <string name="omni_apps_loading">Loading apps…</string>
+    <string name="omni_apps_failed">Could not load apps. Try again.</string>
+    <string name="omni_apps_no_matches">No matching apps.</string>
+    <string name="omni_app_other_profile">%1$s · Other profile</string>
+    <string name="omni_android_capabilities">Android capabilities</string>
+    <string name="omni_install_system">Installed as a system app</string>
+    <string name="omni_install_regular">Standard app installation</string>
+    <string name="omni_role_device_owner">Device owner</string>
+    <string name="omni_role_profile_owner">Work profile owner</string>
+    <string name="omni_role_personal">No enterprise management role</string>
+    <string name="omni_recents_system">Managed by the phone’s system launcher</string>
+    <string name="omni_integration_details">Details and permissions</string>
+    <string name="omni_workspace_selection_missing">Saved Workspace is unavailable</string>
+    <string name="omni_workspace_selection_help">Tap to choose an installed Workspace or ask each time.</string>
+    <string name="omni_suggestions_short">Tap Ask Omni to review your question in Workspace.</string>
+    <string name="omni_always_suggest_short">Always show Ask Omni</string>
+    <string name="omni_always_suggest_summary">Also show it when local results are available.</string>
+    <string name="omni_remote_control_short">Launcher control</string>
+    <string name="omni_remote_control_short_summary">Approved actions while Home is visible. Turn off to revoke.</string>
+    <string name="omni_control_signer_verified">Workspace signing certificate verified</string>
+    <string name="omni_control_signer_missing">Requires Workspace signed with the same launcher key</string>
+    <string name="omni_integration_load_failed">Could not check Android capabilities. Try again.</string>
 </resources>

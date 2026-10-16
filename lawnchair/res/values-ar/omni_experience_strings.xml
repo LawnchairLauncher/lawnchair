@@ -132,4 +132,26 @@
     <string name="omni_stack_loading">جارٍ تحميل مجموعة الويدجت…</string>
     <string name="omni_stack_load_failed">تعذر تحميل تفاصيل الويدجت. يمكنك الرجوع أو إعادة المحاولة.</string>
     <string name="omni_retry">إعادة المحاولة</string>
+    <string name="omni_apps_loading">جارٍ تحميل التطبيقات…</string>
+    <string name="omni_apps_failed">تعذّر تحميل التطبيقات. حاول مرة أخرى.</string>
+    <string name="omni_apps_no_matches">لا توجد تطبيقات مطابقة.</string>
+    <string name="omni_app_other_profile">%1$s · ملف شخصي آخر</string>
+    <string name="omni_android_capabilities">قدرات أندرويد</string>
+    <string name="omni_install_system">مثبّت كتطبيق نظام</string>
+    <string name="omni_install_regular">تثبيت عادي للتطبيق</string>
+    <string name="omni_role_device_owner">مالك الجهاز</string>
+    <string name="omni_role_profile_owner">مالك ملف العمل</string>
+    <string name="omni_role_personal">لا يوجد دور لإدارة الجهاز أو ملف العمل</string>
+    <string name="omni_recents_system">يديرها لانشر النظام في الهاتف</string>
+    <string name="omni_integration_details">التفاصيل والصلاحيات</string>
+    <string name="omni_workspace_selection_missing">نسخة Workspace المحفوظة غير متاحة</string>
+    <string name="omni_workspace_selection_help">اضغط لاختيار نسخة Workspace مثبّتة أو الاختيار كل مرة.</string>
+    <string name="omni_suggestions_short">اضغط اسأل Omni لمراجعة سؤالك في Workspace.</string>
+    <string name="omni_always_suggest_short">إظهار اسأل Omni دائمًا</string>
+    <string name="omni_always_suggest_summary">يظهر أيضًا عند وجود نتائج محلية.</string>
+    <string name="omni_remote_control_short">التحكم في اللانشر</string>
+    <string name="omni_remote_control_short_summary">إجراءات بموافقتك أثناء ظهور الشاشة الرئيسية. أوقفه لإلغاء الوصول.</string>
+    <string name="omni_control_signer_verified">تم التحقق من شهادة توقيع Workspace</string>
+    <string name="omni_control_signer_missing">يتطلب Workspace بنفس مفتاح توقيع اللانشر</string>
+    <string name="omni_integration_load_failed">تعذّر التحقق من قدرات أندرويد. حاول مرة أخرى.</string>
 </resources>

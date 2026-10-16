@@ -14,6 +14,19 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ExperienceRulesTest {
+    @Test fun inventoryLabelsSurviveMissingProviderText() {
+        assertEquals("com.example.app", resolveAppLabel(null, "com.example.app"))
+        assertEquals("com.example.app", resolveAppLabel("  ", "com.example.app"))
+        assertEquals("Omni Note", resolveAppLabel(StringBuilder(" Omni Note "), "com.example.app"))
+        assertEquals("أُومني نوت", resolveAppLabel("أُومني نوت", "com.example.app"))
+    }
+
+    @Test fun localizedInventoryLabelsDriveNameRules() {
+        val label = resolveAppLabel("أُومني نوت", "com.example.notes")
+        assertTrue(FolderRule(1, nameContains = "اومني").matches("profile/key", label, "com.example.notes", -1))
+        assertFalse(FolderRule(1, nameContains = "null").matches("profile/key", resolveAppLabel(null, "com.example.notes"), "com.example.notes", -1))
+    }
+
     @Test fun slowProviderDoesNotDelayFirstResults() = kotlinx.coroutines.runBlocking {
         val slow = kotlinx.coroutines.flow.flow<List<String>> {
             kotlinx.coroutines.delay(10_000)

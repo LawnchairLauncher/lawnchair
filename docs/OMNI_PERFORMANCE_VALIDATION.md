@@ -64,3 +64,23 @@ adb shell dumpsys meminfo app.lawnchair > launcher-memory.txt
 ### Limits
 
 Source inspection alone cannot establish actual frame time, energy, peak memory, APK size or Quickstep compatibility. There is no remote access to the owner's physical device from CI. Additional tuning of icon caches, RecyclerView and touch/animation paths should be based on Perfetto evidence to avoid speculative regressions.
+
+
+### App inventory and integration settings regression
+
+On the Infinix HOT 10S, open Search aliases and create/edit a rule folder with Arabic and English
+apps installed. Verify real app names (no literal `null`), package/profile identity, multilingual
+search, accurate rule counts and mutually exclusive Include/Exclude chips. Hide/unhide and
+install/remove an app while an editor is active; return to it and verify that the list refreshes.
+Repeat after changing the launcher language, with an empty search and a query with no results.
+Verify that alias rows open their editor and that clearing aliases removes the saved override.
+
+Open Phone integration. Check standard/system installation and actual enterprise-role/Recents
+states against the device setup; an ordinary install must not claim privileged capabilities.
+Open the details dialogs, verify long Arabic text scrolls at large font size, and confirm that
+switches remain reachable. Select each installed Workspace flavor, return from background,
+and verify the saved label/package survives restart. Reset to choose each time. Uninstall the
+selected Workspace and verify the stale choice is reported and can be reset. A different-key
+Workspace must not enable new launcher-control consent; an existing opt-in can always be revoked.
+Inventory stores text labels only, retains one event-driven catalog, and performs no icon decode.
+Measure editor entry/typing/scrolling and Home return with the same frame-time and memory budgets.

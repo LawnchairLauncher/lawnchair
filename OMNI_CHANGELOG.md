@@ -5,6 +5,15 @@ updates, modifications and ecosystem integration. Original Lawnchair/AOSP author
 credits and rights; see [NOTICE.md](NOTICE.md). Upstream GITHUB_CHANGELOG.md and
 TELEGRAM_CHANGELOG.txt remain historical upstream release notes.
 
+## App identity and integration settings — 16 October 2026
+
+- Populate localized app titles in the shared inventory: AppInfo construction alone leaves title null. This fixes labels, name-based folder rules, picker search, Shelf discovery and OmniLink app names together.
+- Load and locale-sort text labels on IO, serialize cold inventory loads, and keep component/profile identity without loading icons or adding a second permanent catalog.
+- Refresh app pickers on package, hidden-app and locale changes. Search and rule previews run on background dispatchers, with loading/failure/retry/empty states.
+- Replace blank alias cards with tappable native preference rows showing app identity and current aliases; add package/profile details and chip spacing to folder overrides.
+- Show actual Android capability states, shorten Omni switch summaries and keep full consent/signing explanations in a details dialog. Choose and display the preferred Workspace from the same eligible target discovery used by search handoff.
+- The standalone suite now executes 36 tests, including missing/localized label and name-rule regressions. Phone screenshots and ANR traces still require physical Infinix validation.
+
 ## Widget editor responsiveness — 16 October 2026
 
 - Bound initial widget loading and Binder waits; keep cancellation and late callbacks from holding the editor open.

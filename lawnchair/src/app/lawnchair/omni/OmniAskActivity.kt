@@ -59,22 +59,7 @@ class OmniAskActivity : ComponentActivity() {
             // Keep discovery outside the timeout scope: a slow system Binder call must
             // not prevent the UI deadline or the Cancel button from returning to Home.
             val discovery = lifecycleScope.async(Dispatchers.IO) {
-                @Suppress("DEPRECATION")
-                packageManager.queryIntentActivities(
-                    Intent(OmniLinkConstants.ACTION_PUBLIC_OMNI_REQUEST),
-                    PackageManager.MATCH_DEFAULT_ONLY,
-                ).mapNotNull { resolved ->
-                    val info = resolved.activityInfo ?: return@mapNotNull null
-                    if (!info.exported || !info.enabled || !info.applicationInfo.enabled ||
-                        info.packageName !in WORKSPACE_PACKAGES
-                    ) {
-                        return@mapNotNull null
-                    }
-                    info.loadLabel(packageManager).toString() to
-                        Intent(OmniLinkConstants.ACTION_PUBLIC_OMNI_REQUEST)
-                            .setClassName(info.packageName, info.name)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                }.distinctBy { it.second.component }.sortedBy { it.second.component?.packageName }
+                workspaceTargets(this@OmniAskActivity)
             }
             val targets = try {
                 withTimeoutOrNull(3_000L) { discovery.await() }
@@ -148,6 +133,26 @@ class OmniAskActivity : ComponentActivity() {
             "com.omnidev.workspace.oem",
             "com.omnidev.workspace.admin",
         )
+
+        /** Exact allowlist and exported/enabled checks are identical for selection and launch. */
+        suspend fun workspaceTargets(context: Context): List<Pair<String, Intent>> = withContext(Dispatchers.IO) {
+            @Suppress("DEPRECATION")
+            context.packageManager.queryIntentActivities(
+                Intent(OmniLinkConstants.ACTION_PUBLIC_OMNI_REQUEST),
+                PackageManager.MATCH_DEFAULT_ONLY,
+            ).mapNotNull { resolved ->
+                val info = resolved.activityInfo ?: return@mapNotNull null
+                if (!info.exported || !info.enabled || !info.applicationInfo.enabled ||
+                    info.packageName !in WORKSPACE_PACKAGES
+                ) {
+                    return@mapNotNull null
+                }
+                info.loadLabel(context.packageManager).toString() to
+                    Intent(OmniLinkConstants.ACTION_PUBLIC_OMNI_REQUEST)
+                        .setClassName(info.packageName, info.name)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }.distinctBy { it.second.component }.sortedBy { it.second.component?.packageName }
+        }
 
         fun createIntent(context: Context, query: String = ""): Intent = Intent(context, OmniAskActivity::class.java).putExtra(EXTRA_QUERY, query)
     }

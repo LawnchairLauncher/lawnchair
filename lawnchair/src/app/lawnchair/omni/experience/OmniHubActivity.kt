@@ -73,10 +73,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.data.folder.service.FolderService
+import app.lawnchair.omni.OmniAskActivity
 import app.lawnchair.omni.OmniIntegrationPreferences
 import app.lawnchair.omni.experience.widgets.OmniWidgetStack
 import app.lawnchair.omni.experience.widgets.WidgetStackActivity
-import app.lawnchair.search.algorithms.engine.provider.apps.SearchTextNormalizer
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceScaffold
@@ -153,7 +153,7 @@ private fun Hub(initialPage: String, draft: String?, newNote: Boolean) {
                             "folders" -> RulesScreen(current, store)
                             "aliases" -> AliasesScreen(current, store)
                             "widgets" -> StacksScreen(current)
-                            "system" -> SystemScreen(work)
+                            "system" -> SystemScreen(current, work)
                             "date" -> CalendarScreen()
                             "shelf" -> ShelfScreen(current, store, work, draft, newNote)
                             else -> HubOverview(current) { page = it }
@@ -384,7 +384,6 @@ private fun ScenesScreen(state: ExperienceState, store: ExperienceStore, work: W
 
 @Composable
 private fun SceneEditor(scene: HomeScene, onDismiss: () -> Unit, onSave: suspend (HomeScene) -> Unit) {
-    val context = LocalContext.current
     var name by rememberSaveable { mutableStateOf(scene.name) }
     var start by rememberSaveable { mutableStateOf(timeString(scene.startMinute)) }
     var end by rememberSaveable { mutableStateOf(timeString(scene.endMinute)) }
@@ -392,9 +391,11 @@ private fun SceneEditor(scene: HomeScene, onDismiss: () -> Unit, onSave: suspend
     var charging by rememberSaveable { mutableStateOf(scene.charging) }
     var headset by rememberSaveable { mutableStateOf(scene.headset) }
     var theme by rememberSaveable { mutableStateOf(scene.strings["theme"] ?: "system") }
-    val apps by produceState<List<AppInfo>>(emptyList()) { value = OmniAppInventory.get(context).visible() }
+    val picker = rememberAppPicker()
+    val apps = picker.apps
     var pinned by rememberStringSet(scene.apps.toSet())
     var query by rememberSaveable { mutableStateOf("") }
+    val matchingApps = rememberMatchingApps(apps, query)
     SaveDialog(
         title = stringResource(R.string.omni_edit_scene),
         onDismiss = onDismiss,
@@ -419,9 +420,15 @@ private fun SceneEditor(scene: HomeScene, onDismiss: () -> Unit, onSave: suspend
             item { ConditionPicker(stringResource(R.string.omni_when_headset), headset) { headset = it } }
             item { Text(stringResource(R.string.omni_selected_apps, pinned.size, 12)) }
             item { OutlinedTextField(query, { query = it }, label = { Text(stringResource(R.string.omni_search_apps)) }, singleLine = true) }
-            items(apps.filter { matchesApp(it, query) }, key = { it.toComponentKey().toString() }) { app ->
+            item { AppPickerNotice(picker, matchingApps.isEmpty()) }
+            items(matchingApps, key = { it.toComponentKey().toString() }) { app ->
                 val key = app.toComponentKey().toString()
-                Toggle(app.title.toString(), key in pinned) { enabled -> if (!enabled || pinned.size < 12) pinned = if (enabled) pinned + key else pinned - key }
+                SwitchPreference(
+                    checked = key in pinned,
+                    onCheckedChange = { enabled -> if (!enabled || pinned.size < 12) pinned = if (enabled) pinned + key else pinned - key },
+                    label = app.title.toString(),
+                    description = appIdentity(app),
+                )
             }
         }
     }
@@ -479,11 +486,17 @@ private fun RuleEditor(rule: FolderRule?, onDismiss: () -> Unit, onSave: suspend
     var games by rememberSaveable { mutableStateOf(rule?.category == android.content.pm.ApplicationInfo.CATEGORY_GAME) }
     var include by rememberStringSet(rule?.include.orEmpty())
     var exclude by rememberStringSet(rule?.exclude.orEmpty())
-    val apps by produceState<List<AppInfo>>(emptyList()) { value = OmniAppInventory.get(context).visible() }
+    val picker = rememberAppPicker()
+    val apps = picker.apps
     val inventory = remember { OmniAppInventory.get(context) }
     val preview = FolderRule(rule?.folderId ?: 0, name, pkg, if (games) android.content.pm.ApplicationInfo.CATEGORY_GAME else null, include, exclude)
-    val matching = apps.count { preview.matches(it.toComponentKey().toString(), it.title.toString(), it.componentName?.packageName.orEmpty(), inventory.category(it)) }
+    val matching by produceState<Int?>(null, apps, preview) {
+        value = withContext(Dispatchers.Default) {
+            apps.count { preview.matches(it.toComponentKey().toString(), it.title.toString(), it.componentName?.packageName.orEmpty(), inventory.category(it)) }
+        }
+    }
     var query by rememberSaveable { mutableStateOf("") }
+    val matchingApps = rememberMatchingApps(apps, query)
     SaveDialog(
         title = stringResource(R.string.omni_rule_folders),
         onDismiss = onDismiss,
@@ -491,18 +504,24 @@ private fun RuleEditor(rule: FolderRule?, onDismiss: () -> Unit, onSave: suspend
         onSave = { onSave(title, FolderRule(rule?.folderId ?: 0, name.trim(), pkg.trim(), if (games) android.content.pm.ApplicationInfo.CATEGORY_GAME else null, include, exclude)) },
     ) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (rule == null) item { OutlinedTextField(title, { title = it.take(80) }, label = { Text(stringResource(R.string.omni_title)) }) }
-            item { OutlinedTextField(name, { name = it.take(80) }, label = { Text(stringResource(R.string.omni_name_contains)) }) }
-            item { OutlinedTextField(pkg, { pkg = it.take(120) }, label = { Text(stringResource(R.string.omni_package_prefix)) }) }
+            if (rule == null) item { OutlinedTextField(title, { title = it.take(80) }, label = { Text(stringResource(R.string.omni_title)) }, modifier = Modifier.fillMaxWidth(), singleLine = true) }
+            item { OutlinedTextField(name, { name = it.take(80) }, label = { Text(stringResource(R.string.omni_name_contains)) }, modifier = Modifier.fillMaxWidth(), singleLine = true) }
+            item { OutlinedTextField(pkg, { pkg = it.take(120) }, label = { Text(stringResource(R.string.omni_package_prefix)) }, modifier = Modifier.fillMaxWidth(), singleLine = true) }
             item { Toggle(stringResource(R.string.omni_games_only), games) { games = it } }
-            item { Text(stringResource(R.string.omni_rule_preview, matching), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary) }
+            if (!picker.loading && !picker.failed && matching != null) {
+                item {
+                    Text(stringResource(R.string.omni_rule_preview, matching!!), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+                }
+            }
             item { Text(stringResource(R.string.omni_rule_overrides)) }
             item { OutlinedTextField(query, { query = it }, label = { Text(stringResource(R.string.omni_search_apps)) }, singleLine = true) }
-            items(apps.filter { matchesApp(it, query) }, key = { it.toComponentKey().toString() }) { app ->
+            item { AppPickerNotice(picker, matchingApps.isEmpty()) }
+            items(matchingApps, key = { it.toComponentKey().toString() }) { app ->
                 val key = app.toComponentKey().toString()
                 Column {
-                    Text(app.title.toString())
-                    FlowRow {
+                    Text(app.title.toString(), style = MaterialTheme.typography.titleMedium)
+                    Text(appIdentity(app), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         FilterChip(key in include, {
                             include = if (key in include) include - key else include + key
                             exclude = exclude - key
@@ -520,18 +539,33 @@ private fun RuleEditor(rule: FolderRule?, onDismiss: () -> Unit, onSave: suspend
 
 @Composable
 private fun AliasesScreen(state: ExperienceState, store: ExperienceStore) {
-    val context = LocalContext.current
-    val apps by produceState<List<AppInfo>>(emptyList()) { value = OmniAppInventory.get(context).visible() }
+    val picker = rememberAppPicker()
+    val apps = picker.apps
     var selectedKey by rememberSaveable { mutableStateOf<String?>(null) }
     var query by rememberSaveable { mutableStateOf("") }
-    LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
+    val matchingApps = rememberMatchingApps(apps, query, state.aliases)
+    LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
-            Panel(stringResource(R.string.omni_aliases), stringResource(R.string.omni_alias_help)) {
-                OutlinedTextField(query, { query = it }, label = { Text(stringResource(R.string.omni_search_apps)) })
+            PreferenceGroup(showDividers = false) {
+                Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(stringResource(R.string.omni_alias_help), style = MaterialTheme.typography.bodyMedium)
+                    OutlinedTextField(query, { query = it }, label = { Text(stringResource(R.string.omni_search_apps)) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                    AppPickerNotice(picker, matchingApps.isEmpty())
+                }
             }
         }
-        items(apps.filter { matchesApp(it, query, state.aliases[it.toComponentKey().toString()].orEmpty()) }, key = { it.toComponentKey().toString() }) { app ->
-            Panel(app.title.toString(), state.aliases[app.toComponentKey().toString()]) { TextButton(onClick = { selectedKey = app.toComponentKey().toString() }) { Text(stringResource(R.string.omni_edit)) } }
+        items(matchingApps, key = { it.toComponentKey().toString() }) { app ->
+            PreferenceGroup {
+                PreferenceTemplate(
+                    title = { Text(app.title.toString()) },
+                    description = {
+                        Text(appIdentity(app), style = MaterialTheme.typography.bodySmall)
+                        state.aliases[app.toComponentKey().toString()]?.let { Text(it) }
+                    },
+                    endWidget = { Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = null) },
+                    modifier = Modifier.clickable { selectedKey = app.toComponentKey().toString() },
+                )
+            }
         }
     }
     apps.firstOrNull { it.toComponentKey().toString() == selectedKey }?.let { app ->
@@ -569,33 +603,125 @@ private fun StacksScreen(state: ExperienceState) {
 }
 
 @Composable
-private fun SystemScreen(work: Work) {
+private fun SystemScreen(state: ExperienceState, work: Work) {
     val context = LocalContext.current
     var revision by remember { mutableIntStateOf(0) }
+    var chooseWorkspace by rememberSaveable { mutableStateOf(false) }
+    var showDetails by rememberSaveable { mutableStateOf(false) }
     val owner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     androidx.compose.runtime.DisposableEffect(owner) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _, event -> if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) revision++ }
         owner.lifecycle.addObserver(observer)
         onDispose { owner.lifecycle.removeObserver(observer) }
     }
-    val status by produceState<OemIntegration.Status?>(null, revision) { value = OemIntegration.status(context) }
+    val statusResult by produceState<Result<OemIntegration.Status>?>(null, revision) {
+        value = null
+        value = try {
+            Result.success(OemIntegration.status(context))
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Exception) {
+            Result.failure(error)
+        }
+    }
+    val targetResult by produceState<Result<List<Pair<String, Intent>>>?>(null, revision) {
+        value = null
+        value = try {
+            Result.success(OmniAskActivity.workspaceTargets(context))
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Exception) {
+            Result.failure(error)
+        }
+    }
+    val targets = targetResult?.getOrNull()
+    val preferred = targets?.firstOrNull { it.second.component?.flattenToString() == state.preferredWorkspace }
+    val workspaceSummary = when {
+        targetResult?.isFailure == true -> stringResource(R.string.omni_apps_failed)
+        targets == null -> stringResource(R.string.omni_apps_loading)
+        state.preferredWorkspace == null -> stringResource(R.string.omni_reset_workspace)
+        preferred != null -> preferred.first + "\n" + preferred.second.component!!.packageName
+        else -> stringResource(R.string.omni_workspace_selection_missing)
+    }
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
         item {
-            Panel(stringResource(R.string.omni_system), stringResource(R.string.omni_oem_help)) {
-                status?.let {
-                    SystemStatus(R.string.omni_system_app, it.systemApp)
-                    SystemStatus(R.string.omni_enterprise_owner, it.deviceOwner || it.profileOwner)
-                    SystemStatus(R.string.omni_recents_integration, it.quickstep)
+            PreferenceGroup(heading = stringResource(R.string.omni_android_capabilities)) {
+                if (statusResult == null) LinearProgressIndicator(Modifier.fillMaxWidth())
+                if (statusResult?.isFailure == true) {
+                    Text(stringResource(R.string.omni_integration_load_failed), modifier = Modifier.padding(16.dp))
+                    TextButton(onClick = { revision++ }) { Text(stringResource(R.string.omni_retry)) }
                 }
-                TextButton(onClick = { work { withContext(Dispatchers.Main) { context.startActivity(Intent(Settings.ACTION_HOME_SETTINGS)) } } }) { Text(stringResource(R.string.omni_default_home)) }
+                statusResult?.getOrNull()?.let {
+                    SystemStatus(R.string.omni_system_app, if (it.systemApp) R.string.omni_install_system else R.string.omni_install_regular)
+                    SystemStatus(
+                        R.string.omni_enterprise_owner,
+                        when {
+                            it.deviceOwner -> R.string.omni_role_device_owner
+                            it.profileOwner -> R.string.omni_role_profile_owner
+                            else -> R.string.omni_role_personal
+                        },
+                    )
+                    SystemStatus(R.string.omni_recents_integration, if (it.quickstep) R.string.omni_status_available else R.string.omni_recents_system)
+                }
+                app.lawnchair.ui.preferences.components.controls.ClickablePreference(
+                    label = stringResource(R.string.omni_integration_details),
+                    onClick = { showDetails = true },
+                )
+                app.lawnchair.ui.preferences.components.controls.ClickablePreference(
+                    label = stringResource(R.string.omni_default_home),
+                    onClick = { work { withContext(Dispatchers.Main) { context.startActivity(Intent(Settings.ACTION_HOME_SETTINGS)) } } },
+                )
             }
         }
         item { OmniIntegrationPreferences() }
         item {
-            Panel(stringResource(R.string.omni_preferred_workspace)) {
-                TextButton(onClick = { work { ExperienceStore.get(context).update { it.copy(preferredWorkspace = null) } } }) { Text(stringResource(R.string.omni_reset_workspace)) }
+            PreferenceGroup(heading = stringResource(R.string.omni_preferred_workspace)) {
+                app.lawnchair.ui.preferences.components.controls.ClickablePreference(
+                    label = workspaceSummary,
+                    subtitle = stringResource(R.string.omni_workspace_selection_help),
+                    onClick = { chooseWorkspace = true },
+                )
             }
         }
+    }
+    if (showDetails) {
+        AlertDialog(
+            onDismissRequest = { showDetails = false },
+            title = { Text(stringResource(R.string.omni_android_capabilities)) },
+            text = { Text(stringResource(R.string.omni_oem_help), modifier = Modifier.verticalScroll(rememberScrollState())) },
+            confirmButton = { TextButton(onClick = { showDetails = false }) { Text(stringResource(android.R.string.ok)) } },
+        )
+    }
+    if (chooseWorkspace) {
+        AlertDialog(
+            onDismissRequest = { chooseWorkspace = false },
+            title = { Text(stringResource(R.string.omni_preferred_workspace)) },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    TextButton(onClick = {
+                        work { ExperienceStore.get(context).update { it.copy(preferredWorkspace = null) } }
+                        chooseWorkspace = false
+                    }) { Text(stringResource(R.string.omni_reset_workspace)) }
+                    if (targetResult == null) LinearProgressIndicator(Modifier.fillMaxWidth())
+                    if (targetResult?.isFailure == true) {
+                        Text(stringResource(R.string.omni_apps_failed))
+                        TextButton(onClick = { revision++ }) { Text(stringResource(R.string.omni_retry)) }
+                    }
+                    targets.orEmpty().forEach { (label, intent) ->
+                        PreferenceTemplate(
+                            title = { Text(label) },
+                            description = { Text(intent.component!!.packageName) },
+                            modifier = Modifier.clickable {
+                                work { ExperienceStore.get(context).update { it.copy(preferredWorkspace = intent.component!!.flattenToString()) } }
+                                chooseWorkspace = false
+                            },
+                        )
+                    }
+                    if (targets?.isEmpty() == true) Text(stringResource(R.string.omni_workspace_required))
+                }
+            },
+            confirmButton = { TextButton(onClick = { chooseWorkspace = false }) { Text(stringResource(android.R.string.cancel)) } },
+        )
     }
 }
 
@@ -625,9 +751,14 @@ private fun TextEditor(
     }
 }
 
-private fun matchesApp(app: AppInfo, query: String, aliases: String = ""): Boolean {
-    val needle = SearchTextNormalizer.normalize(query.trim())
-    return needle.isBlank() || SearchTextNormalizer.normalize("${app.title} ${app.componentName?.packageName.orEmpty()} $aliases").contains(needle)
+@Composable
+private fun appIdentity(app: AppInfo): String {
+    val packageName = app.componentName?.packageName.orEmpty()
+    return if (app.user == android.os.Process.myUserHandle()) {
+        packageName
+    } else {
+        stringResource(R.string.omni_app_other_profile, packageName)
+    }
 }
 
 @Composable
@@ -692,10 +823,9 @@ private fun rememberStringSet(initial: Set<String>) = rememberSaveable(
 ) { mutableStateOf(initial) }
 
 @Composable
-private fun SystemStatus(label: Int, available: Boolean) {
+private fun SystemStatus(label: Int, summary: Int) {
     PreferenceTemplate(
         title = { Text(stringResource(label)) },
-        description = { Text(stringResource(if (available) R.string.omni_status_available else R.string.omni_status_unavailable)) },
-        applyPaddings = false,
+        description = { Text(stringResource(summary)) },
     )
 }
