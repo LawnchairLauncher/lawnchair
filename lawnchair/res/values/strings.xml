@@ -1138,6 +1138,17 @@
     <string name="fold_wallpaper_span">One spanning image</string>
     <string name="fold_wallpaper_span_description">One image across both screens. With wallpaper scrolling off, the cover keeps the part of the image you saw on the half you hold.</string>
     <string name="fold_wallpaper_each">Per screen</string>
-    <string name="fold_wallpaper_each_description">A separate image for each screen, set in the system wallpaper settings.</string>
+    <string name="fold_wallpaper_each_description">A separate image for each screen: with Lawnchair\'s dual wallpaper, or the system\'s own setting where it has one.</string>
+    <string name="fold_wallpaper_each_system_note">Set each screen\'s wallpaper in the system\'s wallpaper settings while that screen is in use.</string>
+    <string name="fold_dual_wallpaper_label">Lawnchair dual wallpaper</string>
+    <string name="fold_dual_wallpaper_description">One image on the cover screen and another on the inner screen. Choose the images, then set the dual wallpaper in the system\'s chooser. A screen without an image shows the other one.</string>
+    <string name="fold_wallpaper_cover_image">Cover screen image</string>
+    <string name="fold_wallpaper_inner_image">Inner screen image</string>
+    <string name="fold_wallpaper_image_set">Chosen. Tap to replace</string>
+    <string name="fold_wallpaper_image_not_set">Not chosen</string>
+    <string name="fold_wallpaper_image_failed">Couldn\'t use this image</string>
+    <string name="fold_wallpaper_set_dual">Set Lawnchair\'s dual wallpaper</string>
+    <string name="fold_wallpaper_dual_active">In use</string>
+    <string name="fold_wallpaper_dual_inactive">Opens the system\'s live wallpaper chooser</string>
     <string name="fold_unfolded_grid_mirror_note">Not used while Foldable screen › Home screen is set to “Same as cover”: the large screen then uses the folded grid.</string>
 </resources>
