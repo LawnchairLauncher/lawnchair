@@ -74,7 +74,6 @@ import static com.android.launcher3.Utilities.ATLEAST_R;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.Workspace.mapOverCellLayouts;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
-import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.icons.BitmapRenderer.createHardwareBitmap;
 import static com.android.launcher3.folder.FolderGridOrganizer.createFolderGridOrganizer;
@@ -293,6 +292,7 @@ import java.util.stream.Stream;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.fold.FoldDockLayout;
+import app.lawnchair.fold.FoldLayout;
 
 /**
  * Default launcher application.
@@ -748,8 +748,14 @@ public class Launcher extends StatefulActivity<LauncherState>
                     this, getMultiWindowDisplaySize());
         }
 
-        if (FOLDABLE_SINGLE_PAGE.get() && mDeviceProfile.getDeviceProperties().isTwoPanels()) {
-            mCellPosMapper = new TwoPanelCellPosMapper(mDeviceProfile.inv.numColumns);
+        if (mDeviceProfile.isTwoPanelSinglePage) {
+            // LC-Note: "Expand" home layout (or FOLDABLE_SINGLE_PAGE): cover pages 2n and 2n + 1
+            // form wide page 2n. Keep the dock mapping, and the even page on the fixed half.
+            mCellPosMapper = new TwoPanelCellPosMapper(mDeviceProfile.inv.numColumns,
+                    mDeviceProfile.isVerticalBarLayout(), mDeviceProfile.numShownHotseatIcons,
+                    mDeviceProfile.numHotseatRows, mDeviceProfile.numHotseatPages,
+                    FoldDockLayout.create(this, mDeviceProfile),
+                    FoldLayout.isEvenCoverPageOnEnd(this, mDeviceProfile));
         } else {
             mCellPosMapper = new CellPosMapper(mDeviceProfile.isVerticalBarLayout(),
                     mDeviceProfile.numShownHotseatIcons, mDeviceProfile.numHotseatRows,

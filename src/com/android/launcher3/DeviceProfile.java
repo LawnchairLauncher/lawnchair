@@ -24,6 +24,7 @@ import static com.android.launcher3.InvariantDeviceProfile.createDisplayOptionSp
 import static com.android.launcher3.InvariantDeviceProfile.deviceType;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
+import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
@@ -125,6 +126,11 @@ public class DeviceProfile {
     // Device properties
 
     private final DeviceProperties mDeviceProperties;
+
+    // LC-Note: whether two panels are shown as one wide page per pair of pages ("Expand" home
+    // layout on a foldable, or FeatureFlags.FOLDABLE_SINGLE_PAGE). Decided with the profile, so
+    // every consumer agrees until the next profile.
+    public final boolean isTwoPanelSinglePage;
 
     public boolean isPredictiveBackSwipe;
     public final boolean isQsbInline;
@@ -323,6 +329,7 @@ public class DeviceProfile {
         mIconSizeSteps = null;
         isPredictiveBackSwipe = false;
         isQsbInline = false;
+        isTwoPanelSinglePage = false;
         isLeftRightSplit = false;
         mIsScalableGrid = false;
         mTypeIndex = 0;
@@ -395,8 +402,12 @@ public class DeviceProfile {
                 isGestureMode,
                 allowTwoPanels
         );
+        // LC-Note: two panels shown as one wide page, with "Expand" or FOLDABLE_SINGLE_PAGE.
+        isTwoPanelSinglePage = mDeviceProperties.isTwoPanels()
+                && (FOLDABLE_SINGLE_PAGE.get() || FoldLayout.isHomeExpanded(preferenceManager2));
         if (isMultiDisplay) {
             Log.d("LC-FoldLayout", "allowTwoPanels=" + allowTwoPanels
+                    + ", singlePage=" + isTwoPanelSinglePage
                     + ", isTwoPanels=" + mDeviceProperties.isTwoPanels()
                     + ", bounds=" + windowBounds.bounds.toShortString()
                     + ", typeIndex=" + displayOptionSpec.typeIndex);

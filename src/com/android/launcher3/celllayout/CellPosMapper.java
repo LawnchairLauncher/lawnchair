@@ -123,28 +123,54 @@ public class CellPosMapper {
     public static class TwoPanelCellPosMapper extends CellPosMapper {
 
         private final int mColumnCount;
+        // LC-Note: whether the even page of a pair is on the end half (AOSP: start half).
+        private final boolean mEvenPageOnEnd;
 
         public TwoPanelCellPosMapper(int columnCount) {
-            super(false, -1, 1, 1);
+            this(columnCount, false, -1, 1, 1, null, false);
+        }
+
+        /**
+         * LC-Note: also maps the dock like {@link CellPosMapper} (rows, pages, fold dock), and puts
+         * the even page of each pair on the end half when {@code evenPageOnEnd}.
+         */
+        public TwoPanelCellPosMapper(int columnCount, boolean hasVerticalHotseat, int numOfHotseat,
+                int numHotseatRows, int numHotseatPages, @Nullable FoldDockLayout foldDock,
+                boolean evenPageOnEnd) {
+            super(hasVerticalHotseat, numOfHotseat, numHotseatRows, numHotseatPages, foldDock);
             mColumnCount = columnCount;
+            mEvenPageOnEnd = evenPageOnEnd;
+        }
+
+        /** Returns whether the even page of a pair is on the end half of the wide page. */
+        public boolean isEvenPageOnEnd() {
+            return mEvenPageOnEnd;
         }
 
         /**
          * Maps the position in model to the position in view
          */
         public CellPos mapModelToPresenter(ItemInfo info) {
-            if (info.container != CONTAINER_DESKTOP || (info.screenId % 2) == 0) {
+            if (info.container != CONTAINER_DESKTOP
+                    || ((info.screenId % 2) == 0 && !mEvenPageOnEnd)) {
                 return super.mapModelToPresenter(info);
             }
-            return new CellPos(info.cellX + mColumnCount, info.cellY, info.screenId - 1);
+            boolean isOddPage = (info.screenId % 2) != 0;
+            boolean onEndHalf = isOddPage != mEvenPageOnEnd;
+            return new CellPos(info.cellX + (onEndHalf ? mColumnCount : 0), info.cellY,
+                    isOddPage ? info.screenId - 1 : info.screenId);
         }
 
         @Override
         public CellPos mapPresenterToModel(int presenterX, int presenterY, int presenterScreen,
                 int container) {
-            if (container == CONTAINER_DESKTOP && (presenterScreen % 2) == 0
-                    && presenterX >= mColumnCount) {
-                return new CellPos(presenterX - mColumnCount, presenterY, presenterScreen + 1);
+            if (container == CONTAINER_DESKTOP && (presenterScreen % 2) == 0) {
+                boolean onEndHalf = presenterX >= mColumnCount;
+                boolean isOddPage = onEndHalf != mEvenPageOnEnd;
+                if (onEndHalf || isOddPage) {
+                    return new CellPos(presenterX - (onEndHalf ? mColumnCount : 0), presenterY,
+                            isOddPage ? presenterScreen + 1 : presenterScreen);
+                }
             }
             return super.mapPresenterToModel(presenterX, presenterY, presenterScreen, container);
         }
