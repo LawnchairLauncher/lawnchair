@@ -555,7 +555,11 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                     + Favorites.TABLE_NAME + " WHERE " + coverTopLevel + ")";
             String level2 = Favorites.CONTAINER + " IN (SELECT " + Favorites._ID + " FROM "
                     + Favorites.TABLE_NAME + " WHERE " + level1 + ")";
-            int offset = initializeMaxItemId(db) + 1;
+            // Above every id in use (ModelWriter hands out ids before it writes the rows), and
+            // the copies' ids are reserved at once, so an id handed out meanwhile can't be one.
+            int dbMax = initializeMaxItemId(db);
+            int offset = Math.max(dbMax,
+                    mMaxItemId.getAndUpdate(current -> Math.max(current, dbMax) + 1 + dbMax)) + 1;
             String appWidget = Favorites.ITEM_TYPE + " = " + Favorites.ITEM_TYPE_APPWIDGET
                     + " AND " + Favorites.APPWIDGET_ID + " > "
                     + LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
@@ -612,7 +616,8 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                     Favorites._ID + " >= " + offset);
             t.commit();
         }
-        mMaxItemId.set(initializeMaxItemId(db));
+        // Never back: ids handed out meanwhile may not be written yet.
+        mMaxItemId.accumulateAndGet(initializeMaxItemId(db), Math::max);
         FileLog.d(TAG, "Copied " + copied + " cover items into the inner item set");
         return copied;
     }
