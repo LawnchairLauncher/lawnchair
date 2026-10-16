@@ -2263,6 +2263,21 @@ public class DeviceProfile {
         return mIsSideDockOnLeft;
     }
 
+    /**
+     * LC-Note: with the side dock and two paired pages, the workspace keeps its normal side
+     * margins: this width comes off both sides of its padding, and only the page on the fixed half
+     * takes it back, on its outer edge (app.lawnchair.fold.FoldSideDockPages). The moving half's
+     * page gets the full half. 0 otherwise, e.g. with "Expand" (one wide page across the hinge
+     * keeps the margins on both sides so its columns still split at the hinge).
+     */
+    public int getSideDockPageInset() {
+        if (!mIsSideDock || isTwoPanelSinglePage) {
+            return 0;
+        }
+        return Math.max(0, Math.min(sideDockWidthPx,
+                Math.min(workspacePadding.left, workspacePadding.right)));
+    }
+
     /** LC-Note: whether the hotseat is a single column (phone landscape, or the side dock). */
     public boolean hasVerticalHotseat() {
         return isVerticalBarLayout() || mIsSideDock;
