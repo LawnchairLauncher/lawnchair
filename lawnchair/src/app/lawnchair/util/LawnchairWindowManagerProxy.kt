@@ -19,7 +19,6 @@ import android.view.WindowMetrics
 import androidx.annotation.Keep
 import androidx.annotation.VisibleForTesting
 import app.lawnchair.LawnchairApp
-import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.dpiFromPx
 import com.android.launcher3.dagger.LauncherAppSingleton

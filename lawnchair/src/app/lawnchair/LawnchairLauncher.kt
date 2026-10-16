@@ -506,7 +506,7 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     override fun dispatchDeviceProfileChanged() {
         // Before any listener hears of the change: the drawer still shows the old layout
-        FoldDrawerState.capture(this)
+        foldTransitionController.drawerCapture = FoldDrawerState.capture(this)
         super.dispatchDeviceProfileChanged()
     }
 

@@ -89,10 +89,10 @@ object FoldDrawerState {
      * calls this before it dispatches a profile change, so before any listener hears of it and
      * before any view is laid out again.
      */
-    fun capture(launcher: LawnchairLauncher) {
-        if (!isFoldable()) return
-        val container = launcher.appsView ?: return
-        val root = launcher.dragLayer ?: return
+    fun capture(launcher: LawnchairLauncher): Capture? {
+        if (!isFoldable()) return null
+        val container = launcher.appsView ?: return null
+        val root = launcher.dragLayer ?: return null
         val centers = SparseArray<FloatArray>()
         var anchor = RecyclerView.NO_POSITION
         val list = container.activeRecyclerView
@@ -118,6 +118,6 @@ object FoldDrawerState {
             barLeft = coords[0] + bar.paddingLeft
             barRight = coords[0] + bar.width - bar.paddingRight
         }
-        launcher.foldTransitionController.drawerCapture = Capture(root.width, anchor, centers, barLeft, barRight)
+        return Capture(root.width, anchor, centers, barLeft, barRight)
     }
 }
