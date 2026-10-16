@@ -34,8 +34,9 @@ interface FolderDao {
 
     @Transaction
     suspend fun insertFolderWithItems(folder: FolderInfoEntity, items: List<FolderItemEntity>) {
+        val old = getFolderWithItems(folder.id)?.folder
         deleteFolderItemsByFolderId(folder.id)
-        insertFolder(folder)
+        insertFolder(if (old == null) folder else folder.copy(hide = old.hide, rank = old.rank))
         insertFolderItems(items)
     }
 

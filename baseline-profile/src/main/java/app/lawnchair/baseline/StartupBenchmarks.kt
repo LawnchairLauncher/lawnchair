@@ -2,6 +2,7 @@ package app.lawnchair.baseline
 
 import androidx.benchmark.macro.BaselineProfileMode
 import androidx.benchmark.macro.CompilationMode
+import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
@@ -38,16 +39,44 @@ class StartupBenchmarks {
     val rule = MacrobenchmarkRule()
 
     @Test
-    fun startupCompilationNone() =
-        benchmark(CompilationMode.None())
+    fun startupCompilationNone() = benchmark(CompilationMode.None())
 
     @Test
-    fun startupCompilationBaselineProfiles() =
-        benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
+    fun startupCompilationBaselineProfiles() = benchmark(CompilationMode.Partial(BaselineProfileMode.Require))
 
     @Test
-    fun warmStartupWithBaselineProfiles() =
-        benchmark(CompilationMode.Partial(BaselineProfileMode.Require), StartupMode.WARM)
+    fun warmStartupWithBaselineProfiles() = benchmark(CompilationMode.Partial(BaselineProfileMode.Require), StartupMode.WARM)
+
+    @Test
+    fun drawerScrollAndMultilingualSearch() {
+        rule.measureRepeated(
+            packageName = Constants.PACKAGE_NAME,
+            metrics = listOf(FrameTimingMetric()),
+            compilationMode = CompilationMode.Partial(BaselineProfileMode.Require),
+            iterations = 10,
+            setupBlock = { startActivityAndWait() },
+            measureBlock = { exerciseDrawerAndSearch() },
+        )
+    }
+
+    @Test
+    fun returnHomeFromSettings() {
+        rule.measureRepeated(
+            packageName = Constants.PACKAGE_NAME,
+            metrics = listOf(FrameTimingMetric()),
+            compilationMode = CompilationMode.Partial(BaselineProfileMode.Require),
+            iterations = 10,
+            setupBlock = {
+                startActivityAndWait()
+                device.executeShellCommand("am start -a android.settings.SETTINGS")
+                device.waitForIdle()
+            },
+            measureBlock = {
+                pressHome()
+                device.waitForIdle()
+            },
+        )
+    }
 
     private fun benchmark(
         compilationMode: CompilationMode,

@@ -236,6 +236,7 @@ class OmniLauncherService : ExtensionService() {
         if (offset < 0 || limit !in 1..40) return failure("invalid_page")
         val apps = visibleApps() ?: return failure("launcher_service_unavailable")
         if (!controlEnabled()) return failure("control_disabled")
+        val users = getSystemService(UserManager::class.java) ?: return failure("profile_service_unavailable")
         val page = apps.drop(offset).take(limit)
         return success(
             buildJsonObject {
@@ -247,7 +248,7 @@ class OmniLauncherService : ExtensionService() {
                                 buildJsonObject {
                                     put("component", app.componentName.flattenToString())
                                     put("componentKey", ComponentKey(app.componentName, app.user).toString())
-                                    put("profileSerial", getSystemService(UserManager::class.java).getSerialNumberForUser(app.user))
+                                    put("profileSerial", users.getSerialNumberForUser(app.user))
                                     put("label", app.label.toString().take(200))
                                 },
                             )
@@ -305,7 +306,7 @@ class OmniLauncherService : ExtensionService() {
         val componentText = (payload["component"] as? JsonPrimitive)?.takeIf { it.isString }?.content ?: return failure("invalid_component")
         val component = ComponentName.unflattenFromString(componentText) ?: return failure("invalid_component")
         val apps = visibleApps() ?: return failure("launcher_service_unavailable")
-        val users = getSystemService(UserManager::class.java)
+        val users = getSystemService(UserManager::class.java) ?: return failure("profile_service_unavailable")
         val serial = payload["profileSerial"]?.let { value ->
             (value as? JsonPrimitive)?.takeUnless { it.isString }?.longOrNull ?: return failure("invalid_profile")
         } ?: users.getSerialNumberForUser(Process.myUserHandle())

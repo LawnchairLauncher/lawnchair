@@ -98,7 +98,7 @@ sealed class LawnchairSearchAlgorithm(
                 .setExtras(android.os.Bundle().apply { putString("scope", filterScope.name) }).build(),
             transparentBackground,
         )
-        return listOf(filterRow) + filtered.mapIndexedNotNull { index, target ->
+        return listOfNotNull(filterRow) + filtered.mapIndexedNotNull { index, target ->
             val isFirst = index == 0 || filtered[index - 1].isDivider
             val isLast = index == filtered.lastIndex || filtered[index + 1].isDivider
 

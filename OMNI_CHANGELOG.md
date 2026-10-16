@@ -5,6 +5,19 @@ updates, modifications and ecosystem integration. Original Lawnchair/AOSP author
 credits and rights; see [NOTICE.md](NOTICE.md). Upstream GITHUB_CHANGELOG.md and
 TELEGRAM_CHANGELOG.txt remain historical upstream release notes.
 
+## Home experiences — 16 October 2026
+
+- Deliver app search results independently of slower providers; cancel obsolete contact/file/HTTP work.
+- Share Unicode/transliterated/alias matching between app and on-device modes; add result filters and action search.
+- Bind gesture/search lifecycle work to Home; avoid blocking search setup reads and clear stale keyboard highlights.
+- Add on-demand Omni Hub with Shelf notes/document pins/media controls and preferred Workspace selection.
+- Add saved appearance scenes, overnight/power/headphone rules and undo, without a background service.
+- Add dynamic drawer folder rules and replace repeated per-member app enumeration with one inventory.
+- Host real Home widget stacks with one inflated member, LOW-tier limits and Android binding/configuration.
+- Extend signed OmniLink capabilities, accessible-profile identity and actual enterprise-owner detection.
+- Add executable JVM rule/search/policy tests and broader device benchmark journeys.
+- No Root or Shizuku implementation added. Actual device behavior and performance remain separately measurable.
+
 ## Unreleased — Omni assistant integration (1 October 2026)
 
 - Fixed recycled-row web click handlers and stale icon updates; route Ask Omni row/icon/keyboard

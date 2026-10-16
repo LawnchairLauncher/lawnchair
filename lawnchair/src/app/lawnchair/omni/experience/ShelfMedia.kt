@@ -30,11 +30,16 @@ private data class ShelfPlayback(val title: String, val playing: Boolean, val co
 
 /** Session callbacks exist only while Shelf is subscribed and notification access is already granted. */
 @Composable
-fun ShelfMedia() {
+fun ShelfMedia(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val updates = remember(context) {
         callbackFlow<ShelfPlayback?> {
             val manager = context.getSystemService(MediaSessionManager::class.java)
+            if (manager == null) {
+                trySend(null)
+                close()
+                return@callbackFlow
+            }
             var controller: MediaController? = null
             fun publish() {
                 val current = controller
@@ -82,7 +87,7 @@ fun ShelfMedia() {
     }
     val playback by updates.collectAsStateWithLifecycle(initialValue = null)
     playback?.let { media ->
-        Card(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
+        Card(modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
             Row(Modifier.padding(12.dp)) {
                 Text(media.title, Modifier.weight(1f))
                 TextButton(onClick = {

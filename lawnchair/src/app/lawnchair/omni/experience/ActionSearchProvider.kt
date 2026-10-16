@@ -9,7 +9,6 @@ import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.search.algorithms.engine.provider.apps.SearchTextNormalizer
 import com.android.launcher3.R
-import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -46,9 +45,12 @@ object ActionSearchProvider {
         val service = context.getSystemService(LauncherApps::class.java)
         if (service?.hasShortcutHostPermission() == true) {
             val inventory = OmniAppInventory.get(context)
+            val visibleApps = inventory.visible()
+            val visibleKeys = visibleApps.map { it.toComponentKey().toString() }.toSet()
+            val visibleProfiles = visibleApps.map { "${it.targetPackage}|${it.user}" }.toSet()
             val revision = inventory.revision.value
             if (shortcutsVersion != revision) {
-                val visible = inventory.visible().mapNotNull { it.targetPackage }.toSet()
+                val visible = visibleApps.mapNotNull { it.targetPackage }.toSet()
                 shortcuts = service.profiles.flatMap { user ->
                     runCatching {
                         service.getShortcuts(
@@ -61,10 +63,9 @@ object ActionSearchProvider {
                 }.filter { it.`package` in visible && it.isEnabled }.take(300)
                 shortcutsVersion = revision
             }
-            val hidden = app.lawnchair.preferences2.PreferenceManager2.getInstance(context).hiddenApps.firstBlocking()
             shortcuts.filter { shortcut ->
                 val key = shortcut.activity?.let { com.android.launcher3.util.ComponentKey(it, shortcut.userHandle).toString() }
-                key !in hidden && SearchTextNormalizer.normalize("${shortcut.shortLabel} ${shortcut.longLabel.orEmpty()}").contains(normalized)
+                (if (key == null) "${shortcut.`package`}|${shortcut.userHandle}" in visibleProfiles else key in visibleKeys) && SearchTextNormalizer.normalize("${shortcut.shortLabel} ${shortcut.longLabel?.toString().orEmpty()}").contains(normalized)
             }.take(5).forEach { result.add(factory.createShortcutTarget(it)) }
         }
         result.take(10)

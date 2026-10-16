@@ -87,7 +87,12 @@ class LawnchairSearchAdapterProvider(
 
     override fun getItemsPerRow(viewType: Int, appsPerRow: Int) = if (viewType != SEARCH_RESULT_ICON) 1 else super.getItemsPerRow(viewType, appsPerRow)
 
-    override fun launchHighlightedItem(): Boolean = quickLaunchItem?.launch() ?: false
+    override fun clearHighlightedItem() {
+        super.clearHighlightedItem()
+        quickLaunchItem = null
+    }
+
+    override fun launchHighlightedItem(): Boolean = quickLaunchItem?.takeIf { (it as View).isAttachedToWindow && it.isQuickLaunch }?.launch() ?: false
 
     override fun getHighlightedItem() = quickLaunchItem as View?
 

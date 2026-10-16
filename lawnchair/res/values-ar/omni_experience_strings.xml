@@ -70,6 +70,9 @@
     <string name="omni_filter_files">الملفات</string>
     <string name="omni_filter_actions">الإجراءات</string>
     <string name="omni_preferred_workspace">نسخة Workspace المفضلة</string>
-    <string name="omni_choose_workspace">الاختيار في كل مرة</string>
+    <string name="omni_reset_workspace">الاختيار في كل مرة</string>
     <string name="omni_workspace_remember">سيتم حفظ اختيارك. يمكنك إلغاء الاختيار من مركز Omni في أي وقت.</string>
+    <string name="omni_theme_system">مظهر النظام</string>
+    <string name="omni_theme_light">مظهر فاتح</string>
+    <string name="omni_title">العنوان</string>
 </resources>

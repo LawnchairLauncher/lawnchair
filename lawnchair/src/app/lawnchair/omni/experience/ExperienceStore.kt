@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -25,18 +26,27 @@ class ExperienceStore private constructor(private val context: Context) {
         encodeDefaults = true
     }
     private val key = stringPreferencesKey("state_v1")
-    val state = context.experienceDataStore.data.map { prefs ->
-        prefs[key]?.let { json.decodeFromString<ExperienceState>(it) } ?: ExperienceState()
-    }.stateIn(scope, SharingStarted.Eagerly, null)
+    private fun decode(content: String?): ExperienceState = try {
+        content?.let { json.decodeFromString<ExperienceState>(it) } ?: ExperienceState()
+    } catch (error: kotlinx.serialization.SerializationException) {
+        android.util.Log.e("OmniExperience", "Stored experience data is invalid", error)
+        ExperienceState()
+    }
+    val state = context.experienceDataStore.data.map { prefs -> decode(prefs[key]) }
+        .catch { error ->
+            if (error is kotlinx.coroutines.CancellationException) throw error
+            android.util.Log.e("OmniExperience", "Experience storage unavailable", error)
+            emit(ExperienceState())
+        }.stateIn(scope, SharingStarted.Eagerly, null)
 
     suspend fun read(): ExperienceState {
         val prefs = context.experienceDataStore.data.first()
-        return prefs[key]?.let { json.decodeFromString<ExperienceState>(it) } ?: ExperienceState()
+        return decode(prefs[key])
     }
 
     suspend fun update(transform: (ExperienceState) -> ExperienceState) {
         context.experienceDataStore.edit { prefs ->
-            val old = prefs[key]?.let { json.decodeFromString<ExperienceState>(it) } ?: ExperienceState()
+            val old = decode(prefs[key])
             val next = transform(old)
             require(next.aliases.size <= 1000 && next.aliases.values.all { it.length <= 200 })
             require(next.cards.size <= 40 && next.cards.all { it.title.length <= 160 && it.text.length <= 4000 })
@@ -44,6 +54,15 @@ class ExperienceStore private constructor(private val context: Context) {
             require(next.scenes.all { it.startMinute in 0..1439 && it.endMinute in 0..1439 && it.apps.size <= 12 })
             require(next.stacks.all { it.widgetIds.size <= 8 && it.widgetIds.distinct().size == it.widgetIds.size })
             prefs[key] = json.encodeToString(next)
+        }
+    }
+
+    suspend fun removeCard(id: String) {
+        val removed = read().cards.firstOrNull { it.id == id }
+        update { state -> state.copy(cards = state.cards.filterNot { it.id == id }) }
+        val uri = removed?.uri
+        if (uri != null && read().cards.none { it.uri == uri }) {
+            runCatching { context.contentResolver.releasePersistableUriPermission(android.net.Uri.parse(uri), android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) }
         }
     }
 

@@ -44,6 +44,10 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
         bar.addView(
             Button(context).apply {
                 text = "‹"
+                minWidth = 0
+                minimumWidth = 0
+                setPadding(0, 0, 0, 0)
+                layoutParams = LayoutParams((40 * resources.displayMetrics.density).toInt(), (48 * resources.displayMetrics.density).toInt())
                 contentDescription = context.getString(R.string.omni_previous_widget)
                 setOnClickListener { move(-1) }
             },
@@ -52,6 +56,10 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
         bar.addView(
             Button(context).apply {
                 text = "›"
+                minWidth = 0
+                minimumWidth = 0
+                setPadding(0, 0, 0, 0)
+                layoutParams = LayoutParams((40 * resources.displayMetrics.density).toInt(), (48 * resources.displayMetrics.density).toInt())
                 contentDescription = context.getString(R.string.omni_next_widget)
                 setOnClickListener { move(1) }
             },
@@ -59,6 +67,9 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
         bar.addView(
             Button(context).apply {
                 text = context.getString(R.string.omni_edit)
+                minWidth = 0
+                minimumWidth = 0
+                setPadding(4, 0, 4, 0)
                 setOnClickListener { configure() }
             },
         )
@@ -66,13 +77,20 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
         bar.setOnTouchListener { _, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
+                    parent?.requestDisallowInterceptTouchEvent(true)
                     startX = event.x
                     true
                 }
 
                 MotionEvent.ACTION_UP -> {
+                    parent?.requestDisallowInterceptTouchEvent(false)
                     val distance = event.x - startX
                     if (kotlin.math.abs(distance) > 48 * resources.displayMetrics.density) move(if (distance > 0) -1 else 1)
+                    true
+                }
+
+                MotionEvent.ACTION_CANCEL -> {
+                    parent?.requestDisallowInterceptTouchEvent(false)
                     true
                 }
 
@@ -112,7 +130,12 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
     private fun start() {
         if (outerId <= 0 || scope != null) return
         val owner = findViewTreeLifecycleOwner() ?: context as? LifecycleOwner ?: return
-        val work = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        val work = CoroutineScope(
+            SupervisorJob() + Dispatchers.Main.immediate + kotlinx.coroutines.CoroutineExceptionHandler { _, error ->
+                android.util.Log.w("OmniWidgetStack", "Widget stack unavailable", error)
+                post { showEmpty() }
+            },
+        )
         scope = work
         collection = work.launch {
             owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -130,7 +153,7 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
                         if (info == null || info.provider == OmniWidgetStack.component(context)) {
                             showEmpty()
                         } else {
-                            val view = widgetHost.createView(context, childId!!, info)
+                            val view = widgetHost.createView(context, childId, info)
                             content.addView(view, FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
                             val density = resources.displayMetrics.density
                             view.post {
@@ -142,7 +165,7 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
                         }
                     }
                 } finally {
-                    widgetHost.stopListening()
+                    runCatching { widgetHost.stopListening() }
                     widgetHost.releaseViews()
                     content.removeAllViews()
                     host = null
@@ -150,6 +173,17 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
             }
         }
     }
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        content.post {
+            val view = content.getChildAt(0) as? android.appwidget.AppWidgetHostView ?: return@post
+            val density = resources.displayMetrics.density
+            val width = (content.width / density).toInt()
+            val height = (content.height / density).toInt()
+            view.updateAppWidgetSize(null, width, height, width, height)
+        }
+    }
+
     private fun showEmpty() {
         content.removeAllViews()
         content.addView(

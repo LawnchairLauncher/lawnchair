@@ -47,6 +47,8 @@ data class HomeScene(
     val endMinute: Int = 0,
     val charging: Boolean? = null,
     val headset: Boolean? = null,
+    val floats: Map<String, Float> = emptyMap(),
+    val stackSelections: Map<Int, Int> = emptyMap(),
 ) {
     fun isActive(minute: Int, isCharging: Boolean, hasHeadset: Boolean): Boolean {
         val inTime = when {

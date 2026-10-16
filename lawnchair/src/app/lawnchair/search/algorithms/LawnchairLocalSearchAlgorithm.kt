@@ -51,7 +51,11 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
     private val appState = LauncherAppState.getInstance(context)
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val coroutineScope = CoroutineScope(
+        Dispatchers.IO + SupervisorJob() + kotlinx.coroutines.CoroutineExceptionHandler { _, error ->
+            android.util.Log.w("OmniSearch", "Search unavailable", error)
+        },
+    )
 
     @Volatile private var currentJob: Job? = null
     private val generation = AtomicLong()
@@ -80,7 +84,9 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             currentJob = coroutineScope.launch {
                 if (generation.get() != requestGeneration) return@launch
                 val prefs = PreferenceManager.getInstance(context)
-                val appResults = if (prefs.searchResultApps.get()) appSearchProvider.search(context, query, appSnapshot) else emptyList()
+                val scope = filterScope
+                val needsApps = scope in setOf(SearchScope.ALL, SearchScope.APPS, SearchScope.ACTIONS)
+                val appResults = if (needsApps && prefs.searchResultApps.get()) appSearchProvider.search(context, query, appSnapshot) else emptyList()
                 if (generation.get() != requestGeneration) return@launch
                 var actionTargets = emptyList<SearchTargetCompat>()
                 suspend fun deliver(results: List<SearchResult>, initial: Boolean = false) {
@@ -95,24 +101,21 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                 }
                 // Deliver apps before ShortcutManager, contacts, disk or network can delay them.
                 deliver(appResults, initial = true)
-                val shortcutResults = shortcutSearchProvider.search(context, appResults)
+                val shortcutResults = if (scope in setOf(SearchScope.ALL, SearchScope.ACTIONS)) shortcutSearchProvider.search(context, appResults) else emptyList()
                 if (generation.get() != requestGeneration) return@launch
-                actionTargets = app.lawnchair.omni.experience.ActionSearchProvider.search(context, query)
-                val nonAppProvidersFlow = combine(
-                    searchProviders.map { provider ->
-                        provider.search(context, query).onStart { emit(emptyList()) }.catch { error ->
-                            if (error is CancellationException) throw error
-                            android.util.Log.w("OmniSearch", "Provider ${provider.id} unavailable", error)
-                            emit(emptyList())
-                        }
-                    },
-                ) { resultsArray ->
-                    resultsArray.toList().flatten()
+                if (scope in setOf(SearchScope.ALL, SearchScope.ACTIONS)) actionTargets = app.lawnchair.omni.experience.ActionSearchProvider.search(context, query)
+                val selectedProviders = searchProviders.filter { provider ->
+                    scope == SearchScope.ALL || when (scope) {
+                        SearchScope.PEOPLE -> provider === ContactsSearchProvider
+                        SearchScope.FILES -> provider === FileSearchProvider
+                        SearchScope.ACTIONS -> provider === SettingsSearchProvider
+                        else -> false
+                    }
                 }
+                val nonAppProvidersFlow = progressiveResults(selectedProviders.map { it.search(context, query) })
 
                 nonAppProvidersFlow.collect { nonAppResults ->
-                    val calcResult = CalculatorSearchProvider.search(context, query)
-                        .firstOrNull()
+                    val calcResult = if (scope in setOf(SearchScope.ALL, SearchScope.ACTIONS)) CalculatorSearchProvider.search(context, query).firstOrNull() else null
 
                     val localResults = appResults + shortcutResults + (calcResult ?: emptyList()) + nonAppResults
                     deliver(localResults)

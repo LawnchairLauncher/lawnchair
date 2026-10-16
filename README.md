@@ -12,9 +12,10 @@ and integration with [OmniDev Workspace](https://github.com/obieda-hussien/OmniD
 and [OmniLinkSDK](https://github.com/obieda-hussien/OmniLinkSDK).
 The original Lawnchair, AOSP, and third-party authors retain credit and rights to their work.
 
-> This README describes the `feature/omni-launcher-integration` proposal based on `15-dev`,
-> updated 1 October 2026. Integration features become part of the base branch only after merge.
-> Policy tests passed; a full APK build and physical-device performance checks are still pending.
+> This branch includes Omni Home experiences: responsive multilingual/action search, Shelf,
+> Home scenes, rule folders, widget stacks and expanded OmniLink/OEM integration.
+> See [setup, capability contracts and validation limits](docs/OMNI_HOME_EXPERIENCES.md).
+> Android CI and real-device validation are separate; no measured FPS or memory guarantee is implied.
 
 ## Contents
 
@@ -28,6 +29,9 @@ The original Lawnchair, AOSP, and third-party authors retain credit and rights t
 - [Copyright, attribution, and licenses](#copyright-attribution-and-licenses)
 
 ## Features and origins
+
+Home experiences and performance work are documented in [OMNI_HOME_EXPERIENCES.md](docs/OMNI_HOME_EXPERIENCES.md).
+Workspace's companion capability policy is in [PR #194](https://github.com/obieda-hussien/OmniDev-Workspace/pull/194).
 
 | Feature | Origin / scope | Requirements |
 | --- | --- | --- |
@@ -85,14 +89,14 @@ SDK version bump. [Payloads, setup, errors, privacy and test matrix](docs/OMNI_I
 <!-- OMNI_METRICS_START -->
 | Metric | Count |
 | --- | ---: |
-| Tracked files | **4,975** |
-| Production source files | **2,166** |
-| Production source lines | **466,832** |
-| Test source files | **655** |
-| Test source lines | **112,111** |
-| Kotlin files | **1,162** |
-| Kotlin lines | **161,129** |
-| Markdown documents | **38** |
+| Tracked files | **5,003** |
+| Production source files | **2,185** |
+| Production source lines | **469,066** |
+| Test source files | **656** |
+| Test source lines | **112,224** |
+| Kotlin files | **1,182** |
+| Kotlin lines | **163,476** |
+| Markdown documents | **40** |
 <!-- OMNI_METRICS_END -->
 
 These are physical line counts from `git ls-files`, including upstream Lawnchair/AOSP/vendored

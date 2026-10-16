@@ -44,7 +44,11 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
     private val prefs2 = PreferenceManager2.getInstance(context)
 
-    val coroutineScope = CoroutineScope(context = Dispatchers.IO + SupervisorJob())
+    val coroutineScope = CoroutineScope(
+        context = Dispatchers.IO + SupervisorJob() + kotlinx.coroutines.CoroutineExceptionHandler { _, error ->
+            android.util.Log.w("OmniSearch", "Search unavailable", error)
+        },
+    )
 
     init {
         prefs2.enableFuzzySearch.onEach(launchIn = coroutineScope) {

@@ -31,7 +31,7 @@ class FolderService(val context: Context) : SafeCloseable {
         inventory.revision,
         PreferenceManager2.getInstance(context).hiddenApps.get(),
     ) { folders, state, _, _ ->
-        val apps = inventory.visible()
+        val apps = if (folders.isEmpty()) emptyList() else inventory.visible()
         val byKey = apps.associateBy { it.toComponentKey().toString() }
         folders.mapNotNull { folder ->
             folderDao.getFolderWithItems(folder.id)?.let { mapFolder(it, true, apps, byKey, state.rules) }
@@ -52,7 +52,12 @@ class FolderService(val context: Context) : SafeCloseable {
     suspend fun createRuleFolder(title: String, rule: FolderRule): Int = withContext(Dispatchers.IO) {
         require(title.isNotBlank() && title.length <= 80)
         val id = folderDao.insertFolder(FolderInfoEntity(title = title)).toInt()
-        experience.update { it.copy(rules = it.rules + rule.copy(folderId = id)) }
+        try {
+            experience.update { it.copy(rules = it.rules + rule.copy(folderId = id)) }
+        } catch (error: Exception) {
+            folderDao.deleteFolder(id)
+            throw error
+        }
         id
     }
 

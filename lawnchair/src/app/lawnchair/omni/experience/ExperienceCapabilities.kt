@@ -104,7 +104,7 @@ object ExperienceCapabilities {
                         checkAccess()
                         val home = LawnchairLauncher.instance
                         check(home?.hasBeenResumed() == true) { "foreground_required" }
-                        if (!request.dryRun) home!!.startActivity(ActionSearchProvider.destination(context, id))
+                        if (!request.dryRun) home.startActivity(ActionSearchProvider.destination(context, id))
                     }
                     buildJsonObject { put("id", id) }
                 }
@@ -160,7 +160,7 @@ object ExperienceCapabilities {
                                         buildJsonObject {
                                             put("id", it.id)
                                             put("title", it.title.toString().take(80))
-                                            put("count", it.contents.size)
+                                            put("count", it.getContents().size)
                                         },
                                     )
                                 }
@@ -283,6 +283,8 @@ object ExperienceCapabilities {
                 "launcher.oem.suspend_app" -> {
                     val pkg = text("package", 200)
                     val suspend = (payload["suspended"] as? JsonPrimitive)?.takeUnless { it.isString }?.booleanOrNull ?: error("invalid_payload")
+                    require(pkg != context.packageName && !pkg.startsWith("com.omnidev.workspace"))
+                    require(OmniAppInventory.get(context).visible().any { it.targetPackage == pkg })
                     val status = OemIntegration.status(context)
                     check(status.deviceOwner || status.profileOwner) { "device_owner_required" }
                     checkAccess()

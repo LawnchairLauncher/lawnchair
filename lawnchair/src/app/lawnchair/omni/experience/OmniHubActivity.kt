@@ -198,13 +198,13 @@ private fun ShelfScreen(state: ExperienceState, store: ExperienceStore, work: Wo
                             context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, card.text), card.title))
                         }) { Text(stringResource(R.string.omni_share)) }
                     }
-                    TextButton(onClick = { work { store.update { it.copy(cards = it.cards.filterNot { item -> item.id == card.id }) } } }) { Text(stringResource(R.string.omni_remove)) }
+                    TextButton(onClick = { work { store.removeCard(card.id) } }) { Text(stringResource(R.string.omni_remove)) }
                 }
             }
         }
     }
     if (editNote) {
-        TextEditor(stringResource(R.string.omni_new_note), stringResource(R.string.omni_title), stringResource(R.string.omni_note_text), initialSecond = draft.orEmpty(), onDismiss = { editNote = false }) { title, text ->
+        TextEditor(stringResource(R.string.omni_new_note), stringResource(R.string.omni_title), secondLabel = stringResource(R.string.omni_note_text), initialSecond = draft.orEmpty(), onDismiss = { editNote = false }) { title, text ->
             work { store.putCard(ShelfCard(ExperienceStore.newId(), title.ifBlank { context.getString(R.string.omni_new_note) }.take(160), text.take(4000))) }
             editNote = false
         }
@@ -213,7 +213,7 @@ private fun ShelfScreen(state: ExperienceState, store: ExperienceStore, work: Wo
 
 private suspend fun launchApp(context: Context, app: AppInfo) {
     withContext(Dispatchers.Main) {
-        context.getSystemService(android.content.pm.LauncherApps::class.java).startMainActivity(app.componentName, app.user, null, null)
+        (context.getSystemService(android.content.pm.LauncherApps::class.java) ?: error("launcher_service_unavailable")).startMainActivity(app.componentName, app.user, null, null)
     }
 }
 private suspend fun openCard(context: Context, card: ShelfCard) = withContext(Dispatchers.Main) {
@@ -272,13 +272,19 @@ private fun SceneEditor(scene: HomeScene, onDismiss: () -> Unit, onSave: (HomeSc
     var automatic by remember { mutableStateOf(scene.automatic) }
     var charging by remember { mutableStateOf(scene.charging == true) }
     var headset by remember { mutableStateOf(scene.headset == true) }
-    var dark by remember { mutableStateOf(scene.strings["theme"] == "dark") }
+    var theme by remember { mutableStateOf(scene.strings["theme"] ?: "system") }
     val apps by produceState<List<AppInfo>>(emptyList()) { value = OmniAppInventory.get(context).visible() }
     var pinned by remember { mutableStateOf(scene.apps.toSet()) }
     AlertDialog(onDismissRequest = onDismiss, title = { Text(stringResource(R.string.omni_edit_scene)) }, text = {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             item { OutlinedTextField(name, { name = it.take(80) }, label = { Text(stringResource(R.string.omni_title)) }) }
-            item { Toggle(stringResource(R.string.omni_dark), dark) { dark = it } }
+            item {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    listOf("system" to R.string.omni_theme_system, "light" to R.string.omni_theme_light, "dark" to R.string.omni_dark).forEach { (id, label) ->
+                        FilterChip(theme == id, { theme = id }, label = { Text(stringResource(label)) })
+                    }
+                }
+            }
             item { Toggle(stringResource(R.string.omni_automatic), automatic) { automatic = it } }
             item { OutlinedTextField(start, { start = it.take(5) }, label = { Text(stringResource(R.string.omni_start_time)) }) }
             item { OutlinedTextField(end, { end = it.take(5) }, label = { Text(stringResource(R.string.omni_end_time)) }) }
@@ -292,7 +298,7 @@ private fun SceneEditor(scene: HomeScene, onDismiss: () -> Unit, onSave: (HomeSc
         }
     }, confirmButton = {
         TextButton(enabled = name.isNotBlank() && parseSceneTime(start) != null && parseSceneTime(end) != null, onClick = {
-            onSave(scene.copy(name = name, strings = scene.strings + ("theme" to if (dark) "dark" else "light"), apps = pinned.toList(), automatic = automatic, startMinute = parseSceneTime(start)!!, endMinute = parseSceneTime(end)!!, charging = true.takeIf { charging }, headset = true.takeIf { headset }))
+            onSave(scene.copy(name = name, strings = scene.strings + ("theme" to theme), apps = pinned.toList(), automatic = automatic, startMinute = parseSceneTime(start)!!, endMinute = parseSceneTime(end)!!, charging = true.takeIf { charging }, headset = true.takeIf { headset }))
         }) { Text(stringResource(R.string.omni_save)) }
     }, dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } })
 }
@@ -303,6 +309,7 @@ private fun RulesScreen(state: ExperienceState, store: ExperienceStore, work: Wo
     val context = LocalContext.current
     var create by remember { mutableStateOf(false) }
     var editing by remember { mutableStateOf<FolderRule?>(null) }
+    var removing by remember { mutableStateOf<FolderRule?>(null) }
     LazyColumn(Modifier.fillMaxSize()) {
         item {
             Panel(stringResource(R.string.omni_rule_folders), stringResource(R.string.omni_rules_help)) {
@@ -312,7 +319,7 @@ private fun RulesScreen(state: ExperienceState, store: ExperienceStore, work: Wo
         items(state.rules, key = { it.folderId }) { rule ->
             Panel(rule.nameContains.ifBlank { rule.packagePrefix.ifBlank { context.getString(R.string.omni_rule_folders) } }) {
                 TextButton(onClick = { editing = rule }) { Text(stringResource(R.string.omni_edit)) }
-                TextButton(onClick = { work { FolderService.INSTANCE.get(context).deleteFolderInfo(rule.folderId) } }) { Text(stringResource(R.string.omni_remove)) }
+                TextButton(onClick = { removing = rule }) { Text(stringResource(R.string.omni_remove)) }
             }
         }
     }
@@ -321,6 +328,14 @@ private fun RulesScreen(state: ExperienceState, store: ExperienceStore, work: Wo
             work { FolderService.INSTANCE.get(context).createRuleFolder(title, rule) }
             create = false
         }
+    }
+    removing?.let { rule ->
+        AlertDialog(onDismissRequest = { removing = null }, title = { Text(stringResource(R.string.omni_delete)) }, text = { Text(stringResource(R.string.omni_delete_confirm)) }, confirmButton = {
+            TextButton(onClick = {
+                work { FolderService.INSTANCE.get(context).deleteFolderInfo(rule.folderId) }
+                removing = null
+            }) { Text(stringResource(R.string.omni_delete)) }
+        }, dismissButton = { TextButton(onClick = { removing = null }) { Text(stringResource(android.R.string.cancel)) } })
     }
     editing?.let { rule ->
         RuleEditor(rule, onDismiss = { editing = null }) { _, updated ->
@@ -435,7 +450,7 @@ private fun SystemScreen() {
         item {
             Panel(stringResource(R.string.omni_preferred_workspace)) {
                 val scope = rememberCoroutineScope()
-                TextButton(onClick = { scope.launch(Dispatchers.IO) { ExperienceStore.get(context).update { it.copy(preferredWorkspace = null) } } }) { Text(stringResource(R.string.omni_choose_workspace)) }
+                TextButton(onClick = { scope.launch(Dispatchers.IO) { ExperienceStore.get(context).update { it.copy(preferredWorkspace = null) } } }) { Text(stringResource(R.string.omni_reset_workspace)) }
             }
         }
     }
@@ -453,11 +468,11 @@ private fun Toggle(label: String, checked: Boolean, onChange: (Boolean) -> Unit)
 private fun TextEditor(
     title: String,
     firstLabel: String,
+    onDismiss: () -> Unit,
     secondLabel: String? = null,
     initialFirst: String = "",
     initialSecond: String = "",
     allowEmpty: Boolean = false,
-    onDismiss: () -> Unit,
     onSave: (String, String) -> Unit,
 ) {
     var first by rememberSaveable { mutableStateOf(initialFirst) }

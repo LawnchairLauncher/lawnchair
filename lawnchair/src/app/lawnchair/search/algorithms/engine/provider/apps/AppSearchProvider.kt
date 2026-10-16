@@ -15,7 +15,7 @@ import kotlinx.coroutines.ensureActive
 /** Bounded index of prepared labels and aliases. Rebuilt entries follow label/locale/alias changes. */
 object AppSearchProvider {
     private val transliterator by lazy { Transliterator.getInstance("Any-Latin; Latin-ASCII") }
-    private fun romanize(text: String): String = synchronized(transliterator) { transliterator.transliterate(text) }
+    private fun romanize(text: String): String = synchronized(transliterator) { runCatching { transliterator.transliterate(text) }.getOrDefault(text) }
     private val index = object : LinkedHashMap<String, List<PreparedSearchText>>(128, .75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, List<PreparedSearchText>>?) = size > 1024
     }

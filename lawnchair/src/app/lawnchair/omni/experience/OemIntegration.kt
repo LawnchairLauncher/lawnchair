@@ -26,7 +26,7 @@ object OemIntegration {
         require(OmniAppInventory.get(context).visible().any { it.targetPackage == packageName })
         val state = status(context)
         check(state.deviceOwner || state.profileOwner) { "device_owner_required" }
-        val policy = context.getSystemService(DevicePolicyManager::class.java)
+        val policy = context.getSystemService(DevicePolicyManager::class.java) ?: error("device_owner_required")
         policy.setPackagesSuspended(ComponentName(context, SleepMethodDeviceAdmin.SleepDeviceAdmin::class.java), arrayOf(packageName), suspended).isEmpty()
     }
 }

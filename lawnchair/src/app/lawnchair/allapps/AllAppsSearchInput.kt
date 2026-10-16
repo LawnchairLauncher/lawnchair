@@ -371,15 +371,20 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 }
             })
             searchBarController.initialize(algorithm, input, launcher, this@AllAppsSearchInput)
-            searchBarController.refreshSearchResult()
+            input.text?.takeIf { it.isNotEmpty() }?.let { searchBarController.afterTextChanged(it) }
         }
     }
 
     override fun resetSearch() {
+        if (searchAlgorithm == null) {
+            input.text?.clear()
+            return
+        }
         searchBarController.reset()
     }
 
     override fun preDispatchKeyEvent(event: KeyEvent) {
+        if (searchAlgorithm == null) return
         // Determine if the key event was actual text, if so, focus the search bar and then dispatch
         // the key normally so that it can process this key event
         if (!searchBarController.isSearchFieldFocused && event.action == KeyEvent.ACTION_DOWN) {

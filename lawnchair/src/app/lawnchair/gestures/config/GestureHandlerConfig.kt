@@ -1,7 +1,6 @@
 package app.lawnchair.gestures.config
 
 import android.content.Context
-import app.lawnchair.omni.experience.OpenShelfHandler
 import app.lawnchair.gestures.handlers.GestureHandler
 import app.lawnchair.gestures.handlers.NoOpGestureHandler
 import app.lawnchair.gestures.handlers.OpenAppDrawerGestureHandler
@@ -11,6 +10,7 @@ import app.lawnchair.gestures.handlers.OpenAppTarget
 import app.lawnchair.gestures.handlers.OpenAssistantHandler
 import app.lawnchair.gestures.handlers.OpenNotificationsHandler
 import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
+import app.lawnchair.gestures.handlers.OpenShelfHandler
 import app.lawnchair.gestures.handlers.RecentsGestureHandler
 import app.lawnchair.gestures.handlers.SleepGestureHandler
 import com.android.launcher3.R

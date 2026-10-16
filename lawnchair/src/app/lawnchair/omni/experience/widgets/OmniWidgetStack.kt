@@ -31,6 +31,8 @@ class OmniWidgetStack : AppWidgetProvider() {
             try {
                 appWidgetIds.forEach { StackHost(context, it).deleteHost() }
                 ExperienceStore.get(context).update { state -> state.copy(stacks = state.stacks.filterNot { it.outerId in appWidgetIds }) }
+            } catch (error: Exception) {
+                android.util.Log.w("OmniWidgetStack", "Stack cleanup unavailable", error)
             } finally {
                 result.finish()
             }

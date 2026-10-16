@@ -33,6 +33,7 @@ java = str(Path(os.environ["JAVA_HOME"]) / "bin/java") if os.environ.get("JAVA_H
 base = "lawnchair/src/app/lawnchair/"
 sources = [
     base + "search/algorithms/engine/provider/apps/SearchTextNormalizer.kt",
+    base + "search/algorithms/ProgressiveSearch.kt",
     base + "search/algorithms/engine/provider/apps/AppMatcher.kt",
     base + "omni/experience/ExperienceModels.kt",
     base + "omni/experience/ExperienceCapabilityNames.kt",
