@@ -135,7 +135,7 @@ class FoldTransitionController(
     override fun onActivityResumed(activity: Activity) {
         resumed = true
         restAngle = Float.NaN
-        if (shouldTrackHinge()) hinge.start()
+        updateHingeSensor()
         if (pendingReplay != null) scheduleReplay(REPLAY_DELAY_AFTER_RESUME_MS)
     }
 
@@ -167,6 +167,7 @@ class FoldTransitionController(
         lastLarge = large
         lastScreen = screen
         restAngle = Float.NaN
+        updateHingeSensor()
         // Same size class (insets, rotation, grid): a running transition picks up the new geometry.
         if (large == wasLarge) return
 
@@ -619,6 +620,15 @@ class FoldTransitionController(
     private fun shouldTrackHinge(): Boolean = isEngineEnabled() && hinge.hasSensor &&
         prefs2.foldTrackHinge.firstCached() &&
         prefs2.foldTransitionStyle.firstCached() != FoldTransitionStyle.NONE
+
+    /**
+     * The hinge sensor runs only while the launcher is resumed on the large screen: that is where a
+     * fold starts and where an unfold is followed (it is started by the unfold's profile change,
+     * before the transition). On the cover nothing reads it.
+     */
+    private fun updateHingeSensor() {
+        if (resumed && lastLarge && shouldTrackHinge()) hinge.start() else hinge.stop()
+    }
 
     private fun isReducedMotion(): Boolean = !ValueAnimator.areAnimatorsEnabled()
 

@@ -15,7 +15,9 @@ import kotlin.math.abs
 /**
  * Reads the hinge angle sensor ([Sensor.TYPE_HINGE_ANGLE], API 30+) between [start] and [stop].
  *
- * The owner starts it while the launcher is resumed, so the sensor is never on in the background.
+ * The owner starts it only while the launcher is resumed on the large screen, so the sensor is never
+ * on in the background or on the cover. [stop] forgets the last angle, so a reading never outlives
+ * the session it came from.
  * Events can arrive faster than the display refreshes; they are coalesced and handed to [Listener]
  * at most once per frame, on the main thread. Nothing is allocated per event.
  */
@@ -78,6 +80,8 @@ class HingeAngleProvider(
         }
         directionAnchor = Float.NaN
         moveAnchor = Float.NaN
+        angle = Float.NaN
+        isOpening = false
     }
 
     override fun onSensorChanged(event: SensorEvent) {
