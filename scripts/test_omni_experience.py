@@ -17,6 +17,7 @@ ARTIFACTS = {
     "ktlint.jar": "com/pinterest/ktlint/ktlint-cli/1.8.0/ktlint-cli-1.8.0-all.jar",
     "junit.jar": "junit/junit/4.13.2/junit-4.13.2.jar",
     "hamcrest.jar": "org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar",
+    "icu.jar": "com/ibm/icu/icu4j/68.2/icu4j-68.2.jar",
     "fuzzy.jar": "me/xdrop/fuzzywuzzy/1.4.0/fuzzywuzzy-1.4.0.jar",
 }
 for filename, artifact in ARTIFACTS.items():
@@ -43,6 +44,12 @@ sources = [
     "lawnchair/src/test/kotlin/app/lawnchair/omni/OmniLauncherAccessPolicyTest.kt",
     "lawnchair/src/test/kotlin/app/lawnchair/omni/OmniSearchPolicyTest.kt",
 ]
+sources.append("lawnchair/src/test/kotlin/app/lawnchair/omni/experience/CalendarDateFormatterTest.kt")
 with tempfile.TemporaryDirectory(prefix="omni-test-classes-") as output:
+    # Android ICU is platform-provided. Run the identical formatter against the Android 11-era
+    # ICU4J API on the JVM; APK CI independently checks actual android.icu compilation.
+    formatter = Path(output) / "CalendarDateFormatter.kt"
+    formatter.write_text((ROOT / (base + "smartspace/CalendarDateFormatter.kt")).read_text().replace("import android.icu.", "import com.ibm.icu."))
+    sources.append(str(formatter))
     subprocess.run([java, "-cp", classpath, "org.jetbrains.kotlin.cli.jvm.K2JVMCompiler", "-no-stdlib", "-no-reflect", "-classpath", classpath, "-d", output] + sources, cwd=ROOT, check=True)
-    subprocess.run([java, "-cp", output + os.pathsep + classpath, "org.junit.runner.JUnitCore", "app.lawnchair.omni.experience.ExperienceRulesTest", "app.lawnchair.omni.OmniLauncherAccessPolicyTest", "app.lawnchair.omni.OmniSearchPolicyTest"], cwd=ROOT, check=True)
+    subprocess.run([java, "-cp", output + os.pathsep + classpath, "org.junit.runner.JUnitCore", "app.lawnchair.omni.experience.ExperienceRulesTest", "app.lawnchair.omni.OmniLauncherAccessPolicyTest", "app.lawnchair.omni.OmniSearchPolicyTest", "app.lawnchair.omni.experience.CalendarDateFormatterTest"], cwd=ROOT, check=True)

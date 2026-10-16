@@ -46,17 +46,19 @@ object SceneController {
         )
     }
 
-    suspend fun apply(context: Context, sceneId: String, checkAccess: () -> Unit = {}) = mutations.withLock {
+    suspend fun apply(context: Context, sceneId: String, checkAccess: () -> Unit = {}, automatic: Boolean = false) = mutations.withLock {
         checkAccess()
         val store = ExperienceStore.get(context)
         val state = store.read()
+        if (automatic && !state.automaticScenes) return@withLock
         val scene = state.scenes.firstOrNull { it.id == sceneId } ?: error("Scene unavailable")
         val previous = capture(context, "Undo")
         checkAccess()
+        if (automatic) store.update { it.copy(automaticBaseline = it.automaticBaseline ?: previous, automaticSceneId = sceneId) }
         write(context, scene, checkAccess)
         store.update {
             checkAccess()
-            it.copy(activeScene = sceneId, undoScene = previous, stacks = restoreStacks(it.stacks, scene))
+            it.copy(activeScene = sceneId, undoScene = previous, stacks = restoreStacks(it.stacks, scene), automaticBaseline = if (automatic) it.automaticBaseline else null, automaticSceneId = sceneId.takeIf { automatic })
         }
         refresh(context)
     }
@@ -65,7 +67,17 @@ object SceneController {
         val store = ExperienceStore.get(context)
         val scene = store.read().undoScene ?: return@withLock
         write(context, scene)
-        store.update { it.copy(activeScene = null, undoScene = null, stacks = restoreStacks(it.stacks, scene)) }
+        store.update { it.copy(activeScene = null, undoScene = null, stacks = restoreStacks(it.stacks, scene), automaticBaseline = null, automaticSceneId = null) }
+        refresh(context)
+    }
+
+    private suspend fun restoreAutomatic(context: Context) = mutations.withLock {
+        val store = ExperienceStore.get(context)
+        val state = store.read()
+        val baseline = state.automaticBaseline ?: return@withLock
+        if (state.automaticSceneId == null) return@withLock
+        write(context, baseline)
+        store.update { it.copy(activeScene = null, undoScene = null, automaticBaseline = null, automaticSceneId = null, stacks = restoreStacks(it.stacks, baseline)) }
         refresh(context)
     }
 
@@ -111,7 +123,7 @@ object SceneController {
             job = launcher.lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val state = ExperienceStore.get(launcher).read()
-                    if (!state.automaticScenes) return@launch
+                    if (!state.automaticScenes && state.automaticBaseline == null) return@launch
                     val battery = launcher.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
                     val status = battery?.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
                     val charging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
@@ -121,8 +133,11 @@ object SceneController {
                     }
                     val time = Calendar.getInstance()
                     val minute = time.get(Calendar.HOUR_OF_DAY) * 60 + time.get(Calendar.MINUTE)
-                    val scene = state.scenes.firstOrNull { it.isActive(minute, charging, headset) }
-                    if (scene != null && scene.id != state.activeScene) apply(launcher, scene.id)
+                    when (val change = state.automaticSceneChange(minute, charging, headset)) {
+                        AutomaticSceneChange.None -> Unit
+                        AutomaticSceneChange.Restore -> withContext(kotlinx.coroutines.NonCancellable) { restoreAutomatic(launcher) }
+                        is AutomaticSceneChange.Apply -> withContext(kotlinx.coroutines.NonCancellable) { apply(launcher, change.id, automatic = true) }
+                    }
                 } catch (error: Exception) {
                     if (error is kotlinx.coroutines.CancellationException) throw error
                     android.util.Log.w("OmniScenes", "Automatic scene unavailable", error)

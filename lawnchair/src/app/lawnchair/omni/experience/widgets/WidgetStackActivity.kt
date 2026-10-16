@@ -5,14 +5,40 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.omni.experience.ExperienceStore
 import app.lawnchair.omni.experience.WidgetStack
+import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
+import app.lawnchair.ui.preferences.components.layout.PreferenceScaffold
+import app.lawnchair.ui.theme.EdgeToEdge
+import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.DeviceTier
 import app.lawnchair.util.DeviceTierManager
 import com.android.launcher3.R
@@ -31,19 +57,22 @@ class WidgetStackActivity : ComponentActivity() {
     private var outerId = -1
     private var pendingId = -1
     private lateinit var host: StackHost
-    private lateinit var body: LinearLayout
+    private var members by mutableStateOf<List<Pair<Int, String>>?>(null)
+    private var selected by mutableIntStateOf(0)
+    private var busy by mutableStateOf(false)
+    private var removing by mutableStateOf<Int?>(null)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setResult(Activity.RESULT_CANCELED)
         outerId = savedInstanceState?.getInt("outer") ?: intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
         pendingId = savedInstanceState?.getInt("pending") ?: -1
         host = StackHost(this, outerId)
-        body = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            val pad = (24 * resources.displayMetrics.density).toInt()
-            setPadding(pad, pad + (24 * resources.displayMetrics.density).toInt(), pad, pad)
+        setContent {
+            LawnchairTheme {
+                EdgeToEdge()
+                StackEditor()
+            }
         }
-        setContentView(body)
         lifecycleScope.launch(errors) {
             val info = withContext(Dispatchers.IO) { AppWidgetManager.getInstance(this@WidgetStackActivity).getAppWidgetInfo(outerId) }
             if (outerId <= 0 || info?.provider != OmniWidgetStack.component(this@WidgetStackActivity)) {
@@ -54,61 +83,100 @@ class WidgetStackActivity : ComponentActivity() {
         }
     }
     private suspend fun render() {
-        val state = withContext(Dispatchers.IO) { ExperienceStore.get(this@WidgetStackActivity).read() }
-        val stack = state.stacks.firstOrNull { it.outerId == outerId } ?: WidgetStack(outerId)
-        body.removeAllViews()
-        body.addView(
-            TextView(this).apply {
-                text = getString(R.string.omni_widget_stacks)
-                textSize = 24f
-            },
-        )
-        body.addView(TextView(this).apply { text = getString(R.string.omni_stack_help) })
-        stack.widgetIds.forEachIndexed { index, id ->
-            val info = withContext(Dispatchers.IO) { AppWidgetManager.getInstance(this@WidgetStackActivity).getAppWidgetInfo(id) }
-            val label = withContext(Dispatchers.IO) { info?.loadLabel(packageManager) ?: getString(R.string.omni_action_unavailable) }
-            body.addView(
-                Button(this).apply {
-                    text = getString(R.string.omni_stack_remove, index + 1, label)
-                    setOnClickListener {
-                        lifecycleScope.launch(errors) {
-                            withContext(Dispatchers.IO) {
-                                host.deleteAppWidgetId(id)
-                                ExperienceStore.get(this@WidgetStackActivity).update { current -> current.copy(stacks = current.stacks.map { if (it.outerId == outerId) it.copy(widgetIds = it.widgetIds - id, selected = 0) else it }) }
-                            }
-                            render()
-                        }
-                    }
-                },
-            )
+        val stack = withContext(Dispatchers.IO) {
+            ExperienceStore.get(this@WidgetStackActivity).read().stacks.firstOrNull { it.outerId == outerId } ?: WidgetStack(outerId)
         }
-        val limit = if (DeviceTierManager.getInstance(this).tier == DeviceTier.LOW) 4 else 8
-        body.addView(
-            Button(this).apply {
-                text = getString(R.string.omni_stack_add)
-                isEnabled = stack.widgetIds.size < limit && pendingId < 0
-                setOnClickListener {
-                    lifecycleScope.launch(errors) {
-                        pendingId = withContext(Dispatchers.IO) { host.allocateAppWidgetId() }
-                        try {
-                            startActivityForResult(Intent(AppWidgetManager.ACTION_APPWIDGET_PICK).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, pendingId), PICK)
-                        } catch (_: Exception) {
-                            discard()
-                            render()
+        val labels = withContext(Dispatchers.IO) {
+            stack.widgetIds.map { id ->
+                val info = AppWidgetManager.getInstance(this@WidgetStackActivity).getAppWidgetInfo(id)
+                id to (info?.loadLabel(packageManager) ?: getString(R.string.omni_action_unavailable))
+            }
+        }
+        members = labels
+        selected = stack.selected
+    }
+
+    private fun mutate(operation: suspend () -> Unit) {
+        if (busy) return
+        busy = true
+        lifecycleScope.launch(errors) {
+            try {
+                operation()
+                render()
+            } finally {
+                busy = false
+            }
+        }
+    }
+
+    private suspend fun changeStack(transform: (WidgetStack) -> WidgetStack) = withContext(Dispatchers.IO) {
+        ExperienceStore.get(this@WidgetStackActivity).update { state ->
+            state.copy(stacks = state.stacks.map { if (it.outerId == outerId) transform(it) else it })
+        }
+    }
+
+    @OptIn(ExperimentalLayoutApi::class)
+    @Composable
+    private fun StackEditor() {
+        PreferenceScaffold(label = stringResource(R.string.omni_widget_stacks), isExpandedScreen = false) { padding ->
+            Column(Modifier.fillMaxSize().padding(padding)) {
+                if (busy || members == null) LinearProgressIndicator(Modifier.fillMaxWidth())
+                LazyColumn(contentPadding = PaddingValues(bottom = 24.dp)) {
+                    item {
+                        PreferenceGroup(description = stringResource(R.string.omni_stack_help)) {
+                            Column(Modifier.padding(16.dp)) {
+                                val limit = if (DeviceTierManager.getInstance(this@WidgetStackActivity).tier == DeviceTier.LOW) 4 else 8
+                                Text(stringResource(R.string.omni_selected_apps, members.orEmpty().size, limit))
+                                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Button(enabled = !busy && members != null && members.orEmpty().size < limit && pendingId < 0, onClick = {
+                                        mutate {
+                                            pendingId = withContext(Dispatchers.IO) { host.allocateAppWidgetId() }
+                                            try {
+                                                startActivityForResult(Intent(AppWidgetManager.ACTION_APPWIDGET_PICK).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, pendingId), PICK)
+                                            } catch (_: Exception) {
+                                                discard()
+                                            }
+                                        }
+                                    }) { Text(stringResource(R.string.omni_stack_add)) }
+                                    TextButton(enabled = !busy && members != null, onClick = {
+                                        setResult(Activity.RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, outerId))
+                                        finish()
+                                    }) { Text(stringResource(R.string.omni_done)) }
+                                }
+                            }
+                        }
+                    }
+                    if (members?.isEmpty() == true) {
+                        item {
+                            PreferenceGroup(description = stringResource(R.string.omni_stack_empty)) {}
+                        }
+                    }
+                    itemsIndexed(members.orEmpty(), key = { _, member -> member.first }) { index, (id, label) ->
+                        PreferenceGroup(heading = label) {
+                            Column {
+                                SwitchPreference(checked = index == selected, onCheckedChange = { if (it) mutate { changeStack { stack -> stack.copy(selected = index) } } }, label = stringResource(R.string.omni_stack_show), enabled = !busy)
+                                FlowRow(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    TextButton(enabled = !busy && index > 0, onClick = { mutate { changeStack { it.moveMember(index, index - 1) } } }) { Text(stringResource(R.string.omni_move_up)) }
+                                    TextButton(enabled = !busy && index < members.orEmpty().lastIndex, onClick = { mutate { changeStack { it.moveMember(index, index + 1) } } }) { Text(stringResource(R.string.omni_move_down)) }
+                                    TextButton(enabled = !busy, onClick = { removing = id }) { Text(stringResource(R.string.omni_remove)) }
+                                }
+                            }
                         }
                     }
                 }
-            },
-        )
-        body.addView(
-            Button(this).apply {
-                text = getString(R.string.omni_done)
-                setOnClickListener {
-                    setResult(Activity.RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, outerId))
-                    finish()
-                }
-            },
-        )
+            }
+        }
+        removing?.let { id ->
+            AlertDialog(onDismissRequest = { removing = null }, title = { Text(stringResource(R.string.omni_remove)) }, text = { Text(stringResource(R.string.omni_delete_confirm)) }, confirmButton = {
+                TextButton(onClick = {
+                    removing = null
+                    mutate {
+                        changeStack { it.removeMember(id) }
+                        withContext(Dispatchers.IO) { host.deleteAppWidgetId(id) }
+                    }
+                }) { Text(stringResource(R.string.omni_remove)) }
+            }, dismissButton = { TextButton(onClick = { removing = null }) { Text(stringResource(android.R.string.cancel)) } })
+        }
     }
 
     @Deprecated("Legacy widget provider configuration contract")
@@ -156,6 +224,8 @@ class WidgetStackActivity : ComponentActivity() {
             withContext(Dispatchers.IO) {
                 ExperienceStore.get(this@WidgetStackActivity).update { state ->
                     val old = state.stacks.firstOrNull { it.outerId == outerId } ?: WidgetStack(outerId)
+                    val limit = if (DeviceTierManager.getInstance(this@WidgetStackActivity).tier == DeviceTier.LOW) 4 else 8
+                    require(old.widgetIds.size < limit)
                     state.copy(stacks = state.stacks.filterNot { it.outerId == outerId } + old.copy(widgetIds = (old.widgetIds + id).distinct()))
                 }
             }

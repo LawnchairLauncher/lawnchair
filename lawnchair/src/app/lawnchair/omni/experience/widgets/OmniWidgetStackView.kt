@@ -13,6 +13,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import app.lawnchair.omni.experience.ExperienceStore
+import app.lawnchair.omni.experience.widgetSwipeDelta
 import com.android.launcher3.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,8 @@ import kotlinx.coroutines.withContext
 class OmniWidgetStackView(context: Context) : LinearLayout(context) {
     private val content = FrameLayout(context)
     private val position = TextView(context).apply { gravity = Gravity.CENTER }
+    private var previousButton: Button? = null
+    private var nextButton: Button? = null
     private var outerId = -1
     private var host: StackHost? = null
     private var scope: CoroutineScope? = null
@@ -43,11 +46,12 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
         val bar = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
         bar.addView(
             Button(context).apply {
-                text = "‹"
+                previousButton = this
+                text = if (layoutDirection == LAYOUT_DIRECTION_RTL) "›" else "‹"
                 minWidth = 0
                 minimumWidth = 0
                 setPadding(0, 0, 0, 0)
-                layoutParams = LayoutParams((40 * resources.displayMetrics.density).toInt(), (48 * resources.displayMetrics.density).toInt())
+                layoutParams = LayoutParams((48 * resources.displayMetrics.density).toInt(), (48 * resources.displayMetrics.density).toInt())
                 contentDescription = context.getString(R.string.omni_previous_widget)
                 setOnClickListener { move(-1) }
             },
@@ -55,11 +59,12 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
         bar.addView(position, LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f))
         bar.addView(
             Button(context).apply {
-                text = "›"
+                nextButton = this
+                text = if (layoutDirection == LAYOUT_DIRECTION_RTL) "‹" else "›"
                 minWidth = 0
                 minimumWidth = 0
                 setPadding(0, 0, 0, 0)
-                layoutParams = LayoutParams((40 * resources.displayMetrics.density).toInt(), (48 * resources.displayMetrics.density).toInt())
+                layoutParams = LayoutParams((48 * resources.displayMetrics.density).toInt(), (48 * resources.displayMetrics.density).toInt())
                 contentDescription = context.getString(R.string.omni_next_widget)
                 setOnClickListener { move(1) }
             },
@@ -74,7 +79,7 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
             },
         )
         var startX = 0f
-        bar.setOnTouchListener { _, event ->
+        position.setOnTouchListener { _, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     parent?.requestDisallowInterceptTouchEvent(true)
@@ -85,7 +90,8 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
                 MotionEvent.ACTION_UP -> {
                     parent?.requestDisallowInterceptTouchEvent(false)
                     val distance = event.x - startX
-                    if (kotlin.math.abs(distance) > 48 * resources.displayMetrics.density) move(if (distance > 0) -1 else 1)
+                    if (kotlin.math.abs(distance) > 48 * resources.displayMetrics.density) move(widgetSwipeDelta(distance > 0, layoutDirection == LAYOUT_DIRECTION_RTL))
+                    if (kotlin.math.abs(distance) <= 48 * resources.displayMetrics.density) position.performClick()
                     true
                 }
 
@@ -99,6 +105,12 @@ class OmniWidgetStackView(context: Context) : LinearLayout(context) {
         }
         addView(bar, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
         showEmpty()
+    }
+
+    override fun onRtlPropertiesChanged(layoutDirection: Int) {
+        super.onRtlPropertiesChanged(layoutDirection)
+        previousButton?.text = if (layoutDirection == LAYOUT_DIRECTION_RTL) "›" else "‹"
+        nextButton?.text = if (layoutDirection == LAYOUT_DIRECTION_RTL) "‹" else "›"
     }
 
     fun bind(id: Int) {

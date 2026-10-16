@@ -5,6 +5,16 @@ updates, modifications and ecosystem integration. Original Lawnchair/AOSP author
 credits and rights; see [NOTICE.md](NOTICE.md). Upstream GITHUB_CHANGELOG.md and
 TELEGRAM_CHANGELOG.txt remain historical upstream release notes.
 
+## Theme-consistent Hub and Hijri dates — 16 October 2026
+
+- Replace Hub chip navigation with a native preference overview and focused feature screens; use the same preference theme in the widget editor and Shelf media controls.
+- Add Hijri/Gregorian/dual dates, live Home-view preview, calendar calculation/day correction, language, numerals, format, weekday/year/era and dual-date layout/order controls.
+- Remove blocking date preference initialization and change the date ticker from every second to every minute.
+- Preserve editor input on failed saves/rotation, prevent repeated Save, confirm removals, edit Shelf notes and release evicted document grants.
+- Search app pickers and preview rule matches; reorder scenes and widget members without changing the selected widget identity.
+- Restore the original appearance when automatic scene conditions expire or automation is disabled; mirror stack navigation in RTL.
+- Expand the executable JVM suite to 28 tests including calendars, DST, scene expiry, stack identity and RTL gestures.
+
 ## Home experiences — 16 October 2026
 
 - Deliver app search results independently of slower providers; cancel obsolete contact/file/HTTP work.

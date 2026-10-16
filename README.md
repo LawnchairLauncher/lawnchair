@@ -13,7 +13,7 @@ and [OmniLinkSDK](https://github.com/obieda-hussien/OmniLinkSDK).
 The original Lawnchair, AOSP, and third-party authors retain credit and rights to their work.
 
 > This branch includes Omni Home experiences: responsive multilingual/action search, Shelf,
-> Home scenes, rule folders, widget stacks and expanded OmniLink/OEM integration.
+> Home scenes, rule folders, widget stacks, customizable Hijri/Gregorian dates and expanded OmniLink/OEM integration.
 > See [setup, capability contracts and validation limits](docs/OMNI_HOME_EXPERIENCES.md).
 > Android CI and real-device validation are separate; no measured FPS or memory guarantee is implied.
 
@@ -89,13 +89,13 @@ SDK version bump. [Payloads, setup, errors, privacy and test matrix](docs/OMNI_I
 <!-- OMNI_METRICS_START -->
 | Metric | Count |
 | --- | ---: |
-| Tracked files | **5,003** |
-| Production source files | **2,185** |
-| Production source lines | **469,086** |
-| Test source files | **656** |
-| Test source lines | **112,224** |
-| Kotlin files | **1,182** |
-| Kotlin lines | **163,496** |
+| Tracked files | **5,005** |
+| Production source files | **2,186** |
+| Production source lines | **469,636** |
+| Test source files | **657** |
+| Test source lines | **112,344** |
+| Kotlin files | **1,184** |
+| Kotlin lines | **164,166** |
 | Markdown documents | **40** |
 <!-- OMNI_METRICS_END -->
 

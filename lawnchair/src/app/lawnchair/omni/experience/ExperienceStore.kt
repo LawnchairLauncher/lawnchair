@@ -74,8 +74,16 @@ class ExperienceStore private constructor(private val context: Context) {
         }
     }
 
-    suspend fun putCard(card: ShelfCard) = update { state ->
-        state.copy(cards = (listOf(card) + state.cards.filterNot { it.id == card.id }).take(40))
+    suspend fun putCard(card: ShelfCard) {
+        var previous = emptyList<ShelfCard>()
+        update { state ->
+            previous = state.cards
+            state.copy(cards = (listOf(card) + state.cards.filterNot { it.id == card.id }).take(40))
+        }
+        val retained = read().cards.mapNotNull { it.uri }.toSet()
+        previous.mapNotNull { it.uri }.distinct().filterNot { it in retained }.forEach { uri ->
+            runCatching { context.contentResolver.releasePersistableUriPermission(android.net.Uri.parse(uri), android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) }
+        }
     }
 
     companion object {

@@ -6,9 +6,12 @@ import android.media.session.MediaSessionManager
 import android.media.session.PlaybackState
 import android.os.Handler
 import android.os.Looper
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +33,7 @@ import kotlinx.coroutines.flow.flowOn
 private data class ShelfPlayback(val title: String, val playing: Boolean, val controller: MediaController)
 
 /** Session callbacks exist only while Shelf is subscribed and notification access is already granted. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ShelfMedia(modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -87,13 +92,15 @@ fun ShelfMedia(modifier: Modifier = Modifier) {
     }
     val playback by updates.collectAsStateWithLifecycle(initialValue = null)
     playback?.let { media ->
-        Card(modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
-            Row(Modifier.padding(12.dp)) {
-                Text(media.title, Modifier.weight(1f))
-                TextButton(onClick = {
-                    if (media.playing) media.controller.transportControls.pause() else media.controller.transportControls.play()
-                }) { Text(stringResource(if (media.playing) R.string.omni_pause else R.string.omni_play)) }
-                TextButton(onClick = { media.controller.transportControls.skipToNext() }) { Text(stringResource(R.string.omni_next_widget)) }
+        PreferenceGroup(modifier = modifier, heading = stringResource(R.string.omni_media)) {
+            Column(Modifier.padding(16.dp)) {
+                Text(media.title, style = MaterialTheme.typography.titleMedium)
+                FlowRow {
+                    TextButton(onClick = {
+                        if (media.playing) media.controller.transportControls.pause() else media.controller.transportControls.play()
+                    }) { Text(stringResource(if (media.playing) R.string.omni_pause else R.string.omni_play)) }
+                    TextButton(onClick = { media.controller.transportControls.skipToNext() }) { Text(stringResource(R.string.omni_media_next)) }
+                }
             }
         }
     }

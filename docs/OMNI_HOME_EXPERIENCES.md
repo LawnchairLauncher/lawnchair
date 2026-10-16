@@ -6,7 +6,7 @@ Root features are not changed by this work.
 
 ## Open the features
 
-Open Launcher settings → **Omni Hub**. A configurable **Omni Shelf** gesture and action-search
+Open Launcher settings → **Omni Hub**. The overview groups personalization and everyday tools; each feature has its own focused screen using the launcher preference scaffold, colors, shapes and typography. Back returns to the overview, then exits. A configurable **Omni Shelf** gesture and action-search
 results also open the Hub. English and Arabic resources are included; the UI follows the
 existing Material theme and start/end layout direction.
 
@@ -29,9 +29,21 @@ existing Material theme and start/end layout direction.
   an app. LauncherApps limits accessible users and shortcuts; inaccessible/locked profiles are
   not bypassed.
 
+### Hijri and Gregorian dates
+
+Under **Omni Hub → Date and time**, or the existing **At a Glance → Date and time** preferences:
+
+- Choose Gregorian, Hijri, both, or the retained Persian calendar. The calendar selector is available without an experimental-feature toggle.
+- Choose full/short/numeric month format, system/Arabic/English date language, system/Arabic/Latin numerals, weekday, year and calendar-era markers.
+- Hijri uses Android's built-in ICU calendars: Umm al-Qura (default), civil tabular or astronomical calculation. A bounded −2…+2 calendar-day adjustment only changes the Hijri date; today's weekday and Gregorian date stay correct, including across DST.
+- Dual dates can put Hijri or Gregorian first, inline or on two lines. Directional isolation keeps mixed Arabic/Latin date fragments in order.
+- The Hub preview uses the exact same view and preferences as the built-in Home/At a Glance date; no separate preview-only formatting logic. Existing 12/24-hour and date/time toggles still apply.
+- Formatting is cached per attached view and rebuilt on preference, locale, time or timezone changes. The ticker updates each minute and is removed on detach; no polling service, network dependency, permission or bundled calendar library is added to the APK.
+- Calculated Hijri dates can differ from local moon sightings; adjust the Hijri day to match the locally observed calendar. External widgets and Smartspacer retain their own formatting. Very large fonts/long inline dates may truncate within the existing fixed Smartspace cell; use two lines or the short format.
+
 ### Shelf
 
-Shelf stores up to 40 text/document cards. **New note** creates a local text card. Android's
+Shelf stores up to 40 text/document cards. Notes can be edited, removal is confirmed, and document grants are released when cards are removed or evicted. Save failures retain editor input, duplicate Save taps are disabled, and app pickers support normalized label/package search. **New note** creates a local text card. Android's
 Sharesheet can send text from Omni Note+ or another app to Shelf; the share remains a draft until
 Save. Pin file uses Android's document picker and a persistent read grant; opening a card grants
 read access only to its chosen viewer. Shelf does not inspect other apps' private databases.
@@ -51,8 +63,8 @@ They do not replace the launcher database or move/delete existing Home icons.
 
 The automatic switch is off by default. Automatic scenes are checked while Home is visible, on
 resume and time/power/headphone events. Overnight windows are supported. Equal start/end means
-all day; the first matching enabled scene wins. With no match, the last applied scene remains.
-No polling/background service, location permission or exact-alarm permission is added.
+all day; the first matching enabled scene wins. With no match (or when automation is disabled), an automatically applied scene restores the appearance captured before the automatic sequence. Switching between matching scenes keeps that original baseline. Explicit manual changes and Undo clear the automatic baseline. Scene priority can be reordered in the Hub; the first matching scene wins.
+The baseline is persisted before appearance changes so an interrupted transition can recover on the next Home evaluation. A started automatic preference mutation completes before lifecycle cancellation. No polling/background service, location permission or exact-alarm permission is added.
 
 Apply saves the previous appearance and stack selections for **Undo last scene change**. Scene
 changes reuse the existing preference store and recreate Home to apply the supported settings.
@@ -74,7 +86,7 @@ membership and renaming.
 
 Choose Hub → Widget stacks → Add stack to Home, or select **Widget stacks** in the normal widget
 picker. Configure the stack by adding real widgets with Android's binding/configuration flows.
-Use the arrows or swipe the toolbar to select a member; the widget content retains its own touch
+The editor uses the launcher preference theme, supports selection and reordering, preserves the selected widget identity when moving/removing other members and confirms removal. Previous/next and swipes mirror in RTL. Use the arrows or swipe the toolbar to select a member; the widget content retains its own touch
 handling. Editing can remove individual members. Recursive Omni stacks are rejected.
 
 Only the selected child widget view is inflated. The nested host clears view references when

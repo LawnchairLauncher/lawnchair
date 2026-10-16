@@ -7,6 +7,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -192,19 +193,13 @@ fun SmartspaceDateAndTimePreferences(
     ) {
         val preferenceManager2 = preferenceManager2()
 
-        val calendarSelectionAdapter =
-            preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
         val calendarAdapter = preferenceManager2.smartspaceCalendar.getAdapter()
         val showDateAdapter = preferenceManager2.smartspaceShowDate.getAdapter()
         val showTimeAdapter = preferenceManager2.smartspaceShowTime.getAdapter()
 
         val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
 
-        val calendar = if (calendarSelectionAdapter.state.value) {
-            calendarAdapter.state.value
-        } else {
-            preferenceManager2.smartspaceCalendar.defaultValue
-        }
+        val calendar = calendarAdapter.state.value
 
         ExpandAndShrink(visible = calendar.formatCustomizationSupport) {
             DividerColumn {
@@ -213,10 +208,11 @@ fun SmartspaceDateAndTimePreferences(
                     label = stringResource(id = R.string.smartspace_date),
                     enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
                 )
-                val calendarSelectionEnabled =
-                    preferenceManager2.enableSmartspaceCalendarSelection.getAdapter()
-                ExpandAndShrink(visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value) {
+                ExpandAndShrink(visible = showDateAdapter.state.value) {
                     SmartspaceCalendarPreference()
+                }
+                ExpandAndShrink(visible = showDateAdapter.state.value && calendar != SmartspaceCalendar.Persian) {
+                    CalendarAppearancePreferences(calendar)
                 }
                 SwitchPreference(
                     adapter = showTimeAdapter,
@@ -296,4 +292,45 @@ fun SmartspacerSettings(
             }
         }
     }
+}
+
+/** Uses the same preference rows, sheets, accents and typography as the rest of settings. */
+@Composable
+private fun CalendarAppearancePreferences(calendar: SmartspaceCalendar) {
+    val prefs = preferenceManager2()
+    DividerColumn {
+        DateChoice(prefs.smartspaceDateStyle.getAdapter(), R.string.omni_date_style, listOf("long" to R.string.omni_date_long, "short" to R.string.omni_date_short, "numeric" to R.string.omni_date_numeric))
+        DateChoice(prefs.smartspaceDateLanguage.getAdapter(), R.string.omni_date_language, listOf("system" to R.string.omni_theme_system, "ar" to R.string.omni_language_arabic, "en" to R.string.omni_language_english))
+        DateChoice(prefs.smartspaceDateDigits.getAdapter(), R.string.omni_date_digits, listOf("system" to R.string.omni_theme_system, "arab" to R.string.omni_digits_arabic, "latn" to R.string.omni_digits_latin))
+        SwitchPreference(adapter = prefs.smartspaceDateYear.getAdapter(), label = stringResource(R.string.omni_date_year))
+        SwitchPreference(adapter = prefs.smartspaceDateWeekday.getAdapter(), label = stringResource(R.string.omni_date_weekday))
+        SwitchPreference(adapter = prefs.smartspaceDateEra.getAdapter(), label = stringResource(R.string.omni_date_era))
+        if (calendar == SmartspaceCalendar.Hijri || calendar == SmartspaceCalendar.Dual) {
+            DateChoice(prefs.smartspaceHijriMethod.getAdapter(), R.string.omni_hijri_method, listOf("islamic-umalqura" to R.string.omni_hijri_umalqura, "islamic-civil" to R.string.omni_hijri_civil, "islamic" to R.string.omni_hijri_astronomical))
+            ListPreference(
+                adapter = prefs.smartspaceHijriOffset.getAdapter(),
+                entries = (-2..2).map { day -> ListPreferenceEntry(day) { stringResource(R.string.omni_hijri_offset_days, day) } },
+                label = stringResource(R.string.omni_hijri_offset),
+            )
+            Text(
+                text = stringResource(R.string.omni_hijri_help),
+                style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(16.dp),
+            )
+        }
+        if (calendar == SmartspaceCalendar.Dual) {
+            SwitchPreference(adapter = prefs.smartspaceDateStacked.getAdapter(), label = stringResource(R.string.omni_date_stacked))
+            SwitchPreference(adapter = prefs.smartspaceHijriFirst.getAdapter(), label = stringResource(R.string.omni_hijri_first))
+        }
+    }
+}
+
+@Composable
+private fun DateChoice(adapter: PreferenceAdapter<String>, label: Int, choices: List<Pair<String, Int>>) {
+    ListPreference(
+        adapter = adapter,
+        entries = choices.map { (value, title) -> ListPreferenceEntry(value) { stringResource(title) } },
+        label = stringResource(label),
+    )
 }
