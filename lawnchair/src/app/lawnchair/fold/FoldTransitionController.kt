@@ -48,12 +48,12 @@ import kotlin.math.min
  *
  * Progress source:
  * - The hinge angle ([HingeAngleProvider]) when `foldTrackHinge` is on, the device has the sensor
- *   and the hinge moves within [FoldTunables.hingeWaitMillis] of the change. Progress maps
- *   [FoldTunables.innerDisplayOnAngle]..[FoldTunables.fullyOpenAngle] to 0..1, smoothed. It may go
- *   back when the user changes direction. A hinge that stops for [FoldTunables.hingeIdleMillis]
+ *   and the hinge moves within [FoldTunables.HINGE_WAIT_MILLIS] of the change. Progress maps
+ *   [FoldTunables.INNER_DISPLAY_ON_ANGLE]..[FoldTunables.FULLY_OPEN_ANGLE] to 0..1, smoothed. It may go
+ *   back when the user changes direction. A hinge that stops for [FoldTunables.HINGE_IDLE_MILLIS]
  *   settles to the open state. On the inner display a fold also starts from the hinge, before the
  *   cover screen takes over.
- * - Otherwise a timer ([FoldTunables.unfoldDurationMillis] / [FoldTunables.foldDurationMillis],
+ * - Otherwise a timer ([FoldTunables.UNFOLD_DURATION_MILLIS] / [FoldTunables.FOLD_DURATION_MILLIS],
  *   standard decelerate), so every device gets a transition.
  *
  * Listener contract ([addListener]): [FoldProgressListener.onFoldStart] once, then
@@ -68,7 +68,7 @@ import kotlin.math.min
  * LauncherUnfoldAnimationController gets progress from SystemUI and owns the unfold animation, so
  * the two never animate the same views. The debug replay works everywhere.
  *
- * Reduced motion (animator duration scale 0): no motion, a [FoldTunables.reducedMotionDurationMillis]
+ * Reduced motion (animator duration scale 0): no motion, a [FoldTunables.REDUCED_MOTION_DURATION_MILLIS]
  * crossfade. Any failure ends the transition at once with the final layout showing.
  *
  * While the app drawer is open, [DrawerFoldStyle] (river, book or zoom, after `foldDrawerLayout`)
@@ -190,7 +190,7 @@ class FoldTransitionController(
             restAngle = angle
             return
         }
-        if (hinge.isOpening || restAngle - angle < FoldTunables.closingThresholdAngle) return
+        if (hinge.isOpening || restAngle - angle < FoldTunables.CLOSING_THRESHOLD_ANGLE) return
         if (!isEngineEnabled() || !canRunNow() || isReducedMotion()) return
         val style = prefs2.foldTransitionStyle.firstCached()
         if (style == FoldTransitionStyle.NONE) return
@@ -255,9 +255,9 @@ class FoldTransitionController(
         val large = launcher.deviceProfile.deviceProperties.isTablet
         val style = prefs2.foldTransitionStyle.firstCached()
         val reduced = isReducedMotion()
-        val scale = (if (mode.slow) FoldTunables.replaySlowFactor else 1f) * durationScale()
-        val unfoldMillis = if (reduced) FoldTunables.reducedMotionDurationMillis else (FoldTunables.unfoldDurationMillis * scale).toLong()
-        val foldMillis = if (reduced) FoldTunables.reducedMotionDurationMillis else (FoldTunables.foldDurationMillis * scale).toLong()
+        val scale = (if (mode.slow) FoldTunables.REPLAY_SLOW_FACTOR else 1f) * durationScale()
+        val unfoldMillis = if (reduced) FoldTunables.REDUCED_MOTION_DURATION_MILLIS else (FoldTunables.UNFOLD_DURATION_MILLIS * scale).toLong()
+        val foldMillis = if (reduced) FoldTunables.REDUCED_MOTION_DURATION_MILLIS else (FoldTunables.FOLD_DURATION_MILLIS * scale).toLong()
         when {
             mode.opening -> startRun(
                 reason = "replay $mode",
@@ -324,7 +324,7 @@ class FoldTransitionController(
                 reduced = reduced,
                 from = 0f,
                 to = 1f,
-                durationMillis = if (reduced) FoldTunables.reducedMotionDurationMillis else (FoldTunables.unfoldDurationMillis * scale).toLong(),
+                durationMillis = if (reduced) FoldTunables.REDUCED_MOTION_DURATION_MILLIS else (FoldTunables.UNFOLD_DURATION_MILLIS * scale).toLong(),
                 allowHinge = !reduced && hinge.isStarted,
                 timeScale = scale,
             )
@@ -338,7 +338,7 @@ class FoldTransitionController(
                 reduced = reduced,
                 from = 1f,
                 to = 0f,
-                durationMillis = if (reduced) FoldTunables.reducedMotionDurationMillis else (FoldTunables.foldDurationMillis * scale).toLong(),
+                durationMillis = if (reduced) FoldTunables.REDUCED_MOTION_DURATION_MILLIS else (FoldTunables.FOLD_DURATION_MILLIS * scale).toLong(),
                 allowHinge = false,
                 timeScale = scale,
             )
@@ -443,10 +443,10 @@ class FoldTransitionController(
             if (r.settling) {
                 // The progress is over; the style's own motion (springs) comes to rest.
                 done = r.style.isSettled(r.scene) ||
-                    r.ageNanos - r.settleStartNanos > FoldTunables.maxSettleMillis * r.scene.timeScale * NANOS_PER_MILLI
+                    r.ageNanos - r.settleStartNanos > FoldTunables.MAX_SETTLE_MILLIS * r.scene.timeScale * NANOS_PER_MILLI
             } else {
                 done = advance(r, step, now)
-                if (r.ageNanos > FoldTunables.maxTransitionMillis * NANOS_PER_MILLI) {
+                if (r.ageNanos > FoldTunables.MAX_TRANSITION_MILLIS * NANOS_PER_MILLI) {
                     Log.w(TAG, "transition took too long, ending it")
                     done = true
                 } else if (done && !r.style.isSettled(r.scene)) {
@@ -482,8 +482,8 @@ class FoldTransitionController(
                 if (t >= 1f) {
                     if (!r.bounceBack) return true
                     r.bounceBack = false
-                    restartTimer(r, to = 1f, durationNanos = r.durationNanos, holdNanos = (FoldTunables.replayHoldMillis * r.scene.timeScale).toLong() * NANOS_PER_MILLI)
-                } else if (r.allowHinge && now - r.startUptimeMillis <= FoldTunables.hingeWaitMillis && hingeMovedSince(r)) {
+                    restartTimer(r, to = 1f, durationNanos = r.durationNanos, holdNanos = (FoldTunables.REPLAY_HOLD_MILLIS * r.scene.timeScale).toLong() * NANOS_PER_MILLI)
+                } else if (r.allowHinge && now - r.startUptimeMillis <= FoldTunables.HINGE_WAIT_MILLIS && hingeMovedSince(r)) {
                     r.source = Source.HINGE
                     r.drivenByHinge = true
                     r.scene.timeScale = 1f
@@ -494,15 +494,15 @@ class FoldTransitionController(
             Source.HINGE -> {
                 val angle = hinge.angle
                 val target = if (angle.isNaN()) r.progress else angleToProgress(angle)
-                val follow = 1f - exp(-step / (FoldTunables.hingeSmoothingMillis * NANOS_PER_MILLI))
+                val follow = 1f - exp(-step / (FoldTunables.HINGE_SMOOTHING_MILLIS * NANOS_PER_MILLI))
                 r.progress += (target - r.progress) * follow
                 if (abs(target - r.progress) < PROGRESS_EPSILON) r.progress = target
                 if (BuildConfig.DEBUG) Log.d(TAG, "hinge angle=$angle° -> target=$target, progress=${r.progress}")
                 if (r.progress >= 1f) return true
-                if (!hinge.isStarted || now - hinge.lastMoveUptimeMillis > FoldTunables.hingeIdleMillis) {
+                if (!hinge.isStarted || now - hinge.lastMoveUptimeMillis > FoldTunables.HINGE_IDLE_MILLIS) {
                     Log.i(TAG, "hinge stopped at $angle°, settling open")
                     r.source = Source.TIMER
-                    val settle = max(MIN_SETTLE_MILLIS, (FoldTunables.settleDurationMillis * (1f - r.progress)).toLong())
+                    val settle = max(MIN_SETTLE_MILLIS, (FoldTunables.SETTLE_DURATION_MILLIS * (1f - r.progress)).toLong())
                     restartTimer(r, to = 1f, durationNanos = settle * NANOS_PER_MILLI, holdNanos = 0L)
                 }
             }
@@ -522,7 +522,7 @@ class FoldTransitionController(
     private fun hingeMovedSince(r: Run): Boolean {
         val angle = hinge.angle
         if (angle.isNaN() || hinge.lastMoveUptimeMillis <= r.startUptimeMillis) return false
-        if (angle < FoldTunables.innerDisplayOnAngle - HINGE_START_MARGIN || angle >= FoldTunables.fullyOpenAngle) return false
+        if (angle < FoldTunables.INNER_DISPLAY_ON_ANGLE - HINGE_START_MARGIN || angle >= FoldTunables.FULLY_OPEN_ANGLE) return false
         return r.startAngle.isNaN() || abs(angle - r.startAngle) >= 1f
     }
 
@@ -665,8 +665,8 @@ class FoldTransitionController(
     }
 
     private fun angleToProgress(angle: Float): Float {
-        val closed = FoldTunables.innerDisplayOnAngle
-        val open = FoldTunables.fullyOpenAngle
+        val closed = FoldTunables.INNER_DISPLAY_ON_ANGLE
+        val open = FoldTunables.FULLY_OPEN_ANGLE
         if (open <= closed) return if (angle >= open) 1f else 0f
         return ((angle - closed) / (open - closed)).coerceIn(0f, 1f)
     }

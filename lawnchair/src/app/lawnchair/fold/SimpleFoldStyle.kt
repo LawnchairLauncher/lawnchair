@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi
 
 /**
  * SIMPLE: what was on the cover stays exactly where it is; the newly revealed half fades in while
- * sliding [FoldTunables.simpleTranslateDp] out of the hinge.
+ * sliding [FoldTunables.SIMPLE_TRANSLATE_DP] out of the hinge.
  *
  * With [fadeOnly] it is a plain crossfade, used for reduced motion. Nothing moves on the cover
  * layout after a fold: the cover content was on the fixed half already.
@@ -19,7 +19,7 @@ class SimpleFoldStyle(
     private var translatePx = 0f
 
     override fun onStart(scene: FoldScene): Boolean {
-        translatePx = if (fadeOnly || scene.reducedMotion) 0f else scene.dpToPx(FoldTunables.simpleTranslateDp)
+        translatePx = if (fadeOnly || scene.reducedMotion) 0f else scene.dpToPx(FoldTunables.SIMPLE_TRANSLATE_DP)
         movingNode.setHasOverlappingRendering(true)
         return true
     }

@@ -12,7 +12,7 @@ import kotlin.math.abs
  * MASS: icons have weight. Each icon is a [SpringAnimation] whose target is a displacement toward
  * the hinge proportional to how fast the fold moves × (0.3 + distance from the hinge), so the far
  * icons lag the most; when the motion stops they spring back into their cells. Icons on the fixed
- * half get [FoldTunables.massFixedHalfFactor] of the effect. Opening pulls icons toward the hinge,
+ * half get [FoldTunables.MASS_FIXED_HALF_FACTOR] of the effect. Opening pulls icons toward the hinge,
  * closing flings them away from it; on the cover screen after a fold the cover icons get the
  * fixed-half share, measured from the hinge edge.
  *
@@ -42,10 +42,10 @@ class MassFoldStyle : FoldStyle() {
     private var towardHingeY = 0f
 
     override fun onStart(scene: FoldScene): Boolean {
-        maxDisplacementPx = scene.dpToPx(FoldTunables.massMaxDisplacementDp)
+        maxDisplacementPx = scene.dpToPx(FoldTunables.MASS_MAX_DISPLACEMENT_DP)
         val timeScale = scene.timeScale.coerceAtLeast(1f)
         // A spring's period goes with 1/sqrt(stiffness): slowing time by s divides stiffness by s².
-        stiffness = (FoldTunables.massStiffness / (timeScale * timeScale)).coerceAtLeast(MIN_STIFFNESS)
+        stiffness = (FoldTunables.MASS_STIFFNESS / (timeScale * timeScale)).coerceAtLeast(MIN_STIFFNESS)
         return true
     }
 
@@ -54,12 +54,12 @@ class MassFoldStyle : FoldStyle() {
         towardHingeX = geometry.towardHingeX
         towardHingeY = geometry.towardHingeY
         tracker.update(scene)
-        val speed = (scene.velocity * scene.timeScale / FoldTunables.massReferenceVelocity).coerceIn(-1f, 1f)
+        val speed = (scene.velocity * scene.timeScale / FoldTunables.MASS_REFERENCE_VELOCITY).coerceIn(-1f, 1f)
         val items = tracker.items
         for (i in items.indices) {
             val item = items[i]
             if (item.isWidget) continue
-            val share = if (item.onMovingHalf) 1f else FoldTunables.massFixedHalfFactor
+            val share = if (item.onMovingHalf) 1f else FoldTunables.MASS_FIXED_HALF_FACTOR
             val target = maxDisplacementPx * speed * (DISTANCE_BASE + item.distance) * share
             val spring = springOf(item)
             // glow holds the last target given to the spring
@@ -88,7 +88,7 @@ class MassFoldStyle : FoldStyle() {
         val spring = SpringAnimation(item, displacement)
         spring.spring = SpringForce(0f)
             .setStiffness(stiffness)
-            .setDampingRatio(FoldTunables.massDampingRatio)
+            .setDampingRatio(FoldTunables.MASS_DAMPING_RATIO)
         spring.setMinimumVisibleChange(DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS)
         item.styleState = spring
         return spring

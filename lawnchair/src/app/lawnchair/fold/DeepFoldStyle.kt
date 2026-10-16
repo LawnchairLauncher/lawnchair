@@ -14,10 +14,10 @@ import kotlin.math.sin
 
 /**
  * DEEP: the moving half has depth. While it is tilted (virtually, up to
- * [FoldTunables.deepMaxTiltDegrees] at progress 0), its layers shift toward the hinge by
- * sin(tilt) × depth: the wallpaper least ([FoldTunables.deepWallpaperDepth], through
+ * [FoldTunables.DEEP_MAX_TILT_DEGREES] at progress 0), its layers shift toward the hinge by
+ * sin(tilt) × depth: the wallpaper least ([FoldTunables.DEEP_WALLPAPER_DEPTH], through
  * `WallpaperManager.setWallpaperOffsets` via the workspace's offset interpolator), widgets more
- * ([FoldTunables.deepWidgetDepth]), icons most (depth 1). Icons also rise off the page with a soft
+ * ([FoldTunables.DEEP_WIDGET_DEPTH]), icons most (depth 1). Icons also rise off the page with a soft
  * elevation shadow that fades as the half comes flat. The fixed half is not tilted, so nothing on
  * it moves; on the cover screen after a fold nothing is tilted either.
  *
@@ -49,8 +49,8 @@ class DeepFoldStyle : FoldStyle() {
     private var appliedWallpaperOffset = 0f
 
     override fun onStart(scene: FoldScene): Boolean {
-        shiftPx = scene.dpToPx(FoldTunables.deepMaxShiftDp)
-        elevationPx = scene.dpToPx(FoldTunables.deepMaxElevationDp)
+        shiftPx = scene.dpToPx(FoldTunables.DEEP_MAX_SHIFT_DP)
+        elevationPx = scene.dpToPx(FoldTunables.DEEP_MAX_ELEVATION_DP)
         return true
     }
 
@@ -58,7 +58,7 @@ class DeepFoldStyle : FoldStyle() {
         // Only the large layout has a tilted half.
         if (!scene.largeLayout) return
         val geometry = scene.geometry
-        val tilt = FoldTunables.deepMaxTiltDegrees * (1f - progress.coerceIn(0f, 1f)) * (PI.toFloat() / 180f)
+        val tilt = FoldTunables.DEEP_MAX_TILT_DEGREES * (1f - progress.coerceIn(0f, 1f)) * (PI.toFloat() / 180f)
         val lean = sin(tilt)
         tracker.update(scene)
         val items = tracker.items
@@ -68,14 +68,14 @@ class DeepFoldStyle : FoldStyle() {
                 release(item)
                 continue
             }
-            val depth = if (item.isWidget) FoldTunables.deepWidgetDepth else 1f
+            val depth = if (item.isWidget) FoldTunables.DEEP_WIDGET_DEPTH else 1f
             val shift = lean * depth * shiftPx
             item.setTranslation(geometry.towardHingeX * shift, geometry.towardHingeY * shift)
             if (!item.isWidget) raise(item, lean * elevationPx)
         }
         // The wallpaper scrolls the other way round: a lower offset moves its content right.
         val wallpaper = if (geometry.isVerticalHinge) {
-            -geometry.towardHingeX * lean * FoldTunables.deepWallpaperDepth * FoldTunables.deepWallpaperShift
+            -geometry.towardHingeX * lean * FoldTunables.DEEP_WALLPAPER_DEPTH * FoldTunables.DEEP_WALLPAPER_SHIFT
         } else {
             0f
         }

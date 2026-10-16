@@ -30,7 +30,7 @@ import kotlin.math.roundToInt
  * inner display and the debug replay.
  *
  * - [FoldDrawerLayout.EXPAND], "river": the first row goes straight to its new place; the apps after
- *   it follow one after another ([FoldTunables.drawerRiverStaggerMillis] apart) along a small arc,
+ *   it follow one after another ([FoldTunables.DRAWER_RIVER_STAGGER_MILLIS] apart) along a small arc,
  *   the ones that were below the cover's bottom edge flowing up into the new half.
  * - [FoldDrawerLayout.PAGES], "book": the fixed page does not move at all; the apps of the second
  *   page rise from below its bottom edge, top row first.
@@ -395,7 +395,7 @@ class DrawerFoldStyle(
     // River (EXPAND)
 
     private fun prepareRiver(scene: FoldScene, list: AllAppsRecyclerView, onLarge: Boolean) {
-        arcPx = scene.dpToPx(FoldTunables.drawerRiverArcDp)
+        arcPx = scene.dpToPx(FoldTunables.DRAWER_RIVER_ARC_DP)
         if (scene.largeLayout) {
             if (onLarge) prepareRiverFromCover(scene, list)
         } else {
@@ -491,7 +491,7 @@ class DrawerFoldStyle(
     }
 
     private fun staggerFor(movers: Int): Float {
-        val nominal = FoldTunables.drawerRiverStaggerMillis / FoldTunables.unfoldDurationMillis.coerceAtLeast(1L).toFloat()
+        val nominal = FoldTunables.DRAWER_RIVER_STAGGER_MILLIS / FoldTunables.UNFOLD_DURATION_MILLIS.coerceAtLeast(1L).toFloat()
         return if (movers <= 1) 0f else minOf(nominal, MAX_DELAY / (movers - 1))
     }
 
@@ -635,7 +635,7 @@ class DrawerFoldStyle(
         /** Share of the progress the last item of a river or a book waits before it moves. */
         const val MAX_DELAY = 0.5f
 
-        /** Arcs of long paths bulge the full [FoldTunables.drawerRiverArcDp]; short ones less. */
+        /** Arcs of long paths bulge the full [FoldTunables.DRAWER_RIVER_ARC_DP]; short ones less. */
         const val ARC_REFERENCE = 2f
 
         val EASE = Interpolators.EMPHASIZED_DECELERATE

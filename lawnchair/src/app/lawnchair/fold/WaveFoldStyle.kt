@@ -17,7 +17,7 @@ import kotlin.math.roundToInt
 /**
  * WAVE, Lawnchair's signature: a band of light in the accent color (Material You by default)
  * sweeps from the hinge across the moving half. The moving half is dim ahead of the band and
- * revealed behind it; each icon glows, lifts [FoldTunables.waveLiftDp] and settles as the band
+ * revealed behind it; each icon glows, lifts [FoldTunables.WAVE_LIFT_DP] and settles as the band
  * passes, so its reveal time is its distance from the hinge. Closing runs the same path back: the
  * band returns to the hinge and dims the icons behind it.
  *
@@ -52,9 +52,9 @@ class WaveFoldStyle : SplitFoldStyle() {
     override fun usesOverlay(scene: FoldScene): Boolean = true
 
     override fun onStart(scene: FoldScene): Boolean {
-        bandHalf = scene.dpToPx(FoldTunables.waveBandWidthDp) / 2f
-        liftPx = scene.dpToPx(FoldTunables.waveLiftDp)
-        settlePx = scene.dpToPx(FoldTunables.waveSettleDp)
+        bandHalf = scene.dpToPx(FoldTunables.WAVE_BAND_WIDTH_DP) / 2f
+        liftPx = scene.dpToPx(FoldTunables.WAVE_LIFT_DP)
+        settlePx = scene.dpToPx(FoldTunables.WAVE_SETTLE_DP)
         val accent = Themes.getColorAccent(scene.launcher)
         val light = ColorUtils.blendARGB(accent, Color.WHITE, 0.55f)
         bandPaint.shader = LinearGradient(
@@ -67,7 +67,7 @@ class WaveFoldStyle : SplitFoldStyle() {
             Shader.TileMode.CLAMP,
         )
         // Behind the band (toward the hinge) revealed, ahead of it dim.
-        val dim = FoldTunables.waveDimAlpha.coerceIn(0f, 1f)
+        val dim = FoldTunables.WAVE_DIM_ALPHA.coerceIn(0f, 1f)
         maskPaint.shader = LinearGradient(
             -bandHalf,
             0f,
@@ -101,11 +101,11 @@ class WaveFoldStyle : SplitFoldStyle() {
             clipDragLayerToFixedHalf(scene)
             // From the hinge (half of the band shows there) to past the free edge.
             bandCenter = p * (span + bandHalf)
-            bandPaint.alpha = (FoldTunables.waveBandAlpha * 255f).roundToInt().coerceIn(0, 255)
+            bandPaint.alpha = (FoldTunables.WAVE_BAND_ALPHA * 255f).roundToInt().coerceIn(0, 255)
         } else {
             // Cover: from past the far edge back to past the hinge edge.
             bandCenter = -bandHalf + p * (span + 2f * bandHalf)
-            bandPaint.alpha = (FoldTunables.waveBandAlpha * COVER_FACTOR * 255f).roundToInt().coerceIn(0, 255)
+            bandPaint.alpha = (FoldTunables.WAVE_BAND_ALPHA * COVER_FACTOR * 255f).roundToInt().coerceIn(0, 255)
         }
 
         tracker.update(scene)
@@ -125,7 +125,7 @@ class WaveFoldStyle : SplitFoldStyle() {
             // value = how far the icon is lifted
             item.value = if (scene.largeLayout) liftPx * bump else 0f
             item.setTranslation(0f, -item.value)
-            item.glow = bump * FoldTunables.waveGlowAlpha * if (scene.largeLayout) 1f else COVER_FACTOR
+            item.glow = bump * FoldTunables.WAVE_GLOW_ALPHA * if (scene.largeLayout) 1f else COVER_FACTOR
         }
     }
 

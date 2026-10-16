@@ -22,7 +22,7 @@ import kotlin.math.roundToInt
  *   cell sizes and paddings; the moving half continues the list where the fixed half ends, like the
  *   second page of a book ([FoldDrawerBook]). Both pages scroll together, by rows.
  * - [FoldDrawerLayout.BIG_ICONS], "zoom": the cover's columns across the whole width, icons and
- *   labels scaled up (at most [FoldTunables.drawerBigIconsMaxScale]).
+ *   labels scaled up (at most [FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE]).
  *
  * Applies only to the large screen of a foldable with a vertical fold line; phones, tablets, the
  * cover screen and landscape (horizontal fold line) keep today's drawer. The search bar spans the
@@ -127,7 +127,7 @@ object FoldDrawerLayouts {
     /** The cover's grid zoomed to the whole width: same columns, larger icons and labels. */
     private fun applyBigIcons(dp: DeviceProfile, cover: DeviceProfile): Float {
         val widthScale = dp.deviceProperties.widthPx.toFloat() / cover.deviceProperties.widthPx
-        val scale = widthScale.coerceIn(1f, FoldTunables.drawerBigIconsMaxScale.coerceAtLeast(1f))
+        val scale = widthScale.coerceIn(1f, FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE.coerceAtLeast(1f))
         val profile = cover.allAppsProfile
         dp.setAllAppsProfile(
             profile.copy(
@@ -153,7 +153,7 @@ object FoldDrawerLayouts {
 
     /**
      * Bitmap size of the icon cache. The cache keeps one size for every icon, so for the zoom drawer
-     * ([FoldDrawerLayout.BIG_ICONS], up to [FoldTunables.drawerBigIconsMaxScale] larger) every icon
+     * ([FoldDrawerLayout.BIG_ICONS], up to [FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE] larger) every icon
      * is cached that much larger, which keeps the large drawer sharp. The cost is memory: icon
      * bitmaps grow with the square of the scale (about 2.5x at 1.6x, roughly 25 MB more for 200
      * apps), on both screens. It changes only when the layout is switched (the grid reload rebuilds
@@ -164,7 +164,7 @@ object FoldDrawerLayouts {
     fun getIconCacheBitmapSize(context: Context, iconBitmapSize: Int, allAppsIconBitmapSize: Int): Int {
         if (InvariantDeviceProfile.deviceType != InvariantDeviceProfile.TYPE_MULTI_DISPLAY) return iconBitmapSize
         if (currentLayout(PreferenceManager2.getInstance(context)) != FoldDrawerLayout.BIG_ICONS) return iconBitmapSize
-        val zoomed = (allAppsIconBitmapSize * FoldTunables.drawerBigIconsMaxScale.coerceAtLeast(1f)).roundToInt()
+        val zoomed = (allAppsIconBitmapSize * FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE.coerceAtLeast(1f)).roundToInt()
         return maxOf(iconBitmapSize, zoomed)
     }
 

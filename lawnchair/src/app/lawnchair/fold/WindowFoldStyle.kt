@@ -32,7 +32,7 @@ import kotlin.math.sin
  *
  * The blur is "progressive": three images of the moving half (sharp, a middle radius, the full
  * radius) are mixed by gradient masks, all inside one RenderEffect on the moving half's RenderNode.
- * Radii are pre-built in [FoldTunables.windowBlurLevels] steps, so no effect is created per frame.
+ * Radii are pre-built in [FoldTunables.WINDOW_BLUR_LEVELS] steps, so no effect is created per frame.
  */
 @RequiresApi(Build.VERSION_CODES.Q)
 class WindowFoldStyle : SplitFoldStyle() {
@@ -50,7 +50,7 @@ class WindowFoldStyle : SplitFoldStyle() {
 
     override fun onStart(scene: FoldScene): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            fixedBlurLevels = buildFixedBlurLevels(scene.dpToPx(FoldTunables.windowFixedBlurDp))
+            fixedBlurLevels = buildFixedBlurLevels(scene.dpToPx(FoldTunables.WINDOW_FIXED_BLUR_DP))
         }
         return true
     }
@@ -72,7 +72,7 @@ class WindowFoldStyle : SplitFoldStyle() {
         setFixedBlur(scene, amount)
         updateWarp(geometry, amount)
         setMovingBlur(amount)
-        shadePaint.alpha = (FoldTunables.windowMaxShade * amount * 255f).roundToInt().coerceIn(0, 255)
+        shadePaint.alpha = (FoldTunables.WINDOW_MAX_SHADE * amount * 255f).roundToInt().coerceIn(0, 255)
     }
 
     override fun onDrawOverlay(scene: FoldScene, canvas: Canvas, progress: Float) {
@@ -147,27 +147,21 @@ class WindowFoldStyle : SplitFoldStyle() {
         setPoint(dst, 1, geometry, 0f, length)
         setPoint(dst, 2, geometry, span, 0f)
         setPoint(dst, 3, geometry, span, length)
-        // Fixed plane: draw the plane through the panel (plane -> panel). Otherwise the content is
-        // painted on the swinging panel (panel -> plane), like a door.
-        val ok = if (FoldTunables.windowFixedPlane) {
-            warp.setPolyToPoly(src, 0, dst, 0, 4)
-        } else {
-            warp.setPolyToPoly(dst, 0, src, 0, 4)
-        }
-        if (!ok) warp.reset()
+        // The plane stays still: it is drawn through the panel (plane -> panel)
+        if (!warp.setPolyToPoly(src, 0, dst, 0, 4)) warp.reset()
     }
 
-    private fun tiltRadians(amount: Float) = FoldTunables.windowMaxTiltDegrees * amount * (PI.toFloat() / 180f)
+    private fun tiltRadians(amount: Float) = FoldTunables.WINDOW_MAX_TILT_DEGREES * amount * (PI.toFloat() / 180f)
 
     private fun freeEdgeScale(geometry: FoldGeometry, amount: Float): Float {
         val span = geometry.halfSpan
-        val eyeDistance = FoldTunables.windowEyeDistance * max(2f * span, geometry.hingeLength)
+        val eyeDistance = FoldTunables.WINDOW_EYE_DISTANCE * max(2f * span, geometry.hingeLength)
         return eyeDistance / (eyeDistance - span * sin(tiltRadians(amount)))
     }
 
     private fun freeEdgeU(geometry: FoldGeometry, amount: Float, scale: Float): Float {
         val span = geometry.halfSpan
-        val eyeU = -FoldTunables.windowEyeOffset * span
+        val eyeU = -FoldTunables.WINDOW_EYE_OFFSET * span
         return eyeU + (span * cos(tiltRadians(amount)) - eyeU) * scale
     }
 
@@ -212,27 +206,23 @@ class WindowFoldStyle : SplitFoldStyle() {
     /**
      * Blur effects for the moving half, in its RenderNode's coordinates, one per radius step.
      * The relative radius at distance t (0 hinge, 1 free edge) is t³; it is rendered by mixing a
-     * sharp, a middle ([FoldTunables.windowBlurBandSplit] of the radius) and a full blur.
+     * sharp, a middle ([FoldTunables.WINDOW_BLUR_BAND_SPLIT] of the radius) and a full blur.
      */
     @RequiresApi(Build.VERSION_CODES.S)
     private fun buildMovingBlurLevels(scene: FoldScene): Array<RenderEffect?> {
-        val maxRadius = scene.dpToPx(FoldTunables.windowMaxBlurDp)
-        val levels = FoldTunables.windowBlurLevels.coerceIn(1, MAX_BLUR_LEVELS)
+        val maxRadius = scene.dpToPx(FoldTunables.WINDOW_MAX_BLUR_DP)
+        val levels = FoldTunables.WINDOW_BLUR_LEVELS.coerceIn(1, MAX_BLUR_LEVELS)
         if (maxRadius < MIN_BLUR_RADIUS) return emptyArray()
         val geometry = scene.geometry
         val rect = geometry.movingRect
-        // With the fixed plane, only the content up to freeEdgeU is visible at the max tilt: make
-        // that the end of the masks so the free edge of the panel gets the full blur.
-        val maskSpan = if (FoldTunables.windowFixedPlane) {
-            freeEdgeU(geometry, 1f, freeEdgeScale(geometry, 1f)).coerceIn(geometry.halfSpan / 2f, geometry.halfSpan)
-        } else {
-            geometry.halfSpan
-        }
+        // Only the content up to freeEdgeU is visible at the max tilt: make that the end of the
+        // masks so the free edge of the panel gets the full blur.
+        val maskSpan = freeEdgeU(geometry, 1f, freeEdgeScale(geometry, 1f)).coerceIn(geometry.halfSpan / 2f, geometry.halfSpan)
         val hingeX = geometry.toRootX(0f, 0f) - rect.left
         val hingeY = geometry.toRootY(0f, 0f) - rect.top
         val freeX = geometry.toRootX(maskSpan, 0f) - rect.left
         val freeY = geometry.toRootY(maskSpan, 0f) - rect.top
-        val split = FoldTunables.windowBlurBandSplit.coerceIn(0.05f, 0.95f)
+        val split = FoldTunables.WINDOW_BLUR_BAND_SPLIT.coerceIn(0.05f, 0.95f)
 
         val sharpColors = IntArray(MASK_STOPS)
         val middleColors = IntArray(MASK_STOPS)

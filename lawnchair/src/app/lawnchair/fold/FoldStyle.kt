@@ -20,7 +20,7 @@ import androidx.annotation.RequiresApi
  *    property the style changed, so the final layout shows as is.
  *
  * When the progress reaches its end, the controller keeps calling [onPreDraw] (with the final
- * progress) until [isSettled] is true, for at most [FoldTunables.maxSettleMillis] times
+ * progress) until [isSettled] is true, for at most [FoldTunables.MAX_SETTLE_MILLIS] times
  * [FoldScene.timeScale], so styles with their own motion (springs) can come to rest.
  *
  * Progress is 0..1, 1 = unfolded. On the large layout ([FoldScene.largeLayout]) the rest state is
