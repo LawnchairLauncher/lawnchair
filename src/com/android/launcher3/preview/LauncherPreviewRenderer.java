@@ -88,6 +88,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import app.lawnchair.fold.FoldItemSets;
+
 /**
  * Utility class for generating the preview of Launcher for a given InvariantDeviceProfile.
  * Steps:
@@ -345,6 +347,8 @@ public class LauncherPreviewRenderer extends BaseContext
         // Separate the items that are on the current screen, and the other remaining items.
         itemIdMap.stream()
                 .filter(currentScreenContentFilter(IntSet.wrap(mWorkspaceScreens.keySet())))
+                // LC-Note: previews show the cover item set ("Independent", see FoldItemSets).
+                .filter(item -> !FoldItemSets.isInnerItem(item))
                 .forEach(this::inflateAndAdd);
         populateHotseatPredictions(itemIdMap);
 
