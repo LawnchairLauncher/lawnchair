@@ -420,14 +420,6 @@ public class DeviceProfile {
                 && (FOLDABLE_SINGLE_PAGE.get() || FoldLayout.isHomeExpanded(preferenceManager2));
         isInnerItemSet = mDeviceProperties.isTablet() && mDeviceProperties.isMultiDisplay()
                 && FoldLayout.isHomeIndependent(preferenceManager2);
-        if (isMultiDisplay) {
-            Log.d("LC-FoldLayout", "allowTwoPanels=" + allowTwoPanels
-                    + ", singlePage=" + isTwoPanelSinglePage
-                    + ", innerSet=" + isInnerItemSet
-                    + ", isTwoPanels=" + mDeviceProperties.isTwoPanels()
-                    + ", bounds=" + windowBounds.bounds.toShortString()
-                    + ", typeIndex=" + displayOptionSpec.typeIndex);
-        }
 
         mInsets.set(windowBounds.insets);
         this.mDisplayOptionSpec = displayOptionSpec;
@@ -2780,7 +2772,7 @@ public class DeviceProfile {
                 mOverrideProvider = DEFAULT_DIMENSION_PROVIDER;
             }
             if (mDisplayOptionSpec == null) {
-                // Lawnchair: "Same as cover" lays the large screen of a foldable out as one page.
+                // LC-Note: "Same as cover" lays the large screen of a foldable out as one page.
                 mDisplayOptionSpec = createDefaultDisplayOptionSpec(mInfo, mWindowBounds,
                         mIsMultiDisplay && !FoldLayout.isHomeMirrored(
                                 PreferenceManager2.INSTANCE.get(mContext)), mInv);
