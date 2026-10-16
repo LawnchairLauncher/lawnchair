@@ -105,6 +105,8 @@ public class LoaderCursor extends CursorWrapper {
     private final IntArray mItemsToRemove = new IntArray();
     private final IntArray mRestoredRows = new IntArray();
     private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
+    // LC-Note: items kept in the database but not loaded, see checkAndAddItem.
+    private int mKeptNotLoadedCount;
 
     // CollectionInfo objects, which have not yet been loaded from the DB, but are expected to
     // found eventually as the loading progresses
@@ -482,6 +484,11 @@ public class LoaderCursor extends CursorWrapper {
      * @return true is any item was removed.
      */
     public boolean commitDeleted() {
+        if (mKeptNotLoadedCount > 0) {
+            // LC-Note: see checkAndAddItem.
+            FileLog.d(TAG, "Keeping " + mKeptNotLoadedCount
+                    + " items that don't fit (dock past its size, or inner set) in the database");
+        }
         if (mItemsToRemove.size() > 0) {
             // Remove dead items
             mModel.getModelDbController().delete(
@@ -595,17 +602,13 @@ public class LoaderCursor extends CursorWrapper {
             if (mRestoreEventLogger != null) {
                 mRestoreEventLogger.logSingleFavoritesItemRestored(itemType);
             }
-        } else if (isHotseatItemOutOfBounds(info)) {
+        } else if (isHotseatItemOutOfBounds(info) || FoldItemSets.isInnerItem(info)) {
             // LC-Note: The hotseat can be smaller for a while (e.g. while a foldable is folded, or
-            // after a transient DeviceProfile change), and deleting the item would lose it for
-            // good. Don't bind it, but keep it in the database so it shows up again once the
-            // hotseat is large enough.
-            FileLog.d(TAG, "Keeping hotseat item out of bounds in the database: " + info);
-        } else if (FoldItemSets.isInnerItem(info)) {
-            // LC-Note: never delete an item of the inner item set of the "Independent" home layout
-            // because it doesn't fit (its grid or dock may change while it is hidden); keep it in
-            // the database and skip it.
-            FileLog.d(TAG, "Keeping inner set item that doesn't fit in the database: " + info);
+            // with fewer unfolded dock icons, which runs no grid migration), and an item of the
+            // inner set of "Independent" may not fit while it is hidden. Deleting either would
+            // lose it for good: don't bind it, keep it in the database so it shows up again once
+            // there is room. Logged once per load, see commitDeleted.
+            mKeptNotLoadedCount++;
         } else {
             markDeleted("Item position overlap", RestoreError.OVERLAPPING_ITEM);
         }

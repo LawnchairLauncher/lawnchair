@@ -46,6 +46,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -130,8 +131,9 @@ public class AddWorkspaceItemsTask implements ModelUpdateTask {
             boolean independent = FoldItemSets.isIndependent(context);
             boolean innerShown = independent && FoldItemSets.isInnerSetShown();
             IntArray innerWorkspaceScreens = independent
-                    ? FoldItemSets.toInnerModelScreenIds(
-                            dataModel.itemsIdMap.collectWorkspaceScreens(context, true))
+                    ? IntArray.wrap(Arrays.stream(dataModel.itemsIdMap
+                            .collectWorkspaceScreens(context, true).toArray())
+                            .map(id -> FoldItemSets.toModelScreenId(id, true)).toArray())
                     : null;
             IntArray addedInnerScreensFinal = new IntArray();
             for (ItemInfo item : filteredItems) {

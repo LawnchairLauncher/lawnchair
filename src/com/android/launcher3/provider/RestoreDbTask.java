@@ -353,7 +353,7 @@ public class RestoreDbTask {
         // LC-Note: only the cover item set; the inner set of "Independent" (FoldItemSets) keeps
         // its own page numbers.
         String coverDesktop = Favorites.CONTAINER + " = " + Favorites.CONTAINER_DESKTOP + " AND "
-                + Favorites.SCREEN + " < " + FoldItemSets.INNER_SCREEN_BASE;
+                + FoldItemSets.whereItemSet(false);
         IntArray distinctScreens = LauncherDbUtils.queryIntArray(true, db, Favorites.TABLE_NAME,
                 Favorites.SCREEN, coverDesktop, null, Favorites.SCREEN);
         if (distinctScreens.isEmpty()) {

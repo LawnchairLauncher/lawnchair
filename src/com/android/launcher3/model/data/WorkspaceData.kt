@@ -66,9 +66,7 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
         if (smartspaceEnabled || screenSet.isEmpty) {
             screenSet.add(Workspace.FIRST_SCREEN_ID)
         }
-        val persistedOrder = LauncherPrefs.get(context).get(
-            if (innerSet) LauncherPrefs.INNER_WORKSPACE_SCREEN_ORDER else LauncherPrefs.WORKSPACE_SCREEN_ORDER,
-        )
+        val persistedOrder = LauncherPrefs.get(context).get(FoldItemSets.screenOrderPref(innerSet))
         return mergeWorkspaceScreens(screenSet.array, persistedOrder)
     }
 

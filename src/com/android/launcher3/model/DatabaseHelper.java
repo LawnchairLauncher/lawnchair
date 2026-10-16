@@ -510,17 +510,10 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
      * without inner items gives the same id as before.
      */
     public int getNewScreenId(boolean innerSet) {
-        int base = FoldItemSets.INNER_SCREEN_BASE;
-        return innerSet
-                ? FoldItemSets.toPresenterScreenId(getMaxId(getWritableDatabase(),
-                        "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= %5$d",
-                        Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
-                        Favorites.CONTAINER_DESKTOP, base)) + 1
-                : getMaxId(getWritableDatabase(),
-                        "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= 0"
-                                + " AND %1$s < %5$d",
-                        Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
-                        Favorites.CONTAINER_DESKTOP, base) + 1;
+        return FoldItemSets.toPresenterScreenId(getMaxId(getWritableDatabase(),
+                "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= 0 AND %5$s",
+                Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
+                Favorites.CONTAINER_DESKTOP, FoldItemSets.whereItemSet(innerSet))) + 1;
     }
 
     /**
@@ -539,18 +532,17 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
      * @return the number of rows copied, 0 if the inner set already had items.
      */
     public int cloneCoverItemSetToInnerSet() {
-        int base = FoldItemSets.INNER_SCREEN_BASE;
         SQLiteDatabase db = getWritableDatabase();
         int copied;
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            String innerSet = Favorites.CONTAINER + " IN (" + Favorites.CONTAINER_DESKTOP + ","
-                    + Favorites.CONTAINER_HOTSEAT + ") AND " + Favorites.SCREEN + " >= " + base;
-            if (DatabaseUtils.queryNumEntries(db, Favorites.TABLE_NAME, innerSet) > 0) {
+            String topLevel = Favorites.CONTAINER + " IN (" + Favorites.CONTAINER_DESKTOP + ","
+                    + Favorites.CONTAINER_HOTSEAT + ")";
+            if (DatabaseUtils.queryNumEntries(db, Favorites.TABLE_NAME,
+                    topLevel + " AND " + FoldItemSets.whereItemSet(true)) > 0) {
                 return 0;
             }
-            String coverTopLevel = Favorites.CONTAINER + " IN (" + Favorites.CONTAINER_DESKTOP
-                    + "," + Favorites.CONTAINER_HOTSEAT + ") AND " + Favorites.SCREEN + " >= 0 AND "
-                    + Favorites.SCREEN + " < " + base;
+            String coverTopLevel = topLevel + " AND " + Favorites.SCREEN + " >= 0 AND "
+                    + FoldItemSets.whereItemSet(false);
             String level1 = Favorites.CONTAINER + " IN (SELECT " + Favorites._ID + " FROM "
                     + Favorites.TABLE_NAME + " WHERE " + coverTopLevel + ")";
             String level2 = Favorites.CONTAINER + " IN (SELECT " + Favorites._ID + " FROM "
@@ -582,10 +574,9 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                                     + Favorites.CONTAINER + " END";
                             break;
                         case Favorites.SCREEN:
-                            value = "CASE WHEN " + Favorites.CONTAINER + " IN ("
-                                    + Favorites.CONTAINER_DESKTOP + ","
-                                    + Favorites.CONTAINER_HOTSEAT + ") THEN " + Favorites.SCREEN
-                                    + " + " + base + " ELSE " + Favorites.SCREEN + " END";
+                            value = "CASE WHEN " + topLevel + " THEN " + Favorites.SCREEN + " + "
+                                    + FoldItemSets.INNER_SCREEN_BASE + " ELSE " + Favorites.SCREEN
+                                    + " END";
                             break;
                         case Favorites.APPWIDGET_ID:
                             value = "CASE WHEN " + appWidget + " THEN -1 ELSE "

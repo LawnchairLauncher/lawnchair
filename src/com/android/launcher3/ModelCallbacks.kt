@@ -55,23 +55,13 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     var pendingExecutor: ViewOnDrawExecutor? = null
     var workspaceLoading = true
 
-    // LC-Note: the screen the user was looking at when the bind started. On the large screen of
-    // a foldable it starts the visible pair, see Workspace.setFoldAnchorScreenId.
-    @Volatile
-    private var anchorScreenId = -1
-
-    // LC-Note: the item set ("Independent" home layout, see FoldItemSets) of the last bind, and
-    // the pages last shown in each set, so each screen reopens on its own page.
-    @Volatile
-    private var boundInnerSet: Boolean? = null
-    private val lastPagesBySet = arrayOf(IntSet(), IntSet())
-
     /**
      * Refreshes the shortcuts shown on the workspace.
      *
-     * Implementation of the method from LauncherModel.Callbacks.
+     * Implementation of the method from LauncherModel.Callbacks. LC-Note: [anchorScreenId] is the
+     * screen the bind starts on, see Workspace.setFoldAnchorScreenId.
      */
-    private fun startBinding() {
+    private fun startBinding(anchorScreenId: Int) {
         TraceHelper.INSTANCE.beginSection("startBinding")
         // Floating panels (except the full widget sheet) are associated with individual icons. If
         // we are starting a fresh bind, close all such panels as all the icons are about
@@ -152,12 +142,9 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.workspace.restoreInstanceStateForRemainingPages()
         workspaceLoading = false
         launcher.processActivityResult()
-        // LC-Note: start on the anchor screen rather than on the first screen of its pair.
-        val firstScreenId =
-            if (pagesBoundFirst == null || pagesBoundFirst.isEmpty) -1
-            else if (pagesBoundFirst.contains(anchorScreenId)) anchorScreenId
-            else pagesBoundFirst.array[0]
-        launcher.workspace.setFoldAnchorScreenId(firstScreenId)
+        // LC-Note: start on the anchor screen (the first bound screen) rather than on the first
+        // screen of its pair.
+        val firstScreenId = launcher.workspace.foldAnchorScreenId
         var currentPage =
             if (firstScreenId != -1) launcher.workspace.getPageIndexForScreenId(firstScreenId)
             else PagedView.INVALID_PAGE
@@ -279,43 +266,37 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.widgetPickerDataProvider.setWidgets(allWidgets)
     }
 
-    /** Returns the ids of the workspaces to bind. */
-    private fun getPagesToBindSynchronously(orderedScreenIds: IntArray): IntSet {
+    /**
+     * Returns the ids of the workspaces to bind. LC-Note: and the first of them, the screen the
+     * bind starts on (on a foldable's large screen, the anchor of its pair; -1 if none).
+     */
+    private fun getPagesToBindSynchronously(orderedScreenIds: IntArray): kotlin.Pair<IntSet, Int> {
         // If workspace binding is still in progress, getCurrentPageScreenIds won't be
         // accurate, and we should use mSynchronouslyBoundPages that's set during initial binding.
-        var visibleIds =
+        val visibleIds =
             when {
                 !pagesToBindSynchronously.isEmpty -> pagesToBindSynchronously
                 !workspaceLoading -> launcher.workspace.screenIdsToKeepOnRebind
                 else -> synchronouslyBoundPages
             }
-        // LC-Note: page ids of one item set mean nothing in the other one. When the set
-        // changes, remember the page of the old set and reopen the new set on its own page.
-        val innerSet = launcher.deviceProfile.isInnerItemSet
-        val previousInnerSet = boundInnerSet
-        if (previousInnerSet != null && previousInnerSet != innerSet) {
-            lastPagesBySet[if (previousInnerSet) 1 else 0] =
-                if (!workspaceLoading) launcher.workspace.currentPageScreenIds else synchronouslyBoundPages
-            visibleIds = lastPagesBySet[if (innerSet) 1 else 0]
-        }
-        boundInnerSet = innerSet
         // Launcher IntArray has the same name as Kotlin IntArray
         val result = IntSet()
         if (visibleIds.isEmpty) {
-            return result
+            return result to -1
         }
         val actualIds = orderedScreenIds.clone()
         // LC-Note: keep the anchor of the bind in progress, the first id may be its pair.
+        val anchorId = launcher.workspace.foldAnchorScreenId
         val firstId =
-            if (visibleIds === synchronouslyBoundPages && visibleIds.contains(anchorScreenId))
-                anchorScreenId
+            if (visibleIds === synchronouslyBoundPages && visibleIds.contains(anchorId)) anchorId
             else visibleIds.first()
-        anchorScreenId = firstId
+        var startId = -1
         val pairId = launcher.workspace.getScreenPair(firstId)
         // Double check that actual screenIds contains the visibleId, as empty screens are hidden
         // in single panel.
         if (actualIds.contains(firstId)) {
             result.add(firstId)
+            startId = firstId
             if (launcher.deviceProfile.deviceProperties.isTwoPanels && actualIds.contains(pairId)) {
                 result.add(pairId)
             }
@@ -332,8 +313,9 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             // Add the right panel if left panel is hidden when switching display, due to empty
             // pages being hidden in single panel.
             result.add(pairId)
+            startId = pairId
         }
-        return result
+        return result to startId
     }
 
     private fun bindScreens(orderedScreenIds: LIntArray) {
@@ -360,7 +342,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
 
     override fun bindItemsAdded(allItems: List<ItemInfo>) {
         // LC-Note: items of the item set that isn't shown stay in the model only.
-        val innerSet = launcher.deviceProfile.isInnerItemSet
+        val innerSet = launcher.cellPosMapper.isInnerItemSet
         val items = allItems.filter { FoldItemSets.isInActiveSet(it, innerSet) }
         if (items.isEmpty()) return
         val newScreens = LIntSet()
@@ -505,12 +487,13 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
 
         MAIN_EXECUTOR.execute { clearPendingBinds() }
 
-        // LC-Note: bind only the item set shown on this screen, see FoldItemSets, and tell the
-        // model tasks which one it is.
-        val innerSet = launcher.deviceProfile.isInnerItemSet
-        FoldItemSets.isInnerSetShown = innerSet
+        // LC-Note: bind only the item set shown on this screen, see FoldItemSets, then tell the
+        // model tasks which one it is (until then it is the set of the last bind, which
+        // Workspace.getScreenIdsToKeepOnRebind compares with this one).
+        val innerSet = launcher.cellPosMapper.isInnerItemSet
         val orderedScreenIds = itemIdMap.collectWorkspaceScreens(launcher, innerSet)
-        val currentScreenIds = getPagesToBindSynchronously(orderedScreenIds)
+        val (currentScreenIds, anchorScreenId) = getPagesToBindSynchronously(orderedScreenIds)
+        FoldItemSets.isInnerSetShown = innerSet
 
         fun setupPendingBind(pendingExecutor: Executor) {
             executeCallbacksTask(pendingExecutor) { finishBindingItems(currentScreenIds) }
@@ -552,7 +535,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         // Tell the workspace that we're about to start binding items
         executeCallbacksTask {
             clearPendingBinds()
-            startBinding()
+            startBinding(anchorScreenId)
         }
 
         // Bind workspace screens

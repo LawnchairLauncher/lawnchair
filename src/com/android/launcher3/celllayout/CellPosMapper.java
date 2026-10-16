@@ -41,9 +41,8 @@ public class CellPosMapper {
     private final int mNumHotseatRows;
     @Nullable
     private final FoldDockLayout mFoldDock;
-    // LC-Note: model screen id (and dock rank) of presenter page 0 / rank 0: 0, or
-    // FoldItemSets.INNER_SCREEN_BASE when the inner item set of "Independent" is shown.
-    private final int mItemSetBase;
+    // LC-Note: whether the inner item set of "Independent" is shown, see FoldItemSets.
+    private final boolean mInnerItemSet;
 
     public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat) {
         this(hasVerticalHotseat, numOfHotseat, 1, 1);
@@ -62,38 +61,36 @@ public class CellPosMapper {
      */
     public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat, int numHotseatRows,
             int numHotseatPages, @Nullable FoldDockLayout foldDock) {
-        this(hasVerticalHotseat, numOfHotseat, numHotseatRows, numHotseatPages, foldDock, 0);
+        this(hasVerticalHotseat, numOfHotseat, numHotseatRows, numHotseatPages, foldDock, false);
     }
 
     /**
-     * @param itemSetBase model screen id and dock rank of the shown item set's first page and
-     *                    rank, see {@link app.lawnchair.fold.FoldItemSets}.
+     * @param innerItemSet whether the inner item set is shown, see
+     *                     {@link app.lawnchair.fold.FoldItemSets}.
      */
     public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat, int numHotseatRows,
-            int numHotseatPages, @Nullable FoldDockLayout foldDock, int itemSetBase) {
+            int numHotseatPages, @Nullable FoldDockLayout foldDock, boolean innerItemSet) {
         mHasVerticalHotseat = hasVerticalHotseat;
         mNumOfHotseat = numOfHotseat;
         mNumHotseatRows = Math.max(1, numHotseatRows);
         mFoldDock = foldDock;
-        mItemSetBase = itemSetBase;
-    }
-
-    /** Returns the model screen id of the shown item set's first page, see FoldItemSets. */
-    public int getItemSetBase() {
-        return mItemSetBase;
+        mInnerItemSet = innerItemSet;
     }
 
     /**
-     * LC-Note: dock rank of a dock item (or prediction) within the shown item set, the rank the
-     * {@code Hotseat} order helpers expect.
+     * LC-Note: whether the inner item set of "Independent" is shown (FoldItemSets). The one
+     * answer on the launcher side, built from DeviceProfile#isInnerItemSet.
      */
-    public int getPresenterHotseatRank(ItemInfo info) {
-        return toPresenterScreenId(info);
+    public boolean isInnerItemSet() {
+        return mInnerItemSet;
     }
 
-    /** LC-Note: model screen id or dock rank, from the shown item set's own numbering. */
-    private int toPresenterScreenId(ItemInfo info) {
-        if (mItemSetBase > 0
+    /**
+     * LC-Note: page or dock rank of a desktop or dock item within the shown item set (the rank
+     * the {@code Hotseat} order helpers expect).
+     */
+    public int toPresenterScreenId(ItemInfo info) {
+        if (mInnerItemSet
                 && (info.container == CONTAINER_DESKTOP || info.container == CONTAINER_HOTSEAT)) {
             return FoldItemSets.toPresenterScreenId(info.screenId);
         }
@@ -102,7 +99,7 @@ public class CellPosMapper {
 
     /** LC-Note: the reverse of {@link #toPresenterScreenId}. */
     private int toModelScreenId(int screenId, int container) {
-        if (mItemSetBase > 0
+        if (mInnerItemSet
                 && (container == CONTAINER_DESKTOP || container == CONTAINER_HOTSEAT)) {
             return FoldItemSets.toModelScreenId(screenId, true);
         }
