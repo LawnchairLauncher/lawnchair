@@ -5,6 +5,7 @@ import android.util.Log
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
 import java.lang.reflect.Type
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -64,8 +65,7 @@ object GoogleWebSearchProvider : WebSearchProvider {
         }
 
         try {
-            val encodedQuery = Uri.encode(query)
-            val response = service.getSuggestions(query = encodedQuery)
+            val response = service.getSuggestions(query = query)
 
             if (response.isSuccessful) {
                 val responseBody = response.body() ?: ""
@@ -76,6 +76,7 @@ object GoogleWebSearchProvider : WebSearchProvider {
                 emit(emptyList())
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(TAG, "Error during suggestion retrieval", e)
             emit(emptyList())
         }
@@ -96,6 +97,7 @@ object GoogleWebSearchProvider : WebSearchProvider {
             val suggestionsArray = jsonArray.getJSONArray(1)
             (0 until suggestionsArray.length()).map { suggestionsArray.getString(it) }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e("GoogleWebSearchProvider", "Failed to parse Google response", e)
             emptyList()
         }
@@ -149,8 +151,7 @@ object DuckDuckGoWebSearchProvider : WebSearchProvider {
 
         try {
             // 2. Call the Retrofit service.
-            val encodedQuery = Uri.encode(query)
-            val response = service.getSuggestions(query = encodedQuery)
+            val response = service.getSuggestions(query = query)
 
             if (response.isSuccessful) {
                 val responseBody = response.body()?.string() ?: ""
@@ -161,6 +162,7 @@ object DuckDuckGoWebSearchProvider : WebSearchProvider {
                 emit(emptyList())
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(TAG, "Error during suggestion retrieval", e)
             emit(emptyList())
         }
@@ -180,6 +182,7 @@ object DuckDuckGoWebSearchProvider : WebSearchProvider {
             val jsonElement = Json.parseToJsonElement(responseBody)
             jsonElement.jsonArray.map { it.jsonObject["phrase"]!!.jsonPrimitive.content }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(TAG, "Failed to parse DDG response", e)
             emptyList()
         }
@@ -231,8 +234,7 @@ object StartPageWebSearchProvider : WebSearchProvider {
         }
 
         try {
-            val encodedQuery = Uri.encode(query)
-            val response = service.getSuggestions(query = encodedQuery)
+            val response = service.getSuggestions(query = query)
 
             if (response.isSuccessful) {
                 val responseBody = response.body() ?: ""
@@ -243,6 +245,7 @@ object StartPageWebSearchProvider : WebSearchProvider {
                 emit(emptyList())
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(TAG, "Error during suggestion retrieval", e)
             emit(emptyList())
         }
@@ -263,6 +266,7 @@ object StartPageWebSearchProvider : WebSearchProvider {
             val suggestionsArray = jsonArray.getJSONArray(1) // Suggestions are the second element
             (0 until suggestionsArray.length()).map { suggestionsArray.getString(it) }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(TAG, "Failed to parse StartPage response", e)
             emptyList()
         }
@@ -313,8 +317,7 @@ object KagiWebSearchProvider : WebSearchProvider {
         }
 
         try {
-            val encodedQuery = Uri.encode(query)
-            val response = service.getSuggestions(query = encodedQuery)
+            val response = service.getSuggestions(query = query)
 
             if (response.isSuccessful) {
                 val responseBody = response.body() ?: ""
@@ -325,6 +328,7 @@ object KagiWebSearchProvider : WebSearchProvider {
                 emit(emptyList())
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(TAG, "Error during suggestion retrieval", e)
             emit(emptyList())
         }
@@ -346,6 +350,7 @@ object KagiWebSearchProvider : WebSearchProvider {
             val suggestionsArray = jsonArray.getJSONArray(1) // Suggestions are the second element
             (0 until suggestionsArray.length()).map { suggestionsArray.getString(it) }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(TAG, "Failed to parse Kagi response", e)
             emptyList()
         }

@@ -24,6 +24,7 @@ class LawnchairSearchAdapterProvider(
 
     private val decorator = SearchItemDecorator(appsView)
     private val layoutIdMap = SparseIntArray().apply {
+        append(SEARCH_RESULT_FILTERS, R.layout.omni_search_filters)
         append(SEARCH_RESULT_ICON, R.layout.search_result_icon)
         append(SEARCH_RESULT_ICON_ROW, R.layout.search_result_tall_icon_row)
         append(SEARCH_RESULT_SMALL_ICON_ROW, R.layout.search_result_small_icon_row)
@@ -93,6 +94,7 @@ class LawnchairSearchAdapterProvider(
     override fun getDecorator() = decorator
 
     companion object {
+        private const val SEARCH_RESULT_FILTERS = 1 shl 23
         private const val SEARCH_RESULT_ICON = (1 shl 10) or AllAppsGridAdapter.VIEW_TYPE_ICON
         private const val SEARCH_RESULT_ICON_ROW = 1 shl 11
         private const val SEARCH_RESULT_SMALL_ICON_ROW = 1 shl 12
@@ -108,6 +110,7 @@ class LawnchairSearchAdapterProvider(
         private const val SEARCH_RESULT_SEARCH_SETTINGS = 1 shl 22
 
         val viewTypeMap = mapOf(
+            "omni_filters" to SEARCH_RESULT_FILTERS,
             LayoutType.ICON_SINGLE_VERTICAL_TEXT to SEARCH_RESULT_ICON,
             LayoutType.ICON_HORIZONTAL_TEXT to SEARCH_RESULT_ICON_ROW,
             LayoutType.SMALL_ICON_HORIZONTAL_TEXT to SEARCH_RESULT_SMALL_ICON_ROW,

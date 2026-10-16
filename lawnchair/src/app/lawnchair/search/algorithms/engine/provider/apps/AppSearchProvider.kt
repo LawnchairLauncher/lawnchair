@@ -1,92 +1,71 @@
 package app.lawnchair.search.algorithms.engine.provider.apps
 
 import android.content.Context
+import android.icu.text.Transliterator
+import app.lawnchair.omni.experience.ExperienceStore
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.algorithms.engine.SearchResult
 import app.lawnchair.search.algorithms.filterHiddenApps
 import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.search.StringMatcherUtility
 import com.patrykmichalik.opto.core.firstBlocking
-import java.util.Locale
+import java.util.LinkedHashMap
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 
+/** Bounded index of prepared labels and aliases. Rebuilt entries follow label/locale/alias changes. */
 object AppSearchProvider {
+    private val transliterator by lazy { Transliterator.getInstance("Any-Latin; Latin-ASCII") }
+    private fun romanize(text: String): String = synchronized(transliterator) { transliterator.transliterate(text) }
+    private val index = object : LinkedHashMap<String, List<PreparedSearchText>>(128, .75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, List<PreparedSearchText>>?) = size > 1024
+    }
 
-    fun search(context: Context, query: String, allApps: List<AppInfo>): List<SearchResult.App> {
+    suspend fun search(context: Context, query: String, allApps: List<AppInfo>): List<SearchResult.App> {
         val prefs = PreferenceManager2.getInstance(context)
-        val hiddenApps = prefs.hiddenApps.firstBlocking()
-        val hiddenAppsInSearch = prefs.hiddenAppsInSearch.firstBlocking()
-        val maxAppResults = prefs.maxAppSearchResultCount.firstBlocking()
-        val enableFuzzySearch = prefs.enableFuzzySearch.firstBlocking()
-        if (maxAppResults <= 0 || query.isBlank()) return emptyList()
-
-        val appResults = if (enableFuzzySearch) {
-            fuzzySearch(allApps, query, maxAppResults, hiddenApps, hiddenAppsInSearch)
-        } else {
-            normalSearch(allApps, query, maxAppResults, hiddenApps, hiddenAppsInSearch)
-        }
-
-        return appResults.map { SearchResult.App(data = it) }
+        return matchApps(
+            allApps,
+            query,
+            prefs.maxAppSearchResultCount.firstBlocking(),
+            prefs.hiddenApps.firstBlocking(),
+            prefs.hiddenAppsInSearch.firstBlocking(),
+            prefs.enableFuzzySearch.firstBlocking(),
+            ExperienceStore.get(context).read().aliases,
+        ).map { SearchResult.App(it) }
     }
 
-    private fun normalSearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> {
-        // Do an intersection of the words in the query and each title, and filter out all the
-        // apps that don't match all of the words in the query.
-        val queryTextLower = query.lowercase(Locale.getDefault())
-        val matcher = StringMatcherUtility.StringMatcher.getInstance()
-        val visibleApps = apps.asSequence()
-            .filterHiddenApps(queryTextLower, hiddenApps, hiddenAppsInSearch)
-            .toList()
-        val exact = visibleApps.asSequence()
-            .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
-            .take(maxResultsCount)
-            .toList()
-        if (exact.size == maxResultsCount) return exact
-
-        // Arabic hamza/diacritic variants are considered only after native matches.
-        val normalizedQuery = SearchTextNormalizer.normalize(queryTextLower)
-        if (normalizedQuery.isEmpty()) return exact
-        val fallback = visibleApps.asSequence()
-            .filter { it !in exact }
-            .filter { SearchTextNormalizer.normalize(it.title.toString()).contains(normalizedQuery) }
-            .take(maxResultsCount - exact.size)
-            .toList()
-        return exact + fallback
-    }
-
-    private fun fuzzySearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> {
-        val queryTextLower = query.lowercase(Locale.getDefault())
-        val filteredApps = apps.asSequence()
-            .filterHiddenApps(queryTextLower, hiddenApps, hiddenAppsInSearch)
-            .toList()
-
-        val normalizedQuery = SearchTextNormalizer.normalize(queryTextLower)
-        if (normalizedQuery.isEmpty()) return emptyList()
-        val direct = filteredApps.asSequence()
-            .filter { SearchTextNormalizer.normalize(it.title.toString()).contains(normalizedQuery) }
-            .sortedWith(
-                compareBy(
-                    { SearchTextNormalizer.normalize(it.title.toString()) != normalizedQuery },
-                    { !SearchTextNormalizer.normalize(it.title.toString()).startsWith(normalizedQuery) },
-                ),
-            )
-            .take(maxResultsCount)
-            .toList()
-        if (direct.size == maxResultsCount) return direct
-
-        return direct + filteredApps.asSequence()
-            .filter { it !in direct }
+    suspend fun matchApps(
+        apps: List<AppInfo>,
+        query: String,
+        maxResults: Int,
+        hiddenApps: Set<String>,
+        hiddenAppsInSearch: String,
+        fuzzy: Boolean,
+        aliases: Map<String, String>,
+    ): List<AppInfo> {
+        if (maxResults <= 0 || query.isBlank()) return emptyList()
+        val preparedQuery = PreparedSearchText.from(query)
+        val latinQuery = PreparedSearchText.from(romanize(query))
+        val coroutineContext = currentCoroutineContext()
+        val matches = apps.asSequence().filterHiddenApps(query.lowercase(java.util.Locale.ROOT), hiddenApps, hiddenAppsInSearch)
             .mapNotNull { app ->
-                val matchResult = AppMatcher.match(app.title.toString(), queryTextLower)
-                if (matchResult.type == MatchType.NO_MATCH) null else Pair(app, matchResult)
-            }
-            .sortedWith(
-                compareBy(
-                    { it.second.type.priority },
-                    { -it.second.score },
-                ),
-            )
-            .map { it.first }
-            .take(maxResultsCount - direct.size)
-            .toList()
+                coroutineContext.ensureActive()
+                val label = app.title.toString()
+                val alias = aliases[app.toComponentKey().toString()].orEmpty()
+                val key = "${app.toComponentKey()}|$label|$alias"
+                val texts = synchronized(index) { index[key] } ?: run {
+                    val originals = listOf(label) + alias.split(',').filter { it.isNotBlank() }
+                    val prepared = (originals + originals.map { romanize(it) })
+                        .distinct().map(PreparedSearchText::from)
+                    synchronized(index) { index[key] = prepared }
+                    prepared
+                }
+                val best = texts.flatMap { text ->
+                    listOf(AppMatcher.match(text, preparedQuery, fuzzy), AppMatcher.match(text, latinQuery, fuzzy))
+                }.filter { it.type != MatchType.NO_MATCH }
+                    .minWithOrNull(compareBy<MatchResult> { it.type.priority }.thenByDescending { it.score })
+                best?.let { Triple(app, it.type.priority, it.score) }
+            }.toList()
+        return matches.sortedWith(compareBy<Triple<AppInfo, Int, Float>> { it.second }.thenByDescending { it.third })
+            .take(maxResults.coerceAtMost(100)).map { it.first }
     }
 }

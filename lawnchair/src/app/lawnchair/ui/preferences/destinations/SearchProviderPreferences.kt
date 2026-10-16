@@ -45,7 +45,10 @@ fun SearchProviderPreferences(
         label = stringResource(R.string.search_provider),
         modifier = modifier,
     ) {
-        app.lawnchair.omni.OmniIntegrationPreferences()
+        app.lawnchair.ui.preferences.components.controls.ClickablePreference(
+            label = stringResource(R.string.omni_hub),
+            onClick = { context.startActivity(app.lawnchair.omni.experience.OmniHubActivity.intent(context, "system")) },
+        )
         PreferenceGroup {
             QsbSearchProvider.values().forEach { qsbSearchProvider ->
                 val appInstalled = qsbSearchProvider.type.downloadable && qsbSearchProvider.isDownloaded(context)

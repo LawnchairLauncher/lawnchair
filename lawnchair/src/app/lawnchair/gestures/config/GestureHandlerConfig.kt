@@ -1,6 +1,7 @@
 package app.lawnchair.gestures.config
 
 import android.content.Context
+import app.lawnchair.omni.experience.OpenShelfHandler
 import app.lawnchair.gestures.handlers.GestureHandler
 import app.lawnchair.gestures.handlers.NoOpGestureHandler
 import app.lawnchair.gestures.handlers.OpenAppDrawerGestureHandler
@@ -65,6 +66,10 @@ sealed class GestureHandlerConfig {
     @Serializable
     @SerialName("openAssistant")
     data object OpenAssistant : Simple(R.string.gesture_handler_open_assistant, ::OpenAssistantHandler)
+
+    @Serializable
+    @SerialName("openOmniShelf")
+    data object OpenOmniShelf : Simple(R.string.omni_shelf, ::OpenShelfHandler)
 
     @Serializable
     @SerialName("openApp")

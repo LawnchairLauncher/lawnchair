@@ -34,13 +34,16 @@ import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchCallback
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.concurrent.atomic.AtomicLong
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -76,12 +79,33 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             if (generation.get() != requestGeneration) return@enqueueModelUpdateTask
             currentJob = coroutineScope.launch {
                 if (generation.get() != requestGeneration) return@launch
-                val appResults = appSearchProvider.search(context, query, appSnapshot)
+                val prefs = PreferenceManager.getInstance(context)
+                val appResults = if (prefs.searchResultApps.get()) appSearchProvider.search(context, query, appSnapshot) else emptyList()
                 if (generation.get() != requestGeneration) return@launch
+                var actionTargets = emptyList<SearchTargetCompat>()
+                suspend fun deliver(results: List<SearchResult>, initial: Boolean = false) {
+                    val hasLocal = results.any { it !is SearchResult.WebSuggestion && it !is SearchResult.History && it !is SearchResult.Action }
+                    val targets = translateToSearchTargets(if (initial) results else results + generateActionResults(query, hasLocal)).toMutableList()
+                    targets.addAll(actionTargets)
+                    setFirstItemQuickLaunch(targets)
+                    val items = transformSearchResults(targets)
+                    withContext(Dispatchers.Main) {
+                        if (generation.get() == requestGeneration) callback.onSearchResult(query, ArrayList(items))
+                    }
+                }
+                // Deliver apps before ShortcutManager, contacts, disk or network can delay them.
+                deliver(appResults, initial = true)
                 val shortcutResults = shortcutSearchProvider.search(context, appResults)
                 if (generation.get() != requestGeneration) return@launch
+                actionTargets = app.lawnchair.omni.experience.ActionSearchProvider.search(context, query)
                 val nonAppProvidersFlow = combine(
-                    searchProviders.map { it.search(context, query) },
+                    searchProviders.map { provider ->
+                        provider.search(context, query).onStart { emit(emptyList()) }.catch { error ->
+                            if (error is CancellationException) throw error
+                            android.util.Log.w("OmniSearch", "Provider ${provider.id} unavailable", error)
+                            emit(emptyList())
+                        }
+                    },
                 ) { resultsArray ->
                     resultsArray.toList().flatten()
                 }
@@ -91,16 +115,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                         .firstOrNull()
 
                     val localResults = appResults + shortcutResults + (calcResult ?: emptyList()) + nonAppResults
-                    val hasLocalResults = localResults.any {
-                        it !is SearchResult.WebSuggestion && it !is SearchResult.History && it !is SearchResult.Action
-                    }
-                    val allResults = localResults + generateActionResults(query, hasLocalResults)
-
-                    val searchTargets = translateToSearchTargets(allResults)
-                    val adapterItems = transformSearchResults(searchTargets)
-                    withContext(Dispatchers.Main) {
-                        if (generation.get() == requestGeneration) callback.onSearchResult(query, ArrayList(adapterItems))
-                    }
+                    deliver(localResults)
                 }
             }
         }

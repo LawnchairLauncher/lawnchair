@@ -18,14 +18,15 @@ package app.lawnchair.omni
 
 /** Receiver-owned flavor ceiling; a client manifest or client-side check cannot grant authority. */
 object OmniLauncherAccessPolicy {
-    private val read = setOf("launcher.health", "launcher.get_settings", "launcher.list_apps")
-    private val open = setOf("launcher.open_app", "launcher.open_drawer")
-    private val control = read + open + "launcher.set_preference"
+    private val read = setOf("launcher.health", "launcher.get_settings", "launcher.list_apps") + app.lawnchair.omni.experience.ExperienceCapabilityNames.read
+    private val open = setOf("launcher.open_app", "launcher.open_drawer", "launcher.open_action")
+    private val control = read + open + "launcher.set_preference" + app.lawnchair.omni.experience.ExperienceCapabilityNames.control
 
     fun allows(workspacePackage: String, capability: String): Boolean = when (workspacePackage) {
         "com.omnidev.workspace" -> capability == "launcher.health"
         "com.omnidev.workspace.norm" -> capability in read || capability in open
-        "com.omnidev.workspace.pro", "com.omnidev.workspace.oem", "com.omnidev.workspace.admin" -> capability in control
+        "com.omnidev.workspace.pro" -> capability in control
+        "com.omnidev.workspace.oem", "com.omnidev.workspace.admin" -> capability in control || capability in app.lawnchair.omni.experience.ExperienceCapabilityNames.oem
         else -> false
     }
 }

@@ -19,6 +19,7 @@ package app.lawnchair.omni
 import android.content.ComponentName
 import android.content.pm.LauncherApps
 import android.os.Process
+import android.os.UserManager
 import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -53,6 +54,7 @@ import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.longOrNull
 import kotlinx.serialization.json.put
 
 /** Optional, same-signer Workspace control. This service is bound only on explicit discovery. */
@@ -141,10 +143,10 @@ class OmniLauncherService : ExtensionService() {
             "Open an exact visible component from list_apps; Home must be resumed",
             mutation = true,
             dryRun = true,
-            schema = schema("component" to "string"),
+            schema = schema("component" to "string", "profileSerial" to "integer"),
         ),
         capability("launcher.open_drawer", "Open app drawer only while Home is resumed", mutation = true, dryRun = true),
-    )
+    ) + app.lawnchair.omni.experience.ExperienceCapabilities.descriptors
 
     override suspend fun onAction(caller: CallerContext, request: ActionRequest): ActionOutcome = withContext(Dispatchers.IO) {
         // Recheck after dispatch: queued calls must not outlive revoked local consent.
@@ -207,7 +209,11 @@ class OmniLauncherService : ExtensionService() {
                 }
             }
 
-            else -> failure("unknown_capability")
+            else -> mutations.withLock {
+                app.lawnchair.omni.experience.ExperienceCapabilities.execute(this@OmniLauncherService, caller.callingPackage, request) {
+                    accessController.decide(caller, request) == AccessDecision.ALLOW
+                }
+            }
         }
     }
 
@@ -218,9 +224,9 @@ class OmniLauncherService : ExtensionService() {
         val hidden = PreferenceManager2.omniPreferencesDataStore(applicationContext).data.first()[
             stringSetPreferencesKey("hidden_apps"),
         ].orEmpty()
-        return launcherApps.getActivityList(null, Process.myUserHandle())
+        return launcherApps.profiles.flatMap { user -> runCatching { launcherApps.getActivityList(null, user) }.getOrDefault(emptyList()) }
             .filter { ComponentKey(it.componentName, it.user).toString() !in hidden }
-            .sortedBy { it.componentName.flattenToString() }
+            .sortedBy { ComponentKey(it.componentName, it.user).toString() }
     }
 
     private suspend fun listApps(payload: JsonObject): ActionOutcome {
@@ -240,6 +246,8 @@ class OmniLauncherService : ExtensionService() {
                             add(
                                 buildJsonObject {
                                     put("component", app.componentName.flattenToString())
+                                    put("componentKey", ComponentKey(app.componentName, app.user).toString())
+                                    put("profileSerial", getSystemService(UserManager::class.java).getSerialNumberForUser(app.user))
                                     put("label", app.label.toString().take(200))
                                 },
                             )
@@ -293,11 +301,15 @@ class OmniLauncherService : ExtensionService() {
     }
 
     private suspend fun openApp(request: ActionRequest, payload: JsonObject): ActionOutcome {
-        if (payload.keys != setOf("component")) return failure("invalid_payload")
+        if (payload.keys.any { it !in setOf("component", "profileSerial") } || "component" !in payload) return failure("invalid_payload")
         val componentText = (payload["component"] as? JsonPrimitive)?.takeIf { it.isString }?.content ?: return failure("invalid_component")
         val component = ComponentName.unflattenFromString(componentText) ?: return failure("invalid_component")
         val apps = visibleApps() ?: return failure("launcher_service_unavailable")
-        if (apps.none { it.componentName == component }) return failure("app_not_visible")
+        val users = getSystemService(UserManager::class.java)
+        val serial = payload["profileSerial"]?.let { value ->
+            (value as? JsonPrimitive)?.takeUnless { it.isString }?.longOrNull ?: return failure("invalid_profile")
+        } ?: users.getSerialNumberForUser(Process.myUserHandle())
+        val target = apps.firstOrNull { it.componentName == component && users.getSerialNumberForUser(it.user) == serial } ?: return failure("app_not_visible")
         return withContext(Dispatchers.Main) {
             val launcher = LawnchairLauncher.instance
             when {
@@ -316,7 +328,7 @@ class OmniLauncherService : ExtensionService() {
                         if (expired(request)) return@launchOnIo failure("deadline_exceeded")
                         if (!launcher.hasBeenResumed()) return@launchOnIo failure("foreground_required")
                         val launcherApps = getSystemService(LauncherApps::class.java) ?: return@launchOnIo failure("launcher_service_unavailable")
-                        launcherApps.startMainActivity(component, Process.myUserHandle(), null, null)
+                        launcherApps.startMainActivity(component, target.user, null, null)
                         success(buildJsonObject { put("opened", component.flattenToString()) })
                     }
                 }

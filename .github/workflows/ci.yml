@@ -27,6 +27,17 @@ on:
   workflow_call:
 
 jobs:
+  omni-experience-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: 21
+      - name: Run launcher rules, Unicode search and receiver policy tests
+        run: python3 scripts/test_omni_experience.py
+
   build-debug-apk:
     strategy:
       fail-fast: false
@@ -128,13 +139,14 @@ jobs:
     needs:
       - build-debug-apk
       - check-style
+      - omni-experience-tests
     runs-on: ubuntu-slim
     if: always()
     steps:
       - name: Check
         run: |
           if [[ "${{ needs.build-debug-apk.result }}" != "success" ||
-                "${{ needs.check-style.result }}" != "success" ]]; then
+                "${{ needs.check-style.result }}" != "success" || "${{ needs.omni-experience-tests.result }}" != "success" ]]; then
             echo "Required build or style checks failed, were cancelled, or were skipped"
             exit 1
           fi

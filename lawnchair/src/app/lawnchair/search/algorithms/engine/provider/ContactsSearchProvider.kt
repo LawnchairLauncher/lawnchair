@@ -3,6 +3,7 @@ package app.lawnchair.search.algorithms.engine.provider
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.CancellationSignal
 import android.provider.ContactsContract
 import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
@@ -12,8 +13,12 @@ import app.lawnchair.search.algorithms.engine.SearchPermission
 import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
 import com.patrykmichalik.opto.core.firstBlocking
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -52,6 +57,7 @@ object ContactsSearchProvider : SearchProvider, SearchPermission {
         return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
     }
 
+    @OptIn(kotlinx.coroutines.InternalCoroutinesApi::class)
     private suspend fun findContactsByName(context: Context, query: String, max: Int): List<ContactInfo> {
         try {
             if (query.isEmpty() || query.isBlank() || max <= 0) return emptyList()
@@ -78,70 +84,80 @@ object ContactsSearchProvider : SearchProvider, SearchPermission {
                 val selection = ContactsContract.Data.DISPLAY_NAME + " LIKE ?"
                 val selectionArgs = arrayOf("%$query%")
 
-                context.contentResolver.query(
-                    ContactsContract.Data.CONTENT_URI,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null,
-                )?.use {
-                    while (it.moveToNext() && contactMap.size < max) {
-                        val contactIdIndex = it.getColumnIndex(ContactsContract.Data.CONTACT_ID)
-                        val displayNameIndex = it.getColumnIndex(ContactsContract.Data.DISPLAY_NAME)
-                        val data1Index = it.getColumnIndex(ContactsContract.Data.DATA1)
-                        val data3Index = it.getColumnIndex(ContactsContract.Data.DATA3)
-                        val data5Index = it.getColumnIndex(ContactsContract.Data.DATA5)
-                        val phonebookLabelIndex = it.getColumnIndex("phonebook_label")
-                        val accountTypeIndex = it.getColumnIndex("account_type")
-                        val accountNameIndex = it.getColumnIndex("account_name")
-                        val mimeTypeIndex = it.getColumnIndex(ContactsContract.Data.MIMETYPE)
-                        val photoUriIndex = it.getColumnIndex(ContactsContract.Data.PHOTO_URI)
-                        val contactId = it.getString(contactIdIndex)
-                        val displayName = it.getString(displayNameIndex)
-                        val data1 = it.getString(data1Index)
-                        val data3 = it.getString(data3Index)
-                        val data5 = it.getString(data5Index)
-                        val phonebookLabel = it.getString(phonebookLabelIndex)
-                        val accountType = it.getString(accountTypeIndex)
-                        val accountName = it.getString(accountNameIndex)
-                        val mimeType = it.getString(mimeTypeIndex)
-                        val photoUri = it.getString(photoUriIndex)
-                        val phoneNumber = data3 ?: data5 ?: data1
-                        val key = contactId ?: phoneNumber
-                        val imageUri = photoUri ?: ""
-                        val phonebookLabel2 = phonebookLabel ?: ""
-                        val pkg = contactId + displayName + phoneNumber
-                        if (key != null && !EXCLUDED_MIME_TYPES.contains(mimeType)) {
-                            contactMap[key] = ContactInfo(
-                                contactId,
-                                displayName,
-                                phoneNumber,
-                                phonebookLabel2,
-                                imageUri,
-                                pkg,
-                            )
-                        } else {
-                            if (contactMap.containsKey(contactId)) {
-                                val existingContact = contactMap[contactId]
-                                val jsonArray = buildJsonArray {
-                                    add(
-                                        buildJsonObject {
-                                            put(CONTACT_ACCOUNT_ID, key)
-                                            put(CONTACT_ACCOUNT_TITLE, data5)
-                                            put(CONTACT_ACCOUNT_NAME, accountName)
-                                            put(CONTACT_ACCOUNT_TYPE, accountType)
-                                            put(CONTACT_ACCOUNT_MIME, mimeType)
-                                        },
-                                    )
+                val coroutineContext = currentCoroutineContext()
+                val signal = CancellationSignal()
+                val registration = coroutineContext[Job]?.invokeOnCompletion(onCancelling = true, invokeImmediately = true) { if (it != null) signal.cancel() }
+                try {
+                    context.contentResolver.query(
+                        ContactsContract.Data.CONTENT_URI,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        signal,
+                    )?.use {
+                        while (it.moveToNext() && contactMap.size < max) {
+                            coroutineContext.ensureActive()
+                            val contactIdIndex = it.getColumnIndex(ContactsContract.Data.CONTACT_ID)
+                            val displayNameIndex = it.getColumnIndex(ContactsContract.Data.DISPLAY_NAME)
+                            val data1Index = it.getColumnIndex(ContactsContract.Data.DATA1)
+                            val data3Index = it.getColumnIndex(ContactsContract.Data.DATA3)
+                            val data5Index = it.getColumnIndex(ContactsContract.Data.DATA5)
+                            val phonebookLabelIndex = it.getColumnIndex("phonebook_label")
+                            val accountTypeIndex = it.getColumnIndex("account_type")
+                            val accountNameIndex = it.getColumnIndex("account_name")
+                            val mimeTypeIndex = it.getColumnIndex(ContactsContract.Data.MIMETYPE)
+                            val photoUriIndex = it.getColumnIndex(ContactsContract.Data.PHOTO_URI)
+                            val contactId = it.getString(contactIdIndex)
+                            val displayName = it.getString(displayNameIndex)
+                            val data1 = it.getString(data1Index)
+                            val data3 = it.getString(data3Index)
+                            val data5 = it.getString(data5Index)
+                            val phonebookLabel = it.getString(phonebookLabelIndex)
+                            val accountType = it.getString(accountTypeIndex)
+                            val accountName = it.getString(accountNameIndex)
+                            val mimeType = it.getString(mimeTypeIndex)
+                            val photoUri = it.getString(photoUriIndex)
+                            val phoneNumber = data3 ?: data5 ?: data1
+                            val key = contactId ?: phoneNumber
+                            val imageUri = photoUri ?: ""
+                            val phonebookLabel2 = phonebookLabel ?: ""
+                            val pkg = contactId + displayName + phoneNumber
+                            if (key != null && !EXCLUDED_MIME_TYPES.contains(mimeType)) {
+                                contactMap[key] = ContactInfo(
+                                    contactId,
+                                    displayName,
+                                    phoneNumber,
+                                    phonebookLabel2,
+                                    imageUri,
+                                    pkg,
+                                )
+                            } else {
+                                if (contactMap.containsKey(contactId)) {
+                                    val existingContact = contactMap[contactId]
+                                    val jsonArray = buildJsonArray {
+                                        add(
+                                            buildJsonObject {
+                                                put(CONTACT_ACCOUNT_ID, key)
+                                                put(CONTACT_ACCOUNT_TITLE, data5)
+                                                put(CONTACT_ACCOUNT_NAME, accountName)
+                                                put(CONTACT_ACCOUNT_TYPE, accountType)
+                                                put(CONTACT_ACCOUNT_MIME, mimeType)
+                                            },
+                                        )
+                                    }
+                                    existingContact?.packages = jsonArray.toString()
                                 }
-                                existingContact?.packages = jsonArray.toString()
                             }
                         }
                     }
+                } finally {
+                    registration?.dispose()
                 }
                 contactMap.values.toList()
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e("ContactSearch", "Something went wrong ", e)
             return emptyList()
         }

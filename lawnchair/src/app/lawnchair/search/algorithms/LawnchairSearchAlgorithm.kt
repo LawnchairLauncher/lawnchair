@@ -29,12 +29,13 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchAlgorithm
 import com.android.launcher3.search.SearchCallback
-import com.patrykmichalik.opto.core.firstBlocking
+import kotlinx.coroutines.flow.first
 
 sealed class LawnchairSearchAlgorithm(
     protected val context: Context,
 ) : SearchAlgorithm<BaseAllAppsAdapter.AdapterItem> {
 
+    internal var filterScope = SearchScope.ALL
     private val transparentBackground = SearchItemBackground(
         context,
         showBackground = false,
@@ -76,6 +77,7 @@ sealed class LawnchairSearchAlgorithm(
         val filtered = results
             .asSequence()
             .filter { it.packageName != BuildConfig.APPLICATION_ID }
+            .filter { filterScope.includes(it) }
             .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
             .removeDuplicateDividers()
             .toList()
@@ -90,7 +92,13 @@ sealed class LawnchairSearchAlgorithm(
         val recentIndices = findIndices(filtered, WIDGET_LIVE)
         val calculator = findIndices(filtered, CALCULATOR)
 
-        return filtered.mapIndexedNotNull { index, target ->
+        val filterRow = SearchAdapterItem.createAdapterItem(
+            SearchTargetCompat.Builder(SearchTargetCompat.RESULT_TYPE_SEARCH_SETTINGS, "omni_filters", "omni_filters:${filterScope.name}")
+                .setPackageName("omni_filters").setUserHandle(android.os.Process.myUserHandle())
+                .setExtras(android.os.Bundle().apply { putString("scope", filterScope.name) }).build(),
+            transparentBackground,
+        )
+        return listOf(filterRow) + filtered.mapIndexedNotNull { index, target ->
             val isFirst = index == 0 || filtered[index - 1].isDivider
             val isLast = index == filtered.lastIndex || filtered[index + 1].isDivider
 
@@ -127,9 +135,7 @@ sealed class LawnchairSearchAlgorithm(
         if (!hasQuickLaunch) {
             // check if we have a header or spacer item. if so, we skip as there isn't any relevant
             // action to be applied
-            val target = searchTargets.getOrNull(
-                searchTargets.indexOfFirst { it.layoutType != TEXT_HEADER },
-            )
+            val target = searchTargets.firstOrNull { it.layoutType != TEXT_HEADER && filterScope.includes(it) }
             target?.extras?.apply {
                 putBoolean(EXTRA_QUICK_LAUNCH, true)
             }
@@ -217,9 +223,9 @@ sealed class LawnchairSearchAlgorithm(
             return true
         }
 
-        fun create(context: Context): LawnchairSearchAlgorithm {
+        suspend fun create(context: Context): LawnchairSearchAlgorithm {
             val prefs = PreferenceManager2.getInstance(context)
-            val searchAlgorithm = prefs.searchAlgorithm.firstBlocking()
+            val searchAlgorithm = prefs.searchAlgorithm.get().first()
 
             return when {
                 searchAlgorithm == ASI_SEARCH && isASISearchEnabled(context) -> LawnchairASISearchAlgorithm(

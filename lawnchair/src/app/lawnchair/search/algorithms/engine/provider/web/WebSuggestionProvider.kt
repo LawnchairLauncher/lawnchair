@@ -8,11 +8,14 @@ import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
 import com.patrykmichalik.opto.core.firstBlocking
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.timeout
 
 object WebSuggestionProvider : SearchProvider {
@@ -37,12 +40,12 @@ object WebSuggestionProvider : SearchProvider {
             .configure(context)
 
         return webProvider.getSuggestions(query)
-            .timeout(timeout.milliseconds)
+            .onStart { delay(180) }
+            .timeout(timeout.coerceAtLeast(250).milliseconds)
             .catch {
-                if (it is TimeoutCancellationException) {
-                    Log.w(TAG, "Web suggestion request timed out")
-                    emit(emptyList())
-                }
+                if (it is CancellationException && it !is TimeoutCancellationException) throw it
+                Log.w(TAG, "Web suggestions unavailable", it)
+                emit(emptyList())
             }
             .map { suggestions ->
                 suggestions

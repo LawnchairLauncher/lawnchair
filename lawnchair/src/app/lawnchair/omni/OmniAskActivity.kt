@@ -26,6 +26,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
+import app.lawnchair.omni.experience.ExperienceStore
 import com.android.launcher3.R
 import com.omnilink.sdk.OmniJson
 import com.omnilink.sdk.OmniLinkConstants
@@ -35,6 +36,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.encodeToString
 
@@ -106,6 +108,12 @@ class OmniAskActivity : ComponentActivity() {
                 }
                 finish()
             }
+            val preferred = withContext(Dispatchers.IO) { ExperienceStore.get(this@OmniAskActivity).read().preferredWorkspace }
+            val preferredTarget = targets.firstOrNull { it.second.component?.flattenToString() == preferred }
+            if (preferredTarget != null) {
+                open(preferredTarget.second)
+                return@launch
+            }
             when (targets.size) {
                 0 -> AlertDialog.Builder(this@OmniAskActivity)
                     .setTitle(R.string.omni_search_provider)
@@ -118,7 +126,13 @@ class OmniAskActivity : ComponentActivity() {
 
                 else -> AlertDialog.Builder(this@OmniAskActivity)
                     .setTitle(R.string.omni_choose_workspace)
-                    .setItems(targets.map { it.first }.toTypedArray()) { _, index -> open(targets[index].second) }
+                    .setMessage(R.string.omni_workspace_remember)
+                    .setItems(targets.map { it.first }.toTypedArray()) { _, index ->
+                        lifecycleScope.launch {
+                            withContext(Dispatchers.IO) { ExperienceStore.get(this@OmniAskActivity).update { it.copy(preferredWorkspace = targets[index].second.component?.flattenToString()) } }
+                            open(targets[index].second)
+                        }
+                    }
                     .setOnCancelListener { finish() }
                     .show()
             }

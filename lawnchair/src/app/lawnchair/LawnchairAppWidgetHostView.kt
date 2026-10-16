@@ -22,6 +22,7 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
     override fun setAppWidget(appWidgetId: Int, info: AppWidgetProviderInfo) {
         inflateCustomView(info)
         super.setAppWidget(appWidgetId, info)
+        (customView as? app.lawnchair.omni.experience.widgets.OmniWidgetStackView)?.bind(appWidgetId)
     }
 
     fun disablePreviewMode() {
@@ -66,7 +67,10 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
 
         @JvmStatic
         fun inflateCustomView(context: Context, info: AppWidgetProviderInfo, previewMode: Boolean): ViewGroup? {
-            val layoutId = customLayouts[info.provider] ?: return null
+            if (!previewMode && info.provider == app.lawnchair.omni.experience.widgets.OmniWidgetStack.component(context)) {
+                return app.lawnchair.omni.experience.widgets.OmniWidgetStackView(context)
+            }
+            val layoutId = if (info.provider == app.lawnchair.omni.experience.widgets.OmniWidgetStack.component(context)) R.layout.omni_stack_placeholder else customLayouts[info.provider] ?: return null
 
             val inflationContext = if (previewMode) Themes.createWidgetPreviewContext(context) else context
             return LayoutInflater.from(inflationContext)

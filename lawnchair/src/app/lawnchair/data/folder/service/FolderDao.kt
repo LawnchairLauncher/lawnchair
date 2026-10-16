@@ -1,4 +1,4 @@
-﻿package app.lawnchair.data.folder.service
+package app.lawnchair.data.folder.service
 
 import androidx.room.Dao
 import androidx.room.Embedded
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FolderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFolder(folder: FolderInfoEntity)
+    suspend fun insertFolder(folder: FolderInfoEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFolderItems(items: List<FolderItemEntity>)
@@ -34,6 +34,7 @@ interface FolderDao {
 
     @Transaction
     suspend fun insertFolderWithItems(folder: FolderInfoEntity, items: List<FolderItemEntity>) {
+        deleteFolderItemsByFolderId(folder.id)
         insertFolder(folder)
         insertFolderItems(items)
     }

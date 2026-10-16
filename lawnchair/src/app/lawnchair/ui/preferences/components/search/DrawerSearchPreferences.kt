@@ -46,7 +46,10 @@ fun DrawerSearchPreference(
         label = stringResource(id = R.string.show_app_search_bar),
         modifier = modifier,
     ) {
-        app.lawnchair.omni.OmniIntegrationPreferences()
+        app.lawnchair.ui.preferences.components.controls.ClickablePreference(
+            label = stringResource(R.string.omni_hub),
+            onClick = { context.startActivity(app.lawnchair.omni.experience.OmniHubActivity.intent(context, "system")) },
+        )
         PreferenceGroup(heading = stringResource(R.string.general_label)) {
             ExpandAndShrink(visible = hiddenApps.isNotEmpty()) {
                 HiddenAppsInSearchPreference()
@@ -179,7 +182,6 @@ private fun LocalSearchSettings(
         onClick = {
             navController.navigate(SearchProviderPreference(SearchProviderId.CONTACTS))
         },
-        enabled = rememberPermissionState(android.Manifest.permission.READ_CONTACTS).status.isGranted,
     )
     SearchProviderPreferenceItem(
         adapter = prefs.searchResultFilesToggle.getAdapter(),
@@ -188,7 +190,6 @@ private fun LocalSearchSettings(
         onClick = {
             navController.navigate(SearchProviderPreference(SearchProviderId.FILES))
         },
-        enabled = remember { FileAccessManager.getInstance(context) }.hasAnyPermission.collectAsStateWithLifecycle().value,
     )
     SearchProviderPreferenceItem(
         adapter = prefs.searchResultSettingsEntry.getAdapter(),

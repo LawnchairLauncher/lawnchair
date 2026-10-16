@@ -18,9 +18,17 @@ package app.lawnchair.omni
 
 import android.content.pm.PackageManager
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -35,7 +43,14 @@ fun OmniIntegrationPreferences() {
     val context = LocalContext.current
     // PackageManager Binder calls belong off Main, including on the settings screen.
     // The SDK independently repeats signer and capability checks for every incoming call.
-    val sharedSigner = produceState<Boolean?>(initialValue = null, key1 = context) {
+    var revision by remember { mutableIntStateOf(0) }
+    val owner = LocalLifecycleOwner.current
+    DisposableEffect(owner) {
+        val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_RESUME) revision++ }
+        owner.lifecycle.addObserver(observer)
+        onDispose { owner.lifecycle.removeObserver(observer) }
+    }
+    val sharedSigner = produceState<Boolean?>(initialValue = null, key1 = context, key2 = revision) {
         value = withContext(Dispatchers.IO) {
             OmniAskActivity.WORKSPACE_PACKAGES.any { workspacePackage ->
                 runCatching {
