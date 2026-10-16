@@ -2,7 +2,8 @@ package app.lawnchair.fold
 
 import android.content.Context
 import android.util.Log
-import app.lawnchair.LawnchairLauncher
+import app.lawnchair.preferences2.PreferenceManager2
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
@@ -43,9 +44,22 @@ object FoldItemSets {
         return isInnerItem(item) == innerSetActive
     }
 
-    /** Whether the launcher currently shows the inner set (on any thread, best effort). */
+    /**
+     * Whether this device has the two item sets: a foldable with the "Independent" home layout.
+     * A backup restored on a phone or tablet keeps the preference, but has one set only.
+     */
     @JvmStatic
-    fun isInnerSetShown(): Boolean = LawnchairLauncher.instance?.deviceProfile?.isInnerItemSet == true
+    fun isIndependent(context: Context): Boolean = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY &&
+        FoldLayout.isHomeIndependent(PreferenceManager2.INSTANCE.get(context))
+
+    /**
+     * Whether the launcher shows the inner set, as of its last bind. Set by `ModelCallbacks` on
+     * every bind (a fold or unfold rebinds), so model tasks read it on any thread without asking
+     * the activity, and it outlives a launcher being recreated.
+     */
+    @JvmStatic
+    @Volatile
+    var isInnerSetShown = false
 
     /**
      * Creates the inner set from the cover layout when "Independent" is selected and the inner

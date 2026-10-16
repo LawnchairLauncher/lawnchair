@@ -50,8 +50,6 @@ import java.util.List;
 import java.util.Objects;
 
 import app.lawnchair.fold.FoldItemSets;
-import app.lawnchair.fold.FoldLayout;
-import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Task to add auto-created workspace items.
@@ -129,7 +127,7 @@ public class AddWorkspaceItemsTask implements ModelUpdateTask {
             ModelWriter writer = taskController.getModelWriter();
             // LC-Note: with the "Independent" home layout (see FoldItemSets), new apps go to both
             // item sets; other items (pinned shortcuts, widgets) go to the set on screen.
-            boolean independent = FoldLayout.isHomeIndependent(PreferenceManager2.INSTANCE.get(context));
+            boolean independent = FoldItemSets.isIndependent(context);
             boolean innerShown = independent && FoldItemSets.isInnerSetShown();
             IntArray innerWorkspaceScreens = independent
                     ? FoldItemSets.toInnerModelScreenIds(

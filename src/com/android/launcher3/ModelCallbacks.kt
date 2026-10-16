@@ -506,8 +506,10 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
 
         MAIN_EXECUTOR.execute { clearPendingBinds() }
 
-        // LC-Note: bind only the item set shown on this screen, see FoldItemSets.
+        // LC-Note: bind only the item set shown on this screen, see FoldItemSets, and tell the
+        // model tasks which one it is.
         val innerSet = launcher.deviceProfile.isInnerItemSet
+        FoldItemSets.isInnerSetShown = innerSet
         val orderedScreenIds = itemIdMap.collectWorkspaceScreens(launcher, innerSet)
         val currentScreenIds = getPagesToBindSynchronously(orderedScreenIds)
 
