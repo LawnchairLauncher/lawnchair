@@ -29,7 +29,7 @@ object AppSearchProvider {
             prefs.hiddenApps.firstBlocking(),
             prefs.hiddenAppsInSearch.firstBlocking(),
             prefs.enableFuzzySearch.firstBlocking(),
-            ExperienceStore.get(context).read().aliases,
+            ExperienceStore.get(context).aliasesForSearch(),
         ).map { SearchResult.App(it) }
     }
 

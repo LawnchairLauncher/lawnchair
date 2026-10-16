@@ -310,6 +310,11 @@ private fun RulesScreen(state: ExperienceState, store: ExperienceStore, work: Wo
     var create by remember { mutableStateOf(false) }
     var editing by remember { mutableStateOf<FolderRule?>(null) }
     var removing by remember { mutableStateOf<FolderRule?>(null) }
+    val folderTitles by produceState<Map<Int, String>>(emptyMap()) {
+        FolderService.INSTANCE.get(context).getFoldersFlow().collect { folders ->
+            value = folders.associate { it.id to it.title.toString() }
+        }
+    }
     LazyColumn(Modifier.fillMaxSize()) {
         item {
             Panel(stringResource(R.string.omni_rule_folders), stringResource(R.string.omni_rules_help)) {
@@ -317,7 +322,7 @@ private fun RulesScreen(state: ExperienceState, store: ExperienceStore, work: Wo
             }
         }
         items(state.rules, key = { it.folderId }) { rule ->
-            Panel(rule.nameContains.ifBlank { rule.packagePrefix.ifBlank { context.getString(R.string.omni_rule_folders) } }) {
+            Panel(folderTitles[rule.folderId] ?: rule.nameContains.ifBlank { rule.packagePrefix.ifBlank { context.getString(R.string.omni_rule_folders) } }) {
                 TextButton(onClick = { editing = rule }) { Text(stringResource(R.string.omni_edit)) }
                 TextButton(onClick = { removing = rule }) { Text(stringResource(R.string.omni_remove)) }
             }

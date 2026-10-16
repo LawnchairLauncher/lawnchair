@@ -21,6 +21,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class WidgetStackActivity : ComponentActivity() {
+    private val errors = kotlinx.coroutines.CoroutineExceptionHandler { _, error ->
+        android.util.Log.w("OmniWidgetStack", "Widget configuration unavailable", error)
+        runOnUiThread {
+            Toast.makeText(this, R.string.omni_action_unavailable, Toast.LENGTH_LONG).show()
+            finish()
+        }
+    }
     private var outerId = -1
     private var pendingId = -1
     private lateinit var host: StackHost
@@ -37,7 +44,7 @@ class WidgetStackActivity : ComponentActivity() {
             setPadding(pad, pad + (24 * resources.displayMetrics.density).toInt(), pad, pad)
         }
         setContentView(body)
-        lifecycleScope.launch {
+        lifecycleScope.launch(errors) {
             val info = withContext(Dispatchers.IO) { AppWidgetManager.getInstance(this@WidgetStackActivity).getAppWidgetInfo(outerId) }
             if (outerId <= 0 || info?.provider != OmniWidgetStack.component(this@WidgetStackActivity)) {
                 finish()
@@ -64,7 +71,7 @@ class WidgetStackActivity : ComponentActivity() {
                 Button(this).apply {
                     text = getString(R.string.omni_stack_remove, index + 1, label)
                     setOnClickListener {
-                        lifecycleScope.launch {
+                        lifecycleScope.launch(errors) {
                             withContext(Dispatchers.IO) {
                                 host.deleteAppWidgetId(id)
                                 ExperienceStore.get(this@WidgetStackActivity).update { current -> current.copy(stacks = current.stacks.map { if (it.outerId == outerId) it.copy(widgetIds = it.widgetIds - id, selected = 0) else it }) }
@@ -81,7 +88,7 @@ class WidgetStackActivity : ComponentActivity() {
                 text = getString(R.string.omni_stack_add)
                 isEnabled = stack.widgetIds.size < limit && pendingId < 0
                 setOnClickListener {
-                    lifecycleScope.launch {
+                    lifecycleScope.launch(errors) {
                         pendingId = withContext(Dispatchers.IO) { host.allocateAppWidgetId() }
                         try {
                             startActivityForResult(Intent(AppWidgetManager.ACTION_APPWIDGET_PICK).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, pendingId), PICK)
@@ -108,7 +115,7 @@ class WidgetStackActivity : ComponentActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode !in setOf(PICK, BIND, CONFIGURE)) return
-        lifecycleScope.launch {
+        lifecycleScope.launch(errors) {
             if (resultCode != Activity.RESULT_OK || pendingId <= 0) {
                 discard()
                 render()
@@ -168,7 +175,7 @@ class WidgetStackActivity : ComponentActivity() {
     override fun onDestroy() {
         if (isFinishing && pendingId > 0) {
             val id = pendingId
-            kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch { host.deleteAppWidgetId(id) }
+            kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch { runCatching { host.deleteAppWidgetId(id) } }
         }
         super.onDestroy()
     }

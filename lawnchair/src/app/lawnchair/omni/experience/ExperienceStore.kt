@@ -39,6 +39,14 @@ class ExperienceStore private constructor(private val context: Context) {
             emit(ExperienceState())
         }.stateIn(scope, SharingStarted.Eagerly, null)
 
+    suspend fun aliasesForSearch(): Map<String, String> = try {
+        read().aliases
+    } catch (error: Exception) {
+        if (error is kotlinx.coroutines.CancellationException) throw error
+        android.util.Log.w("OmniSearch", "Optional aliases unavailable", error)
+        emptyMap()
+    }
+
     suspend fun read(): ExperienceState {
         val prefs = context.experienceDataStore.data.first()
         return decode(prefs[key])

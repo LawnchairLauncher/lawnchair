@@ -96,7 +96,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         apps: MutableList<AppInfo>,
         query: String,
     ): ArrayList<BaseAllAppsAdapter.AdapterItem> {
-        val aliases = app.lawnchair.omni.experience.ExperienceStore.get(context).read().aliases
+        val aliases = app.lawnchair.omni.experience.ExperienceStore.get(context).aliasesForSearch()
         val appResults = if (enableFuzzySearch) {
             SearchUtils.fuzzySearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch, aliases)
         } else {
