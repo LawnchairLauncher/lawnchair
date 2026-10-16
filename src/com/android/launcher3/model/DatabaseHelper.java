@@ -617,6 +617,11 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
         return copied;
     }
 
+    /** LC-Note: re-reads the max item id, after rows were inserted with SQL (grid migration). */
+    public void refreshMaxItemId() {
+        mMaxItemId.set(initializeMaxItemId(getWritableDatabase()));
+    }
+
     public int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
         // TODO: Use multiple loaders with fall-back and transaction.
         int count = loader.loadLayout(db);
