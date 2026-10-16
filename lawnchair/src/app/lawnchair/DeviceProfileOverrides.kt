@@ -120,6 +120,8 @@ class DeviceProfileOverrides @Inject constructor(
         val numAllAppsColumns: Int,
         val numFolderRows: Int,
         val numFolderColumns: Int,
+        // Tablets and desktops use the folder grid in landscape too (phones keep the grid option's)
+        val folderGridInLandscape: Boolean = false,
 
         val iconSizeFactor: Float,
         val allAppsIconSizeFactor: Float,
@@ -147,6 +149,8 @@ class DeviceProfileOverrides @Inject constructor(
             numAllAppsColumns = prefs2.drawerColumns.firstCached(gridOption = defaultGrid),
             numFolderRows = prefs.folderRows.get(defaultGrid),
             numFolderColumns = prefs2.folderColumns.firstCached(gridOption = defaultGrid),
+            folderGridInLandscape = deviceType == InvariantDeviceProfile.TYPE_TABLET ||
+                deviceType == InvariantDeviceProfile.TYPE_DESKTOP,
 
             iconSizeFactor = prefs2.homeIconSizeFactor.firstCached(),
             allAppsIconSizeFactor = prefs2.drawerIconSizeFactor.firstCached(),
@@ -199,8 +203,13 @@ class DeviceProfileOverrides @Inject constructor(
             idp.numDatabaseAllAppsColumns = numAllAppsColumns
             idp.numFolderRows[INDEX_DEFAULT] = numFolderRows
             idp.numFolderColumns[INDEX_DEFAULT] = numFolderColumns
-            // The two-panel profiles took their folder grid from the grid option only, so the
-            // folder settings didn't apply on the unfolded screen (in both orientations).
+            // The other profiles took their folder grid from the grid option only, so the folder
+            // settings didn't apply in landscape or on the unfolded screen. Tablets in landscape:
+            if (folderGridInLandscape) {
+                idp.numFolderRows[INDEX_LANDSCAPE] = numFolderRows
+                idp.numFolderColumns[INDEX_LANDSCAPE] = numFolderColumns
+            }
+            // Foldables, the two-panel profiles (unfolded, in both orientations):
             if (foldableFolderRows > 0) {
                 idp.numFolderRows[INDEX_TWO_PANEL_PORTRAIT] = foldableFolderRows
                 idp.numFolderRows[INDEX_TWO_PANEL_LANDSCAPE] = foldableFolderRows
