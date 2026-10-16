@@ -34,10 +34,6 @@ object FoldDrawerState {
     /** Centers in root coordinates of the visible items of the list shown, by adapter position. */
     val itemCenters = SparseArray<FloatArray>()
 
-    /** The list [itemCenters] belong to. */
-    var capturedList: RecyclerView? = null
-        private set
-
     /** Left and right of the search bar's visible part in root coordinates, or NaN. */
     var searchBarLeft = Float.NaN
         private set
@@ -108,7 +104,6 @@ object FoldDrawerState {
 
     private fun capture(container: ActivityAllAppsContainerView<*>) {
         itemCenters.clear()
-        capturedList = null
         searchBarLeft = Float.NaN
         searchBarRight = Float.NaN
         val activity: ActivityContext = ActivityContext.lookupContext(container.context)
@@ -117,7 +112,6 @@ object FoldDrawerState {
         capturedAtUptimeMillis = SystemClock.uptimeMillis()
         val list = container.activeRecyclerView
         if (list != null && list.isAttachedToWindow) {
-            capturedList = list
             for (i in 0 until list.childCount) {
                 val child = list.getChildAt(i)
                 val position = list.getChildAdapterPosition(child)
