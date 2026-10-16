@@ -175,7 +175,6 @@ enum class FoldDock(
         key = "side",
         labelResourceId = R.string.fold_dock_side,
         descriptionResourceId = R.string.fold_dock_side_description,
-        isImplemented = false,
     ),
     ;
 

@@ -757,7 +757,8 @@ public class Launcher extends StatefulActivity<LauncherState>
                     FoldDockLayout.create(this, mDeviceProfile),
                     FoldLayout.isEvenCoverPageOnEnd(this, mDeviceProfile));
         } else {
-            mCellPosMapper = new CellPosMapper(mDeviceProfile.isVerticalBarLayout(),
+            // LC-Note: hasVerticalHotseat also covers a foldable's side dock
+            mCellPosMapper = new CellPosMapper(mDeviceProfile.hasVerticalHotseat(),
                     mDeviceProfile.numShownHotseatIcons, mDeviceProfile.numHotseatRows,
                     mDeviceProfile.numHotseatPages, FoldDockLayout.create(this, mDeviceProfile));
         }

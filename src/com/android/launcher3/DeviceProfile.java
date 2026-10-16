@@ -238,6 +238,11 @@ public class DeviceProfile {
     private int mHotseatWidthPx; // not used in vertical bar layout
     // Lawnchair: an unfolded foldable showing the cover's dock count (see FoldDockLayout)
     private boolean mIsFoldDockSameAsCover;
+    // LC-Note: FoldDock.SIDE, the dock is a column on the outer edge of the fixed half
+    private boolean mIsSideDock;
+    private boolean mIsSideDockOnLeft;
+    /** Width reserved for the side dock column on each outer edge of the workspace. */
+    public int sideDockWidthPx;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
     public int hotseatBarBottomSpacePx;
@@ -548,6 +553,14 @@ public class DeviceProfile {
         numShownHotseatIcons = displayOptionSpec.numShownHotseatIcons;
         numHotseatRows = Math.max(1, Math.min(2, PreferenceManager.getInstance(context).getHotseatRows().get()));
         numHotseatPages = Math.max(1, Math.min(5, PreferenceManager.getInstance(context).getDockPages().get()));
+        // LC-Note: the side dock is one column, so it has 1 row and 1 page
+        Boolean sideDockOnLeft = FoldDockLayout.getSideDockOnLeft(context, this);
+        mIsSideDock = sideDockOnLeft != null;
+        mIsSideDockOnLeft = mIsSideDock && sideDockOnLeft;
+        if (mIsSideDock) {
+            numHotseatRows = 1;
+            numHotseatPages = 1;
+        }
         numShownHotseatIcons = FoldDockLayout.getShownHotseatIcons(context, inv,
                 mDeviceProperties.isTwoPanels(), numShownHotseatIcons, numHotseatRows,
                 numHotseatPages);
@@ -648,7 +661,8 @@ public class DeviceProfile {
         // for the available height to be correct
         if (mIsResponsiveGrid) {
             int availableResponsiveWidth =
-                    mDeviceProperties.getAvailableWidthPx() - (isVerticalBarLayout() ? hotseatBarSizePx : 0);
+                    mDeviceProperties.getAvailableWidthPx() - (isVerticalBarLayout() ? hotseatBarSizePx : 0)
+                            - (mIsSideDock ? 2 * sideDockWidthPx : 0);
             int numWorkspaceColumns = getPanelCount() * inv.numColumns;
             // don't use availableHeightPx because it subtracts mInsets.bottom
             int availableResponsiveHeight = mDeviceProperties.getHeightPx() - mInsets.top
@@ -705,6 +719,11 @@ public class DeviceProfile {
         // width and get centered, leaving a visible side gap even at factor 0.
         desiredWorkspaceHorizontalMarginPx =
                 Math.round(desiredWorkspaceHorizontalMarginPx * workspacePaddingHorizontalFactor);
+        if (mIsSideDock) {
+            // LC-Note: room for the side dock on both outer edges, so both panels stay on their
+            // halves of the screen (the hinge stays between them)
+            desiredWorkspaceHorizontalMarginPx += sideDockWidthPx;
+        }
         desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
 
         splitPlaceholderInset = res.getDimensionPixelSize(R.dimen.split_placeholder_inset);
@@ -962,7 +981,15 @@ public class DeviceProfile {
         // Extra height needed for additional dock rows
         int extraRowsHeight = (numHotseatRows - 1) * hotseatCellHeightPx;
 
-        if (isVerticalBarLayout()) {
+        // LC-Note: the side dock column is one cell wide plus an edge margin on each side
+        sideDockWidthPx = mIsSideDock ? hotseatCellHeightPx + 2 * edgeMarginPx : 0;
+
+        if (mIsSideDock) {
+            // LC-Note: the bottom bar keeps only the dock search bar; the icons are in the column
+            hotseatBarSizePx = (isQsbEnable
+                    ? hotseatQsbSpace + getHotseatProfile().getQsbVisualHeight() : 0)
+                    + hotseatBarBottomSpacePx;
+        } else if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + getHotseatProfile().getBarEdgePaddingPx()
                     + getHotseatProfile().getBarWorkspaceSpacePx()
                     + space;
@@ -995,6 +1022,12 @@ public class DeviceProfile {
      * necessary.
      */
     public void recalculateHotseatWidthAndBorderSpace() {
+        if (mIsSideDock) {
+            // LC-Note: the side dock spaces its icons like the workspace rows, as AOSP does
+            // for the vertical hotseat with responsive grids
+            hotseatBorderSpace = cellLayoutBorderSpacePx.y;
+            return;
+        }
         if (!mIsScalableGrid) return;
 
         updateHotseatWidthAndBorderSpace(inv.numColumns);
@@ -1920,7 +1953,25 @@ public class DeviceProfile {
      */
     public Rect getHotseatLayoutPadding(Context context) {
         Rect hotseatBarPadding = new Rect();
-        if (isVerticalBarLayout()) {
+        if (mIsSideDock) {
+            // LC-Note: the hotseat fills the screen; its padding leaves the column, one cell wide,
+            // centered vertically between the top inset and the bottom bar
+            int width = mDeviceProperties.getWidthPx();
+            int height = mDeviceProperties.getHeightPx();
+            int columnHeight = hotseatCellHeightPx * numShownHotseatIcons
+                    + hotseatBorderSpace * (numShownHotseatIcons - 1);
+            int areaTop = mInsets.top + workspacePadding.top;
+            int areaBottom = height - hotseatBarSizePx;
+            int top = Math.max(areaTop, areaTop + (areaBottom - areaTop - columnHeight) / 2);
+            int bottom = Math.max(0, height - top - columnHeight);
+            int outer = edgeMarginPx;
+            int inner = width - outer - hotseatCellHeightPx;
+            if (mIsSideDockOnLeft) {
+                hotseatBarPadding.set(mInsets.left + outer, top, inner - mInsets.left, bottom);
+            } else {
+                hotseatBarPadding.set(inner - mInsets.right, top, mInsets.right + outer, bottom);
+            }
+        } else if (isVerticalBarLayout()) {
             // The hotseat icons will be placed in the middle of the hotseat cells.
             // Changing the hotseatCellHeightPx is not affecting hotseat icon positions
             // in vertical bar layout.
@@ -2074,7 +2125,10 @@ public class DeviceProfile {
      * Returns the number of pixels the QSB is translated from the bottom of the screen.
      */
     public int getQsbOffsetY() {
-        if (mDeviceProperties.isPhone() && isQsbInline) {
+        if (mIsSideDock) {
+            // LC-Note: the side dock's search bar sits at the bottom, as on phones
+            return hotseatBarBottomSpacePx - getHotseatProfile().getQsbShadowHeight();
+        } else if (mDeviceProperties.isPhone() && isQsbInline) {
             return getHotseatBarBottomPadding()
                     - ((getHotseatProfile().getQsbHeight() - hotseatCellHeightPx) / 2);
         } else if (isQsbOnTop() || (mDeviceProperties.isLandscape() && isQsbInline)) { // LC-Note: isQsbOnTop
@@ -2197,6 +2251,21 @@ public class DeviceProfile {
      */
     public boolean isVerticalBarLayout() {
         return mDeviceProperties.isLandscape() && mDeviceProperties.getTransposeLayoutWithOrientation();
+    }
+
+    /** LC-Note: whether the dock is a column on the outer edge of a foldable's fixed half. */
+    public boolean isSideDock() {
+        return mIsSideDock;
+    }
+
+    /** LC-Note: whether the side dock is on the left edge (the fixed half is the left one). */
+    public boolean isSideDockOnLeft() {
+        return mIsSideDockOnLeft;
+    }
+
+    /** LC-Note: whether the hotseat is a single column (phone landscape, or the side dock). */
+    public boolean hasVerticalHotseat() {
+        return isVerticalBarLayout() || mIsSideDock;
     }
 
     public boolean isSeascape() {
