@@ -131,6 +131,9 @@ public class DeviceProfile {
     // layout on a foldable, or FeatureFlags.FOLDABLE_SINGLE_PAGE). Decided with the profile, so
     // every consumer agrees until the next profile.
     public final boolean isTwoPanelSinglePage;
+    // LC-Note: whether this profile shows the inner item set of the "Independent" home layout
+    // (the large screen of a foldable), see FoldItemSets.
+    public final boolean isInnerItemSet;
 
     public boolean isPredictiveBackSwipe;
     public final boolean isQsbInline;
@@ -337,6 +340,7 @@ public class DeviceProfile {
         isPredictiveBackSwipe = false;
         isQsbInline = false;
         isTwoPanelSinglePage = false;
+        isInnerItemSet = false;
         isLeftRightSplit = false;
         mIsScalableGrid = false;
         mTypeIndex = 0;
@@ -414,9 +418,12 @@ public class DeviceProfile {
         // LC-Note: two panels shown as one wide page, with "Expand" or FOLDABLE_SINGLE_PAGE.
         isTwoPanelSinglePage = mDeviceProperties.isTwoPanels()
                 && (FOLDABLE_SINGLE_PAGE.get() || FoldLayout.isHomeExpanded(preferenceManager2));
+        isInnerItemSet = mDeviceProperties.isTablet() && mDeviceProperties.isMultiDisplay()
+                && FoldLayout.isHomeIndependent(preferenceManager2);
         if (isMultiDisplay) {
             Log.d("LC-FoldLayout", "allowTwoPanels=" + allowTwoPanels
                     + ", singlePage=" + isTwoPanelSinglePage
+                    + ", innerSet=" + isInnerItemSet
                     + ", isTwoPanels=" + mDeviceProperties.isTwoPanels()
                     + ", bounds=" + windowBounds.bounds.toShortString()
                     + ", typeIndex=" + displayOptionSpec.typeIndex);

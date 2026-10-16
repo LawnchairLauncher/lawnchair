@@ -317,7 +317,10 @@ public class ModelWriter {
             return;
         }
         String serialized = screenOrder.toConcatString();
-        LauncherPrefs.get(mContext).putSync(LauncherPrefs.WORKSPACE_SCREEN_ORDER.to(serialized));
+        // LC-Note: each item set of the "Independent" home layout has its own page order.
+        LauncherPrefs.get(mContext).putSync((mCellPosMapper.getItemSetBase() > 0
+                ? LauncherPrefs.INNER_WORKSPACE_SCREEN_ORDER
+                : LauncherPrefs.WORKSPACE_SCREEN_ORDER).to(serialized));
     }
 
     /**

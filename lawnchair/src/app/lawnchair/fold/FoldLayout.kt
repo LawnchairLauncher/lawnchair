@@ -37,6 +37,10 @@ object FoldLayout {
     @JvmStatic
     fun isHomeExpanded(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.EXPAND
 
+    /** Whether the large screen has its own items ("Independent"), see [FoldItemSets]. */
+    @JvmStatic
+    fun isHomeIndependent(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.INDEPENDENT
+
     private fun currentHomeLayout(prefs2: PreferenceManager2): FoldHomeLayout {
         val cached = prefs2.foldHomeLayout.firstCached(prefs2)
         val pending = pendingHomeLayout

@@ -40,6 +40,9 @@ public class CellPosMapper {
     private final int mNumHotseatRows;
     @Nullable
     private final FoldDockLayout mFoldDock;
+    // LC-Note: model screen id (and dock rank) of presenter page 0 / rank 0: 0, or
+    // FoldItemSets.INNER_SCREEN_BASE when the inner item set of "Independent" is shown.
+    private final int mItemSetBase;
 
     public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat) {
         this(hasVerticalHotseat, numOfHotseat, 1, 1);
@@ -56,10 +59,43 @@ public class CellPosMapper {
      */
     public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat, int numHotseatRows,
             int numHotseatPages, @Nullable FoldDockLayout foldDock) {
+        this(hasVerticalHotseat, numOfHotseat, numHotseatRows, numHotseatPages, foldDock, 0);
+    }
+
+    /**
+     * @param itemSetBase model screen id and dock rank of the shown item set's first page and
+     *                    rank, see {@link app.lawnchair.fold.FoldItemSets}.
+     */
+    public CellPosMapper(boolean hasVerticalHotseat, int numOfHotseat, int numHotseatRows,
+            int numHotseatPages, @Nullable FoldDockLayout foldDock, int itemSetBase) {
         mHasVerticalHotseat = hasVerticalHotseat;
         mNumOfHotseat = numOfHotseat;
         mNumHotseatRows = Math.max(1, numHotseatRows);
         mFoldDock = foldDock;
+        mItemSetBase = itemSetBase;
+    }
+
+    /** Returns the model screen id of the shown item set's first page, see FoldItemSets. */
+    public int getItemSetBase() {
+        return mItemSetBase;
+    }
+
+    /** LC-Note: model screen id or dock rank, from the shown item set's own numbering. */
+    private int toPresenterScreenId(ItemInfo info) {
+        if (mItemSetBase > 0 && info.screenId >= mItemSetBase
+                && (info.container == CONTAINER_DESKTOP || info.container == CONTAINER_HOTSEAT)) {
+            return info.screenId - mItemSetBase;
+        }
+        return info.screenId;
+    }
+
+    /** LC-Note: the reverse of {@link #toPresenterScreenId}. */
+    private int toModelScreenId(int screenId, int container) {
+        if (mItemSetBase > 0 && screenId >= 0
+                && (container == CONTAINER_DESKTOP || container == CONTAINER_HOTSEAT)) {
+            return screenId + mItemSetBase;
+        }
+        return screenId;
     }
 
     /** Returns the dock layout of an unfolded foldable, or null. */
@@ -77,17 +113,18 @@ public class CellPosMapper {
      * Hotseat model screenId is a flat rank; presenter screenId is the dock page index.
      */
     public CellPos mapModelToPresenter(ItemInfo info) {
+        int screenId = toPresenterScreenId(info);
         if (isHotseatContainer(info.container) && mNumOfHotseat > 0) {
             if (mHasVerticalHotseat) {
                 if (mFoldDock != null && mFoldDock.isSide()) {
                     // LC-Note: foldable side dock, see FoldDockLayout#rankToCellY
-                    return new CellPos(0, mFoldDock.rankToCellY(info.screenId), 0);
+                    return new CellPos(0, mFoldDock.rankToCellY(screenId), 0);
                 }
-                return new CellPos(0, mNumOfHotseat - info.screenId - 1, 0);
+                return new CellPos(0, mNumOfHotseat - screenId - 1, 0);
             }
             int slotsPerPage = Math.max(1, mNumOfHotseat * mNumHotseatRows);
-            int page = info.screenId / slotsPerPage;
-            int local = info.screenId % slotsPerPage;
+            int page = screenId / slotsPerPage;
+            int local = screenId % slotsPerPage;
             int cellX = local % mNumOfHotseat;
             int cellY = local / mNumOfHotseat;
             if (mFoldDock != null && page == 0 && cellY == 0) {
@@ -95,7 +132,7 @@ public class CellPosMapper {
             }
             return new CellPos(cellX, cellY, page);
         }
-        return new CellPos(info.cellX, info.cellY, info.screenId);
+        return new CellPos(info.cellX, info.cellY, screenId);
     }
 
     /**
@@ -119,7 +156,7 @@ public class CellPosMapper {
                 presenterScreen = presenterX;
             }
         }
-        return new CellPos(presenterX, presenterY, presenterScreen);
+        return new CellPos(presenterX, presenterY, toModelScreenId(presenterScreen, container));
     }
 
     /**
