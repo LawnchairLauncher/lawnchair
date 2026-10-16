@@ -348,6 +348,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     // Lawnchair: screen of the panel last touched in the visible pair (FoldAfterFold.LAST_PANEL).
     private int mLastTouchedPanelScreenId = -1;
     private int mFoldPairMarkersCount = -1;
+    // Lawnchair: screens shown on the large screen only to complete a pair of screen ids. They are
+    // left out of the persisted screen order while empty, so the cover screen doesn't gain blank
+    // pages. Pages with items are always persisted.
+    private final IntSet mPairCompletionScreenIds = new IntSet();
     private final Runnable mFoldPostureListener = this::updatePageDirection;
 
     /**
@@ -970,6 +974,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
         mLastTouchedPanelScreenId = -1;
+        mPairCompletionScreenIds.clear();
 
         // Ensure there is always at least one page during bind lifecycle.
         bindAndInitFirstWorkspaceScreen();
@@ -1257,9 +1262,30 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         mWorkspaceScreens.put(newScreenId, cl);
         mScreenOrder.add(newScreenId);
+        if (isTwoPanelEnabled()) {
+            // LC-Note: two panels commit a pair of pages; the one that stays empty only completes
+            // the pair, don't persist it until it gets items.
+            mPairCompletionScreenIds.add(newScreenId);
+        }
         persistCurrentScreenOrderSync();
 
         return newScreenId;
+    }
+
+    /**
+     * Lawnchair: marks a screen added only to complete a pair of screen ids on two panels.
+     */
+    public void addPairCompletionScreenId(int screenId) {
+        mPairCompletionScreenIds.add(screenId);
+    }
+
+    private boolean isEmptyPairCompletionScreen(int screenId) {
+        if (!mPairCompletionScreenIds.contains(screenId)) {
+            return false;
+        }
+        CellLayout screen = mWorkspaceScreens.get(screenId);
+        return screen != null && screen.getShortcutsAndWidgets().getChildCount() == 0
+                && !screen.isDropPending();
     }
 
     @Override
@@ -3815,7 +3841,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         IntArray persistableOrder = new IntArray();
         for (int i = 0; i < mScreenOrder.size(); i++) {
             int screenId = mScreenOrder.get(i);
-            if (!isExtraEmptyScreen(screenId)) {
+            // LC-Note: also skip empty pages that only complete a pair on two panels.
+            if (!isExtraEmptyScreen(screenId) && !isEmptyPairCompletionScreen(screenId)) {
                 persistableOrder.add(screenId);
             }
         }

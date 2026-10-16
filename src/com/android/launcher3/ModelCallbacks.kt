@@ -376,7 +376,13 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
                 // mode, so we want to add those empty pages back.
                 val screenIds = LIntSet.wrap(orderedScreenIds)
                 orderedScreenIds.forEach { screenId: Int ->
-                    screenIds.add(launcher.workspace.getScreenPair(screenId))
+                    val pairId = launcher.workspace.getScreenPair(screenId)
+                    // LC-Note: remember the pages added only to complete a pair, so that they
+                    // aren't persisted while empty and don't show up on the cover screen.
+                    if (!screenIds.contains(pairId) && !launcher.workspace.containsScreenId(pairId)) {
+                        launcher.workspace.addPairCompletionScreenId(pairId)
+                    }
+                    screenIds.add(pairId)
                 }
                 orderedScreenIds = screenIds.array
             }
