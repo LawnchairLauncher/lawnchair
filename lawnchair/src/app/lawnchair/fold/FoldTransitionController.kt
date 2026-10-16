@@ -21,6 +21,7 @@ import android.view.animation.Interpolator
 import androidx.annotation.RequiresApi
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.hotseat.HotseatFoldController
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
@@ -36,8 +37,8 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Plays the fold/unfold transition of the launcher and is the single source of
- * [FoldProgressListener] events.
+ * Plays the fold/unfold transition of the launcher and drives the dock merge
+ * ([HotseatFoldController]) with it.
  *
  * Trigger: the DeviceProfile change that a fold or unfold causes: the launcher moves to the other
  * screen and its layout flips between the cover and the large one (with no model reload and no
@@ -56,9 +57,10 @@ import kotlin.math.min
  * - Otherwise a timer ([FoldTunables.UNFOLD_DURATION_MILLIS] / [FoldTunables.FOLD_DURATION_MILLIS],
  *   standard decelerate), so every device gets a transition.
  *
- * Listener contract ([addListener]): [FoldProgressListener.onFoldStart] once, then
- * [FoldProgressListener.onFoldProgress] once per frame (progress is the absolute fold state of the
- * current layout, it may go back), then [FoldProgressListener.onFoldEnd] once, also when cancelled.
+ * Dock contract (when the hotseat has a [HotseatFoldController]): [HotseatFoldController.onFoldStart]
+ * once, then [HotseatFoldController.onFoldProgress] once per frame (progress is the absolute fold
+ * state of the current layout, it may go back), then [HotseatFoldController.onFoldEnd] once, also
+ * when cancelled.
  * The `opening` of start and progress is the direction the transition started in; the `opening`
  * of end is the final state (true = the large layout is showing). Unfold: 0 -> 1 on the large
  * layout. Fold without hinge tracking: 1 -> 0 on the cover layout, after it is laid out. Fold
@@ -81,7 +83,6 @@ class FoldTransitionController(
     ActivityLifecycleCallbacksAdapter,
     HingeAngleProvider.Listener {
 
-    private val listeners = ArrayList<FoldProgressListener>()
     private val hinge = HingeAngleProvider(launcher, this)
     private val prefs2 by lazy { PreferenceManager2.getInstance(launcher) }
     private val handler = Handler(Looper.getMainLooper())
@@ -117,10 +118,6 @@ class FoldTransitionController(
         launcher.registerActivityLifecycleCallbacks(this)
     }
 
-    fun addListener(listener: FoldProgressListener) {
-        if (listener !in listeners) listeners.add(listener)
-    }
-
     // Lifecycle
 
     override fun onActivityResumed(activity: Activity) {
@@ -147,7 +144,6 @@ class FoldTransitionController(
         handler.removeCallbacks(replayRunnable)
         launcher.removeOnDeviceProfileChangeListener(this)
         launcher.unregisterActivityLifecycleCallbacks(this)
-        listeners.clear()
     }
 
     // Triggers
@@ -236,8 +232,8 @@ class FoldTransitionController(
      * Plays the selected style in place on the current layout, timer-driven, on any device.
      * On the large layout: unfold = 0 -> 1; fold = 1 -> 0, a short hold, then back to 1, so the
      * layout ends as it started. On the cover layout (or a phone): fold = the cover-side 1 -> 0;
-     * unfold = the large-layout visuals drawn on this screen, without listener events (the layout
-     * does not actually change, so listeners must not be told it is unfolded).
+     * unfold = the large-layout visuals drawn on this screen, without dock events (the layout
+     * does not actually change, so the dock must not be told it is unfolded).
      */
     fun replay(mode: ReplayMode) {
         val large = launcher.deviceProfile.deviceProperties.isTablet
@@ -378,7 +374,7 @@ class FoldTransitionController(
         Log.i(TAG, "start: $reason, style=$styleType (${style.javaClass.simpleName}), large=$large, reducedMotion=$reduced, source=${r.source}, ${durationMillis}ms")
         try {
             if (notify) {
-                dispatchStart(opening)
+                dock?.onFoldStart(opening)
                 dispatchProgress(r)
             }
             if (!style.onStart(scene)) {
@@ -557,9 +553,9 @@ class FoldTransitionController(
             try {
                 r.progress = if (large) 1f else 0f
                 dispatchProgress(r)
-                dispatchEnd(large)
+                dock?.onFoldEnd(large)
             } catch (t: Throwable) {
-                Log.e(TAG, "listener failed at the end", t)
+                Log.e(TAG, "the dock failed at the end", t)
                 failure = failure ?: t
             }
         }
@@ -577,45 +573,25 @@ class FoldTransitionController(
     }
 
     private fun notifyInstant(large: Boolean) {
+        val dock = dock ?: return
         try {
-            dispatchStart(large)
-            dispatchProgress(if (large) 1f else 0f, large)
-            dispatchEnd(large)
+            dock.onFoldStart(large)
+            dock.onFoldProgress(if (large) 1f else 0f, large)
+            dock.onFoldEnd(large)
         } catch (t: Throwable) {
-            Log.e(TAG, "listener failed", t)
+            Log.e(TAG, "the dock failed", t)
             if (BuildConfig.DEBUG) throw t
-        }
-    }
-
-    private fun dispatchStart(opening: Boolean) {
-        var i = listeners.size - 1
-        while (i >= 0) {
-            listeners.getOrNull(i)?.onFoldStart(opening)
-            i--
         }
     }
 
     private fun dispatchProgress(r: Run) {
         if (r.progress == r.dispatchedProgress) return
         r.dispatchedProgress = r.progress
-        dispatchProgress(r.progress, r.scene.opening)
+        dock?.onFoldProgress(r.progress, r.scene.opening)
     }
 
-    private fun dispatchProgress(progress: Float, opening: Boolean) {
-        var i = listeners.size - 1
-        while (i >= 0) {
-            listeners.getOrNull(i)?.onFoldProgress(progress, opening)
-            i--
-        }
-    }
-
-    private fun dispatchEnd(opening: Boolean) {
-        var i = listeners.size - 1
-        while (i >= 0) {
-            listeners.getOrNull(i)?.onFoldEnd(opening)
-            i--
-        }
-    }
+    /** The dock merge, on foldables: the only view besides the style that follows the progress. */
+    private val dock: HotseatFoldController? get() = launcher.hotseat?.foldController
 
     // Conditions
 

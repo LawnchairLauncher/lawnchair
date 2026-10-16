@@ -161,7 +161,7 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     val gestureController by unsafeLazy { GestureController(this) }
 
-    /** Fold/unfold transition engine; foldable views register their [app.lawnchair.fold.FoldProgressListener] here. */
+    /** Fold/unfold transition engine; it drives the dock merge (`HotseatFoldController`) too. */
     val foldTransitionController by unsafeLazy { FoldTransitionController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -170,8 +170,6 @@ class LawnchairLauncher : QuickstepLauncher() {
         FoldPosture.attach(this)
         foldTransitionController.attach()
         FoldDualWallpaper.updateServiceEnabled(this, InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY)
-        // The dock merge (HotseatFoldController) follows the engine
-        foldTransitionController.addListener(hotseat.foldController)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
