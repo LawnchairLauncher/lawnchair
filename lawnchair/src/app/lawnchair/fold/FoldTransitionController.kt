@@ -37,10 +37,12 @@ import kotlin.math.min
  * Plays the fold/unfold transition of the launcher and is the single source of
  * [FoldProgressListener] events.
  *
- * Trigger: the DeviceProfile change that a fold or unfold causes (the size class flips between the
- * cover and the inner layout; since Phase 0 there is no model reload and no activity recreation).
- * The style is started synchronously from that change, before the new layout is drawn, so the first
- * frame on the new screen is already the first frame of the transition.
+ * Trigger: the DeviceProfile change that a fold or unfold causes: the launcher moves to the other
+ * screen and its layout flips between the cover and the large one (with no model reload and no
+ * activity recreation). A layout flip on the same screen, like a display size change, is not a
+ * fold and plays nothing. The style is started synchronously from that change, before the new
+ * layout is drawn, so the first frame on the new screen is already the first frame of the
+ * transition.
  *
  * Progress source:
  * - The hinge angle ([HingeAngleProvider]) when `foldTrackHinge` is on, the device has the sensor
@@ -91,6 +93,7 @@ class FoldTransitionController(
     private var attached = false
     private var resumed = false
     private var lastLarge = false
+    private var lastScreen = NO_SCREEN
     private var restAngle = Float.NaN
     private var pendingReplay: ReplayMode? = null
     private var replayOpenedDrawer = false
@@ -114,6 +117,7 @@ class FoldTransitionController(
         if (attached || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         attached = true
         lastLarge = launcher.deviceProfile.deviceProperties.isTablet
+        lastScreen = screenOf(launcher.deviceProfile)
         launcher.addOnDeviceProfileChangeListener(this)
         launcher.registerActivityLifecycleCallbacks(this)
     }
@@ -158,7 +162,10 @@ class FoldTransitionController(
     override fun onDeviceProfileChanged(dp: DeviceProfile) {
         val large = dp.deviceProperties.isTablet
         val wasLarge = lastLarge
+        val screen = screenOf(dp)
+        val switchedScreen = screen != NO_SCREEN && lastScreen != NO_SCREEN && screen != lastScreen
         lastLarge = large
+        lastScreen = screen
         restAngle = Float.NaN
         // Same size class (insets, rotation, grid): a running transition picks up the new geometry.
         if (large == wasLarge) return
@@ -167,7 +174,7 @@ class FoldTransitionController(
         val foldTrackedOnInner = current != null && !large && current.scene.largeLayout &&
             !current.scene.opening && current.drivenByHinge
         finishNow(if (large) "unfolded" else "folded")
-        if (foldTrackedOnInner) return
+        if (foldTrackedOnInner || !switchedScreen) return
         if (!isEngineEnabled() || !canRunNow()) return
         startForLayoutChange(opening = large)
     }
@@ -615,6 +622,18 @@ class FoldTransitionController(
 
     private fun isReducedMotion(): Boolean = !ValueAnimator.areAnimatorsEnabled()
 
+    /**
+     * The screen [dp] fills, as its size in pixels in any rotation: a fold or unfold changes it, a
+     * rotation or a display size change does not. [NO_SCREEN] for a window (multi-window mode).
+     */
+    private fun screenOf(dp: DeviceProfile): Long {
+        val properties = dp.deviceProperties
+        if (properties.isMultiWindowMode) return NO_SCREEN
+        val width = properties.widthPx.toLong()
+        val height = properties.heightPx.toLong()
+        return (min(width, height) shl 32) or max(width, height)
+    }
+
     private fun isDrawerOpen(): Boolean = launcher.appsView != null &&
         launcher.stateManager.state == LauncherState.ALL_APPS &&
         !launcher.stateManager.isInTransition
@@ -717,6 +736,9 @@ class FoldTransitionController(
         private const val MAX_FRAME_STEP_NANOS = 34L * NANOS_PER_MILLI
         private const val MIN_SETTLE_MILLIS = 120L
         private const val PROGRESS_EPSILON = 0.001f
+
+        /** [screenOf] a window that does not fill a screen. */
+        private const val NO_SCREEN = 0L
         private const val HINGE_START_MARGIN = 10f
         private const val MAX_DURATION_SCALE = 10f
         private const val REPLAY_DELAY_AFTER_RESUME_MS = 500L
