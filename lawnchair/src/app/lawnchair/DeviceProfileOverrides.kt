@@ -134,6 +134,8 @@ class DeviceProfileOverrides @Inject constructor(
         val foldableShownHotseatIcons: Int = -1,
         val foldableDatabaseHotseatIcons: Int = -1,
         val foldableDatabaseAllAppsColumns: Int = -1,
+        val foldableFolderRows: Int = -1,
+        val foldableFolderColumns: Int = -1,
     ) {
         constructor(
             prefs: PreferenceManager,
@@ -179,6 +181,16 @@ class DeviceProfileOverrides @Inject constructor(
             } else {
                 -1
             },
+            foldableFolderRows = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
+                prefs.folderRowsUnfolded.get(defaultGrid)
+            } else {
+                -1
+            },
+            foldableFolderColumns = if (deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY) {
+                prefs2.folderColumnsUnfolded.firstCached(gridOption = defaultGrid)
+            } else {
+                -1
+            },
         )
 
         fun applyUi(idp: InvariantDeviceProfile) {
@@ -187,6 +199,16 @@ class DeviceProfileOverrides @Inject constructor(
             idp.numDatabaseAllAppsColumns = numAllAppsColumns
             idp.numFolderRows[INDEX_DEFAULT] = numFolderRows
             idp.numFolderColumns[INDEX_DEFAULT] = numFolderColumns
+            // The two-panel profiles took their folder grid from the grid option only, so the
+            // folder settings didn't apply on the unfolded screen (in both orientations).
+            if (foldableFolderRows > 0) {
+                idp.numFolderRows[INDEX_TWO_PANEL_PORTRAIT] = foldableFolderRows
+                idp.numFolderRows[INDEX_TWO_PANEL_LANDSCAPE] = foldableFolderRows
+            }
+            if (foldableFolderColumns > 0) {
+                idp.numFolderColumns[INDEX_TWO_PANEL_PORTRAIT] = foldableFolderColumns
+                idp.numFolderColumns[INDEX_TWO_PANEL_LANDSCAPE] = foldableFolderColumns
+            }
 
             // Foldable overrides for hotseat and allapps columns
             if (foldableShownHotseatIcons > 0) {

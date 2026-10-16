@@ -723,6 +723,14 @@ class PreferenceManager2 @Inject constructor(
         handOverOnSet = true,
     )
 
+    /** Folder columns on the unfolded screen of a foldable. Defaults to one more than [folderColumns]. */
+    val folderColumnsUnfolded = idpPreference(
+        key = intPreferencesKey(name = "folder_columns_unfolded"),
+        defaultSelector = { folderColumns.firstCached(gridOption = this, prefs2 = this@PreferenceManager2) + 1 },
+        onSet = { reloadHelper.reloadGrid() },
+        handOverOnSet = true,
+    )
+
     val additionalFonts = preference(
         key = stringPreferencesKey(name = "additional_fonts"),
         defaultValue = "",

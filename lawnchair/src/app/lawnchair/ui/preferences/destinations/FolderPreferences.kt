@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -32,6 +33,7 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.GeneralIconShape
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 
 @Composable
@@ -44,6 +46,7 @@ fun FolderPreferences(
         modifier = modifier,
     ) {
         val context = LocalContext.current
+        val isFoldable = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
         val folderIconShapeAdapter = prefs2.folderShape.getAdapter()
@@ -77,18 +80,50 @@ fun FolderPreferences(
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-            SliderPreference(
-                label = stringResource(id = R.string.max_folder_columns),
-                adapter = prefs2.folderColumns.getAdapter(),
-                step = 1,
-                valueRange = 2..5,
-            )
-            SliderPreference(
-                label = stringResource(id = R.string.max_folder_rows),
-                adapter = prefs.folderRows.getAdapter(),
-                step = 1,
-                valueRange = 2..5,
-            )
+            if (isFoldable) {
+                SliderPreference(
+                    label = stringResource(id = R.string.state_folded, stringResource(id = R.string.max_folder_columns)),
+                    adapter = prefs2.folderColumns.getAdapter(),
+                    step = 1,
+                    valueRange = 2..5,
+                )
+                SliderPreference(
+                    label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.max_folder_columns)),
+                    adapter = prefs2.folderColumnsUnfolded.getAdapter(),
+                    step = 1,
+                    valueRange = 2..6,
+                )
+                val folderRowsAdapter = prefs.folderRows.getAdapter()
+                SliderPreference(
+                    label = stringResource(id = R.string.state_folded, stringResource(id = R.string.max_folder_rows)),
+                    adapter = folderRowsAdapter,
+                    step = 1,
+                    valueRange = 2..5,
+                )
+                // The unfolded rows follow the folded rows until set, and their adapter only
+                // listens to its own key: read it again when the folded rows change.
+                key(folderRowsAdapter.state.value) {
+                    SliderPreference(
+                        label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.max_folder_rows)),
+                        adapter = prefs.folderRowsUnfolded.getAdapter(),
+                        step = 1,
+                        valueRange = 2..5,
+                    )
+                }
+            } else {
+                SliderPreference(
+                    label = stringResource(id = R.string.max_folder_columns),
+                    adapter = prefs2.folderColumns.getAdapter(),
+                    step = 1,
+                    valueRange = 2..5,
+                )
+                SliderPreference(
+                    label = stringResource(id = R.string.max_folder_rows),
+                    adapter = prefs.folderRows.getAdapter(),
+                    step = 1,
+                    valueRange = 2..5,
+                )
+            }
         }
 
         val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreenFolder.getAdapter()
