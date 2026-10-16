@@ -134,7 +134,7 @@ class DrawerFoldStyle(
         val cover = cover
         if (large != null && cover != null) {
             val width = large.deviceProperties.widthPx
-            movingLeft = FoldDrawerLayouts.isMovingHalfLeft(large)
+            movingLeft = FoldPosture.isMovingHalfLeft(large.deviceProperties.rotationHint) ?: false
             fixedLeft = if (movingLeft) width / 2f else 0f
             coverScale = FoldLayout.coverScaleOnLarge(cover, large)
         }

@@ -486,7 +486,7 @@ public class FloatingHeaderView extends LinearLayout implements
         int leftRightPadding = dp.allAppsPadding.left + dp.allAppsPadding.right;
         // LC-Note: the foldable "book" drawer keeps the header rows on the fixed half
         Rect padding = new Rect(leftRightPadding, 0, leftRightPadding, 0);
-        FoldDrawerLayouts.adjustHeaderPadding(dp, padding);
+        FoldDrawerLayouts.adjustAppsGridPadding(dp, padding);
         setPadding(padding.left, getPaddingTop(), padding.right, getPaddingBottom());
     }
 

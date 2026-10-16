@@ -15,20 +15,18 @@ object FoldLayout {
      * both halves instead of two panels.
      */
     @JvmStatic
-    fun isHomeMirrored(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.MIRROR
+    fun isHomeMirrored(prefs2: PreferenceManager2): Boolean = prefs2.foldHomeLayout.firstCached(prefs2) == FoldHomeLayout.MIRROR
 
     /**
      * Whether the large screen shows one wide page per pair of cover pages ("Expand"): cover pages
      * 2n and 2n + 1 side by side, twice the columns, scrolled one wide page at a time.
      */
     @JvmStatic
-    fun isHomeExpanded(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.EXPAND
+    fun isHomeExpanded(prefs2: PreferenceManager2): Boolean = prefs2.foldHomeLayout.firstCached(prefs2) == FoldHomeLayout.EXPAND
 
     /** Whether the large screen has its own items ("Independent"), see [FoldItemSets]. */
     @JvmStatic
-    fun isHomeIndependent(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.INDEPENDENT
-
-    private fun currentHomeLayout(prefs2: PreferenceManager2): FoldHomeLayout = prefs2.foldHomeLayout.firstCached(prefs2)
+    fun isHomeIndependent(prefs2: PreferenceManager2): Boolean = prefs2.foldHomeLayout.firstCached(prefs2) == FoldHomeLayout.INDEPENDENT
 
     /**
      * Whether a wide "Expand" page shows its even cover page on the end half (cells >= columns, the

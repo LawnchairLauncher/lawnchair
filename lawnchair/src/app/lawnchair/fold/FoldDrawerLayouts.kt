@@ -42,8 +42,6 @@ object FoldDrawerLayouts {
 
     private val applied: MutableMap<DeviceProfile, Applied> = Collections.synchronizedMap(WeakHashMap())
 
-    fun currentLayout(prefs2: PreferenceManager2): FoldDrawerLayout = prefs2.foldDrawerLayout.firstCached(prefs2)
-
     /** Whether these are the properties of a foldable's large screen with a vertical fold line. */
     fun isLargeFoldable(properties: DeviceProperties): Boolean = properties.foldScreen == FoldScreen.LARGE &&
         FoldPosture.isMovingHalfLeft(properties.rotationHint) != null
@@ -57,7 +55,7 @@ object FoldDrawerLayouts {
         columns: Int,
     ): Int {
         if (!isLargeFoldable(properties)) return columns
-        return when (currentLayout(prefs2)) {
+        return when (prefs2.foldDrawerLayout.firstCached(prefs2)) {
             FoldDrawerLayout.EXPAND -> columns
             FoldDrawerLayout.PAGES, FoldDrawerLayout.BIG_ICONS -> inv.numAllAppsColumns
         }
@@ -70,7 +68,8 @@ object FoldDrawerLayouts {
     @JvmStatic
     fun applyToProfiles(context: Context, profiles: List<DeviceProfile>) {
         if (InvariantDeviceProfile.deviceType != InvariantDeviceProfile.TYPE_MULTI_DISPLAY) return
-        val layout = currentLayout(PreferenceManager2.getInstance(context))
+        val prefs2 = PreferenceManager2.getInstance(context)
+        val layout = prefs2.foldDrawerLayout.firstCached(prefs2)
         if (layout == FoldDrawerLayout.EXPAND) return
         for (dp in profiles) {
             val properties = dp.deviceProperties
@@ -140,7 +139,8 @@ object FoldDrawerLayouts {
     @JvmStatic
     fun getIconCacheBitmapSize(context: Context, iconBitmapSize: Int, allAppsIconBitmapSize: Int): Int {
         if (InvariantDeviceProfile.deviceType != InvariantDeviceProfile.TYPE_MULTI_DISPLAY) return iconBitmapSize
-        if (currentLayout(PreferenceManager2.getInstance(context)) != FoldDrawerLayout.BIG_ICONS) return iconBitmapSize
+        val prefs2 = PreferenceManager2.getInstance(context)
+        if (prefs2.foldDrawerLayout.firstCached(prefs2) != FoldDrawerLayout.BIG_ICONS) return iconBitmapSize
         val zoomed = (allAppsIconBitmapSize * FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE.coerceAtLeast(1f)).roundToInt()
         return maxOf(iconBitmapSize, zoomed)
     }
@@ -157,30 +157,21 @@ object FoldDrawerLayouts {
     }
 
     /**
-     * Whether the newly revealed half of [dp]'s window is its left half (else its right half).
-     * Only meaningful for an [isLargeFoldable] profile, where the side is known.
-     */
-    fun isMovingHalfLeft(dp: DeviceProfile): Boolean = FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) ?: false
-
-    /**
-     * Side paddings of the A-Z apps grids (not the search results). PAGES puts the grid on the
-     * fixed half: the moving half's width is added on its side. Called from the drawer container.
+     * Side paddings of the A-Z apps grids (not the search results) and of the header rows above
+     * them. PAGES puts both on the fixed half: the moving half's width is added on its side. Called
+     * from the drawer container and its header.
      */
     @JvmStatic
     fun adjustAppsGridPadding(dp: DeviceProfile, padding: Rect) {
         if (applied[dp]?.layout != FoldDrawerLayout.PAGES) return
         val half = dp.deviceProperties.widthPx / 2
-        if (isMovingHalfLeft(dp)) padding.left += half else padding.right += half
+        if (FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) == true) padding.left += half else padding.right += half
     }
-
-    /** Side paddings of the drawer header (predictions, tabs): on the fixed half for PAGES. */
-    @JvmStatic
-    fun adjustHeaderPadding(dp: DeviceProfile, padding: Rect) = adjustAppsGridPadding(dp, padding)
 
     /** Horizontal shift from the fixed page to the moving page (PAGES), in pixels. */
     fun bookShiftX(dp: DeviceProfile): Int {
         val half = dp.deviceProperties.widthPx / 2
-        return if (isMovingHalfLeft(dp)) -half else half
+        return if (FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) == true) -half else half
     }
 
     /**
