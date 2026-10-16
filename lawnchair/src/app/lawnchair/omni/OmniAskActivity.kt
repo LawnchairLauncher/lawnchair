@@ -32,11 +32,10 @@ import com.omnilink.sdk.OmniJson
 import com.omnilink.sdk.OmniLinkConstants
 import com.omnilink.sdk.PublicOmniRequest
 import com.omnilink.sdk.PublicRequestKind
+import java.io.IOException
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.encodeToString
 
@@ -56,20 +55,14 @@ class OmniAskActivity : ComponentActivity() {
             .setOnCancelListener { finish() }
             .show()
         lifecycleScope.launch {
-            // Keep discovery outside the timeout scope: a slow system Binder call must
-            // not prevent the UI deadline or the Cancel button from returning to Home.
-            val discovery = lifecycleScope.async(Dispatchers.IO) {
-                workspaceTargets(this@OmniAskActivity)
-            }
             val targets = try {
-                withTimeoutOrNull(3_000L) { discovery.await() }
+                workspaceTargets(applicationContext)
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (error: Exception) {
                 Log.w("OmniAskActivity", "Workspace discovery failed", error)
                 null
             } finally {
-                discovery.cancel()
                 loading.dismiss()
             }
             if (isFinishing || isDestroyed) return@launch
@@ -93,7 +86,13 @@ class OmniAskActivity : ComponentActivity() {
                 }
                 finish()
             }
-            val preferred = withContext(Dispatchers.IO) { ExperienceStore.get(this@OmniAskActivity).read().preferredWorkspace }
+            val preferred = try {
+                withTimeoutOrNull(400L) { ExperienceStore.get(applicationContext).read().preferredWorkspace }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                null
+            }
             val preferredTarget = targets.firstOrNull { it.second.component?.flattenToString() == preferred }
             if (preferredTarget != null) {
                 open(preferredTarget.second)
@@ -111,11 +110,14 @@ class OmniAskActivity : ComponentActivity() {
 
                 else -> AlertDialog.Builder(this@OmniAskActivity)
                     .setTitle(R.string.omni_choose_workspace)
-                    .setMessage(R.string.omni_workspace_remember)
                     .setItems(targets.map { it.first }.toTypedArray()) { _, index ->
                         lifecycleScope.launch {
-                            withContext(Dispatchers.IO) { ExperienceStore.get(this@OmniAskActivity).update { it.copy(preferredWorkspace = targets[index].second.component?.flattenToString()) } }
-                            open(targets[index].second)
+                            try {
+                                withTimeoutOrNull(400L) { ExperienceStore.get(applicationContext).update { it.copy(preferredWorkspace = targets[index].second.component?.flattenToString()) } }
+                            } catch (cancelled: CancellationException) {
+                                throw cancelled
+                            } catch (_: Exception) { /* Selection still opens when persistence is unavailable. */ }
+                            if (!isFinishing && !isDestroyed) open(targets[index].second)
                         }
                     }
                     .setOnCancelListener { finish() }
@@ -135,9 +137,19 @@ class OmniAskActivity : ComponentActivity() {
         )
 
         /** Exact allowlist and exported/enabled checks are identical for selection and launch. */
-        suspend fun workspaceTargets(context: Context): List<Pair<String, Intent>> = withContext(Dispatchers.IO) {
+        private val discoveryCalls by lazy { BoundedSystemCalls(1, 2, "OmniHandoffIO") }
+        suspend fun workspaceTargets(context: Context): List<Pair<String, Intent>> {
+            val appContext = context.applicationContext
+            return try {
+                discoveryCalls.call(3_000L) { discoverWorkspaceTargets(appContext) }
+            } catch (timeout: TimeoutCancellationException) {
+                throw IOException("Workspace discovery timed out", timeout)
+            }
+        }
+
+        private fun discoverWorkspaceTargets(context: Context): List<Pair<String, Intent>> {
             @Suppress("DEPRECATION")
-            context.packageManager.queryIntentActivities(
+            return context.packageManager.queryIntentActivities(
                 Intent(OmniLinkConstants.ACTION_PUBLIC_OMNI_REQUEST),
                 PackageManager.MATCH_DEFAULT_ONLY,
             ).mapNotNull { resolved ->

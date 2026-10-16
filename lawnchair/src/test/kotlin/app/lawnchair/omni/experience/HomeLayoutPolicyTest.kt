@@ -46,4 +46,19 @@ class HomeLayoutPolicyTest {
         assertThrows(IllegalArgumentException::class.java) { HomeLayoutPolicy.validate(5, 4, cells, (1..41).map { LayoutMove(it, 0, 0, 0) }, setOf(0)) }
         assertThrows(IllegalStateException::class.java) { HomeLayoutPolicy.validate(5, 4, cells, listOf(LayoutMove(99, 0, 3, 3)), setOf(0)) }
     }
+
+    @org.junit.Test fun folderMembersPreserveOrderAndRejectProtectedItems() {
+        val cells = listOf(LayoutCell(1, 0, 0, 0), LayoutCell(2, 0, 1, 0), LayoutCell(3, 0, 2, 0, movable = false))
+        org.junit.Assert.assertEquals(listOf(2, 1), HomeLayoutPolicy.folderMembers(cells, listOf(2, 1)).map { it.id })
+        org.junit.Assert.assertEquals(3, cells.size)
+        for (ids in listOf(listOf(1), listOf(1, 1), listOf(1, 3), listOf(1, 9))) {
+            org.junit.Assert.assertTrue(runCatching { HomeLayoutPolicy.folderMembers(cells, ids) }.isFailure)
+        }
+    }
+
+    @org.junit.Test fun folderMembersRejectLargeAndWidgetMembership() {
+        val cells = (1..41).map { LayoutCell(it, 0, 0, 0) }
+        org.junit.Assert.assertTrue(runCatching { HomeLayoutPolicy.folderMembers(cells, (1..41).toList()) }.isFailure)
+        org.junit.Assert.assertTrue(runCatching { HomeLayoutPolicy.folderMembers(listOf(cells[0], cells[1].copy(spanX = 2)), listOf(1, 2)) }.isFailure)
+    }
 }

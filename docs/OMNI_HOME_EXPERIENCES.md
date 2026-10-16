@@ -118,6 +118,7 @@ remote control. The existing public draft handoff still works separately.
 | launcher.get_layout | offset, limit | Home grid, paged occupancy, visible app IDs and snapshot revision |
 | launcher.move_items | expectedRevision, moves[] | Atomic existing Home app moves/swaps; rejects overlap/stale state |
 | launcher.set_grid | expectedRevision, rows, columns | Existing standard grid migration; verify after reload |
+| launcher.create_home_folder | expectedRevision, title, itemIds[] | Atomically group 2–40 visible existing Home apps at the first member cell; verify after reload |
 | launcher.create_folder | title, optional nameContains/packagePrefix/category | New drawer rule folder; at least one condition required |
 | launcher.list_actions | optional query | Built-in actions; no execution |
 | launcher.open_action | id | Known action, resumed Home required |
@@ -164,7 +165,7 @@ See [OMNI_PERFORMANCE_VALIDATION.md](OMNI_PERFORMANCE_VALIDATION.md) for reprodu
 
 Launcher and Workspace PRs #16/#194 must both be installed from the matching builds; protocolVersion 5
 alone does not identify the capability catalog. `launcher.health` now reports versionName/versionCode,
-capabilityCatalogVersion=2 and capabilityCount=24. An installed six-capability APK cannot acquire new
+capabilityCatalogVersion=3 and capabilityCount=25. An installed six-capability APK cannot acquire new
 commands through refresh or an SDK upgrade alone. Keep the same signing certificate when updating.
 
 Use `discover_capabilities` with the exact Launcher extension_id and refresh=true, follow next_offset
@@ -187,3 +188,15 @@ It uses the same 3–10 limits as local settings (up to 20 only when locally ena
 may reflow existing content; inspect a dry run, approve, then refetch layout after reload. Responses
 say reloadScheduled rather than pretending asynchronous UI binding is complete. App placement, grid
 migration, large widgets, RTL and concurrent user interaction still require real-device validation.
+
+### Search handoff and real Home folders
+
+Search results and the Home dock use the same on-demand OmniAskActivity. Workspace discovery runs on one bounded worker with two queue slots and a three-second deadline, using application context. Slow PackageManager Binder calls cannot retain the Activity waiter. Preferred-target reads/saves have independent 400 ms optional waits; an unavailable preference store does not prevent opening a selected target. The multi-install chooser uses the Android list without a competing message view.
+
+Matching Workspace builds receive ASK_OMNI/OPEN_OMNI in their translucent AssistantActivity. Query text is a draft for review; it never auto-submits, enables control or bypasses confirmation. An older Workspace may still open its main conversation instead. Install both matching builds with their existing signing identity.
+
+launcher.create_home_folder accepts a fresh get_layout expectedRevision, a nonblank title up to 80 characters and 2–40 unique existing visible desktop application IDs. The first ID anchors the folder; all members must be movable 1×1 app icons. A single model-thread DB transaction inserts the folder and reparents the icons, preserving their requested order and all stationary occupancy. Dry-run validates only. Consent and deadline are rechecked before commit. Existing folders/widgets/dock/hidden items cannot be reparented through this command.
+
+After a committed mutation, reloadScheduled means the loader still has to bind Home. Read get_layout again and verify the new revision and requested arrangement. Layout snapshots expose folder ID/title/visible-app count for verification, but no hidden member identities. Existing folder contents are not remotely editable in this version.
+
+The direct suite executes 46 JVM tests. APK CI verifies Android APIs separately. Physical Infinix ANR reproduction, end-to-end approval and UI/memory/frame-time validation remain device checks; no physical-device success is claimed.

@@ -45,6 +45,7 @@ sources = [
     base + "omni/experience/ExperienceCapabilityNames.kt",
     base + "omni/OmniLauncherAccessPolicy.kt",
     base + "omni/OmniSearchPolicy.kt",
+    base + "omni/BoundedSystemCalls.kt",
     base + "omni/experience/widgets/BoundedWidgetCalls.kt",
     base + "ui/preferences/components/layout/DividerLayoutMetrics.kt",
     "lawnchair/src/test/kotlin/app/lawnchair/omni/experience/WidgetLoadingTest.kt",

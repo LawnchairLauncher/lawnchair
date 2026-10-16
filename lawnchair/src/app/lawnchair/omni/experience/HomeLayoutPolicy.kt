@@ -16,6 +16,16 @@ internal data class LayoutMove(val id: Int, val screenId: Int, val x: Int, val y
 
 /** Pure planning: all requested moves succeed together or none may be written. */
 internal object HomeLayoutPolicy {
+    fun folderMembers(cells: List<LayoutCell>, ids: List<Int>): List<LayoutCell> {
+        require(ids.size in 2..40 && ids.distinct().size == ids.size) { "invalid_members" }
+        val byId = cells.associateBy { it.id }
+        return ids.map { id ->
+            val item = byId[id] ?: error("item_unavailable")
+            check(item.movable && item.spanX == 1 && item.spanY == 1) { "item_unavailable" }
+            item
+        }
+    }
+
     fun revision(rows: Int, columns: Int, generation: Int, cells: List<LayoutCell>): String {
         val text = "$rows,$columns,$generation;" + cells.sortedBy { it.id }.joinToString(";") { "$it" }
         return MessageDigest.getInstance("SHA-256").digest(text.toByteArray(Charsets.UTF_8))

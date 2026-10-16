@@ -8,7 +8,9 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.model.BgDataModel
+import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
+import com.android.launcher3.util.ContentWriter
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -77,7 +79,19 @@ internal object HomeLayoutController {
                                         put("spanX", cell.spanX)
                                         put("spanY", cell.spanY)
                                         put("movable", cell.movable)
-                                        // Non-app/hidden items disclose only occupied rectangles, never labels or identities.
+                                        val item = items.first { it.id == cell.id }
+                                        if (item is FolderInfo) {
+                                            put("kind", "folder")
+                                            put("id", item.id)
+                                            put("title", item.title?.toString().orEmpty().take(80))
+                                            put(
+                                                "visibleAppCount",
+                                                item.getContents().count { child ->
+                                                    child.targetComponent?.let { com.android.launcher3.util.ComponentKey(it, child.user).toString() in visible } == true
+                                                },
+                                            )
+                                        }
+                                        // Hidden apps/widgets disclose only occupancy; folders expose no hidden child identities.
                                         if (cell.movable) {
                                             put("id", cell.id)
                                             put("componentKey", cell.identity)
@@ -93,7 +107,65 @@ internal object HomeLayoutController {
                 }
             } else {
                 check(text("expectedRevision") == revision) { "stale_layout" }
-                if (name == "launcher.move_items") {
+                if (name == "launcher.create_home_folder") {
+                    val title = text("title").trim().also { require(it.isNotBlank() && it.length <= 80) }
+                    val ids = (payload["itemIds"] as? JsonArray ?: error("invalid_payload")).map {
+                        (it as? JsonPrimitive)?.takeUnless { value -> value.isString }?.intOrNull ?: error("invalid_payload")
+                    }
+                    val members = HomeLayoutPolicy.folderMembers(cells, ids)
+                    val anchor = members.first()
+                    HomeLayoutPolicy.validate(
+                        idp.numRows,
+                        idp.numColumns,
+                        cells.filter { it.id !in ids.drop(1) },
+                        listOf(LayoutMove(anchor.id, anchor.screenId, anchor.x, anchor.y)),
+                        screens,
+                    )
+                    var folderId = -1
+                    if (!dryRun) {
+                        checkAccess()
+                        check(active()) { "deadline_exceeded" }
+                        val folder = FolderInfo().apply {
+                            id = model.modelDbController.generateNewItemId()
+                            this.title = title
+                            container = Favorites.CONTAINER_DESKTOP
+                            screenId = anchor.screenId
+                            cellX = anchor.x
+                            cellY = anchor.y
+                            spanX = 1
+                            spanY = 1
+                        }
+                        val writer = ContentWriter(context)
+                        folder.onAddToDatabase(writer)
+                        writer.put(Favorites._ID, folder.id)
+                        val columns = idp.numFolderColumns[0].coerceAtLeast(1)
+                        model.modelDbController.newTransaction().use { transaction ->
+                            check(model.modelDbController.insert(Favorites.TABLE_NAME, writer.getValues(context)) >= 0) { "storage_failed" }
+                            ids.forEachIndexed { index, id ->
+                                checkAccess()
+                                val values = ContentValues().apply {
+                                    put(Favorites.CONTAINER, folder.id)
+                                    put(Favorites.SCREEN, 0)
+                                    put(Favorites.CELLX, index % columns)
+                                    put(Favorites.CELLY, index / columns)
+                                    put(Favorites.RANK, index)
+                                }
+                                check(model.modelDbController.update(Favorites.TABLE_NAME, values, "_id = ?", arrayOf(id.toString())) == 1) { "stale_layout" }
+                            }
+                            check(active()) { "deadline_exceeded" }
+                            checkAccess()
+                            transaction.commit()
+                        }
+                        folderId = folder.id
+                        model.forceReload()
+                    }
+                    buildJsonObject {
+                        put("folderId", folderId)
+                        put("title", title)
+                        put("memberCount", members.size)
+                        put("reloadScheduled", !dryRun)
+                    }
+                } else if (name == "launcher.move_items") {
                     val input = payload["moves"] as? JsonArray ?: error("invalid_payload")
                     val moves = input.map { raw ->
                         val move = raw as? JsonObject ?: error("invalid_payload")
