@@ -29,6 +29,7 @@ object ExperienceCapabilities {
     private val json = Json { ignoreUnknownKeys = false }
     private data class Spec(val name: String, val description: String, val fields: Map<String, String>, val required: List<String> = emptyList())
     private val specs = listOf(
+        Spec("launcher.create_home_folder", "Group 2-40 existing visible Home application icons into a real Home folder at the first member cell. Requires current get_layout revision. Atomic; other icons/widgets stay fixed. Verify get_layout after reload.", mapOf("expectedRevision" to "string", "title" to "string", "itemIds" to "array"), listOf("expectedRevision", "title", "itemIds")),
         Spec("launcher.get_layout", "Read paged Home grid/occupied cells and revision. Only visible application icons are movable. Screen IDs and zero-based cells are model coordinates, not RTL presentation positions.", mapOf("offset" to "integer", "limit" to "integer")),
         Spec("launcher.move_items", "Atomically reposition 1-40 existing visible Home app icons on existing screens, including swaps. Read get_layout first; stale revisions and occupied cells are rejected. Widgets/folders/dock remain fixed. Verify with get_layout after reload.", mapOf("expectedRevision" to "string", "moves" to "array"), listOf("expectedRevision", "moves")),
         Spec("launcher.set_grid", "Change Home rows/columns via the standard grid migration (3-10, or up to 20 if locally enabled). Existing icons/widgets can reflow; requires get_layout revision. Verify get_layout after asynchronous reload.", mapOf("expectedRevision" to "string", "rows" to "integer", "columns" to "integer"), listOf("expectedRevision", "rows", "columns")),
@@ -54,7 +55,7 @@ object ExperienceCapabilities {
             name = spec.name, description = spec.description,
             requiresConfirmation = mutation, risk = if (mutation) CapabilityRisk.MEDIUM else CapabilityRisk.LOW,
             communicationDirection = CommunicationDirection.OMNI_TO_APP_ONLY,
-            idempotency = if (spec.name in setOf("launcher.open_action", "launcher.save_scene", "launcher.create_folder")) IdempotencySemantics.NON_IDEMPOTENT else IdempotencySemantics.IDEMPOTENT,
+            idempotency = if (spec.name in setOf("launcher.open_action", "launcher.save_scene", "launcher.create_folder", "launcher.create_home_folder")) IdempotencySemantics.NON_IDEMPOTENT else IdempotencySemantics.IDEMPOTENT,
             supportsDryRun = mutation, maxInlinePayloadBytes = 16 * 1024,
             inputSchema = buildJsonObject {
                 put("type", "object")
@@ -89,6 +90,12 @@ object ExperienceCapabilities {
                             if (key in setOf("rows", "columns")) {
                                 put("minimum", 3)
                                 put("maximum", 20)
+                            }
+                            if (key == "itemIds") {
+                                put("minItems", 2)
+                                put("maxItems", 40)
+                                put("uniqueItems", true)
+                                putJsonObject("items") { put("type", "integer") }
                             }
                             if (key == "moves") {
                                 put("minItems", 1)
@@ -127,7 +134,7 @@ object ExperienceCapabilities {
             fun integer(key: String) = (payload[key] as? JsonPrimitive)?.takeUnless { it.isString }?.intOrNull ?: error("invalid_payload")
             val store = ExperienceStore.get(context)
             val data = when (request.name) {
-                "launcher.get_layout", "launcher.move_items", "launcher.set_grid" -> HomeLayoutController.execute(context, request.name, payload, request.dryRun, ::checkAccess)
+                "launcher.create_home_folder", "launcher.get_layout", "launcher.move_items", "launcher.set_grid" -> HomeLayoutController.execute(context, request.name, payload, request.dryRun, ::checkAccess)
 
                 "launcher.create_folder" -> {
                     val title = text("title", 80).also { require(it.isNotBlank()) }

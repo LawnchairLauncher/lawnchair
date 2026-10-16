@@ -5,6 +5,14 @@ updates, modifications and ecosystem integration. Original Lawnchair/AOSP author
 credits and rights; see [NOTICE.md](NOTICE.md). Upstream GITHUB_CHANGELOG.md and
 TELEGRAM_CHANGELOG.txt remain historical upstream release notes.
 
+## Search handoff and verified Home folder execution — 16 October 2026
+
+- Fix the multi-install Workspace chooser's hidden list and bound discovery/preference waits without retaining the Activity behind a slow Binder call.
+- Reuse the tested bounded system-call worker for widget and handoff operations; idle workers expire and outstanding work remains capped.
+- Add launcher.create_home_folder with revision checks, unique visible icon IDs, protected occupancy validation, one DB transaction and post-reload verification metadata. Catalog version 3 advertises 25 capabilities.
+- Matching Workspace opens search text as a reviewable floating-assistant draft and requires real mutation/readback evidence for Launcher execution requests. Discovery reports incorrect extension IDs directly.
+- Expand the direct suite to 46 tests; Android/physical-device validation is tracked separately.
+
 ## OmniLink discovery and Home control — 16 October 2026
 
 - Advertise 24 capabilities and report app/catalog versions in launcher.health to identify an old installed APK.
