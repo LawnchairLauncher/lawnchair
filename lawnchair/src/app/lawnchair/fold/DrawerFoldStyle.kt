@@ -2,6 +2,7 @@ package app.lawnchair.fold
 
 import android.os.Build
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.android.app.animation.Interpolators
@@ -66,12 +67,13 @@ class DrawerFoldStyle(
     private var movingLeft = true
     private var rtl = false
 
-    // Search bar padding, from and to
+    // Search bar padding, from and to; the bar's content is stretched between them
     private var barFromLeft = 0
     private var barFromRight = 0
     private var barToLeft = 0
     private var barToRight = 0
     private var barActive = false
+    private var barStretch: FoldStretch? = null
 
     // River: the cover's grid position of each adapter position
     private var coverColumn = IntArray(0)
@@ -98,6 +100,7 @@ class DrawerFoldStyle(
     private var predictionTo = FloatArray(0)
     private var predictionEnterX = 0f
     private var tabs: View? = null
+    private var tabsStretch: FoldStretch? = null
     private var tabsFromLeft = 0
     private var tabsFromRight = 0
     private var tabsToLeft = 0
@@ -183,17 +186,19 @@ class DrawerFoldStyle(
     }
 
     override fun onEnd(scene: FoldScene) {
-        bar?.let { if (barActive) it.setPadding(barToLeft, it.paddingTop, barToRight, it.paddingBottom) }
+        if (barActive) barStretch?.restore()
         barActive = false
+        barStretch = null
         if (headerActive) {
             for (i in predictionViews.indices) {
                 val view = predictionViews[i]
                 (view as? Reorderable)?.translateDelegate?.setTranslation(FoldItem.TRANSLATE_INDEX, 0f, 0f)
                 view.alpha = 1f
             }
-            tabs?.let { it.setPadding(tabsToLeft, it.paddingTop, tabsToRight, it.paddingBottom) }
+            tabsStretch?.restore()
         }
         predictionViews.clear()
+        tabsStretch = null
         headerActive = false
         val list = list
         if (list != null) {
@@ -270,16 +275,20 @@ class DrawerFoldStyle(
         }
         barFromLeft = (fromLeft - barLeft).roundToInt().coerceAtLeast(0)
         barFromRight = (barRight - fromRight).roundToInt().coerceAtLeast(0)
-        barActive = barFromLeft != barToLeft || barFromRight != barToRight
+        if (barFromLeft == barToLeft && barFromRight == barToRight) return
+        val stretch = (bar as? ViewGroup)?.let { FoldStretch(it) } ?: return
+        barActive = stretch.capture()
+        barStretch = stretch
     }
 
     private fun applyBar(t: Float) {
         val bar = bar ?: return
+        val stretch = barStretch ?: return
         if (!barActive) return
         val e = EASE.getInterpolation(t)
         val left = (barFromLeft + (barToLeft - barFromLeft) * e).roundToInt()
         val right = (barFromRight + (barToRight - barFromRight) * e).roundToInt()
-        if (left != bar.paddingLeft || right != bar.paddingRight) bar.setPadding(left, bar.paddingTop, right, bar.paddingBottom)
+        stretch.apply(left, bar.width - right)
     }
 
     private fun isSearchActive(): Boolean {
@@ -356,8 +365,10 @@ class DrawerFoldStyle(
             val fromRight = otherRight - (contentRight - (tabsRight - tabsToRight))
             tabsFromLeft = (fromLeft - tabsLeft).roundToInt().coerceAtLeast(0)
             tabsFromRight = (tabsRight - fromRight).roundToInt().coerceAtLeast(0)
-            if (tabsFromLeft != tabsToLeft || tabsFromRight != tabsToRight) {
+            val stretch = (tabs as? ViewGroup)?.let { FoldStretch(it) }
+            if ((tabsFromLeft != tabsToLeft || tabsFromRight != tabsToRight) && stretch != null && stretch.capture()) {
                 this.tabs = tabs
+                tabsStretch = stretch
                 headerActive = true
             }
         }
@@ -374,11 +385,11 @@ class DrawerFoldStyle(
             (view as? Reorderable)?.translateDelegate?.setTranslation(FoldItem.TRANSLATE_INDEX, dx, 0f)
             if (entering) view.alpha = e
         }
-        tabs?.let {
-            val left = (tabsFromLeft + (tabsToLeft - tabsFromLeft) * e).roundToInt()
-            val right = (tabsFromRight + (tabsToRight - tabsFromRight) * e).roundToInt()
-            if (left != it.paddingLeft || right != it.paddingRight) it.setPadding(left, it.paddingTop, right, it.paddingBottom)
-        }
+        val tabs = tabs ?: return
+        val stretch = tabsStretch ?: return
+        val left = (tabsFromLeft + (tabsToLeft - tabsFromLeft) * e).roundToInt()
+        val right = (tabsFromRight + (tabsToRight - tabsFromRight) * e).roundToInt()
+        stretch.apply(left, tabs.width - right)
     }
 
     // River (EXPAND)
