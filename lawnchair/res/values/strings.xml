@@ -1132,8 +1132,10 @@
     <string name="fold_landscape">Landscape</string>
     <string name="fold_landscape_auto">Automatic</string>
     <string name="fold_landscape_auto_description">The same layout adapts to the width automatically.</string>
-    <string name="fold_landscape_own">Own layout</string>
-    <string name="fold_landscape_own_description">A separate arrangement for the large screen in landscape.</string>
+    <string name="fold_landscape_own">Own sizes</string>
+    <string name="fold_landscape_own_description">Own icon and label sizes for the large screen in landscape.</string>
+    <string name="fold_landscape_icon_size">Icon size in landscape</string>
+    <string name="fold_landscape_label_size">Label size in landscape</string>
     <string name="fold_wallpaper">Wallpaper</string>
     <string name="fold_wallpaper_span">One spanning image</string>
     <string name="fold_wallpaper_span_description">One image across both screens. With wallpaper scrolling off, the cover keeps the part of the image you saw on the half you hold.</string>

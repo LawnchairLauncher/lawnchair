@@ -792,11 +792,39 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // OWN changes the device profile of the large screen in landscape.
     val foldLandscape = preference(
         key = stringPreferencesKey("fold_landscape"),
         defaultValue = FoldLandscape.AUTO,
         parse = { FoldLandscape.fromString(it) },
         save = { it.key },
+        onSet = {
+            FoldLayout.onLandscapeSet(it)
+            reloadHelper.reloadGrid()
+        },
+    )
+
+    /**
+     * [FoldLandscape.OWN]: home icon size factor of the large screen in landscape. A negative value
+     * (the default) means the same as [homeIconSizeFactor].
+     */
+    val foldLandscapeIconSizeFactor = preference(
+        key = floatPreferencesKey("fold_landscape_icon_size_factor"),
+        defaultValue = -1f,
+        onSet = {
+            FoldLayout.onLandscapeIconSizeSet(it)
+            reloadHelper.reloadGrid()
+        },
+    )
+
+    /** Like [foldLandscapeIconSizeFactor], for [homeIconLabelSizeFactor]. */
+    val foldLandscapeIconLabelSizeFactor = preference(
+        key = floatPreferencesKey("fold_landscape_icon_label_size_factor"),
+        defaultValue = -1f,
+        onSet = {
+            FoldLayout.onLandscapeLabelSizeSet(it)
+            reloadHelper.reloadGrid()
+        },
     )
 
     val foldWallpaper = preference(

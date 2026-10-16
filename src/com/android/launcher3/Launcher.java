@@ -292,6 +292,7 @@ import java.util.stream.Stream;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.fold.FoldDockLayout;
+import app.lawnchair.fold.FoldItemSets;
 import app.lawnchair.fold.FoldLayout;
 
 /**
@@ -760,7 +761,9 @@ public class Launcher extends StatefulActivity<LauncherState>
             // LC-Note: hasVerticalHotseat also covers a foldable's side dock
             mCellPosMapper = new CellPosMapper(mDeviceProfile.hasVerticalHotseat(),
                     mDeviceProfile.numShownHotseatIcons, mDeviceProfile.numHotseatRows,
-                    mDeviceProfile.numHotseatPages, FoldDockLayout.create(this, mDeviceProfile));
+                    mDeviceProfile.numHotseatPages, FoldDockLayout.create(this, mDeviceProfile),
+                    // LC-Note: "Independent" shows the inner item set on the large screen.
+                    mDeviceProfile.isInnerItemSet ? FoldItemSets.INNER_SCREEN_BASE : 0);
         }
         mModelWriter = mModel.getWriter(true, mCellPosMapper, this);
         updateFixedLandscape();

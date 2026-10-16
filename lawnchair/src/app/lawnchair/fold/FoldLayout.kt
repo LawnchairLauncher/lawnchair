@@ -37,6 +37,10 @@ object FoldLayout {
     @JvmStatic
     fun isHomeExpanded(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.EXPAND
 
+    /** Whether the large screen has its own items ("Independent"), see [FoldItemSets]. */
+    @JvmStatic
+    fun isHomeIndependent(prefs2: PreferenceManager2): Boolean = currentHomeLayout(prefs2) == FoldHomeLayout.INDEPENDENT
+
     private fun currentHomeLayout(prefs2: PreferenceManager2): FoldHomeLayout {
         val cached = prefs2.foldHomeLayout.firstCached(prefs2)
         val pending = pendingHomeLayout
@@ -64,4 +68,61 @@ object FoldLayout {
     /** Whether the cover screen opens on the panel last touched on the large screen. */
     @JvmStatic
     fun opensLastPanelAfterFold(prefs2: PreferenceManager2): Boolean = prefs2.foldAfterFold.firstCached(prefs2) == FoldAfterFold.LAST_PANEL
+
+    // The landscape preferences reload the grid in their onSet too, so they are handed over the
+    // same way as the home layout.
+    private val pendingLandscape = PendingValue<FoldLandscape>()
+    private val pendingLandscapeIconSize = PendingValue<Float>()
+    private val pendingLandscapeLabelSize = PendingValue<Float>()
+
+    /** Called from [PreferenceManager2.foldLandscape]'s onSet, before reloading the grid. */
+    @JvmStatic
+    fun onLandscapeSet(landscape: FoldLandscape) = pendingLandscape.set(landscape)
+
+    /** Called from [PreferenceManager2.foldLandscapeIconSizeFactor]'s onSet, before reloading the grid. */
+    @JvmStatic
+    fun onLandscapeIconSizeSet(factor: Float) = pendingLandscapeIconSize.set(factor)
+
+    /** Called from [PreferenceManager2.foldLandscapeIconLabelSizeFactor]'s onSet, before reloading the grid. */
+    @JvmStatic
+    fun onLandscapeLabelSizeSet(factor: Float) = pendingLandscapeLabelSize.set(factor)
+
+    /** Whether the large screen has its own icon and label sizes in landscape ([FoldLandscape.OWN]). */
+    @JvmStatic
+    fun isLandscapeOwn(prefs2: PreferenceManager2): Boolean = pendingLandscape.resolve(prefs2.foldLandscape.firstCached(prefs2)) == FoldLandscape.OWN
+
+    /**
+     * The home icon size factor of the large screen in landscape with [FoldLandscape.OWN]: its own
+     * value, or the portrait one ([PreferenceManager2.homeIconSizeFactor]) until it is set.
+     */
+    @JvmStatic
+    fun landscapeIconSizeFactor(prefs2: PreferenceManager2): Float {
+        val own = pendingLandscapeIconSize.resolve(prefs2.foldLandscapeIconSizeFactor.firstCached(prefs2))
+        return if (own < 0f) prefs2.homeIconSizeFactor.firstCached(prefs2) else own
+    }
+
+    /** Like [landscapeIconSizeFactor], for the home icon labels ([PreferenceManager2.homeIconLabelSizeFactor]). */
+    @JvmStatic
+    fun landscapeLabelSizeFactor(prefs2: PreferenceManager2): Float {
+        val own = pendingLandscapeLabelSize.resolve(prefs2.foldLandscapeIconLabelSizeFactor.firstCached(prefs2))
+        return if (own < 0f) prefs2.homeIconLabelSizeFactor.firstCached(prefs2) else own
+    }
+
+    /** A value just set, used until the preference cache returns the same value. */
+    private class PendingValue<T : Any> {
+        @Volatile
+        private var value: T? = null
+
+        fun set(newValue: T) {
+            value = newValue
+        }
+
+        fun resolve(cached: T): T {
+            val pending = value ?: return cached
+            if (pending == cached) {
+                value = null
+            }
+            return pending
+        }
+    }
 }

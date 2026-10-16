@@ -255,6 +255,12 @@ public class ModelDbController {
         return mOpenHelper.getNewScreenId();
     }
 
+    /** LC-Note: new screen id within one item set of "Independent", see FoldItemSets. */
+    public int getNewScreenId(boolean innerSet) {
+        createDbIfNotExists();
+        return mOpenHelper.getNewScreenId(innerSet);
+    }
+
     /**
      * Creates an empty DB clearing all existing data
      */
