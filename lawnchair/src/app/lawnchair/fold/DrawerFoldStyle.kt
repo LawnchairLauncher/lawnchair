@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.Reorderable
@@ -284,7 +283,7 @@ class DrawerFoldStyle(
         val bar = bar ?: return
         val stretch = barStretch ?: return
         if (!barActive) return
-        val e = EASE.getInterpolation(t)
+        val e = FoldTunables.DRAWER_EASE.getInterpolation(t)
         val left = (barFromLeft + (barToLeft - barFromLeft) * e).roundToInt()
         val right = (barFromRight + (barToRight - barFromRight) * e).roundToInt()
         stretch.apply(left, bar.width - right)
@@ -366,7 +365,7 @@ class DrawerFoldStyle(
 
     private fun applyHeader(t: Float) {
         // Like row 1 of the river: straight and right away
-        val e = EASE.getInterpolation(t)
+        val e = FoldTunables.DRAWER_EASE.getInterpolation(t)
         for (i in predictionViews.indices) {
             val view = predictionViews[i]
             val from = predictionFrom[i]
@@ -482,7 +481,7 @@ class DrawerFoldStyle(
 
     private fun staggerFor(movers: Int): Float {
         val nominal = FoldTunables.DRAWER_RIVER_STAGGER_MILLIS / FoldTunables.UNFOLD_DURATION_MILLIS.toFloat()
-        return if (movers <= 1) 0f else minOf(nominal, MAX_DELAY / (movers - 1))
+        return if (movers <= 1) 0f else minOf(nominal, FoldTunables.DRAWER_MAX_DELAY / (movers - 1))
     }
 
     private fun applyRiver(scene: FoldScene, list: AllAppsRecyclerView, t: Float) {
@@ -500,17 +499,17 @@ class DrawerFoldStyle(
                 val center = capture?.itemCenters?.get(position) ?: continue
                 fromX = toCover(center[0])
                 fromY = center[1]
-                delay = (i * stagger).coerceAtMost(MAX_DELAY)
+                delay = (i * stagger).coerceAtMost(FoldTunables.DRAWER_MAX_DELAY)
             } else {
                 if (gridPosition(list, child) == RecyclerView.NO_POSITION) continue
                 val column = if (rtl) coverColumns - 1 - coverColumn[position] else coverColumn[position]
                 fromX = toLarge(coverPaddingLeft + (column + 0.5f) * coverCellWidth)
                 fromY = anchorCenterY + (coverRow[position] - coverRow[anchorPosition]) * coverCellHeight
                 val rowOne = coverRow[position] <= coverRow[anchorPosition]
-                delay = if (rowOne) 0f else ((coverOrdinal[position] - firstRiverOrdinal + 1) * stagger).coerceAtMost(MAX_DELAY)
+                delay = if (rowOne) 0f else ((coverOrdinal[position] - firstRiverOrdinal + 1) * stagger).coerceAtMost(FoldTunables.DRAWER_MAX_DELAY)
             }
-            val local = ((t - delay) / (1f - MAX_DELAY)).coerceIn(0f, 1f)
-            val e = EASE.getInterpolation(local)
+            val local = ((t - delay) / (1f - FoldTunables.DRAWER_MAX_DELAY)).coerceIn(0f, 1f)
+            val e = FoldTunables.DRAWER_EASE.getInterpolation(local)
             val dx = fromX - toX
             val dy = fromY - toY
             var x = dx * (1f - e)
@@ -560,7 +559,7 @@ class DrawerFoldStyle(
     }
 
     private fun applyZoom(scene: FoldScene, list: AllAppsRecyclerView, t: Float) {
-        val scale = zoomFrom + (1f - zoomFrom) * EASE.getInterpolation(t)
+        val scale = zoomFrom + (1f - zoomFrom) * FoldTunables.DRAWER_EASE.getInterpolation(t)
         zoomView(scene, list, scale)
         zoomView(scene, header, scale)
     }
@@ -611,12 +610,7 @@ class DrawerFoldStyle(
     private fun toCover(x: Float): Float = (x - fixedLeft) / max(coverScale, 0.01f)
 
     private companion object {
-        /** Share of the progress the last item of a river waits before it moves. */
-        const val MAX_DELAY = 0.5f
-
         /** Arcs of long paths bulge the full [FoldTunables.DRAWER_RIVER_ARC_DP]; short ones less. */
         const val ARC_REFERENCE = 2f
-
-        val EASE = Interpolators.EMPHASIZED_DECELERATE
     }
 }
