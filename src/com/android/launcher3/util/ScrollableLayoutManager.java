@@ -16,10 +16,12 @@
 package com.android.launcher3.util;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.SparseIntArray;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,6 +56,27 @@ public class ScrollableLayoutManager extends GridLayoutManager {
 
     // LC-Note: extra rows laid out below the visible ones (foldable "book" drawer, its zoom)
     private int mFoldExtraLayoutSpacePx = 0;
+
+    /**
+     * LC-Note: lets the foldable "book" drawer (app.lawnchair.fold.FoldDrawerBook), whose children
+     * are drawn away from their layout position, steer focus by where they are drawn.
+     */
+    public interface FoldBookDelegate {
+        /** A child to focus instead of the default search result, or null for the default. */
+        @Nullable
+        View onInterceptFocusSearch(@NonNull View focused, int direction);
+
+        /**
+         * Brings {@code child} on screen. Returns null to use the default behaviour, else whether
+         * the list scrolled.
+         */
+        @Nullable
+        Boolean requestChildRectangleOnScreen(@NonNull RecyclerView parent, @NonNull View child,
+                @NonNull Rect rect, boolean immediate);
+    }
+
+    @Nullable
+    private FoldBookDelegate mFoldBookDelegate;
 
     public ScrollableLayoutManager(Context context) {
         super(context, 1, GridLayoutManager.VERTICAL, false);
@@ -136,6 +159,37 @@ public class ScrollableLayoutManager extends GridLayoutManager {
             mFoldExtraLayoutSpacePx = px;
             requestLayout();
         }
+    }
+
+    /** LC-Note: see {@link FoldBookDelegate}. */
+    public void setFoldBookDelegate(@Nullable FoldBookDelegate delegate) {
+        mFoldBookDelegate = delegate;
+    }
+
+    @Override
+    public View onInterceptFocusSearch(@NonNull View focused, int direction) {
+        if (mFoldBookDelegate != null) {
+            View next = mFoldBookDelegate.onInterceptFocusSearch(focused, direction);
+            if (next != null) {
+                return next;
+            }
+        }
+        return super.onInterceptFocusSearch(focused, direction);
+    }
+
+    @Override
+    public boolean requestChildRectangleOnScreen(@NonNull RecyclerView parent,
+            @NonNull View child, @NonNull Rect rect, boolean immediate,
+            boolean focusedChildVisible) {
+        if (mFoldBookDelegate != null) {
+            Boolean scrolled = mFoldBookDelegate.requestChildRectangleOnScreen(parent, child, rect,
+                    immediate);
+            if (scrolled != null) {
+                return scrolled;
+            }
+        }
+        return super.requestChildRectangleOnScreen(parent, child, rect, immediate,
+                focusedChildVisible);
     }
 
     /**
