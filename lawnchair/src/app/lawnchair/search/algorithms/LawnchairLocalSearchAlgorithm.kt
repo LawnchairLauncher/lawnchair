@@ -34,13 +34,16 @@ import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchCallback
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.concurrent.atomic.AtomicLong
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -48,7 +51,11 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
     private val appState = LauncherAppState.getInstance(context)
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val coroutineScope = CoroutineScope(
+        Dispatchers.IO + SupervisorJob() + kotlinx.coroutines.CoroutineExceptionHandler { _, error ->
+            android.util.Log.w("OmniSearch", "Search unavailable", error)
+        },
+    )
 
     @Volatile private var currentJob: Job? = null
     private val generation = AtomicLong()
@@ -76,31 +83,42 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             if (generation.get() != requestGeneration) return@enqueueModelUpdateTask
             currentJob = coroutineScope.launch {
                 if (generation.get() != requestGeneration) return@launch
-                val appResults = appSearchProvider.search(context, query, appSnapshot)
+                val prefs = PreferenceManager.getInstance(context)
+                val scope = filterScope
+                val needsApps = scope in setOf(SearchScope.ALL, SearchScope.APPS, SearchScope.ACTIONS)
+                val appResults = if (needsApps && prefs.searchResultApps.get()) appSearchProvider.search(context, query, appSnapshot) else emptyList()
                 if (generation.get() != requestGeneration) return@launch
-                val shortcutResults = shortcutSearchProvider.search(context, appResults)
-                if (generation.get() != requestGeneration) return@launch
-                val nonAppProvidersFlow = combine(
-                    searchProviders.map { it.search(context, query) },
-                ) { resultsArray ->
-                    resultsArray.toList().flatten()
+                var actionTargets = emptyList<SearchTargetCompat>()
+                suspend fun deliver(results: List<SearchResult>, initial: Boolean = false) {
+                    val hasLocal = results.any { it !is SearchResult.WebSuggestion && it !is SearchResult.History && it !is SearchResult.Action }
+                    val targets = translateToSearchTargets(if (initial) results else results + generateActionResults(query, hasLocal)).toMutableList()
+                    targets.addAll(actionTargets)
+                    setFirstItemQuickLaunch(targets)
+                    val items = transformSearchResults(targets)
+                    withContext(Dispatchers.Main) {
+                        if (generation.get() == requestGeneration) callback.onSearchResult(query, ArrayList(items))
+                    }
                 }
+                // Deliver apps before ShortcutManager, contacts, disk or network can delay them.
+                deliver(appResults, initial = true)
+                val shortcutResults = if (scope in setOf(SearchScope.ALL, SearchScope.ACTIONS)) shortcutSearchProvider.search(context, appResults) else emptyList()
+                if (generation.get() != requestGeneration) return@launch
+                if (scope in setOf(SearchScope.ALL, SearchScope.ACTIONS)) actionTargets = app.lawnchair.omni.experience.ActionSearchProvider.search(context, query)
+                val selectedProviders = searchProviders.filter { provider ->
+                    scope == SearchScope.ALL || when (scope) {
+                        SearchScope.PEOPLE -> provider === ContactsSearchProvider
+                        SearchScope.FILES -> provider === FileSearchProvider
+                        SearchScope.ACTIONS -> provider === SettingsSearchProvider
+                        else -> false
+                    }
+                }
+                val nonAppProvidersFlow = progressiveResults(selectedProviders.map { it.search(context, query) })
 
                 nonAppProvidersFlow.collect { nonAppResults ->
-                    val calcResult = CalculatorSearchProvider.search(context, query)
-                        .firstOrNull()
+                    val calcResult = if (scope in setOf(SearchScope.ALL, SearchScope.ACTIONS)) CalculatorSearchProvider.search(context, query).firstOrNull() else null
 
                     val localResults = appResults + shortcutResults + (calcResult ?: emptyList()) + nonAppResults
-                    val hasLocalResults = localResults.any {
-                        it !is SearchResult.WebSuggestion && it !is SearchResult.History && it !is SearchResult.Action
-                    }
-                    val allResults = localResults + generateActionResults(query, hasLocalResults)
-
-                    val searchTargets = translateToSearchTargets(allResults)
-                    val adapterItems = transformSearchResults(searchTargets)
-                    withContext(Dispatchers.Main) {
-                        if (generation.get() == requestGeneration) callback.onSearchResult(query, ArrayList(adapterItems))
-                    }
+                    deliver(localResults)
                 }
             }
         }

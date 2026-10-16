@@ -238,6 +238,13 @@ class SearchTargetFactory(
         )
     }
 
+    fun createLauncherActionTarget(id: String, title: String, intent: Intent): SearchTargetCompat {
+        val action = SearchActionCompat.Builder("launcher:$id", title)
+            .setIcon(Icon.createWithResource(context, R.drawable.ic_omni_assistant))
+            .setIntent(intent).build()
+        return createSearchLinksTarget("launcher:$id", action, "omni_launcher_action")
+    }
+
     fun createOmniAskTarget(query: String): SearchTargetCompat {
         val id = "omni_ask:$query"
         val action = SearchActionCompat.Builder(id, context.getString(R.string.omni_ask))

@@ -3,6 +3,7 @@ package app.lawnchair.search.algorithms.engine.provider
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.CancellationSignal
 import android.provider.MediaStore
 import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
@@ -23,9 +24,13 @@ import app.lawnchair.util.isRegularFile
 import app.lawnchair.util.mimeType2Extension
 import app.lawnchair.util.videoFileTypes
 import com.patrykmichalik.opto.core.firstBlocking
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -199,6 +204,7 @@ object FileSearchProvider : SearchProvider {
      * @return A [Sequence] of [FileInfo] objects matching the query criteria.
      *         The sequence is processed lazily.
      */
+    @OptIn(kotlinx.coroutines.InternalCoroutinesApi::class)
     private suspend fun queryMediaStoreByType(
         context: Context,
         uri: Uri,
@@ -236,6 +242,7 @@ object FileSearchProvider : SearchProvider {
     /**
      * Queries MediaStore.Files.getContentUri("external") which can return any indexed file or folder.
      */
+    @OptIn(kotlinx.coroutines.InternalCoroutinesApi::class)
     private suspend fun queryGeneralFilesInMediaStore(
         context: Context,
         keyword: String,
@@ -289,6 +296,7 @@ object FileSearchProvider : SearchProvider {
     /**
      * Core ContentResolver query logic.
      */
+    @OptIn(kotlinx.coroutines.InternalCoroutinesApi::class)
     private suspend inline fun <T : IFileInfo> contentResolverQuery(
         context: Context,
         uri: Uri,
@@ -300,19 +308,28 @@ object FileSearchProvider : SearchProvider {
         crossinline factory: (Cursor) -> T?,
     ): Sequence<T> = withContext(Dispatchers.IO) {
         try {
-            context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
-                ?.use { cursor ->
-                    var count = 0
-                    buildList {
-                        while (cursor.moveToNext() && count < maxResult) {
-                            factory(cursor)?.let { item ->
-                                add(item)
-                                count++
+            val coroutineContext = currentCoroutineContext()
+            val signal = CancellationSignal()
+            val registration = coroutineContext[Job]?.invokeOnCompletion(onCancelling = true, invokeImmediately = true) { if (it != null) signal.cancel() }
+            try {
+                context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder, signal)
+                    ?.use { cursor ->
+                        var count = 0
+                        buildList {
+                            while (cursor.moveToNext() && count < maxResult) {
+                                coroutineContext.ensureActive()
+                                factory(cursor)?.let { item ->
+                                    add(item)
+                                    count++
+                                }
                             }
-                        }
-                    }.asSequence()
-                } ?: emptySequence()
+                        }.asSequence()
+                    } ?: emptySequence()
+            } finally {
+                registration?.dispose()
+            }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             // Log error (e.g., SecurityException if permissions are somehow still an issue)
             Log.e("FileSearchProvider", "Error querying MediaStore at $uri: ${e.message}")
             emptySequence()

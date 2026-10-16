@@ -50,11 +50,6 @@ fun ExperimentalFeaturesPreferences(
                 description = stringResource(id = R.string.font_picker_description),
             )
             SwitchPreference(
-                adapter = prefs2.enableSmartspaceCalendarSelection.getAdapter(),
-                label = stringResource(id = R.string.smartspace_calendar_label),
-                description = stringResource(id = R.string.smartspace_calendar_description),
-            )
-            SwitchPreference(
                 adapter = prefs.workspaceIncreaseMaxGridSize.getAdapter(),
                 label = stringResource(id = R.string.workspace_increase_max_grid_size_label),
                 description = stringResource(id = R.string.workspace_increase_max_grid_size_description),

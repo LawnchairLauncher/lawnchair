@@ -10,6 +10,7 @@ import app.lawnchair.gestures.handlers.OpenAppTarget
 import app.lawnchair.gestures.handlers.OpenAssistantHandler
 import app.lawnchair.gestures.handlers.OpenNotificationsHandler
 import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
+import app.lawnchair.gestures.handlers.OpenShelfHandler
 import app.lawnchair.gestures.handlers.RecentsGestureHandler
 import app.lawnchair.gestures.handlers.SleepGestureHandler
 import com.android.launcher3.R
@@ -65,6 +66,10 @@ sealed class GestureHandlerConfig {
     @Serializable
     @SerialName("openAssistant")
     data object OpenAssistant : Simple(R.string.gesture_handler_open_assistant, ::OpenAssistantHandler)
+
+    @Serializable
+    @SerialName("openOmniShelf")
+    data object OpenOmniShelf : Simple(R.string.omni_shelf, ::OpenShelfHandler)
 
     @Serializable
     @SerialName("openApp")

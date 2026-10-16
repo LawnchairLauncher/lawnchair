@@ -2,6 +2,7 @@ package app.lawnchair.allapps
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.provider.SearchRecentSuggestions
@@ -28,7 +29,6 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.qsb.AssistantIconView
 import app.lawnchair.qsb.LawnQsbLayout.Companion.getLensIntent
 import app.lawnchair.qsb.LawnQsbLayout.Companion.getSearchProvider
@@ -40,7 +40,6 @@ import app.lawnchair.qsb.setThemedIconResource
 import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.theme.drawable.DrawableTokens
-import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.Insettable
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.LauncherState
@@ -56,7 +55,9 @@ import com.android.launcher3.util.Themes
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import kotlin.math.max
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     FrameLayout(context, attrs),
@@ -72,6 +73,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private lateinit var actionButton: ImageButton
     private lateinit var searchIcon: ImageButton
 
+    private var shouldShowIcons = false
+    private var supportsLens = false
+    private var lensIntent: Intent? = null
+    private var voiceIntent: Intent? = null
     private lateinit var micIcon: AssistantIconView
     private lateinit var lensIcon: ImageButton
 
@@ -122,18 +127,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         micIcon = ViewCompat.requireViewById(this, R.id.mic_btn)
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_btn)
 
-        val shouldShowIcons = prefs2.matchHotseatQsbStyle.firstBlocking()
-
-        val searchProvider = getSearchProvider(context, prefs2)
-        val isGoogle = searchProvider == Google || searchProvider == GoogleGo || searchProvider == PixelSearch
-        val supportsLens = searchProvider == Google || searchProvider == PixelSearch
-
-        val lensIntent = getLensIntent(context)
-        val voiceIntent = AssistantIconView.getVoiceIntent(searchProvider, context)
-
-        micIcon.isVisible = shouldShowIcons && voiceIntent != null
-        lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null
-
+        micIcon.isVisible = false
+        lensIcon.isVisible = false
         actionButton = ViewCompat.requireViewById(this, R.id.action_btn)
         with(actionButton) {
             isVisible = false
@@ -144,39 +139,54 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             }
         }
 
-        prefs2.themedHotseatQsb.subscribeBlocking(scope = viewAttachedScope) { themed ->
-            with(searchIcon) {
-                isVisible = true
+        launcher.lifecycleScope.launch {
+            val provider = withContext(Dispatchers.IO) {
+                val selected = getSearchProvider(context, prefs2)
+                val show = prefs2.matchHotseatQsbStyle.firstBlocking()
+                Triple(selected, show, getLensIntent(context) to AssistantIconView.getVoiceIntent(selected, context))
+            }
+            val searchProvider = provider.first
+            shouldShowIcons = provider.second
+            lensIntent = provider.third.first
+            voiceIntent = provider.third.second
+            val isGoogle = searchProvider == Google || searchProvider == GoogleGo || searchProvider == PixelSearch
+            supportsLens = searchProvider == Google || searchProvider == PixelSearch
+            micIcon.isVisible = shouldShowIcons && voiceIntent != null && input.text.isNullOrEmpty()
+            lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null && input.text.isNullOrEmpty()
+            prefs2.themedHotseatQsb.get().collect { themed ->
+                with(searchIcon) {
+                    isVisible = true
 
-                val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
-                val resId = if (shouldShowIcons) iconRes else R.drawable.ic_qsb_search
-                val isThemed = themed || resId == R.drawable.ic_qsb_search
-                val method = if (shouldShowIcons) searchProvider.themingMethod else ThemingMethod.TINT
+                    val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
+                    val resId = if (shouldShowIcons) iconRes else R.drawable.ic_qsb_search
+                    val isThemed = themed || resId == R.drawable.ic_qsb_search
+                    val method = if (shouldShowIcons) searchProvider.themingMethod else ThemingMethod.TINT
 
-                setThemedIconResource(
-                    resId = resId,
-                    themed = isThemed,
-                    method = method,
-                )
+                    setThemedIconResource(
+                        resId = resId,
+                        themed = isThemed,
+                        method = method,
+                    )
 
-                setOnClickListener {
-                    val launcher = context.launcher
-                    launcher.lifecycleScope.launch {
-                        searchProvider.launch(launcher)
+                    setOnClickListener {
+                        val launcher = context.launcher
+                        launcher.lifecycleScope.launch {
+                            searchProvider.launch(launcher)
+                        }
                     }
                 }
-            }
-            with(micIcon) {
-                setIcon(isGoogle, themed)
-                setOnClickListener {
-                    context.startActivity(voiceIntent)
-                }
-            }
-            with(lensIcon) {
-                if (lensIntent != null) {
-                    setThemedIconResource(R.drawable.ic_lens_color, themed)
+                with(micIcon) {
+                    setIcon(isGoogle, themed)
                     setOnClickListener {
-                        runCatching { context.startActivity(lensIntent) }
+                        voiceIntent?.let { intent -> runCatching { context.startActivity(intent) } }
+                    }
+                }
+                with(lensIcon) {
+                    if (lensIntent != null) {
+                        setThemedIconResource(R.drawable.ic_lens_color, themed)
+                        setOnClickListener {
+                            lensIntent?.let { intent -> runCatching { context.startActivity(intent) } }
+                        }
                     }
                 }
             }
@@ -185,7 +195,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         val currentPaddingRight = initialPaddingRight
         input.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                if (prefs2.searchAlgorithm.firstBlocking() != LawnchairSearchAlgorithm.APP_SEARCH) {
+                if (searchAlgorithm !is app.lawnchair.search.algorithms.LawnchairAppSearchAlgorithm) {
                     input.setHint(R.string.all_apps_device_search_hint)
                 } else {
                     input.setHint(R.string.all_apps_search_bar_hint)
@@ -238,10 +248,11 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             },
         )
 
-        val hide = prefs2.hideAppDrawerSearchBar.firstBlocking()
-        if (hide) {
-            isInvisible = true
-            layoutParams.height = 0
+        launcher.lifecycleScope.launch {
+            prefs2.hideAppDrawerSearchBar.get().collect { hide ->
+                isInvisible = hide
+                layoutParams = layoutParams.apply { height = if (hide) 0 else resources.getDimensionPixelSize(R.dimen.search_box_container_height) }
+            }
         }
     }
 
@@ -335,6 +346,13 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         input.viewTreeObserver.removeOnGlobalLayoutListener(this)
     }
 
+    internal val supportsLocalFilters: Boolean get() = searchAlgorithm is app.lawnchair.search.algorithms.LawnchairLocalSearchAlgorithm
+
+    internal fun filterSearch(scope: app.lawnchair.search.algorithms.SearchScope) {
+        searchAlgorithm?.filterScope = scope
+        searchBarController.refreshSearchResult()
+    }
+
     override fun onAppsUpdated() {
         searchBarController.refreshSearchResult()
     }
@@ -342,22 +360,31 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     override fun initializeSearch(appsView: ActivityAllAppsContainerView<*>) {
         apps = appsView.searchResultList as LawnchairAlphabeticalAppsList<*>
         this.appsView = appsView
-        val algorithm = LawnchairSearchAlgorithm.create(context)
-        this.searchAlgorithm = algorithm
-        searchBarController.initialize(
-            algorithm,
-            input,
-            launcher,
-            this,
-        )
         input.initialize(appsView)
+        launcher.lifecycleScope.launch {
+            val algorithm = LawnchairSearchAlgorithm.create(context)
+            searchAlgorithm?.destroy()
+            searchAlgorithm = algorithm
+            launcher.lifecycle.addObserver(object : androidx.lifecycle.DefaultLifecycleObserver {
+                override fun onDestroy(owner: androidx.lifecycle.LifecycleOwner) {
+                    algorithm.destroy()
+                }
+            })
+            searchBarController.initialize(algorithm, input, launcher, this@AllAppsSearchInput)
+            input.text?.takeIf { it.isNotEmpty() }?.let { searchBarController.afterTextChanged(it) }
+        }
     }
 
     override fun resetSearch() {
+        if (searchAlgorithm == null) {
+            input.text?.clear()
+            return
+        }
         searchBarController.reset()
     }
 
     override fun preDispatchKeyEvent(event: KeyEvent) {
+        if (searchAlgorithm == null) return
         // Determine if the key event was actual text, if so, focus the search bar and then dispatch
         // the key normally so that it can process this key event
         if (!searchBarController.isSearchFieldFocused && event.action == KeyEvent.ACTION_DOWN) {

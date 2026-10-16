@@ -14,13 +14,15 @@ sealed class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCu
 
         fun fromString(value: String): SmartspaceCalendar = when (value) {
             "persian" -> Persian
+            "hijri" -> Hijri
+            "dual" -> Dual
             else -> Gregorian
         }
 
         /**
          * @return The list of all calendars.
          */
-        fun values() = listOf(Gregorian, Persian)
+        fun values() = listOf(Gregorian, Hijri, Dual, Persian)
     }
 
     object Gregorian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_gregorian) {
@@ -28,5 +30,11 @@ sealed class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCu
     }
     object Persian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_persian) {
         override fun toString() = "persian"
+    }
+    object Hijri : SmartspaceCalendar(nameResourceId = R.string.omni_calendar_hijri) {
+        override fun toString() = "hijri"
+    }
+    object Dual : SmartspaceCalendar(nameResourceId = R.string.omni_calendar_dual) {
+        override fun toString() = "dual"
     }
 }

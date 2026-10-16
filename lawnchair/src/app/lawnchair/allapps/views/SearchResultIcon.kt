@@ -71,7 +71,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         if (boundId == target.id) return
         boundId = target.id
         omniIntent = target.searchAction?.intent?.takeIf {
-            it.component?.className == OmniAskActivity::class.java.name
+            it.component?.className in setOf(OmniAskActivity::class.java.name, app.lawnchair.omni.experience.OmniActionActivity::class.java.name)
         }
         flags = getFlags(target.extras)
         reset()

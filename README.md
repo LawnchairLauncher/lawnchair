@@ -12,9 +12,10 @@ and integration with [OmniDev Workspace](https://github.com/obieda-hussien/OmniD
 and [OmniLinkSDK](https://github.com/obieda-hussien/OmniLinkSDK).
 The original Lawnchair, AOSP, and third-party authors retain credit and rights to their work.
 
-> This README describes the `feature/omni-launcher-integration` proposal based on `15-dev`,
-> updated 1 October 2026. Integration features become part of the base branch only after merge.
-> Policy tests passed; a full APK build and physical-device performance checks are still pending.
+> This branch includes Omni Home experiences: responsive multilingual/action search, Shelf,
+> Home scenes, rule folders, widget stacks, customizable Hijri/Gregorian dates and expanded OmniLink/OEM integration.
+> See [setup, capability contracts and validation limits](docs/OMNI_HOME_EXPERIENCES.md).
+> Android CI and real-device validation are separate; no measured FPS or memory guarantee is implied.
 
 ## Contents
 
@@ -28,6 +29,9 @@ The original Lawnchair, AOSP, and third-party authors retain credit and rights t
 - [Copyright, attribution, and licenses](#copyright-attribution-and-licenses)
 
 ## Features and origins
+
+Home experiences and performance work are documented in [OMNI_HOME_EXPERIENCES.md](docs/OMNI_HOME_EXPERIENCES.md).
+Workspace's companion capability policy is in [PR #194](https://github.com/obieda-hussien/OmniDev-Workspace/pull/194).
 
 | Feature | Origin / scope | Requirements |
 | --- | --- | --- |
@@ -73,7 +77,11 @@ The SDK verifies signing identity, and both applications enforce package/flavor 
 | `launcher.open_app` | Open an exact visible component while Home is resumed; approval and dry run supported |
 | `launcher.open_drawer` | Open the drawer while Home is resumed; approval and dry run supported |
 
-ADMIN/PRO/OEM can use all six known capabilities. NORM can read and open; LITE can read health only.
+The experience build advertises 24 capabilities, including `launcher.get_layout`, `launcher.move_items`,
+`launcher.set_grid` and `launcher.create_folder`; [schemas and usage](docs/OMNI_HOME_EXPERIENCES.md).
+ADMIN/PRO/OEM may use Home mutations; NORM can read and open; LITE can read health only.
+Update both Launcher and Workspace companion builds to see the full catalog. `protocolVersion` is
+not an APK/catalog version; `launcher.health` reports app versions and `capabilityCatalogVersion`.
 All still follow local consent and mutation approval. A foreground refusal is returned to Workspace
 instead of attempting to force Android to launch an activity in the background.
 
@@ -85,14 +93,14 @@ SDK version bump. [Payloads, setup, errors, privacy and test matrix](docs/OMNI_I
 <!-- OMNI_METRICS_START -->
 | Metric | Count |
 | --- | ---: |
-| Tracked files | **4,975** |
-| Production source files | **2,166** |
-| Production source lines | **466,832** |
-| Test source files | **655** |
-| Test source lines | **112,111** |
-| Kotlin files | **1,162** |
-| Kotlin lines | **161,129** |
-| Markdown documents | **38** |
+| Tracked files | **5,013** |
+| Production source files | **2,192** |
+| Production source lines | **470,434** |
+| Test source files | **659** |
+| Test source lines | **112,589** |
+| Kotlin files | **1,192** |
+| Kotlin lines | **165,209** |
+| Markdown documents | **40** |
 <!-- OMNI_METRICS_END -->
 
 These are physical line counts from `git ls-files`, including upstream Lawnchair/AOSP/vendored

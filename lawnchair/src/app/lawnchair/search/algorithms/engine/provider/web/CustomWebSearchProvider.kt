@@ -6,12 +6,18 @@ import android.util.Log
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.R
 import com.patrykmichalik.opto.core.firstBlocking
+import java.io.IOException
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.suspendCancellableCoroutine
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import org.json.JSONArray
 
 /**
@@ -65,7 +71,19 @@ object CustomWebSearchProvider : WebSearchProvider {
             val url = suggestionsUrlTemplate.replace("%s", encodedQuery)
 
             val request = Request.Builder().url(url).build()
-            okHttpClient.newCall(request).execute().use { response ->
+            val response = suspendCancellableCoroutine<Response> { continuation ->
+                val call = okHttpClient.newCall(request)
+                continuation.invokeOnCancellation { call.cancel() }
+                call.enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        if (continuation.isActive) continuation.resumeWith(Result.failure(e))
+                    }
+                    override fun onResponse(call: Call, response: Response) {
+                        continuation.resume(response) { _, value, _ -> value.close() }
+                    }
+                })
+            }
+            response.use {
                 if (response.isSuccessful) {
                     val responseBody = response.body.string()
                     // We assume a standard OpenSearch format, as it's the most common.
@@ -77,6 +95,7 @@ object CustomWebSearchProvider : WebSearchProvider {
                 }
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(TAG, "Error during suggestion retrieval", e)
             emit(emptyList())
         }
@@ -97,6 +116,7 @@ object CustomWebSearchProvider : WebSearchProvider {
             val suggestionsArray = jsonArray.getJSONArray(1)
             (0 until suggestionsArray.length()).map { suggestionsArray.getString(it) }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Log.e(TAG, "Failed to parse custom provider response", e)
             emptyList()
         }

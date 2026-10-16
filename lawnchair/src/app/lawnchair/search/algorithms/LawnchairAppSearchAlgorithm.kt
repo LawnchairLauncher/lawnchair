@@ -44,7 +44,11 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
     private val prefs2 = PreferenceManager2.getInstance(context)
 
-    val coroutineScope = CoroutineScope(context = Dispatchers.IO + SupervisorJob())
+    val coroutineScope = CoroutineScope(
+        context = Dispatchers.IO + SupervisorJob() + kotlinx.coroutines.CoroutineExceptionHandler { _, error ->
+            android.util.Log.w("OmniSearch", "Search unavailable", error)
+        },
+    )
 
     init {
         prefs2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
@@ -88,14 +92,15 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         coroutineScope.cancel()
     }
 
-    private fun getResult(
+    private suspend fun getResult(
         apps: MutableList<AppInfo>,
         query: String,
     ): ArrayList<BaseAllAppsAdapter.AdapterItem> {
+        val aliases = app.lawnchair.omni.experience.ExperienceStore.get(context).aliasesForSearch()
         val appResults = if (enableFuzzySearch) {
-            SearchUtils.fuzzySearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch)
+            SearchUtils.fuzzySearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch, aliases)
         } else {
-            SearchUtils.normalSearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch)
+            SearchUtils.normalSearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch, aliases)
         }
 
         val searchTargets = mutableListOf<SearchTargetCompat>()
@@ -129,6 +134,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         }
         searchTargetFactory.createMarketSearchTarget(query)?.let { searchTargets.add(it) }
 
+        searchTargets.addAll(app.lawnchair.omni.experience.ActionSearchProvider.search(context, query))
         setFirstItemQuickLaunch(searchTargets)
         val adapterItems = transformSearchResults(searchTargets)
         return ArrayList(adapterItems)

@@ -211,7 +211,7 @@ class LawnchairLauncher : QuickstepLauncher() {
                     LawnchairApp.instance.restoreClockInStatusBar()
                 }
             }
-        }
+        }.launchIn(scope = lifecycleScope)
         preferenceManager2.rememberPosition.get().onEach {
             with(launcher.stateManager) {
                 if (it) {
@@ -260,6 +260,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         showQuickstepWarningIfNecessary()
 
         reloadIconsIfNeeded()
+        app.lawnchair.omni.experience.SceneController.attach(this)
 
         // Never block the first frame on SQLite WAL fsync/checkpoint. Room initialization
         // is kept on Main (MainThreadInitializedObject), but actual disk I/O is deferred.

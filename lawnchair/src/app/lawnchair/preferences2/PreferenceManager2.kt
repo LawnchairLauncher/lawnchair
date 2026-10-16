@@ -377,11 +377,6 @@ class PreferenceManager2 private constructor(private val context: Context) :
         },
     )
 
-    val enableSmartspaceCalendarSelection = preference(
-        key = booleanPreferencesKey(name = "enable_smartspace_calendar_selection"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace_calendar_selection),
-    )
-
     val autoShowKeyboardInDrawer = preference(
         key = booleanPreferencesKey(name = "auto_show_keyboard_in_drawer"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
@@ -665,6 +660,56 @@ class PreferenceManager2 private constructor(private val context: Context) :
         defaultValue = SmartspaceCalendar.fromString(context.getString(R.string.config_default_smart_space_calendar)),
         parse = { SmartspaceCalendar.fromString(it) },
         save = { it.toString() },
+    )
+
+    val smartspaceDateStyle = preference(
+        key = stringPreferencesKey("smartspace_date_style"),
+        defaultValue = "long",
+    )
+
+    val smartspaceDateLanguage = preference(
+        key = stringPreferencesKey("smartspace_date_language"),
+        defaultValue = "system",
+    )
+
+    val smartspaceDateDigits = preference(
+        key = stringPreferencesKey("smartspace_date_digits"),
+        defaultValue = "system",
+    )
+
+    val smartspaceHijriMethod = preference(
+        key = stringPreferencesKey("smartspace_hijri_method"),
+        defaultValue = "islamic-umalqura",
+    )
+
+    val smartspaceHijriOffset = preference(
+        key = intPreferencesKey("smartspace_hijri_offset"),
+        defaultValue = 0,
+    )
+
+    val smartspaceDateYear = preference(
+        key = booleanPreferencesKey("smartspace_date_year"),
+        defaultValue = false,
+    )
+
+    val smartspaceDateWeekday = preference(
+        key = booleanPreferencesKey("smartspace_date_weekday"),
+        defaultValue = true,
+    )
+
+    val smartspaceDateEra = preference(
+        key = booleanPreferencesKey("smartspace_date_era"),
+        defaultValue = false,
+    )
+
+    val smartspaceDateStacked = preference(
+        key = booleanPreferencesKey("smartspace_date_stacked"),
+        defaultValue = true,
+    )
+
+    val smartspaceHijriFirst = preference(
+        key = booleanPreferencesKey("smartspace_hijri_first"),
+        defaultValue = true,
     )
 
     val smartspacerMaxCount = preference(

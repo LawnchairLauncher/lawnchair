@@ -69,6 +69,27 @@
     </queries>
 
     <application>
+        <activity android:name="app.lawnchair.omni.experience.OmniHubActivity"
+            android:exported="true" android:label="@string/omni_shelf" android:theme="@style/Theme.Lawnchair">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity android:name="app.lawnchair.omni.experience.OmniActionActivity"
+            android:exported="false" android:excludeFromRecents="true" android:theme="@style/Theme.Transparent" />
+        <activity android:name="app.lawnchair.omni.experience.widgets.WidgetStackActivity"
+            android:exported="true" android:label="@string/omni_widget_stacks" android:theme="@style/Theme.Lawnchair">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <receiver android:name="app.lawnchair.omni.experience.widgets.OmniWidgetStack"
+            android:exported="false" android:label="@string/omni_widget_stacks">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/omni_widget_stack" />
+        </receiver>
         <activity
             android:name="app.lawnchair.omni.OmniAskActivity"
             android:exported="false"

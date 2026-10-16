@@ -1,51 +1,68 @@
-﻿package app.lawnchair.data.folder.service
+package app.lawnchair.data.folder.service
 
 import android.content.Context
-import android.content.pm.LauncherApps
-import android.util.Log
 import app.lawnchair.data.AppDatabase
-import app.lawnchair.data.Converters
 import app.lawnchair.data.folder.FolderInfoEntity
 import app.lawnchair.data.toEntity
-import com.android.launcher3.AppFilter
+import app.lawnchair.omni.experience.ExperienceStore
+import app.lawnchair.omni.experience.FolderRule
+import app.lawnchair.omni.experience.OmniAppInventory
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.FolderInfo
-import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.SafeCloseable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 class FolderService(val context: Context) : SafeCloseable {
-
     private val folderDao = AppDatabase.INSTANCE.get(context).folderDao()
-    private val launcherApps = context.getSystemService(LauncherApps::class.java)
-    private val userCache = UserCache.INSTANCE.get(context)
-    private val appFilter = AppFilter(context)
-    private val converters = Converters()
+    private val inventory by lazy { OmniAppInventory.get(context) }
+    private val experience by lazy { ExperienceStore.get(context) }
 
-    fun getFoldersFlow(): Flow<List<FolderInfo>> {
-        return folderDao.getAllFolders().map { folderEntities ->
-            folderEntities.mapNotNull { folderEntity ->
-                getFolderInfo(folderEntity.id, true)
-            }
+    fun getFoldersFlow(): Flow<List<FolderInfo>> = combine(
+        folderDao.getAllFolders(),
+        experience.state.filterNotNull(),
+        inventory.revision,
+        PreferenceManager2.getInstance(context).hiddenApps.get(),
+    ) { folders, state, _, _ ->
+        val apps = if (folders.isEmpty()) emptyList() else inventory.visible()
+        val byKey = apps.associateBy { it.toComponentKey().toString() }
+        folders.mapNotNull { folder ->
+            folderDao.getFolderWithItems(folder.id)?.let { mapFolder(it, true, apps, byKey, state.rules) }
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun updateFolderWithItems(folderInfoId: Int, title: String, appInfos: List<AppInfo>) = withContext(Dispatchers.IO) {
         folderDao.insertFolderWithItems(
             FolderInfoEntity(id = folderInfoId, title = title),
-            appInfos.mapIndexed { index, appInfo ->
-                appInfo.toEntity(folderInfoId).copy(rank = index)
-            }.toList(),
+            appInfos.mapIndexed { index, app -> app.toEntity(folderInfoId).copy(rank = index) },
         )
     }
 
     suspend fun saveFolderInfo(folderInfo: FolderInfo) = withContext(Dispatchers.IO) {
         folderDao.insertFolder(FolderInfoEntity(title = folderInfo.title.toString()))
+    }
+
+    suspend fun createRuleFolder(title: String, rule: FolderRule, checkAccess: () -> Unit = {}): Int = withContext(Dispatchers.IO) {
+        require(title.isNotBlank() && title.length <= 80)
+        checkAccess()
+        val id = folderDao.insertFolder(FolderInfoEntity(title = title)).toInt()
+        try {
+            experience.update {
+                checkAccess()
+                it.copy(rules = it.rules + rule.copy(folderId = id))
+            }
+        } catch (error: Exception) {
+            folderDao.deleteFolder(id)
+            throw error
+        }
+        id
     }
 
     suspend fun updateFolderInfo(folderInfo: FolderInfo, hide: Boolean = false) = withContext(Dispatchers.IO) {
@@ -54,66 +71,45 @@ class FolderService(val context: Context) : SafeCloseable {
 
     suspend fun deleteFolderInfo(id: Int) = withContext(Dispatchers.IO) {
         folderDao.deleteFolder(id)
+        experience.update { it.copy(rules = it.rules.filterNot { rule -> rule.folderId == id }) }
     }
 
-    suspend fun getFolderInfo(folderId: Int, hasId: Boolean = false): FolderInfo? = withContext(Dispatchers.Default) {
+    suspend fun getFolderInfo(folderId: Int, hasId: Boolean = false): FolderInfo? = withContext(Dispatchers.IO) {
+        val apps = inventory.visible()
         folderDao.getFolderWithItems(folderId)?.let {
-            mapToFolderInfo(it, hasId)
+            mapFolder(it, hasId, apps, apps.associateBy { app -> app.toComponentKey().toString() }, experience.read().rules)
         }
     }
 
-    private fun mapToFolderInfo(folderWithItems: FolderWithItems, hasId: Boolean): FolderInfo? {
-        return try {
-            val domainFolderInfo = FolderInfo().apply {
-                // if no id, launcher automatically creates an id for this
-                if (hasId) id = folderWithItems.folder.id
-                title = folderWithItems.folder.title
-            }
-
-            folderWithItems.items.sortedBy { it.rank }.forEach { itemEntity ->
-                // Consider caching toItemInfo results if componentKey lookups are slow
-                // and items don't change frequently without folder data changing
-                toItemInfo(itemEntity.componentKey)?.let { appInfo ->
-                    domainFolderInfo.add(appInfo, false)
-                }
-            }
-            domainFolderInfo
-        } catch (e: Exception) {
-            Log.e("FolderService", "Failed to map FolderWithItems for id: ${folderWithItems.folder.id}", e)
-            null
-        }
-    }
-
-    private fun toItemInfo(componentKey: String?): AppInfo? {
-        if (launcherApps != null) {
-            return userCache.userProfiles.asSequence()
-                .flatMap { launcherApps.getActivityList(null, it) }
-                .filter { appFilter.shouldShowApp(it.componentName) }
-                .map { AppInfo(context, it, it.user) }
-                .filter { converters.fromComponentKey(it.componentKey) == componentKey }
-                .firstOrNull()
-        }
-        return null
-    }
-
-    suspend fun getAllFolders(): List<FolderInfo> = withContext(Dispatchers.Main) {
-        try {
-            val folderEntities = folderDao.getAllFolders().firstOrNull() ?: emptyList()
-            folderEntities.mapNotNull { folderEntity ->
-                getFolderInfo(folderEntity.id, true)
-            }
-        } catch (e: Exception) {
-            Log.e("FolderService", "Failed to get all folders", e)
+    private fun mapFolder(
+        folder: FolderWithItems,
+        hasId: Boolean,
+        apps: List<AppInfo>,
+        byKey: Map<String, AppInfo>,
+        rules: List<FolderRule>,
+    ): FolderInfo {
+        val rule = rules.firstOrNull { it.folderId == folder.folder.id }
+        val manual = folder.items.sortedBy { it.rank }.mapNotNull { byKey[it.componentKey] }
+        val automatic = if (rule == null) {
             emptyList()
+        } else {
+            apps.filter { app ->
+                rule.matches(app.toComponentKey().toString(), app.title.toString(), app.targetPackage.orEmpty(), inventory.category(app))
+            }
+        }
+        return FolderInfo().apply {
+            if (hasId) id = folder.folder.id
+            title = folder.folder.title
+            (manual + automatic).distinctBy { it.toComponentKey() }
+                .filter { it.toComponentKey().toString() !in rule?.exclude.orEmpty() }
+                .forEach { add(it, false) }
         }
     }
 
-    override fun close() {
-        TODO("Not yet implemented")
-    }
+    suspend fun getAllFolders(): List<FolderInfo> = withContext(Dispatchers.IO) { getFoldersFlow().first() }
+    override fun close() = Unit
 
     companion object {
-        @JvmField
-        val INSTANCE = MainThreadInitializedObject(::FolderService)
+        @JvmField val INSTANCE = MainThreadInitializedObject(::FolderService)
     }
 }

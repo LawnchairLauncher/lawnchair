@@ -3,7 +3,6 @@ package app.lawnchair.search.algorithms.engine.provider.apps
 import me.xdrop.fuzzywuzzy.FuzzySearch
 
 internal data class MatchResult(val score: Float, val type: MatchType)
-
 internal enum class MatchType(val priority: Int) {
     EXACT_MATCH(0),
     DIRECT_PREFIX(1),
@@ -15,82 +14,32 @@ internal enum class MatchType(val priority: Int) {
     NO_MATCH(7),
 }
 
-/**
- * A utility object for matching a search query against an application's name.
- *
- * This object provides a prioritized, rule-based matching algorithm to determine how well a
- * given query string matches an app's name. The matching process is executed in a specific
- * order of rules, from the most to the least specific. The first rule that successfully
- * matches returns a [MatchResult] containing a relevance score and the type of match found.
- *
- * The matching rules are as follows, in order of priority:
- * 1. **Exact Match:** The query is identical to the app name.
- * 2. **Direct Prefix:** The app name starts with the query.
- * 3. **Initials:** The query matches the beginning of the sequence of initials from the app name's tokens (e.g., "G" or "GM" for "Google Maps").
- * 4. **Token Prefix (Ordered):** Each token in the query is a prefix of the corresponding token in the app name (e.g., "goo map" for "Google Maps").
- * 5. **Substring:** The query appears as a substring within the app name.
- * 6. **All Tokens Present:** All tokens from the query are present as prefixes in the app name's tokens, regardless of order.
- * 7. **Fuzzy Match:** A fuzzy string matching algorithm finds a similarity score above a certain cutoff.
- *
- * If none of these rules produce a match, a result indicating no match is returned.
- */
+internal data class PreparedSearchText(val text: String, val tokens: List<String>, val initials: String) {
+    companion object {
+        fun from(text: String): PreparedSearchText {
+            val normalized = SearchTextNormalizer.normalize(text)
+            val tokens = normalized.split(' ').filter { it.isNotEmpty() }
+            return PreparedSearchText(normalized, tokens, tokens.joinToString("") { it.take(1) })
+        }
+    }
+}
+
 internal object AppMatcher {
-    private const val FUZZY_SCORE_CUTOFF = 65
+    fun match(appName: String, query: String): MatchResult = match(PreparedSearchText.from(appName), PreparedSearchText.from(query), true)
 
-    fun match(appName: String, query: String): MatchResult {
-        val app = SearchTextNormalizer.normalize(appName)
-        val normalizedQuery = SearchTextNormalizer.normalize(query)
-        if (normalizedQuery.isEmpty()) return MatchResult(0.9f, MatchType.DIRECT_PREFIX)
-        if (app.isEmpty()) return MatchResult(0f, MatchType.NO_MATCH)
-
-        // Rule 0: Exact Match
-        if (app == normalizedQuery) return MatchResult(1.0f, MatchType.EXACT_MATCH)
-
-        // Rule 1: Direct Prefix
-        if (app.startsWith(normalizedQuery)) {
-            val ratio = normalizedQuery.length.toFloat() / app.length
-            val score = (0.9f + 0.05f * ratio).coerceAtMost(0.95f)
-            return MatchResult(score, MatchType.DIRECT_PREFIX)
+    fun match(app: PreparedSearchText, query: PreparedSearchText, fuzzy: Boolean): MatchResult {
+        val q = query.text
+        if (q.isEmpty() || app.text.isEmpty()) return MatchResult(0f, MatchType.NO_MATCH)
+        if (app.text == q) return MatchResult(1f, MatchType.EXACT_MATCH)
+        if (app.text.startsWith(q)) return MatchResult(.95f, MatchType.DIRECT_PREFIX)
+        if (query.tokens.size == 1 && app.initials.startsWith(q)) return MatchResult(.88f, MatchType.INITIALS)
+        if (query.tokens.size <= app.tokens.size && query.tokens.indices.all { app.tokens[it].startsWith(query.tokens[it]) }) {
+            return MatchResult(.82f, MatchType.TOKEN_PREFIX_ORDERED)
         }
-
-        // Tokenize once and reuse
-        val tokens = app.split(Regex("\\s+")).filter { it.isNotBlank() }
-        val qTokens = normalizedQuery.split(Regex("\\s+")).filter { it.isNotBlank() }
-
-        // Rule 2: Initials (for single-token queries)
-        if (normalizedQuery.none { it.isWhitespace() }) {
-            val initials = tokens.joinToString("") { it.first().toString() }
-            if (initials.isNotEmpty() && initials.startsWith(normalizedQuery)) {
-                return MatchResult(0.88f, MatchType.INITIALS)
-            }
-        }
-
-        // Rule 3: Token Prefix (Ordered)
-        if (qTokens.isNotEmpty() && qTokens.size <= tokens.size) {
-            if (qTokens.indices.all { i -> tokens[i].startsWith(qTokens[i]) }) {
-                return MatchResult(0.82f, MatchType.TOKEN_PREFIX_ORDERED)
-            }
-        }
-
-        // Rule 4: Substring
-        if (app.contains(normalizedQuery)) return MatchResult(0.72f, MatchType.SUBSTRING)
-
-        // Rule 5: All Tokens Present (Order-agnostic)
-        if (qTokens.isNotEmpty() && qTokens.all { qTok -> tokens.any { it.startsWith(qTok) } }) {
-            return MatchResult(0.68f, MatchType.ALL_TOKENS_PRESENT)
-        }
-
-        // Rule 6: Fuzzy Search
-        val fuzzyWhole = FuzzySearch.ratio(app, normalizedQuery)
-        // Avoid re-calculating max if no tokens exist
-        val fuzzyToken = if (tokens.isEmpty()) 0 else tokens.maxOfOrNull { FuzzySearch.ratio(it, normalizedQuery) } ?: 0
-        val fuzzyScore = maxOf(fuzzyWhole, fuzzyToken)
-
-        if (fuzzyScore >= FUZZY_SCORE_CUTOFF) {
-            val normalized = 0.5f + ((fuzzyScore - FUZZY_SCORE_CUTOFF) / (100f - FUZZY_SCORE_CUTOFF)) * 0.15f
-            return MatchResult(normalized, MatchType.FUZZY)
-        }
-
-        return MatchResult(0f, MatchType.NO_MATCH)
+        if (app.text.contains(q)) return MatchResult(.72f, MatchType.SUBSTRING)
+        if (query.tokens.all { token -> app.tokens.any { it.startsWith(token) } }) return MatchResult(.68f, MatchType.ALL_TOKENS_PRESENT)
+        if (!fuzzy || q.length < 2) return MatchResult(0f, MatchType.NO_MATCH)
+        val score = maxOf(FuzzySearch.ratio(app.text, q), app.tokens.maxOfOrNull { FuzzySearch.ratio(it, q) } ?: 0)
+        return if (score >= 65) MatchResult(score / 100f, MatchType.FUZZY) else MatchResult(0f, MatchType.NO_MATCH)
     }
 }

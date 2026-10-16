@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.theme.dividerColor
 import kotlin.math.roundToInt
@@ -41,21 +42,22 @@ fun DividerColumn(
         // List of measured children
         val placeables = measurables.map { measurable ->
             // Measure each children
-            measurable.measure(constraints)
+            measurable.measure(constraints.copy(minHeight = 0))
         }
 
-        val width = constraints.maxWidth
-        val dividersHeight = thicknessPx.roundToInt() * (placeables.size - 1)
-        val height = placeables.sumOf { it.height } + dividersHeight
+        val width = if (constraints.hasBoundedWidth) constraints.maxWidth else (placeables.maxOfOrNull { it.width } ?: constraints.minWidth)
+        val dividerCount = dividerCount(placeables.size, dividersToSkip)
+        val dividersHeight = thicknessPx.roundToInt().coerceAtLeast(0) * dividerCount
+        val height = constraints.constrainHeight(placeables.sumOf { it.height } + dividersHeight)
 
         layout(width, height) {
-            val dividerPositions = mutableListOf<Int>()
+            val dividerPositions = ArrayList<Int>(dividerCount)
             // Track the y co-ord we have placed children up to
             var yPosition = 0
 
             // Place children in the parent layout
             placeables.forEachIndexed { index, placeable ->
-                if (index > dividersToSkip) {
+                if (index > dividersToSkip.coerceAtLeast(0)) {
                     dividerPositions.add(yPosition)
                     yPosition += thicknessPx.roundToInt()
                 }

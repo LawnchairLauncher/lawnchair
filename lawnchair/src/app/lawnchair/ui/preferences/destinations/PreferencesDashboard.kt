@@ -109,6 +109,12 @@ fun PreferencesDashboard(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
+        app.lawnchair.ui.preferences.components.controls.ClickablePreference(
+            label = stringResource(R.string.omni_hub),
+            subtitle = stringResource(R.string.omni_hub_description),
+            modifier = Modifier.padding(horizontal = 16.dp),
+            onClick = { context.startActivity(app.lawnchair.omni.experience.OmniHubActivity.intent(context)) },
+        )
         PreferenceCategoryGroup {
             PreferenceCategory(
                 label = stringResource(R.string.general_label),
