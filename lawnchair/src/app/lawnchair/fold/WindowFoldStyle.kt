@@ -35,7 +35,7 @@ import kotlin.math.sin
  * Radii are pre-built in [FoldTunables.windowBlurLevels] steps, so no effect is created per frame.
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class WindowFoldStyle : SplitFoldStyle() {
+class WindowFoldStyle : SplitFoldStyle() {
 
     private val warp = Matrix()
     private val src = FloatArray(8)

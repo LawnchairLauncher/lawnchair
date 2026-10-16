@@ -1,6 +1,7 @@
 package app.lawnchair.fold
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -17,6 +18,7 @@ import android.util.Log
 import android.view.Choreographer
 import android.view.ViewTreeObserver
 import android.view.animation.Interpolator
+import androidx.annotation.RequiresApi
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences.PreferenceManager
@@ -148,12 +150,14 @@ class FoldTransitionController(
         finishNow("pause")
     }
 
+    // Registered by attach() only, on API 29+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onActivityDestroyed(activity: Activity) {
         finishNow("destroy")
         hinge.stop()
         handler.removeCallbacks(replayRunnable)
         launcher.removeOnDeviceProfileChangeListener(this)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) launcher.unregisterActivityLifecycleCallbacks(this)
+        launcher.unregisterActivityLifecycleCallbacks(this)
         listeners.clear()
     }
 
@@ -341,6 +345,8 @@ class FoldTransitionController(
         }
     }
 
+    // Every path here starts from a callback that attach() registers, and attach() needs API 29
+    @SuppressLint("NewApi")
     private fun startRun(
         reason: String,
         opening: Boolean,
@@ -360,7 +366,7 @@ class FoldTransitionController(
         val scene = FoldScene(launcher, opening, large, reduced)
         scene.timeScale = if (startWithHinge || reduced) 1f else timeScale
         val style = when {
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || styleType == FoldTransitionStyle.NONE -> NoneFoldStyle()
+            styleType == FoldTransitionStyle.NONE -> NoneFoldStyle()
 
             reduced -> FoldStyle.createReducedMotion()
 
@@ -610,8 +616,7 @@ class FoldTransitionController(
 
     // Conditions
 
-    private fun isEngineEnabled(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-        InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY &&
+    private fun isEngineEnabled(): Boolean = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY &&
         !LawnchairApp.isRecentsEnabled
 
     private fun canRunNow(): Boolean = resumed && launcher.isStarted && !launcher.isDestroyed &&
