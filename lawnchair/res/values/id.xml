@@ -27,4 +27,6 @@
     <item type="id" name="qsbIconTintSecondary" />
     <item type="id" name="qsbIconTintTertiary" />
     <item type="id" name="qsbIconTintQuaternary" />
+
+    <item type="id" name="fold_drawer_book" />
 </resources>

@@ -4,11 +4,12 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
+import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsRecyclerView
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.util.ScrollableLayoutManager
 import com.android.launcher3.views.ActivityContext
-import java.util.WeakHashMap
 
 /**
  * The second page of the "book" drawer ([FoldDrawerLayout.PAGES]).
@@ -33,8 +34,9 @@ import java.util.WeakHashMap
  * focused item is already visible on the second page, and scrolls only as much as needed when it
  * is cut there. The focus outline follows the item ([offsetFocusRect]).
  *
- * One instance per A-Z RecyclerView (personal and work); it does nothing unless the current
- * profile was built for PAGES.
+ * One instance per A-Z RecyclerView (personal and work) of a foldable, kept on the list itself (a
+ * view tag), so it lives exactly as long as the list. It does nothing unless the current profile
+ * was built for PAGES.
  */
 class FoldDrawerBook private constructor(
     private val rv: AllAppsRecyclerView,
@@ -227,21 +229,22 @@ class FoldDrawerBook private constructor(
     }
 
     companion object {
-        private val books = WeakHashMap<AllAppsRecyclerView, FoldDrawerBook>()
-
         /** Moves a focus outline [rect] (in the list's coordinates) to where [view] is drawn. */
         @JvmStatic
         fun offsetFocusRect(view: View, rect: Rect) {
             val list = view.parent as? AllAppsRecyclerView ?: return
-            if (books[list]?.isActive != true) return
+            if (of(list)?.isActive != true) return
             rect.offset(view.translationX.toInt(), view.translationY.toInt())
         }
 
-        /** Called when the drawer container sets up an A-Z RecyclerView. */
+        /** Called when the drawer container sets up an A-Z RecyclerView. Only foldables get a book. */
         @JvmStatic
-        fun attach(rv: AllAppsRecyclerView): FoldDrawerBook = books.getOrPut(rv) { FoldDrawerBook(rv) }
+        fun attach(rv: AllAppsRecyclerView) {
+            if (InvariantDeviceProfile.deviceType != InvariantDeviceProfile.TYPE_MULTI_DISPLAY) return
+            if (of(rv) == null) rv.setTag(R.id.fold_drawer_book, FoldDrawerBook(rv))
+        }
 
         /** The book of [rv], if it has one. */
-        fun of(rv: AllAppsRecyclerView?): FoldDrawerBook? = rv?.let { books[it] }
+        fun of(rv: AllAppsRecyclerView?): FoldDrawerBook? = rv?.getTag(R.id.fold_drawer_book) as? FoldDrawerBook
     }
 }
