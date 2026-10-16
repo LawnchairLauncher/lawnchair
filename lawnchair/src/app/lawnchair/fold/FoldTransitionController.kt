@@ -104,6 +104,12 @@ class FoldTransitionController(
     private var run: Run? = null
 
     /**
+     * What the drawer showed before the profile change being dispatched: [FoldDrawerState] sets it
+     * (the drawer hears of the change first) and the next [onDeviceProfileChanged] takes it.
+     */
+    internal var drawerCapture: FoldDrawerState.Capture? = null
+
+    /**
      * Registers this controller with the launcher. Call once from `onCreate`, after `super.onCreate`.
      *
      * Activity callbacks are used rather than the androidx Lifecycle: Launcher calls
@@ -149,6 +155,8 @@ class FoldTransitionController(
     // Triggers
 
     override fun onDeviceProfileChanged(dp: DeviceProfile) {
+        val capture = drawerCapture
+        drawerCapture = null
         val screen = screenOf(dp)
         val previous = lastScreen
         lastScreen = screen
@@ -168,7 +176,7 @@ class FoldTransitionController(
         if (prefs2.foldTransitionStyle.firstCached() == FoldTransitionStyle.NONE) {
             notifyInstant(large)
         } else {
-            startRun(if (large) "unfold" else "fold", opening = large, followHinge = large)
+            startRun(if (large) "unfold" else "fold", opening = large, followHinge = large, capture = capture)
         }
     }
 
@@ -241,7 +249,8 @@ class FoldTransitionController(
      * Starts an unfold ([opening]: 0 -> 1 on the large layout) or a fold (1 -> 0: on the cover layout
      * after the switch, on the large one while the hinge closes or in a replay), timer-driven unless
      * it starts in [Phase.HINGE]. With [followHinge] an unfold follows the hinge if it moves within
-     * [FoldTunables.HINGE_WAIT_MILLIS]; [bounceBack] opens again after a fold; [slow] is the slow replay.
+     * [FoldTunables.HINGE_WAIT_MILLIS]; [bounceBack] opens again after a fold; [slow] is the slow replay;
+     * [capture] is the drawer before the profile change that starts the run.
      * Every path here starts from a callback that attach() registers, and attach() needs API 29.
      */
     @SuppressLint("NewApi")
@@ -254,6 +263,7 @@ class FoldTransitionController(
         followHinge: Boolean = false,
         bounceBack: Boolean = false,
         slow: Boolean = false,
+        capture: FoldDrawerState.Capture? = null,
     ) {
         finishNow("restart")
         val styleType = prefs2.foldTransitionStyle.firstCached()
@@ -271,7 +281,7 @@ class FoldTransitionController(
             reduced -> FoldStyle.createReducedMotion()
 
             // The drawer has its own transitions, which replace the home style while it is open.
-            isDrawerOpen() -> DrawerFoldStyle(drawerLayout())
+            isDrawerOpen() -> DrawerFoldStyle(drawerLayout(), capture)
 
             else -> FoldStyle.create(styleType)
         }

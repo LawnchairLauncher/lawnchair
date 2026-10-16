@@ -27,7 +27,8 @@ import kotlin.math.roundToInt
  * it, in the list's order. The "before" of the large layout is the cover's drawer, rebuilt from the
  * cover profile around the list's first visible item (the drawer keeps its scroll across the
  * change, see [FoldDrawerState]), so the same path plays for a real unfold, a fold tracked on the
- * inner display and the debug replay.
+ * inner display and the debug replay. [capture] is what the drawer showed right before the profile
+ * change that started the run (null for the other runs).
  *
  * - [FoldDrawerLayout.EXPAND], "river": the first row goes straight to its new place; the apps after
  *   it follow one after another ([FoldTunables.DRAWER_RIVER_STAGGER_MILLIS] apart) along a small arc,
@@ -49,6 +50,7 @@ import kotlin.math.roundToInt
 @RequiresApi(Build.VERSION_CODES.Q)
 class DrawerFoldStyle(
     private val layout: FoldDrawerLayout,
+    private val capture: FoldDrawerState.Capture?,
 ) : FoldStyle(),
     FoldDrawerBook.OffsetProvider {
 
@@ -244,14 +246,14 @@ class DrawerFoldStyle(
         Utilities.getDescendantCoordRelativeToAncestor(bar, scene.dragLayer, coords, false, true)
         val barLeft = coords[0]
         val barRight = barLeft + bar.width
-        val fresh = FoldDrawerState.isFresh() && !FoldDrawerState.searchBarLeft.isNaN()
+        val captured = capture?.takeIf { !it.searchBarLeft.isNaN() }
         var fromLeft: Float
         var fromRight: Float
         if (scene.largeLayout) {
             // The cover's bar, on the fixed half
-            if (fresh && FoldDrawerState.capturedWidth == cover.deviceProperties.widthPx) {
-                fromLeft = toLarge(FoldDrawerState.searchBarLeft)
-                fromRight = toLarge(FoldDrawerState.searchBarRight)
+            if (captured != null && captured.width == cover.deviceProperties.widthPx) {
+                fromLeft = toLarge(captured.searchBarLeft)
+                fromRight = toLarge(captured.searchBarRight)
             } else {
                 val padding = FoldDrawerLayouts.getSearchBarPadding(scene.launcher, cover) * if (isSearchActive()) 0.5f else 1f
                 fromLeft = toLarge(padding)
@@ -259,9 +261,9 @@ class DrawerFoldStyle(
             }
         } else {
             // The large bar, seen from the cover
-            if (fresh && FoldDrawerState.capturedWidth == large.deviceProperties.widthPx) {
-                fromLeft = toCover(FoldDrawerState.searchBarLeft)
-                fromRight = toCover(FoldDrawerState.searchBarRight)
+            if (captured != null && captured.width == large.deviceProperties.widthPx) {
+                fromLeft = toCover(captured.searchBarLeft)
+                fromRight = toCover(captured.searchBarRight)
             } else {
                 val padding = FoldDrawerLayouts.getSearchBarPadding(scene.launcher, large) * if (isSearchActive()) 0.5f else 1f
                 fromLeft = toCover(padding)
@@ -433,7 +435,7 @@ class DrawerFoldStyle(
         coverCellHeight = cover.allAppsProfile.cellHeightPx.toFloat()
         // The anchor: the item the cover showed first (the list keeps it on top), else the first
         // visible icon.
-        val captured = FoldDrawerState.anchorPositionOf(list)
+        val captured = capture?.anchorPosition ?: RecyclerView.NO_POSITION
         anchorPosition = RecyclerView.NO_POSITION
         var firstIcon: View? = null
         for (i in 0 until list.childCount) {
@@ -469,12 +471,12 @@ class DrawerFoldStyle(
     /** Cover after a fold: each item comes back from where the large drawer showed it. */
     private fun prepareRiverFromLarge(list: AllAppsRecyclerView) {
         val large = large ?: return
-        if (!FoldDrawerState.isFresh() || FoldDrawerState.itemCenters.size() == 0) return
-        if (FoldDrawerState.capturedWidth != large.deviceProperties.widthPx) return
+        val capture = capture ?: return
+        if (capture.itemCenters.size() == 0 || capture.width != large.deviceProperties.widthPx) return
         var movers = 0
         for (i in 0 until list.childCount) {
             val position = list.getChildAdapterPosition(list.getChildAt(i))
-            if (position != RecyclerView.NO_POSITION && FoldDrawerState.itemCenters[position] != null) movers++
+            if (position != RecyclerView.NO_POSITION && capture.itemCenters[position] != null) movers++
         }
         stagger = staggerFor(movers)
         useCaptured = true
@@ -509,7 +511,7 @@ class DrawerFoldStyle(
             val fromY: Float
             val delay: Float
             if (useCaptured) {
-                val center = FoldDrawerState.itemCenters[position] ?: continue
+                val center = capture?.itemCenters?.get(position) ?: continue
                 fromX = toCover(center[0])
                 fromY = center[1]
                 delay = (i * stagger).coerceAtMost(MAX_DELAY)
