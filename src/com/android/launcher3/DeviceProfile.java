@@ -97,6 +97,7 @@ import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.fold.FoldDockLayout;
 import app.lawnchair.fold.FoldDrawerLayouts;
 import app.lawnchair.fold.FoldLayout;
+import app.lawnchair.fold.FoldScreen;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -415,7 +416,7 @@ public class DeviceProfile {
                 isGestureMode,
                 allowTwoPanels
         );
-        isInnerItemSet = mDeviceProperties.isTablet() && mDeviceProperties.isMultiDisplay()
+        isInnerItemSet = mDeviceProperties.getFoldScreen() == FoldScreen.LARGE
                 && FoldLayout.isHomeIndependent(preferenceManager2);
         // LC-Note: two panels shown as one wide page, with "Expand" or FOLDABLE_SINGLE_PAGE; not
         // with the inner item set of "Independent", whose pages the wide-page mapper can't number.

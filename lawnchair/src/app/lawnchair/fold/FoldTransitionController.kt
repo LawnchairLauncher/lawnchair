@@ -112,7 +112,7 @@ class FoldTransitionController(
     fun attach() {
         if (attached || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         attached = true
-        lastLarge = launcher.deviceProfile.deviceProperties.isTablet
+        lastLarge = launcher.deviceProfile.deviceProperties.foldScreen == FoldScreen.LARGE
         lastScreen = screenOf(launcher.deviceProfile)
         launcher.addOnDeviceProfileChangeListener(this)
         launcher.registerActivityLifecycleCallbacks(this)
@@ -154,7 +154,7 @@ class FoldTransitionController(
     // Triggers
 
     override fun onDeviceProfileChanged(dp: DeviceProfile) {
-        val large = dp.deviceProperties.isTablet
+        val large = dp.deviceProperties.foldScreen == FoldScreen.LARGE
         val wasLarge = lastLarge
         val screen = screenOf(dp)
         val switchedScreen = screen != NO_SCREEN && lastScreen != NO_SCREEN && screen != lastScreen

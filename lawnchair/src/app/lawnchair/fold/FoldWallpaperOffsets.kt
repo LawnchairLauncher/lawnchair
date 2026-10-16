@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
-import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.views.ActivityContext
 
 /**
@@ -40,10 +39,12 @@ object FoldWallpaperOffsets {
      */
     @JvmStatic
     fun getSizeClass(context: Context): Int {
-        if (InvariantDeviceProfile.deviceType != InvariantDeviceProfile.TYPE_MULTI_DISPLAY) return -1
         val activity: ActivityContext = ActivityContext.lookupContextNoThrow(context) ?: return -1
-        val dp = activity.deviceProfile ?: return -1
-        return if (dp.deviceProperties.isTablet) 1 else 0
+        return when (activity.deviceProfile?.deviceProperties?.foldScreen) {
+            FoldScreen.COVER -> 0
+            FoldScreen.LARGE -> 1
+            else -> -1
+        }
     }
 
     /**

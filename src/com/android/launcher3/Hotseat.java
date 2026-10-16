@@ -61,6 +61,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import app.lawnchair.fold.FoldDockLayout;
+import app.lawnchair.fold.FoldScreen;
 import app.lawnchair.hotseat.DisabledHotseat;
 import app.lawnchair.hotseat.HotseatFoldController;
 import app.lawnchair.hotseat.HotseatMode;
@@ -420,7 +421,7 @@ public class Hotseat extends FrameLayout implements Insettable {
      */
     public boolean isRankShown(int rank) {
         DeviceProfile dp = mActivity.getDeviceProfile();
-        if (!dp.getDeviceProperties().isMultiDisplay()) {
+        if (dp.getDeviceProperties().getFoldScreen() == FoldScreen.NONE) {
             return true;
         }
         int slots = dp.hasVerticalHotseat() ? dp.numShownHotseatIcons

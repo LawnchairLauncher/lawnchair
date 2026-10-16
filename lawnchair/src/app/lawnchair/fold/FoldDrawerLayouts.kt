@@ -45,8 +45,7 @@ object FoldDrawerLayouts {
     fun currentLayout(prefs2: PreferenceManager2): FoldDrawerLayout = prefs2.foldDrawerLayout.firstCached(prefs2)
 
     /** Whether these are the properties of a foldable's large screen with a vertical fold line. */
-    fun isLargeFoldable(properties: DeviceProperties): Boolean = properties.isTablet &&
-        properties.isMultiDisplay &&
+    fun isLargeFoldable(properties: DeviceProperties): Boolean = properties.foldScreen == FoldScreen.LARGE &&
         FoldPosture.isMovingHalfLeft(properties.rotationHint) != null
 
     /** Columns of the drawer grid; the cover's for PAGES and BIG_ICONS. Called from `DeviceProfile`. */
