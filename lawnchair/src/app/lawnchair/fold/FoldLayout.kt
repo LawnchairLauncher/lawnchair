@@ -43,27 +43,6 @@ object FoldLayout {
     @JvmStatic
     fun opensLastPanelAfterFold(prefs2: PreferenceManager2): Boolean = prefs2.foldAfterFold.firstCached(prefs2) == FoldAfterFold.LAST_PANEL
 
-    /** Whether the large screen has its own icon and label sizes in landscape ([FoldLandscape.OWN]). */
-    @JvmStatic
-    fun isLandscapeOwn(prefs2: PreferenceManager2): Boolean = prefs2.foldLandscape.firstCached(prefs2) == FoldLandscape.OWN
-
-    /**
-     * The home icon size factor of the large screen in landscape with [FoldLandscape.OWN]: its own
-     * value, or the portrait one ([PreferenceManager2.homeIconSizeFactor]) until it is set.
-     */
-    @JvmStatic
-    fun landscapeIconSizeFactor(prefs2: PreferenceManager2): Float {
-        val own = prefs2.foldLandscapeIconSizeFactor.firstCached(prefs2)
-        return if (own < 0f) prefs2.homeIconSizeFactor.firstCached(prefs2) else own
-    }
-
-    /** Like [landscapeIconSizeFactor], for the home icon labels ([PreferenceManager2.homeIconLabelSizeFactor]). */
-    @JvmStatic
-    fun landscapeLabelSizeFactor(prefs2: PreferenceManager2): Float {
-        val own = prefs2.foldLandscapeIconLabelSizeFactor.firstCached(prefs2)
-        return if (own < 0f) prefs2.homeIconLabelSizeFactor.firstCached(prefs2) else own
-    }
-
     /**
      * Scale that puts the cover screen over the fixed half of the large screen: the cover's width
      * fills the half exactly (Pixel 9 Pro Fold: cover 1080 px, half 1038 px). The dock, the drawer
