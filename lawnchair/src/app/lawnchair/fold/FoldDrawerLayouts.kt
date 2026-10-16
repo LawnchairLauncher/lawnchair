@@ -151,6 +151,23 @@ object FoldDrawerLayouts {
         return scale
     }
 
+    /**
+     * Bitmap size of the icon cache. The cache keeps one size for every icon, so for the zoom drawer
+     * ([FoldDrawerLayout.BIG_ICONS], up to [FoldTunables.drawerBigIconsMaxScale] larger) every icon
+     * is cached that much larger, which keeps the large drawer sharp. The cost is memory: icon
+     * bitmaps grow with the square of the scale (about 2.5x at 1.6x, roughly 25 MB more for 200
+     * apps), on both screens. It changes only when the layout is switched (the grid reload rebuilds
+     * the icon cache once), never on a fold, and not at all on phones, tablets or other layouts.
+     * Called from `InvariantDeviceProfile.initGrid`.
+     */
+    @JvmStatic
+    fun getIconCacheBitmapSize(context: Context, iconBitmapSize: Int, allAppsIconBitmapSize: Int): Int {
+        if (InvariantDeviceProfile.deviceType != InvariantDeviceProfile.TYPE_MULTI_DISPLAY) return iconBitmapSize
+        if (currentLayout(PreferenceManager2.getInstance(context)) != FoldDrawerLayout.BIG_ICONS) return iconBitmapSize
+        val zoomed = (allAppsIconBitmapSize * FoldTunables.drawerBigIconsMaxScale.coerceAtLeast(1f)).roundToInt()
+        return maxOf(iconBitmapSize, zoomed)
+    }
+
     /** Whether [dp] was built for the zoom drawer ([FoldDrawerLayout.BIG_ICONS]). */
     @JvmStatic
     fun isZoomDrawer(dp: DeviceProfile): Boolean = applied[dp]?.layout == FoldDrawerLayout.BIG_ICONS

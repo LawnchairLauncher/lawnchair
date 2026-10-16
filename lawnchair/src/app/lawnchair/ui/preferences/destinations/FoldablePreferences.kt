@@ -17,11 +17,13 @@ import app.lawnchair.fold.FoldLandscape
 import app.lawnchair.fold.FoldOption
 import app.lawnchair.fold.FoldTransitionStyle
 import app.lawnchair.fold.FoldWallpaper
+import app.lawnchair.fold.FoldWallpaperOffsets
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.rememberTransformAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.FoldDualWallpaperPreferences
 import app.lawnchair.ui.preferences.components.FoldMirrorNote
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
@@ -42,6 +44,7 @@ fun FoldablePreferences(
     modifier: Modifier = Modifier,
 ) {
     val prefs2 = preferenceManager2()
+    val wallpaper = prefs2.foldWallpaper.getAdapter()
 
     PreferenceLayout(
         label = stringResource(id = R.string.fold_label),
@@ -120,10 +123,18 @@ fun FoldablePreferences(
                 FoldMirrorNote()
             }
             FoldListPreference(
-                adapter = prefs2.foldWallpaper.getAdapter(),
+                adapter = wallpaper,
                 options = FoldWallpaper.entries,
                 label = stringResource(id = R.string.fold_wallpaper),
             )
+            if (wallpaper.state.value == FoldWallpaper.EACH && FoldWallpaperOffsets.systemHasWallpaperPerScreen) {
+                FoldInfoPreference(text = stringResource(id = R.string.fold_wallpaper_each_system_note))
+            }
+        }
+
+        // Elsewhere Lawnchair's dual live wallpaper shows one image per screen
+        if (wallpaper.state.value == FoldWallpaper.EACH && !FoldWallpaperOffsets.systemHasWallpaperPerScreen) {
+            FoldDualWallpaperPreferences()
         }
     }
 }

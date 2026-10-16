@@ -25,9 +25,10 @@ import com.android.launcher3.views.ActivityContext
  * scrolling wallpapers keep today's offsets. Android 14 crops one bitmap for all screens and pans
  * it by offset; whether any offset matches depends on the image's width, so nothing changes there.
  *
- * [FoldWallpaper.EACH]: a separate image per screen, which only the system can show (Samsung One UI
- * does: "Wallpaper and style" sets the cover and main screen separately, and wallpaper apps set the
- * screen in use; AOSP and Pixel have no such API). Lawnchair then leaves the offsets as they are.
+ * [FoldWallpaper.EACH]: a separate image per screen. Samsung One UI does it itself ("Wallpaper and
+ * style" sets the cover and main screen separately, and wallpaper apps set the screen in use);
+ * AOSP and Pixel have no such API, so there Lawnchair's dual live wallpaper
+ * ([FoldDualWallpaperService]) does it. Either way Lawnchair leaves the offsets as they are.
  */
 object FoldWallpaperOffsets {
 

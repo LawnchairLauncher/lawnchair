@@ -550,6 +550,9 @@ public class InvariantDeviceProfile {
         }
         iconBitmapSize = ResourceUtils.pxFromDp(maxIconSize, metrics);
         allAppsIconBitmapSize = ResourceUtils.pxFromDp(maxAllAppsIconSize, metrics);
+        // LC-Note: the foldable "zoom" drawer shows its icons larger; cache all icons that large
+        iconBitmapSize = FoldDrawerLayouts.getIconCacheBitmapSize(context, iconBitmapSize,
+                allAppsIconBitmapSize);
         fillResIconDpi = getLauncherIconDensity(Math.max(iconBitmapSize, allAppsIconBitmapSize));
 
         final List<DeviceProfile> localSupportedProfiles = new ArrayList<>();
