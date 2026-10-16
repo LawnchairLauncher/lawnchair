@@ -40,6 +40,10 @@ class DbEntry : ItemInfo(), Comparable<DbEntry> {
     /** Id of the specific widget. */
     @JvmField var appWidgetId: Int = NO_ID
 
+    // LC-Note: first model screen id and dock rank of the item set this entry belongs to (see
+    // app.lawnchair.fold.FoldItemSets); screenId is numbered from 0 within that set.
+    @JvmField var itemSetBase: Int = 0
+
     /** Comparator according to the reading order */
     override fun compareTo(other: DbEntry): Int {
         if (screenId != other.screenId) {
@@ -65,7 +69,7 @@ class DbEntry : ItemInfo(), Comparable<DbEntry> {
      */
     fun updateContentValues(values: ContentValues) =
         values.apply {
-            put(SCREEN, screenId)
+            put(SCREEN, screenId + itemSetBase)
             put(CELLX, cellX)
             put(CELLY, cellY)
             put(SPANX, spanX)

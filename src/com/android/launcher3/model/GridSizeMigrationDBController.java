@@ -48,7 +48,6 @@ import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.GridOccupancy;
@@ -176,8 +175,12 @@ public class GridSizeMigrationDBController {
             Point targetSize = new Point(destDeviceState.getColumns(), destDeviceState.getRows());
             migrate(target, srcReader, destReader, srcDeviceState.getNumHotseat(),
                     destDeviceState.getNumHotseat(), targetSize, srcDeviceState, destDeviceState);
-            carryInnerItemSet(t.getDb(), TMP_TABLE, TABLE_NAME);
-            target.refreshMaxItemId();
+            // LC-Note: the inner item set of "Independent" (FoldItemSets) is migrated the same
+            // way, within its own pages and dock.
+            migrate(target, new DbReader(t.getDb(), TMP_TABLE, context, true),
+                    new DbReader(t.getDb(), TABLE_NAME, context, true),
+                    srcDeviceState.getNumHotseat(), destDeviceState.getNumHotseat(), targetSize,
+                    srcDeviceState, destDeviceState);
             dropTable(t.getDb(), TMP_TABLE);
             t.commit();
             if (isOneGridMigration(srcDeviceState, destDeviceState)) {
@@ -197,66 +200,6 @@ public class GridSizeMigrationDBController {
             // Notify if we've migrated successfully
             modelDelegate.gridMigrationComplete(srcDeviceState, destDeviceState);
         }
-    }
-
-    // LC-Note: top-level cover items; the inner item set of "Independent" (FoldItemSets) has its
-    // pages and dock ranks from FoldItemSets.INNER_SCREEN_BASE up.
-    private static final String COVER_ITEM_SET =
-            LauncherSettings.Favorites.SCREEN + " < " + FoldItemSets.INNER_SCREEN_BASE;
-
-    /**
-     * LC-Note: copies the inner item set of "Independent" (see FoldItemSets) as it is from
-     * {@code fromTable} (the source grid) into {@code toTable} (the migrated grid): the grid
-     * migration only rearranges the cover set. The inner rows get new ids above every id of
-     * {@code toTable} (folder contents re-linked), so nothing in {@code toTable} is overwritten.
-     * An older inner set already in {@code toTable} is replaced; if the source has no inner set,
-     * {@code toTable} is left as it is.
-     */
-    static void carryInnerItemSet(SQLiteDatabase db, String fromTable, String toTable) {
-        String container = LauncherSettings.Favorites.CONTAINER;
-        String id = LauncherSettings.Favorites._ID;
-        String topLevel = container + " IN (" + LauncherSettings.Favorites.CONTAINER_DESKTOP + ","
-                + LauncherSettings.Favorites.CONTAINER_HOTSEAT + ") AND "
-                + LauncherSettings.Favorites.SCREEN + " >= " + FoldItemSets.INNER_SCREEN_BASE;
-        if (DatabaseUtils.queryNumEntries(db, fromTable, topLevel) == 0) {
-            return;
-        }
-        // The inner rows of a table: top level, contents, contents of an app pair in a folder.
-        java.util.function.Function<String, String> innerRows = table -> {
-            String level1 = container + " IN (SELECT " + id + " FROM " + table + " WHERE "
-                    + topLevel + ")";
-            String level2 = container + " IN (SELECT " + id + " FROM " + table + " WHERE "
-                    + level1 + ")";
-            return "(" + topLevel + ") OR (" + level1 + ") OR (" + level2 + ")";
-        };
-        db.execSQL("DELETE FROM " + toTable + " WHERE " + innerRows.apply(toTable));
-
-        long offset = DatabaseUtils.longForQuery(db,
-                "SELECT IFNULL(MAX(" + id + "), 0) + 1 FROM " + toTable, null);
-        StringBuilder columns = new StringBuilder();
-        StringBuilder values = new StringBuilder();
-        try (Cursor c = db.rawQuery("PRAGMA table_info(" + toTable + ")", null)) {
-            int nameIndex = c.getColumnIndexOrThrow("name");
-            while (c.moveToNext()) {
-                String column = c.getString(nameIndex);
-                String value = column;
-                if (column.equals(id)) {
-                    value = id + " + " + offset;
-                } else if (column.equals(container)) {
-                    value = "CASE WHEN " + container + " >= 0 THEN " + container + " + " + offset
-                            + " ELSE " + container + " END";
-                }
-                if (columns.length() > 0) {
-                    columns.append(", ");
-                    values.append(", ");
-                }
-                columns.append(column);
-                values.append(value);
-            }
-        }
-        db.execSQL("INSERT INTO " + toTable + " (" + columns + ") SELECT " + values + " FROM "
-                + fromTable + " WHERE " + innerRows.apply(fromTable));
-        FileLog.d(TAG, "Carried the inner item set over the grid migration");
     }
 
     public static boolean migrate(
@@ -557,14 +500,33 @@ public class GridSizeMigrationDBController {
         final String mTableName;
         final Context mContext;
         int mLastScreenId = -1;
+        // LC-Note: first model screen id and dock rank of the item set this reader reads (see
+        // FoldItemSets). Its entries are numbered from 0 within the set, see DbEntry.itemSetBase.
+        final int mItemSetBase;
 
         Map<Integer, List<DbEntry>> mWorkspaceEntriesByScreenId =
                 new ArrayMap<>();
 
         public DbReader(SQLiteDatabase db, String tableName, Context context) {
+            this(db, tableName, context, false);
+        }
+
+        /**
+         * LC-Note: reads one item set of the "Independent" home layout: the inner set if
+         * {@code innerItemSet}, otherwise the cover set (every item without "Independent").
+         */
+        public DbReader(SQLiteDatabase db, String tableName, Context context,
+                boolean innerItemSet) {
             mDb = db;
             mTableName = tableName;
             mContext = context;
+            mItemSetBase = innerItemSet ? FoldItemSets.INNER_SCREEN_BASE : 0;
+        }
+
+        /** LC-Note: selects the top-level items of this reader's item set. */
+        private String itemSetSelection() {
+            return " AND " + LauncherSettings.Favorites.SCREEN
+                    + (mItemSetBase > 0 ? " >= " : " < ") + FoldItemSets.INNER_SCREEN_BASE;
         }
 
         protected List<DbEntry> loadHotseatEntries() {
@@ -577,8 +539,7 @@ public class GridSizeMigrationDBController {
                             LauncherSettings.Favorites.SCREEN},              // 3
                     LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                            // LC-Note: the inner item set is carried over, not migrated.
-                            + " AND " + COVER_ITEM_SET);
+                            + itemSetSelection());
 
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
@@ -590,7 +551,9 @@ public class GridSizeMigrationDBController {
                 DbEntry entry = new DbEntry();
                 entry.id = c.getInt(indexId);
                 entry.itemType = c.getInt(indexItemType);
-                entry.screenId = c.getInt(indexScreen);
+                // LC-Note: rank within the item set.
+                entry.screenId = c.getInt(indexScreen) - mItemSetBase;
+                entry.itemSetBase = mItemSetBase;
 
                 try {
                     // calculate weight
@@ -648,8 +611,7 @@ public class GridSizeMigrationDBController {
                             LauncherSettings.Favorites.APPWIDGET_ID},        // 9
                     LauncherSettings.Favorites.CONTAINER + " = "
                             + LauncherSettings.Favorites.CONTAINER_DESKTOP
-                            // LC-Note: the inner item set is carried over, not migrated.
-                            + " AND " + COVER_ITEM_SET);
+                            + itemSetSelection());
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
             final int indexScreen = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
@@ -669,7 +631,9 @@ public class GridSizeMigrationDBController {
                 DbEntry entry = new DbEntry();
                 entry.id = c.getInt(indexId);
                 entry.itemType = c.getInt(indexItemType);
-                entry.screenId = c.getInt(indexScreen);
+                // LC-Note: page within the item set.
+                entry.screenId = c.getInt(indexScreen) - mItemSetBase;
+                entry.itemSetBase = mItemSetBase;
                 mLastScreenId = Math.max(mLastScreenId, entry.screenId);
                 entry.cellX = c.getInt(indexCellX);
                 entry.cellY = c.getInt(indexCellY);
