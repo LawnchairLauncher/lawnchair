@@ -7,7 +7,8 @@ import com.android.launcher3.R
  * An option of a foldable-screen preference.
  *
  * [key] is the stable string written to the datastore, so it must never change even if the enum
- * constant or its labels are renamed.
+ * constant or its labels are renamed. An unknown or missing key reads as the preference's default
+ * (`PreferenceManager2.foldOptionPreference`).
  */
 interface FoldOption {
     val key: String
@@ -45,11 +46,6 @@ enum class FoldHomeLayout(
         labelResourceId = R.string.fold_home_independent,
         descriptionResourceId = R.string.fold_home_independent_description,
     ),
-    ;
-
-    companion object {
-        fun fromString(string: String?) = entries.firstOrNull { it.key == string } ?: PAGES
-    }
 }
 
 /** App drawer layout on the large (unfolded) screen. */
@@ -73,11 +69,6 @@ enum class FoldDrawerLayout(
         labelResourceId = R.string.fold_drawer_big_icons,
         descriptionResourceId = R.string.fold_drawer_big_icons_description,
     ),
-    ;
-
-    companion object {
-        fun fromString(string: String?) = entries.firstOrNull { it.key == string } ?: EXPAND
-    }
 }
 
 /** Animation played while folding and unfolding. */
@@ -116,11 +107,6 @@ enum class FoldTransitionStyle(
         labelResourceId = R.string.fold_transition_none,
         descriptionResourceId = R.string.fold_transition_none_description,
     ),
-    ;
-
-    companion object {
-        fun fromString(string: String?) = entries.firstOrNull { it.key == string } ?: WINDOW
-    }
 }
 
 /** Which page the cover screen shows after folding. */
@@ -139,11 +125,6 @@ enum class FoldAfterFold(
         labelResourceId = R.string.fold_after_fold_first_page,
         descriptionResourceId = R.string.fold_after_fold_first_page_description,
     ),
-    ;
-
-    companion object {
-        fun fromString(string: String?) = entries.firstOrNull { it.key == string } ?: LAST_PANEL
-    }
 }
 
 /** Dock behavior on the large (unfolded) screen. */
@@ -167,11 +148,6 @@ enum class FoldDock(
         labelResourceId = R.string.fold_dock_side,
         descriptionResourceId = R.string.fold_dock_side_description,
     ),
-    ;
-
-    companion object {
-        fun fromString(string: String?) = entries.firstOrNull { it.key == string } ?: MERGE
-    }
 }
 
 /** Layout used on the large screen in landscape. */
@@ -190,11 +166,6 @@ enum class FoldLandscape(
         labelResourceId = R.string.fold_landscape_own,
         descriptionResourceId = R.string.fold_landscape_own_description,
     ),
-    ;
-
-    companion object {
-        fun fromString(string: String?) = entries.firstOrNull { it.key == string } ?: AUTO
-    }
 }
 
 /** Wallpaper behavior across the two screens. */
@@ -214,9 +185,4 @@ enum class FoldWallpaper(
         descriptionResourceId = R.string.fold_wallpaper_each_description,
         // The system's own per-screen wallpapers (Samsung), else Lawnchair's dual wallpaper
     ),
-    ;
-
-    companion object {
-        fun fromString(string: String?) = entries.firstOrNull { it.key == string } ?: SPAN
-    }
 }

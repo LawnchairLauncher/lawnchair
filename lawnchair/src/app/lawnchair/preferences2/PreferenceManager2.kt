@@ -35,6 +35,7 @@ import app.lawnchair.fold.FoldDrawerLayout
 import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldItemSets
 import app.lawnchair.fold.FoldLandscape
+import app.lawnchair.fold.FoldOption
 import app.lawnchair.fold.FoldTransitionStyle
 import app.lawnchair.fold.FoldWallpaper
 import app.lawnchair.font.FontCache
@@ -115,6 +116,19 @@ class PreferenceManager2 @Inject constructor(
         key = key,
         defaultSelector = defaultSelector,
         preferencesDataStore = preferencesDataStore,
+        onSet = onSet,
+    )
+
+    /** A foldable option, stored as its [FoldOption.key]; an unknown or missing key reads as [defaultValue]. */
+    private inline fun <reified E> foldOptionPreference(
+        name: String,
+        defaultValue: E,
+        noinline onSet: (E) -> Unit = {},
+    ) where E : Enum<E>, E : FoldOption = preference(
+        key = stringPreferencesKey(name),
+        defaultValue = defaultValue,
+        parse = { key -> enumValues<E>().firstOrNull { it.key == key } ?: defaultValue },
+        save = { it.key },
         onSet = onSet,
     )
 
@@ -754,11 +768,9 @@ class PreferenceManager2 @Inject constructor(
         },
     )
 
-    val foldHomeLayout = preference(
-        key = stringPreferencesKey("fold_home_layout"),
+    val foldHomeLayout = foldOptionPreference(
+        name = "fold_home_layout",
         defaultValue = FoldHomeLayout.PAGES,
-        parse = { FoldHomeLayout.fromString(it) },
-        save = { it.key },
         // "Same as cover" changes the device profiles of the large screen.
         onSet = {
             val previous = lastFoldHomeLayout
@@ -779,43 +791,33 @@ class PreferenceManager2 @Inject constructor(
     @Volatile
     private var lastFoldHomeLayout: FoldHomeLayout = foldHomeLayout.firstCached(this)
 
-    val foldDrawerLayout = preference(
-        key = stringPreferencesKey("fold_drawer_layout"),
+    val foldDrawerLayout = foldOptionPreference(
+        name = "fold_drawer_layout",
         defaultValue = FoldDrawerLayout.EXPAND,
-        parse = { FoldDrawerLayout.fromString(it) },
-        save = { it.key },
         // "Book" and "zoom" change the device profiles of the large screen.
         onSet = { reloadGridWithNewValue() },
     )
 
-    val foldTransitionStyle = preference(
-        key = stringPreferencesKey("fold_transition_style"),
+    val foldTransitionStyle = foldOptionPreference(
+        name = "fold_transition_style",
         defaultValue = FoldTransitionStyle.WINDOW,
-        parse = { FoldTransitionStyle.fromString(it) },
-        save = { it.key },
     )
 
-    val foldAfterFold = preference(
-        key = stringPreferencesKey("fold_after_fold"),
+    val foldAfterFold = foldOptionPreference(
+        name = "fold_after_fold",
         defaultValue = FoldAfterFold.LAST_PANEL,
-        parse = { FoldAfterFold.fromString(it) },
-        save = { it.key },
     )
 
-    val foldDock = preference(
-        key = stringPreferencesKey("fold_dock"),
+    val foldDock = foldOptionPreference(
+        name = "fold_dock",
         defaultValue = FoldDock.MERGE,
-        parse = { FoldDock.fromString(it) },
-        save = { it.key },
         onSet = { reloadGridWithNewValue() },
     )
 
     // OWN changes the device profile of the large screen in landscape.
-    val foldLandscape = preference(
-        key = stringPreferencesKey("fold_landscape"),
+    val foldLandscape = foldOptionPreference(
+        name = "fold_landscape",
         defaultValue = FoldLandscape.AUTO,
-        parse = { FoldLandscape.fromString(it) },
-        save = { it.key },
         onSet = { reloadGridWithNewValue() },
     )
 
@@ -836,11 +838,9 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadGridWithNewValue() },
     )
 
-    val foldWallpaper = preference(
-        key = stringPreferencesKey("fold_wallpaper"),
+    val foldWallpaper = foldOptionPreference(
+        name = "fold_wallpaper",
         defaultValue = FoldWallpaper.SPAN,
-        parse = { FoldWallpaper.fromString(it) },
-        save = { it.key },
     )
 
     val foldTrackHinge = preference(
