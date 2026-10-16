@@ -1089,7 +1089,7 @@
     <string name="fold_home_mirror">Same as cover</string>
     <string name="fold_home_mirror_description">The exact layout of the cover screen, just larger. No need to arrange two screens.</string>
     <string name="fold_home_independent">Independent</string>
-    <string name="fold_home_independent_description">A separate layout for the large screen that differs from the cover screen.</string>
+    <string name="fold_home_independent_description">A separate layout for the large screen. It starts as a copy of the cover screen, and widgets may need to be set up again there.</string>
 
     <string name="fold_app_drawer">App drawer</string>
     <string name="fold_drawer_expand">Expand</string>
@@ -1153,4 +1153,6 @@
     <string name="fold_wallpaper_dual_active">In use</string>
     <string name="fold_wallpaper_dual_inactive">Opens the system\'s live wallpaper chooser</string>
     <string name="fold_unfolded_grid_mirror_note">Not used while Foldable screen › Home screen is set to “Same as cover”: the large screen then uses the folded grid.</string>
+    <string name="fold_independent_after_fold_note">Not used with “Independent”: each screen has its own pages and opens on the page you used there last.</string>
+    <string name="fold_independent_dock_note">With “Independent” the large screen has its own dock, so “Merge” shows it as a normal dock; the side dock and “Same as cover” still apply.</string>
 </resources>
