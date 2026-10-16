@@ -123,6 +123,8 @@ public class Hotseat extends FrameLayout implements Insettable {
     private final int mPageIndicatorHeight;
 
     private final ActivityContext mActivity;
+    // LC-Note: only on a foldable's launcher, null on phones, tablets and previews
+    @Nullable
     private final HotseatFoldController mFoldController;
 
     // LC-Note: foldable side dock (FoldDock.SIDE): the hotseat fills the screen, its padding box is
@@ -213,7 +215,9 @@ public class Hotseat extends FrameLayout implements Insettable {
         mQsbAlphaChannels = new MultiValueAlpha(mQsb, ALPHA_CHANNEL_CHANNELS_COUNT);
         mQsbAlphaChannels.setUpdateVisibility(true);
 
-        mFoldController = new HotseatFoldController(this, mActivity);
+        mFoldController = mActivity instanceof Launcher && mActivity.getDeviceProfile()
+                .getDeviceProperties().getFoldScreen() != FoldScreen.NONE
+                ? new HotseatFoldController(this, mActivity) : null;
         setUpBackground();
         setClipChildren(false);
         setClipToPadding(false);
@@ -245,14 +249,16 @@ public class Hotseat extends FrameLayout implements Insettable {
         setBackground(bg);
         mDockBackground = bg;
         mDockBackgroundShape = background;
-        mFoldController.setBackgroundStyle(finalColor, cornerRadius, insetHorizontalLeft,
-                insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
+        if (mFoldController != null) {
+            mFoldController.setBackgroundStyle(finalColor, cornerRadius, insetHorizontalLeft,
+                    insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
+        }
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mActivity instanceof Launcher) {
+        if (mFoldController != null) {
             mActivity.addOnDeviceProfileChangeListener(mFoldController);
         }
     }
@@ -260,7 +266,7 @@ public class Hotseat extends FrameLayout implements Insettable {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mActivity instanceof Launcher) {
+        if (mFoldController != null) {
             mActivity.removeOnDeviceProfileChangeListener(mFoldController);
             mFoldController.onDetached();
         }
@@ -269,7 +275,7 @@ public class Hotseat extends FrameLayout implements Insettable {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // LC-Note: the dock background while it merges or splits on a foldable, under the icons
-        if (!mFoldController.drawBackground(canvas) && mIsSideDock
+        if ((mFoldController == null || !mFoldController.drawBackground(canvas)) && mIsSideDock
                 && mDockBackgroundShape != null) {
             getSideDockBackgroundBounds(mSideDockBackgroundBounds);
             mDockBackgroundShape.setBounds(mSideDockBackgroundBounds);
@@ -309,7 +315,10 @@ public class Hotseat extends FrameLayout implements Insettable {
         return super.dispatchTouchEvent(ev);
     }
 
-    /** LC-Note: returns the controller that merges the dock while a foldable opens or closes. */
+    /**
+     * LC-Note: returns the controller that merges the dock while a foldable opens or closes, or
+     * null when the device doesn't fold.
+     */
     public HotseatFoldController getFoldController() {
         return mFoldController;
     }

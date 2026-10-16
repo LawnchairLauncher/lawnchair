@@ -68,13 +68,6 @@ class FoldDockLayout(
 
     companion object {
         /**
-         * Returns true when the half that swings is the left half of [dp]'s window (hinge on the
-         * left of the cover screen), false when it is the right half, or null when the fold line
-         * isn't vertical (half opened on a table, or sideways), so the dock can't merge.
-         */
-        private fun isMovingHalfLeft(dp: DeviceProfile): Boolean? = FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint)
-
-        /**
          * Returns the dock layout of [dp], or null when [dp] isn't an unfolded foldable with a
          * vertical fold line. [extraIcons] is 0 unless the dock merges: [FoldDock.SAME] and
          * docks with several rows or pages keep the cover's slots (see [getShownHotseatIcons]).
@@ -85,7 +78,7 @@ class FoldDockLayout(
             // With "Independent" the large screen has its own dock (FoldItemSets): nothing merges
             // into it from the cover, so it is a plain dock unless it stands at the side.
             if (dp.isInnerItemSet && !dp.isSideDock) return null
-            val movingHalfLeft = isMovingHalfLeft(dp) ?: return null
+            val movingHalfLeft = FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) ?: return null
             val dockIcons = dp.numShownHotseatIcons
             val coverIcons = dp.inv.numShownHotseatIcons.coerceIn(1, dockIcons.coerceAtLeast(1))
             val merges = dp.numHotseatRows == 1 && dp.numHotseatPages == 1
@@ -109,8 +102,7 @@ class FoldDockLayout(
             val prefs2 = PreferenceManager2.getInstance(context)
             if (prefs2.foldDock.firstCached(prefs2) != FoldDock.SIDE) return null
             if (!prefs2.isHotseatEnabled.firstCached(prefs2)) return null
-            val movingHalfLeft = isMovingHalfLeft(dp) ?: return null
-            return !movingHalfLeft
+            return FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint)?.not()
         }
 
         /**
