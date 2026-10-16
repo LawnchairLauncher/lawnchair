@@ -1097,7 +1097,7 @@
     <string name="fold_drawer_pages">Two pages</string>
     <string name="fold_drawer_pages_description">The grid you see does not move. Apps that were below the edge continue on the second page.</string>
     <string name="fold_drawer_big_icons">Bigger icons</string>
-    <string name="fold_drawer_big_icons_description">The same four columns in the same order, with larger icons.</string>
+    <string name="fold_drawer_big_icons_description">The same four columns in the same order, with larger icons. Icons are kept sharp, which takes about 2.5 times the memory for app icons (roughly 25 MB more for 200 apps).</string>
 
     <string name="fold_animation">Animation</string>
     <string name="fold_transition_window">Window</string>
