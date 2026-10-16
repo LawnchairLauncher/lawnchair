@@ -149,10 +149,7 @@ fun FoldablePreferences(
     }
 }
 
-/**
- * A list preference for a foldable option. Options that are not implemented yet are disabled and
- * marked as coming soon, and the summary of the selected option is shown under the label.
- */
+/** A list preference for a foldable option, with the summary of the selected option under the label. */
 @Composable
 private fun <T> FoldListPreference(
     adapter: PreferenceAdapter<T>,
@@ -163,12 +160,8 @@ private fun <T> FoldListPreference(
 ) where T : Enum<T>, T : FoldOption {
     val entries = remember(options) {
         options.map { option ->
-            ListPreferenceEntry(
-                value = option,
-                enabled = option.isImplemented,
-            ) {
-                val name = stringResource(id = option.labelResourceId)
-                if (option.isImplemented) name else stringResource(id = R.string.fold_coming_soon, name)
+            ListPreferenceEntry(value = option) {
+                stringResource(id = option.labelResourceId)
             }
         }
     }
