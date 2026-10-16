@@ -415,11 +415,12 @@ public class DeviceProfile {
                 isGestureMode,
                 allowTwoPanels
         );
-        // LC-Note: two panels shown as one wide page, with "Expand" or FOLDABLE_SINGLE_PAGE.
-        isTwoPanelSinglePage = mDeviceProperties.isTwoPanels()
-                && (FOLDABLE_SINGLE_PAGE.get() || FoldLayout.isHomeExpanded(preferenceManager2));
         isInnerItemSet = mDeviceProperties.isTablet() && mDeviceProperties.isMultiDisplay()
                 && FoldLayout.isHomeIndependent(preferenceManager2);
+        // LC-Note: two panels shown as one wide page, with "Expand" or FOLDABLE_SINGLE_PAGE; not
+        // with the inner item set of "Independent", whose pages the wide-page mapper can't number.
+        isTwoPanelSinglePage = mDeviceProperties.isTwoPanels() && !isInnerItemSet
+                && (FOLDABLE_SINGLE_PAGE.get() || FoldLayout.isHomeExpanded(preferenceManager2));
 
         mInsets.set(windowBounds.insets);
         this.mDisplayOptionSpec = displayOptionSpec;
