@@ -377,11 +377,6 @@ class PreferenceManager2 private constructor(private val context: Context) :
         },
     )
 
-    val enableSmartspaceCalendarSelection = preference(
-        key = booleanPreferencesKey(name = "enable_smartspace_calendar_selection"),
-        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace_calendar_selection),
-    )
-
     val autoShowKeyboardInDrawer = preference(
         key = booleanPreferencesKey(name = "auto_show_keyboard_in_drawer"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
