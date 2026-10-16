@@ -14,7 +14,6 @@ import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID
 import com.android.launcher3.allapps.AllAppsStore
-import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.ItemInstallQueue
 import com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING
@@ -152,9 +151,17 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             else if (pagesBoundFirst.contains(anchorScreenId)) anchorScreenId
             else pagesBoundFirst.array[0]
         launcher.workspace.setFoldAnchorScreenId(firstScreenId)
-        val currentPage =
+        var currentPage =
             if (firstScreenId != -1) launcher.workspace.getPageIndexForScreenId(firstScreenId)
             else PagedView.INVALID_PAGE
+        if (currentPage == PagedView.INVALID_PAGE && firstScreenId != -1) {
+            // LC-Note: with "Expand", the odd cover page is the second half of the wide page of
+            // its pair.
+            currentPage =
+                launcher.workspace.getPageIndexForScreenId(
+                    launcher.workspace.getScreenPair(firstScreenId)
+                )
+        }
         // When undoing the removal of the last item on a page, return to that page.
         // Since we are just resetting the current page without user interaction,
         // override the previous page so we don't log the page switch.
@@ -171,7 +178,8 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.workspace.removeExtraEmptyScreen(/* stripEmptyScreens= */ true)
         launcher.workspace.pageIndicator.setPauseScroll(
             /*pause=*/ false,
-            deviceProfile.deviceProperties.isTwoPanels,
+            // LC-Note: a wide "Expand" page is one page for the indicator.
+            deviceProfile.deviceProperties.isTwoPanels && !deviceProfile.isTwoPanelSinglePage,
         )
         launcher.finishBindingItems(pagesBoundFirst)
     }
@@ -310,7 +318,8 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     private fun bindScreens(orderedScreenIds: LIntArray) {
         launcher.workspace.pageIndicator.setPauseScroll(
             /*pause=*/ true,
-            launcher.deviceProfile.deviceProperties.isTwoPanels,
+            launcher.deviceProfile.deviceProperties.isTwoPanels &&
+                !launcher.deviceProfile.isTwoPanelSinglePage,
         )
         if (orderedScreenIds.isEmpty) {
             // If there are no screens, we need to have an empty screen
@@ -369,7 +378,8 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     private fun bindAddScreens(orderedScreenIdsArg: LIntArray) {
         var orderedScreenIds = orderedScreenIdsArg
         if (launcher.deviceProfile.deviceProperties.isTwoPanels) {
-            if (FeatureFlags.FOLDABLE_SINGLE_PAGE.get()) {
+            // LC-Note: "Expand" home layout, or FOLDABLE_SINGLE_PAGE.
+            if (launcher.deviceProfile.isTwoPanelSinglePage) {
                 orderedScreenIds = filterTwoPanelScreenIds(orderedScreenIds)
             } else {
                 // Some empty pages might have been removed while the phone was in a single panel

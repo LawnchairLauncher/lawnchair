@@ -38,7 +38,6 @@ enum class FoldHomeLayout(
         key = "expand",
         labelResourceId = R.string.fold_home_expand,
         descriptionResourceId = R.string.fold_home_expand_description,
-        isImplemented = false,
     ),
     MIRROR(
         key = "mirror",
