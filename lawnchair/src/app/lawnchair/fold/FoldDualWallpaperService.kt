@@ -242,7 +242,7 @@ class FoldDualWallpaperService : WallpaperService() {
          * that size. Null when it can't (a missing or broken file, no memory): the engine then shows
          * the other image, else [FALLBACK_COLOR].
          */
-        @SuppressLint("NewApi") // ImageDecoder is API 28; the service is enabled on foldables only
+        @SuppressLint("NewApi") // ImageDecoder is API 28; the service is only enabled on foldables, API 30+
         fun decodeCenterCrop(path: String, width: Int, height: Int): Bitmap? = try {
             ImageDecoder.decodeBitmap(ImageDecoder.createSource(File(path))) { decoder, info, _ ->
                 val scale = max(width.toFloat() / info.size.width, height.toFloat() / info.size.height)

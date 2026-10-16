@@ -145,7 +145,7 @@ object FoldDualWallpaper {
     }
 
     /** Decodes [uri] the right way up (EXIF) and no larger than [MAX_STORED_SIDE]. */
-    @SuppressLint("NewApi") // ImageDecoder is API 28; the dual wallpaper is for foldables, all API 29+
+    @SuppressLint("NewApi") // ImageDecoder is API 28; Lawnchair only sees a foldable on API 30+ (isFoldable)
     private fun decodeUpright(context: Context, uri: Uri): Bitmap {
         val source = ImageDecoder.createSource(context.contentResolver, uri)
         return ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
