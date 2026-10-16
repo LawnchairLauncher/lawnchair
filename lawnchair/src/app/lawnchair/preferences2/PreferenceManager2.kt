@@ -32,11 +32,9 @@ import app.lawnchair.data.Converters
 import app.lawnchair.fold.FoldAfterFold
 import app.lawnchair.fold.FoldDock
 import app.lawnchair.fold.FoldDrawerLayout
-import app.lawnchair.fold.FoldDrawerLayouts
 import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldItemSets
 import app.lawnchair.fold.FoldLandscape
-import app.lawnchair.fold.FoldLayout
 import app.lawnchair.fold.FoldTransitionStyle
 import app.lawnchair.fold.FoldWallpaper
 import app.lawnchair.font.FontCache
@@ -95,6 +93,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @LauncherAppSingleton
@@ -112,13 +111,11 @@ class PreferenceManager2 @Inject constructor(
         key: Preferences.Key<Int>,
         defaultSelector: InvariantDeviceProfile.GridOption.() -> Int,
         onSet: (Int) -> Unit = {},
-        handOverOnSet: Boolean = false,
     ): IdpPreference = IdpPreference(
         key = key,
         defaultSelector = defaultSelector,
         preferencesDataStore = preferencesDataStore,
         onSet = onSet,
-        handOverOnSet = handOverOnSet,
     )
 
     override val preferencesDataStore = context.preferencesDataStore
@@ -129,6 +126,19 @@ class PreferenceManager2 @Inject constructor(
     }
 
     fun getCachedPreferences(): Preferences = cachedPreferences
+
+    /**
+     * Reloads the grid from the onSet of a preference the device profiles read through the cache.
+     * onSet runs right after the DataStore write, but the cache is updated by its own collector,
+     * which may not have run yet, and the reload runs inline on the main thread. So refresh the
+     * cache from the DataStore first: it already has the value just set.
+     */
+    private fun reloadGridWithNewValue() {
+        scope.launch {
+            cachedPreferences = preferencesDataStore.data.first()
+            reloadHelper.reloadGrid()
+        }
+    }
 
     private val reloadHelper = ReloadHelper(context)
 
@@ -713,23 +723,20 @@ class PreferenceManager2 @Inject constructor(
     val drawerColumnsUnfolded = idpPreference(
         key = intPreferencesKey(name = "drawer_columns_unfolded"),
         defaultSelector = { numAllAppsColumns + 2 },
-        onSet = { reloadHelper.reloadGrid() },
+        onSet = { reloadGridWithNewValue() },
     )
 
-    // The grid reload reads the folder columns from the cache, which may not have them yet.
     val folderColumns = idpPreference(
         key = intPreferencesKey(name = "folder_columns"),
         defaultSelector = { numFolderColumns[INDEX_DEFAULT] },
-        onSet = { reloadHelper.reloadGrid() },
-        handOverOnSet = true,
+        onSet = { reloadGridWithNewValue() },
     )
 
     /** Folder columns on the unfolded screen of a foldable. Defaults to one more than [folderColumns]. */
     val folderColumnsUnfolded = idpPreference(
         key = intPreferencesKey(name = "folder_columns_unfolded"),
         defaultSelector = { folderColumns.firstCached(gridOption = this, prefs2 = this@PreferenceManager2) + 1 },
-        onSet = { reloadHelper.reloadGrid() },
-        handOverOnSet = true,
+        onSet = { reloadGridWithNewValue() },
     )
 
     val additionalFonts = preference(
@@ -754,12 +761,11 @@ class PreferenceManager2 @Inject constructor(
         save = { it.key },
         // "Same as cover" changes the device profiles of the large screen.
         onSet = {
-            FoldLayout.onHomeLayoutSet(it)
             if (it == FoldHomeLayout.INDEPENDENT) {
                 // The inner screen starts as a copy of the cover layout.
                 FoldItemSets.createInnerSetIfEmpty(context)
             }
-            reloadHelper.reloadGrid()
+            reloadGridWithNewValue()
         },
     )
 
@@ -769,10 +775,7 @@ class PreferenceManager2 @Inject constructor(
         parse = { FoldDrawerLayout.fromString(it) },
         save = { it.key },
         // "Book" and "zoom" change the device profiles of the large screen.
-        onSet = {
-            FoldDrawerLayouts.onDrawerLayoutSet(it)
-            reloadHelper.reloadGrid()
-        },
+        onSet = { reloadGridWithNewValue() },
     )
 
     val foldTransitionStyle = preference(
@@ -794,7 +797,7 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = FoldDock.MERGE,
         parse = { FoldDock.fromString(it) },
         save = { it.key },
-        onSet = { reloadHelper.reloadGrid() },
+        onSet = { reloadGridWithNewValue() },
     )
 
     // OWN changes the device profile of the large screen in landscape.
@@ -803,10 +806,7 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = FoldLandscape.AUTO,
         parse = { FoldLandscape.fromString(it) },
         save = { it.key },
-        onSet = {
-            FoldLayout.onLandscapeSet(it)
-            reloadHelper.reloadGrid()
-        },
+        onSet = { reloadGridWithNewValue() },
     )
 
     /**
@@ -816,20 +816,14 @@ class PreferenceManager2 @Inject constructor(
     val foldLandscapeIconSizeFactor = preference(
         key = floatPreferencesKey("fold_landscape_icon_size_factor"),
         defaultValue = -1f,
-        onSet = {
-            FoldLayout.onLandscapeIconSizeSet(it)
-            reloadHelper.reloadGrid()
-        },
+        onSet = { reloadGridWithNewValue() },
     )
 
     /** Like [foldLandscapeIconSizeFactor], for [homeIconLabelSizeFactor]. */
     val foldLandscapeIconLabelSizeFactor = preference(
         key = floatPreferencesKey("fold_landscape_icon_label_size_factor"),
         defaultValue = -1f,
-        onSet = {
-            FoldLayout.onLandscapeLabelSizeSet(it)
-            reloadHelper.reloadGrid()
-        },
+        onSet = { reloadGridWithNewValue() },
     )
 
     val foldWallpaper = preference(

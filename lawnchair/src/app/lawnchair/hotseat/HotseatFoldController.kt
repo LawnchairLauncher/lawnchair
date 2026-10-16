@@ -1,8 +1,5 @@
 package app.lawnchair.hotseat
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ValueAnimator
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
@@ -13,7 +10,6 @@ import android.view.ViewTreeObserver
 import app.lawnchair.fold.FoldDockLayout
 import app.lawnchair.fold.FoldPosture
 import app.lawnchair.fold.FoldProgressListener
-import com.android.app.animation.Interpolators
 import com.android.launcher3.CellLayout
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Hotseat
@@ -46,10 +42,8 @@ import kotlin.math.roundToInt
  * so that icons bound after the DeviceProfile change, and the layout of the new pages, are picked
  * up on the frame they first show.
  *
- * Until the fold transition engine (Phase 3) drives it, a DeviceProfile change between the cover
- * and the large screen plays a short animation: 0 to 1 on unfold, 1 to 0 on fold (on the cover
- * there is no large dock left to split, so folding shows nothing; the engine reports the
- * progress before the screens switch).
+ * The progress comes from the fold transition engine (FoldTransitionController), which reports
+ * a fold while the large screen is still shown.
  */
 class HotseatFoldController(
     private val hotseat: Hotseat,
@@ -58,14 +52,6 @@ class HotseatFoldController(
     DeviceProfile.OnDeviceProfileChangeListener,
     ViewTreeObserver.OnPreDrawListener {
 
-    /**
-     * Whether a DeviceProfile change between the cover and the large screen plays the merge with
-     * this controller's own animator. The fold transition engine sets it to false and calls the
-     * [FoldProgressListener] methods itself.
-     */
-    var animateOnDeviceProfileChange = true
-
-    private var isUnfolded = false
     private var isActive = false
     private var progress = 1f
     private var hasTransforms = false
@@ -102,27 +88,6 @@ class HotseatFoldController(
     private var sideStartBottom = 0f
     private val sideEndRect = RectF()
 
-    private var animatorOpening = true
-    private val animator = ValueAnimator.ofFloat(0f, 1f).apply {
-        duration = ANIMATION_DURATION
-        interpolator = Interpolators.EMPHASIZED
-        addUpdateListener {
-            val fraction = it.animatedFraction
-            onFoldProgress(if (animatorOpening) fraction else 1f - fraction, animatorOpening)
-        }
-        addListener(
-            object : AnimatorListenerAdapter() {
-                override fun onAnimationStart(animation: Animator) {
-                    onFoldStart(animatorOpening)
-                }
-
-                override fun onAnimationEnd(animation: Animator) {
-                    onFoldEnd(animatorOpening)
-                }
-            },
-        )
-    }
-
     /** Sets the dock background drawn as pills during the transition (see Hotseat#setUpBackground). */
     fun setBackgroundStyle(
         color: Int,
@@ -138,13 +103,8 @@ class HotseatFoldController(
         hasBackgroundStyle = true
     }
 
-    fun onAttached(dp: DeviceProfile) {
-        isUnfolded = dp.deviceProperties.isTwoPanels
-    }
-
     fun onDetached() {
-        animator.cancel()
-        onFoldEnd(animatorOpening)
+        onFoldEnd(true)
     }
 
     override fun onDeviceProfileChanged(dp: DeviceProfile) {
@@ -153,13 +113,6 @@ class HotseatFoldController(
         clearTransforms()
         preparedPage = null
         foldDock = null
-        val unfolded = dp.deviceProperties.isTwoPanels
-        if (unfolded == isUnfolded) return
-        isUnfolded = unfolded
-        if (!animateOnDeviceProfileChange || !hotseat.isAttachedToWindow) return
-        animator.cancel()
-        animatorOpening = unfolded
-        animator.start()
     }
 
     override fun onFoldStart(opening: Boolean) {
@@ -191,7 +144,7 @@ class HotseatFoldController(
         if (!isActive) return true
         if (activity.getDragController<DragController<*>>()?.isDragging == true) {
             // An icon picked up mid-transition must not keep its offset
-            if (animator.isRunning) animator.end() else onFoldEnd(true)
+            onFoldEnd(true)
             return true
         }
         if (prepare()) applyTransforms() else clearTransforms()
@@ -465,8 +418,6 @@ class HotseatFoldController(
     private fun lerp(start: Float, end: Float, fraction: Float) = start + (end - start) * fraction
 
     companion object {
-        private const val ANIMATION_DURATION = 450L
-
         /** The dock search bar fades in over the second half, once the pills are close. */
         private const val QSB_FADE_START = 0.5f
     }

@@ -252,7 +252,6 @@ public class Hotseat extends FrameLayout implements Insettable {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (mActivity instanceof Launcher) {
-            mFoldController.onAttached(mActivity.getDeviceProfile());
             mActivity.addOnDeviceProfileChangeListener(mFoldController);
         }
     }
@@ -268,7 +267,7 @@ public class Hotseat extends FrameLayout implements Insettable {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        // The dock background while it merges or splits on a foldable, under the icons
+        // LC-Note: the dock background while it merges or splits on a foldable, under the icons
         if (!mFoldController.drawBackground(canvas) && mIsSideDock
                 && mDockBackgroundShape != null) {
             getSideDockBackgroundBounds(mSideDockBackgroundBounds);
@@ -278,12 +277,12 @@ public class Hotseat extends FrameLayout implements Insettable {
         super.dispatchDraw(canvas);
     }
 
-    /** Whether the dock is a column on the outer edge of a foldable's fixed half. */
+    /** LC-Note: whether the dock is a column on the outer edge of a foldable's fixed half. */
     public boolean isSideDock() {
         return mIsSideDock;
     }
 
-    /** Returns the side dock's background bounds: the column with an edge margin around it. */
+    /** LC-Note: returns the side dock's background bounds, the column plus an edge margin. */
     public void getSideDockBackgroundBounds(Rect out) {
         int margin = mActivity.getDeviceProfile().edgeMarginPx / 2;
         out.set(getPaddingLeft() - margin, getPaddingTop() - margin,
@@ -309,12 +308,12 @@ public class Hotseat extends FrameLayout implements Insettable {
         return super.dispatchTouchEvent(ev);
     }
 
-    /** Returns the controller that merges the dock while a foldable opens or closes. */
+    /** LC-Note: returns the controller that merges the dock while a foldable opens or closes. */
     public HotseatFoldController getFoldController() {
         return mFoldController;
     }
 
-    /** Returns the dock layout of an unfolded foldable, or null. */
+    /** LC-Note: returns the dock layout of an unfolded foldable, or null. */
     @Nullable
     public FoldDockLayout getFoldDockLayout() {
         CellPosMapper mapper = mActivity.getCellPosMapper();
@@ -378,7 +377,7 @@ public class Hotseat extends FrameLayout implements Insettable {
         int localRank = getLocalRank(rank, dp);
         FoldDockLayout foldDock = getFoldDockLayout();
         if (foldDock != null && rank < numColumns) {
-            // Unfolded foldable: first row of the first page, see FoldDockLayout
+            // LC-Note: unfolded foldable, first row of the first page, see FoldDockLayout
             return foldDock.rankToCellX(rank);
         }
         return localRank % numColumns;
@@ -415,9 +414,9 @@ public class Hotseat extends FrameLayout implements Insettable {
     }
 
     /**
-     * Whether the hotseat item at {@code rank} has a cell in the current layout. A foldable's
-     * cover dock has fewer cells than the database keeps, so the other items stay hidden there
-     * instead of landing on another item's cell. Always true on other devices.
+     * LC-Note: whether the hotseat item at {@code rank} has a cell in the current layout. A
+     * foldable's cover dock has fewer cells than the database keeps, so the other items stay
+     * hidden there instead of landing on another item's cell. Always true on other devices.
      */
     public boolean isRankShown(int rank) {
         DeviceProfile dp = mActivity.getDeviceProfile();
@@ -548,8 +547,8 @@ public class Hotseat extends FrameLayout implements Insettable {
             lp.height = grid.hotseatBarSizePx;
         }
 
-        // The view's background would fill the whole screen with the side dock: it is drawn
-        // around the column in dispatchDraw instead
+        // LC-Note: the view's background would fill the whole screen with the side dock: it is
+        // drawn around the column in dispatchDraw instead
         mIsSideDock = grid.isSideDock();
         if (mDockBackground != null && (getBackground() == null) != mIsSideDock) {
             setBackground(mIsSideDock ? null : mDockBackground);

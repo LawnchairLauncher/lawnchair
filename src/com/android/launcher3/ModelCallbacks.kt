@@ -55,12 +55,12 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     var pendingExecutor: ViewOnDrawExecutor? = null
     var workspaceLoading = true
 
-    // Lawnchair: the screen the user was looking at when the bind started. On the large screen of
+    // LC-Note: the screen the user was looking at when the bind started. On the large screen of
     // a foldable it starts the visible pair, see Workspace.setFoldAnchorScreenId.
     @Volatile
     private var anchorScreenId = -1
 
-    // Lawnchair: the item set ("Independent" home layout, see FoldItemSets) of the last bind, and
+    // LC-Note: the item set ("Independent" home layout, see FoldItemSets) of the last bind, and
     // the pages last shown in each set, so each screen reopens on its own page.
     @Volatile
     private var boundInnerSet: Boolean? = null
@@ -152,7 +152,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.workspace.restoreInstanceStateForRemainingPages()
         workspaceLoading = false
         launcher.processActivityResult()
-        // Lawnchair: start on the anchor screen rather than on the first screen of its pair.
+        // LC-Note: start on the anchor screen rather than on the first screen of its pair.
         val firstScreenId =
             if (pagesBoundFirst == null || pagesBoundFirst.isEmpty) -1
             else if (pagesBoundFirst.contains(anchorScreenId)) anchorScreenId
@@ -161,7 +161,11 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         var currentPage =
             if (firstScreenId != -1) launcher.workspace.getPageIndexForScreenId(firstScreenId)
             else PagedView.INVALID_PAGE
-        if (currentPage == PagedView.INVALID_PAGE && firstScreenId != -1) {
+        if (
+            currentPage == PagedView.INVALID_PAGE &&
+                firstScreenId != -1 &&
+                deviceProfile.isTwoPanelSinglePage
+        ) {
             // LC-Note: with "Expand", the odd cover page is the second half of the wide page of
             // its pair.
             currentPage =
@@ -285,7 +289,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
                 !workspaceLoading -> launcher.workspace.screenIdsToKeepOnRebind
                 else -> synchronouslyBoundPages
             }
-        // Lawnchair: page ids of one item set mean nothing in the other one. When the set
+        // LC-Note: page ids of one item set mean nothing in the other one. When the set
         // changes, remember the page of the old set and reopen the new set on its own page.
         val innerSet = launcher.deviceProfile.isInnerItemSet
         val previousInnerSet = boundInnerSet
@@ -301,7 +305,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             return result
         }
         val actualIds = orderedScreenIds.clone()
-        // Lawnchair: keep the anchor of the bind in progress, the first id may be its pair.
+        // LC-Note: keep the anchor of the bind in progress, the first id may be its pair.
         val firstId =
             if (visibleIds === synchronouslyBoundPages && visibleIds.contains(anchorScreenId))
                 anchorScreenId
@@ -315,7 +319,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             if (launcher.deviceProfile.deviceProperties.isTwoPanels && actualIds.contains(pairId)) {
                 result.add(pairId)
             }
-            // Lawnchair: on foldables the pair is the next page, also bind it first.
+            // LC-Note: on foldables the pair is the next page, also bind it first.
             val nextIndex = actualIds.indexOf(firstId) + 1
             if (launcher.deviceProfile.deviceProperties.isTwoPanels && nextIndex < actualIds.size()) {
                 result.add(actualIds[nextIndex])
@@ -355,7 +359,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     }
 
     override fun bindItemsAdded(allItems: List<ItemInfo>) {
-        // Lawnchair: items of the item set that isn't shown stay in the model only.
+        // LC-Note: items of the item set that isn't shown stay in the model only.
         val innerSet = launcher.deviceProfile.isInnerItemSet
         val items = allItems.filter { FoldItemSets.isInActiveSet(it, innerSet) }
         if (items.isEmpty()) return
@@ -502,7 +506,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
 
         MAIN_EXECUTOR.execute { clearPendingBinds() }
 
-        // Lawnchair: bind only the item set shown on this screen, see FoldItemSets.
+        // LC-Note: bind only the item set shown on this screen, see FoldItemSets.
         val innerSet = launcher.deviceProfile.isInnerItemSet
         val orderedScreenIds = itemIdMap.collectWorkspaceScreens(launcher, innerSet)
         val currentScreenIds = getPagesToBindSynchronously(orderedScreenIds)

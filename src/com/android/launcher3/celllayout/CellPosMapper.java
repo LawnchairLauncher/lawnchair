@@ -54,6 +54,8 @@ public class CellPosMapper {
     }
 
     /**
+     * LC-Note: takes the dock layout of an unfolded foldable too.
+     *
      * @param foldDock the dock layout of an unfolded foldable, which maps the first row's ranks
      *                 to cells (see {@link FoldDockLayout}), or null.
      */
@@ -80,6 +82,14 @@ public class CellPosMapper {
         return mItemSetBase;
     }
 
+    /**
+     * LC-Note: dock rank of a dock item (or prediction) within the shown item set, the rank the
+     * {@code Hotseat} order helpers expect.
+     */
+    public int getPresenterHotseatRank(ItemInfo info) {
+        return toPresenterScreenId(info);
+    }
+
     /** LC-Note: model screen id or dock rank, from the shown item set's own numbering. */
     private int toPresenterScreenId(ItemInfo info) {
         if (mItemSetBase > 0 && info.screenId >= mItemSetBase
@@ -98,7 +108,7 @@ public class CellPosMapper {
         return screenId;
     }
 
-    /** Returns the dock layout of an unfolded foldable, or null. */
+    /** LC-Note: returns the dock layout of an unfolded foldable, or null. */
     @Nullable
     public FoldDockLayout getFoldDockLayout() {
         return mFoldDock;

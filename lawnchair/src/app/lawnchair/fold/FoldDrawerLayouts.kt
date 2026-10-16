@@ -39,29 +39,11 @@ object FoldDrawerLayouts {
 
     private const val TAG = "LC-FoldDrawer"
 
-    /**
-     * The drawer layout just set, until the preference cache has it (the grid reload of the
-     * preference's onSet can run before the cache collector, see [FoldLayout]).
-     */
-    @Volatile
-    private var pendingLayout: FoldDrawerLayout? = null
-
     private class Applied(val layout: FoldDrawerLayout, val cover: DeviceProfile, val sizeScale: Float)
 
     private val applied: MutableMap<DeviceProfile, Applied> = Collections.synchronizedMap(WeakHashMap())
 
-    /** Called from [PreferenceManager2.foldDrawerLayout]'s onSet, before reloading the grid. */
-    @JvmStatic
-    fun onDrawerLayoutSet(layout: FoldDrawerLayout) {
-        pendingLayout = layout
-    }
-
-    fun currentLayout(prefs2: PreferenceManager2): FoldDrawerLayout {
-        val cached = prefs2.foldDrawerLayout.firstCached(prefs2)
-        val pending = pendingLayout
-        if (pending == cached) pendingLayout = null
-        return pending ?: cached
-    }
+    fun currentLayout(prefs2: PreferenceManager2): FoldDrawerLayout = prefs2.foldDrawerLayout.firstCached(prefs2)
 
     /** Whether these are the properties of a foldable's large screen with a vertical fold line. */
     fun isLargeFoldable(properties: DeviceProperties): Boolean = properties.isTablet &&

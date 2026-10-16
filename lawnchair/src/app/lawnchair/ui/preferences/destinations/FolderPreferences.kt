@@ -85,19 +85,24 @@ fun FolderPreferences(
             if (isFoldable) {
                 // "Same as cover" uses the folded folder grid on the large screen too
                 val homeMirrored = isFoldHomeMirrored()
+                val folderColumnsAdapter = prefs2.folderColumns.getAdapter()
                 SliderPreference(
                     label = stringResource(id = R.string.state_folded, stringResource(id = R.string.max_folder_columns)),
-                    adapter = prefs2.folderColumns.getAdapter(),
+                    adapter = folderColumnsAdapter,
                     step = 1,
                     valueRange = 2..5,
                 )
-                SliderPreference(
-                    label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.max_folder_columns)),
-                    adapter = prefs2.folderColumnsUnfolded.getAdapter(),
-                    step = 1,
-                    valueRange = 2..6,
-                    enabled = !homeMirrored,
-                )
+                // The unfolded columns follow the folded columns until set, and their default is
+                // read from the preference cache: read them again when the folded columns change.
+                key(folderColumnsAdapter.state.value) {
+                    SliderPreference(
+                        label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.max_folder_columns)),
+                        adapter = prefs2.folderColumnsUnfolded.getAdapter(),
+                        step = 1,
+                        valueRange = 2..6,
+                        enabled = !homeMirrored,
+                    )
+                }
                 val folderRowsAdapter = prefs.folderRows.getAdapter()
                 SliderPreference(
                     label = stringResource(id = R.string.state_folded, stringResource(id = R.string.max_folder_rows)),

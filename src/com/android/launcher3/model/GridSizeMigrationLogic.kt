@@ -132,6 +132,10 @@ class GridSizeMigrationLogic {
                 // Migrate workspace.
                 migrateWorkspace(srcReader, destReader, target, targetSize, idsInUse)
 
+                // LC-Note: the inner item set of "Independent" is carried over as it is.
+                GridSizeMigrationDBController.carryInnerItemSet(t.db, TMP_TABLE, TABLE_NAME)
+                target.refreshMaxItemId()
+
                 dropTable(t.db, TMP_TABLE)
                 t.commit()
 
