@@ -755,13 +755,13 @@ public class Launcher extends StatefulActivity<LauncherState>
             mCellPosMapper = new TwoPanelCellPosMapper(mDeviceProfile.inv.numColumns,
                     mDeviceProfile.hasVerticalHotseat(), mDeviceProfile.numShownHotseatIcons,
                     mDeviceProfile.numHotseatRows, mDeviceProfile.numHotseatPages,
-                    FoldDockLayout.create(this, mDeviceProfile),
+                    FoldDockLayout.create(mDeviceProfile),
                     FoldLayout.isEvenCoverPageOnEnd(this, mDeviceProfile));
         } else {
             // LC-Note: hasVerticalHotseat also covers a foldable's side dock
             mCellPosMapper = new CellPosMapper(mDeviceProfile.hasVerticalHotseat(),
                     mDeviceProfile.numShownHotseatIcons, mDeviceProfile.numHotseatRows,
-                    mDeviceProfile.numHotseatPages, FoldDockLayout.create(this, mDeviceProfile),
+                    mDeviceProfile.numHotseatPages, FoldDockLayout.create(mDeviceProfile),
                     // LC-Note: "Independent" shows the inner item set on the large screen.
                     mDeviceProfile.isInnerItemSet ? FoldItemSets.INNER_SCREEN_BASE : 0);
         }

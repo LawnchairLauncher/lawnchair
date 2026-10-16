@@ -239,12 +239,12 @@ public class DeviceProfile {
     public int hotseatCellHeightPx;
     private int mHotseatColumnSpan;
     private int mHotseatWidthPx; // not used in vertical bar layout
-    // Lawnchair: an unfolded foldable showing the cover's dock count (see FoldDockLayout)
+    // LC-Note: an unfolded foldable showing the cover's dock count (see FoldDockLayout)
     private boolean mIsFoldDockSameAsCover;
     // LC-Note: FoldDock.SIDE, the dock is a column on the outer edge of the fixed half
     private boolean mIsSideDock;
     private boolean mIsSideDockOnLeft;
-    /** Width reserved for the side dock column on each outer edge of the workspace. */
+    /** LC-Note: width reserved for the side dock column on an outer edge of the workspace. */
     public int sideDockWidthPx;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;

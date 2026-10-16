@@ -7,20 +7,6 @@ import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InvariantDeviceProfile
 
 /**
- * Tells which half of an unfolded book-style foldable swings when the device folds.
- *
- * Backed by [FoldPosture] in [FoldDockLayout.hingeSource]; replaceable for tests and previews.
- */
-fun interface FoldDockHingeSource {
-    /**
-     * Returns true when the moving half is the left half of [dp]'s window (hinge on the left of
-     * the cover screen, `HingeSide.LEFT`), false when it is the right half (`HingeSide.RIGHT`),
-     * or null when the fold line isn't vertical, so the dock can't merge.
-     */
-    fun isMovingHalfLeft(context: Context, dp: DeviceProfile): Boolean?
-}
-
-/**
  * The dock of an unfolded foldable when the fold line is vertical ([FoldDock.MERGE]).
  *
  * The cover dock has [coverIcons] slots. The large dock has [dockIcons] cells: the cover's
@@ -82,20 +68,16 @@ class FoldDockLayout(
 
     companion object {
         /**
-         * Where the moving half is, from [FoldPosture]: with the hinge on the left of the cover
-         * screen the moving half is the left one. Half opened on a table, or with a horizontal
-         * fold line (sideways), the dock doesn't merge. Replaceable for tests and previews.
+         * Returns true when the half that swings is the left half of [dp]'s window (hinge on the
+         * left of the cover screen), false when it is the right half, or null when the fold line
+         * isn't vertical (half opened on a table, or sideways), so the dock can't merge.
          */
-        @JvmStatic
-        var hingeSource = FoldDockHingeSource { _, dp ->
-            if (FoldPosture.isTabletop) {
-                null
-            } else {
-                when (FoldPosture.getHingeSide(dp.deviceProperties.rotationHint, assumeBookStyle = true)) {
-                    HingeSide.LEFT -> true
-                    HingeSide.RIGHT -> false
-                    HingeSide.UNKNOWN -> null
-                }
+        private fun isMovingHalfLeft(dp: DeviceProfile): Boolean? {
+            if (FoldPosture.isTabletop) return null
+            return when (FoldPosture.getHingeSide(dp.deviceProperties.rotationHint, assumeBookStyle = true)) {
+                HingeSide.LEFT -> true
+                HingeSide.RIGHT -> false
+                HingeSide.UNKNOWN -> null
             }
         }
 
@@ -105,9 +87,9 @@ class FoldDockLayout(
          * docks with several rows or pages keep the cover's slots (see [getShownHotseatIcons]).
          */
         @JvmStatic
-        fun create(context: Context, dp: DeviceProfile): FoldDockLayout? {
+        fun create(dp: DeviceProfile): FoldDockLayout? {
             if (!dp.deviceProperties.isTwoPanels || dp.isVerticalBarLayout) return null
-            val movingHalfLeft = hingeSource.isMovingHalfLeft(context, dp) ?: return null
+            val movingHalfLeft = isMovingHalfLeft(dp) ?: return null
             val dockIcons = dp.numShownHotseatIcons
             val coverIcons = dp.inv.numShownHotseatIcons.coerceIn(1, dockIcons.coerceAtLeast(1))
             val merges = dp.numHotseatRows == 1 && dp.numHotseatPages == 1
@@ -131,7 +113,7 @@ class FoldDockLayout(
             val prefs2 = PreferenceManager2.getInstance(context)
             if (prefs2.foldDock.firstCached(prefs2) != FoldDock.SIDE) return null
             if (!prefs2.isHotseatEnabled.firstCached(prefs2)) return null
-            val movingHalfLeft = hingeSource.isMovingHalfLeft(context, dp) ?: return null
+            val movingHalfLeft = isMovingHalfLeft(dp) ?: return null
             return !movingHalfLeft
         }
 

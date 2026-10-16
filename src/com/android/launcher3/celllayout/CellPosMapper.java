@@ -54,6 +54,8 @@ public class CellPosMapper {
     }
 
     /**
+     * LC-Note: takes the dock layout of an unfolded foldable too.
+     *
      * @param foldDock the dock layout of an unfolded foldable, which maps the first row's ranks
      *                 to cells (see {@link FoldDockLayout}), or null.
      */
@@ -98,7 +100,7 @@ public class CellPosMapper {
         return screenId;
     }
 
-    /** Returns the dock layout of an unfolded foldable, or null. */
+    /** LC-Note: returns the dock layout of an unfolded foldable, or null. */
     @Nullable
     public FoldDockLayout getFoldDockLayout() {
         return mFoldDock;
