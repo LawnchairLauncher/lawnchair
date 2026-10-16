@@ -1073,7 +1073,6 @@
 
     <string name="fold_label">Foldable screen</string>
     <string name="fold_description">Large screen layout and fold transitions</string>
-    <string name="fold_coming_soon">%1$s (coming soon)</string>
     <string name="fold_option_summary">%1$s: %2$s</string>
 
     <string name="fold_group_large_screen">Large screen</string>

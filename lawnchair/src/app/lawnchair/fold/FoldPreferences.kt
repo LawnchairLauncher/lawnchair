@@ -17,12 +17,6 @@ interface FoldOption {
 
     @get:StringRes
     val descriptionResourceId: Int
-
-    /**
-     * Whether the option can be selected. Options that can't are shown disabled as "coming soon";
-     * only [FoldHomeLayout.INDEPENDENT] in release builds is one.
-     */
-    val isImplemented: Boolean get() = true
 }
 
 /** Home screen layout on the large (unfolded) screen. */
@@ -30,7 +24,6 @@ enum class FoldHomeLayout(
     override val key: String,
     @StringRes override val labelResourceId: Int,
     @StringRes override val descriptionResourceId: Int,
-    override val isImplemented: Boolean = true,
 ) : FoldOption {
     PAGES(
         key = "pages",
