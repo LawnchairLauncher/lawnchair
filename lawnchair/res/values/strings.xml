@@ -1136,8 +1136,8 @@
     <string name="fold_landscape_own_description">A separate arrangement for the large screen in landscape.</string>
     <string name="fold_wallpaper">Wallpaper</string>
     <string name="fold_wallpaper_span">One spanning image</string>
-    <string name="fold_wallpaper_span_description">One image stretched across both screens, so the transition looks continuous.</string>
+    <string name="fold_wallpaper_span_description">One image across both screens. With wallpaper scrolling off, the cover keeps the part of the image you saw on the half you hold.</string>
     <string name="fold_wallpaper_each">Per screen</string>
-    <string name="fold_wallpaper_each_description">A separate image for each screen.</string>
+    <string name="fold_wallpaper_each_description">A separate image for each screen, set in the system wallpaper settings.</string>
     <string name="fold_unfolded_grid_mirror_note">Not used while Foldable screen › Home screen is set to “Same as cover”: the large screen then uses the folded grid.</string>
 </resources>
