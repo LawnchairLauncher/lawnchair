@@ -35,6 +35,7 @@ import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
 import app.lawnchair.data.wallpaper.service.WallpaperService
+import app.lawnchair.fold.FoldDualWallpaper
 import app.lawnchair.fold.FoldPosture
 import app.lawnchair.fold.FoldTransitionController
 import app.lawnchair.gestures.GestureController
@@ -57,6 +58,7 @@ import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.GestureNavContract
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS_PREDICTION
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION
@@ -167,6 +169,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         super.onCreate(savedInstanceState)
         FoldPosture.attach(this)
         foldTransitionController.attach()
+        FoldDualWallpaper.updateServiceEnabled(this, InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY)
         // The dock merge (HotseatFoldController) follows the engine
         foldTransitionController.addListener(hotseat.foldController)
 
