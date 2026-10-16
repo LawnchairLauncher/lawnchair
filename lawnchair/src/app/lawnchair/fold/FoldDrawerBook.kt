@@ -19,7 +19,9 @@ import java.util.WeakHashMap
  * moved onto the moving half, up by as many whole rows as fit on a page. So the fixed page only
  * ever shows full rows, the row it cuts is the first row of the moving page, no app is hidden, and
  * the rows of both pages line up. Both pages scroll together, by rows: when a row becomes fully
- * visible at the bottom of the fixed page it leaves the top of the moving page. The RecyclerView,
+ * visible at the bottom of the fixed page it leaves the top of the moving page; until then the part
+ * of it above the grid's top edge is clipped, since the moving half has no header rows to slide
+ * under. The RecyclerView,
  * its fast scroller, focus and accessibility stay as they are; only view translations change, and
  * touch, drag and accessibility bounds follow them.
  *
@@ -62,6 +64,10 @@ class FoldDrawerBook private constructor(
 
     /** How far the second page's children are moved up, in pixels, while active. */
     private var shiftY = 0
+
+    /** Children of the second page clipped at its top edge. */
+    private val clipped = ArrayList<View>()
+    private val clipRect = Rect()
 
     init {
         rv.addOnAttachStateChangeListener(this)
@@ -123,6 +129,26 @@ class FoldDrawerBook private constructor(
             if (provider != null) ty += provider.offsetY(child, onMovingPage, child.top - shiftY, pageTop, pageHeight)
             if (child.translationX != tx) child.translationX = tx
             if (child.translationY != ty) child.translationY = ty
+            clipAbovePage(child, if (onMovingPage) pageTop - (child.top + ty) else 0f)
+        }
+        // Views that left the list (recycled) lose their clip
+        for (i in clipped.size - 1 downTo 0) {
+            val view = clipped[i]
+            if (view.parent !== rv) {
+                view.clipBounds = null
+                clipped.removeAt(i)
+            }
+        }
+    }
+
+    /** Clips the top [hidden] pixels of [child] (none when [hidden] <= 0). */
+    private fun clipAbovePage(child: View, hidden: Float) {
+        if (hidden > 0f) {
+            clipRect.set(0, hidden.toInt().coerceAtMost(child.height), child.width, child.height)
+            child.clipBounds = clipRect
+            if (!clipped.contains(child)) clipped.add(child)
+        } else if (clipped.remove(child)) {
+            child.clipBounds = null
         }
     }
 
@@ -137,6 +163,8 @@ class FoldDrawerBook private constructor(
             child.translationX = 0f
             child.translationY = 0f
         }
+        for (i in clipped.indices) clipped[i].clipBounds = null
+        clipped.clear()
     }
 
     /** Whether [child] is on the second page (not fully visible on the fixed page). */
