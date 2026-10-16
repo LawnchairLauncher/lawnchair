@@ -22,7 +22,6 @@ import app.lawnchair.LawnchairApp
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.dpiFromPx
-import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.RotationUtils.deltaRotation
@@ -37,9 +36,7 @@ import kotlin.math.min
 
 @Keep
 @LauncherAppSingleton
-class LawnchairWindowManagerProxy @Inject constructor(
-    @ApplicationContext private val appContext: Context,
-) : WindowManagerProxy(Utilities.ATLEAST_T) {
+class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Utilities.ATLEAST_T) {
 
     @Suppress("PropertyName")
     val TAG = "LC-WindowManagerProxy"
@@ -48,7 +45,7 @@ class LawnchairWindowManagerProxy @Inject constructor(
     // Lawnchair only draws a taskbar when it is the recents provider (quickstep runs). Otherwise the
     // system draws its taskbar (or navigation bar) on large screens, over our layout.
     private val taskbarDrawnInProcess by lazy {
-        mTaskbarDrawnInProcess && LawnchairApp.isRecentsEnabled(appContext)
+        mTaskbarDrawnInProcess && LawnchairApp.isRecentsEnabled
     }
 
     override fun isTaskbarDrawnInProcess() = taskbarDrawnInProcess

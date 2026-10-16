@@ -57,16 +57,21 @@ import com.android.systemui.shared.system.QuickStepContract
 import java.io.File
 
 class LawnchairApp : LauncherApplication() {
-    private val compatible = isQuickstepCompatible
-    private val isRecentsComponent: Boolean by unsafeLazy { checkRecentsComponent(this) }
+    private val compatible = Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
+    private val isRecentsComponent: Boolean by unsafeLazy { checkRecentsComponent() }
     private val recentsEnabled: Boolean get() = compatible && isRecentsComponent
     private val isAtleastT = Utilities.ATLEAST_T
     internal var accessibilityService: LawnchairAccessibilityService? = null
     val isVibrateOnIconAnimation: Boolean by unsafeLazy { getSystemUiBoolean("config_vibrateOnIconAnimation", false) }
 
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        // Before the content providers start: the singletons they create can read isRecentsEnabled
+        instance = this
+    }
+
     override fun onCreate() {
         super.onCreate()
-        instance = this
         QuickStepContract.sRecentsDisabled = !recentsEnabled
         Flowerpot.Manager.getInstance(this)
         registerActivityLifecycleCallbacks(activityHandler)
@@ -189,6 +194,30 @@ class LawnchairApp : LauncherApplication() {
         }
     }
 
+    private fun checkRecentsComponent(): Boolean {
+        @SuppressLint("DiscouragedApi")
+        val resId = resources.getIdentifier("config_recentsComponentName", "string", "android")
+        if (resId == 0) {
+            Log.d(TAG, "config_recentsComponentName not found, disabling recents")
+            return false
+        }
+
+        val recentsComponent = ComponentName.unflattenFromString(resources.getString(resId))
+        if (recentsComponent == null) {
+            Log.d(TAG, "config_recentsComponentName is empty, disabling recents")
+            return false
+        }
+
+        val isRecentsComponent = recentsComponent.packageName == packageName &&
+            recentsComponent.className == RecentsActivity::class.java.name
+        if (!isRecentsComponent) {
+            Log.d(TAG, "config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
+            return false
+        }
+
+        return true
+    }
+
     fun isAccessibilityServiceBound(): Boolean = accessibilityService != null
 
     fun performGlobalAction(action: Int): Boolean {
@@ -209,42 +238,6 @@ class LawnchairApp : LauncherApplication() {
 
         @JvmStatic
         val isRecentsEnabled: Boolean get() = instance.recentsEnabled
-
-        /**
-         * Same as [isRecentsEnabled], but only needs a [Context], so it can be used before
-         * [onCreate], e.g. by Dagger singletons created while a content provider is queried.
-         */
-        @JvmStatic
-        fun isRecentsEnabled(context: Context): Boolean = isQuickstepCompatible && checkRecentsComponent(context)
-
-        private val isQuickstepCompatible: Boolean
-            get() = Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
-
-        private fun checkRecentsComponent(context: Context): Boolean {
-            val resources = context.resources
-
-            @SuppressLint("DiscouragedApi")
-            val resId = resources.getIdentifier("config_recentsComponentName", "string", "android")
-            if (resId == 0) {
-                Log.d(TAG, "config_recentsComponentName not found, disabling recents")
-                return false
-            }
-
-            val recentsComponent = ComponentName.unflattenFromString(resources.getString(resId))
-            if (recentsComponent == null) {
-                Log.d(TAG, "config_recentsComponentName is empty, disabling recents")
-                return false
-            }
-
-            val isRecentsComponent = recentsComponent.packageName == context.packageName &&
-                recentsComponent.className == RecentsActivity::class.java.name
-            if (!isRecentsComponent) {
-                Log.d(TAG, "config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
-                return false
-            }
-
-            return true
-        }
 
         @JvmStatic
         val isAtleastT: Boolean get() = instance.isAtleastT
