@@ -155,7 +155,6 @@ import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.fold.FoldItemSets;
 import app.lawnchair.fold.FoldLayout;
 import app.lawnchair.fold.FoldPosture;
-import app.lawnchair.fold.FoldSideDockPages;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.smartspace.DoubleShadowTextView;
@@ -445,11 +444,31 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     private void updateCellLayoutMeasures() {
-        Rect padding = mLauncher.getDeviceProfile().cellLayoutPaddingPx;
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        Rect padding = grid.cellLayoutPaddingPx;
+        // LC-Note: with a foldable's side dock, the page on the fixed half (each pair's first
+        // page) takes back on its outer edge, under the column, the width setInsets took off both
+        // sides of the workspace. The moving half's page keeps the full half.
+        int sideDockInset = grid.getSideDockPageInset();
         mWorkspaceScreens.forEach(cellLayout -> {
-            cellLayout.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+            int index = sideDockInset > 0 ? indexOfChild(cellLayout) : -1;
+            int inset = index >= 0 && getLeftmostVisiblePageForIndex(index) == index
+                    ? sideDockInset : 0;
+            int left = grid.isSideDockOnLeft() ? inset : 0;
+            cellLayout.setPadding(padding.left + left, padding.top, padding.right + inset - left,
+                    padding.bottom);
             cellLayout.setSpaceBetweenCellLayoutsPx(getPageSpacing() / 4);
         });
+    }
+
+    /**
+     * LC-Note: with a foldable's side dock, moves the room for the column to the page now on the
+     * fixed half, after pages were added, removed or moved or the pairs changed.
+     */
+    private void updateSideDockPagePadding() {
+        if (mLauncher.getDeviceProfile().getSideDockPageInset() > 0) {
+            updateCellLayoutMeasures();
+        }
     }
 
     private void updateWorkspaceWidgetsSizes() {
@@ -615,6 +634,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (mPageIndicator != null) {
                 mPageIndicator.setMarkersCount(getPageIndicatorMarkersCount());
             }
+            updateSideDockPagePadding();
             requestLayout();
         }
     }
@@ -928,6 +948,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         cl.setOnInterceptTouchListener(this);
         cl.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         super.onViewAdded(child);
+        updateSideDockPagePadding(); // LC-Note
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        updateSideDockPagePadding(); // LC-Note
     }
 
     /**
@@ -1991,13 +2018,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWallpaperOffset.setWindowToken(null);
         mLauncher.getStateManager().removeStateListener(mAccessibilityDropListener);
         FoldPosture.removeListener(mFoldPostureListener);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // LC-Note: the page on the fixed half makes room for a foldable's side dock
-        FoldSideDockPages.applyPagePadding(this, mLauncher.getDeviceProfile());
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
