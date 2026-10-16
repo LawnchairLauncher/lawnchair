@@ -315,6 +315,11 @@ android {
             }
         }
 
+        // LC-Note: JVM unit tests of plain Lawnchair logic, outside `src` (main's source root).
+        test {
+            kotlin.directories.add('tests/unit')
+        }
+
         github {
             manifest.srcFile "github/AndroidManifest.xml"
         }
@@ -498,6 +503,8 @@ dependencies {
 
     debugImplementation libs.leakcanary.android
     debugImplementation libs.leakcanary.androidstudio
+
+    testImplementation libs.junit
 }
 
 ksp {
