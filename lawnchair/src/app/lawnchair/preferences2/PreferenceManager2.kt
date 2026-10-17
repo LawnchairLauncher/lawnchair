@@ -142,15 +142,14 @@ class PreferenceManager2 @Inject constructor(
     fun getCachedPreferences(): Preferences = cachedPreferences
 
     /**
-     * Reloads the grid from the onSet of a preference the device profiles read through the cache.
-     * onSet runs right after the DataStore write, but the cache is updated by its own collector,
-     * which may not have run yet, and the reload runs inline on the main thread. So refresh the
-     * cache from the DataStore first: it already has the value just set.
+     * Runs [block] on the main thread once the cache has every value written so far. A preference's
+     * onSet runs right after its DataStore write, but the cache is updated by its own collector,
+     * which may not have run yet: refresh it from the DataStore, which already has the new value.
      */
-    private fun reloadGridWithNewValue() {
+    internal fun withFreshCache(block: () -> Unit) {
         scope.launch {
             cachedPreferences = preferencesDataStore.data.first()
-            reloadHelper.reloadGrid()
+            block()
         }
     }
 
@@ -737,20 +736,20 @@ class PreferenceManager2 @Inject constructor(
     val drawerColumnsUnfolded = idpPreference(
         key = intPreferencesKey(name = "drawer_columns_unfolded"),
         defaultSelector = { numAllAppsColumns + 2 },
-        onSet = { reloadGridWithNewValue() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val folderColumns = idpPreference(
         key = intPreferencesKey(name = "folder_columns"),
         defaultSelector = { numFolderColumns[INDEX_DEFAULT] },
-        onSet = { reloadGridWithNewValue() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     /** Folder columns on the unfolded screen of a foldable. Defaults to one more than [folderColumns]. */
     val folderColumnsUnfolded = idpPreference(
         key = intPreferencesKey(name = "folder_columns_unfolded"),
         defaultSelector = { folderColumns.firstCached(gridOption = this, prefs2 = this@PreferenceManager2) + 1 },
-        onSet = { reloadGridWithNewValue() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     /**
@@ -761,7 +760,7 @@ class PreferenceManager2 @Inject constructor(
     val folderRowsUnfolded = idpPreference(
         key = intPreferencesKey(name = "pref_folderRowsUnfolded"),
         defaultSelector = { LawnchairPreferenceManager.getInstance(context).folderRows.get(this) },
-        onSet = { reloadGridWithNewValue() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val additionalFonts = preference(
@@ -794,7 +793,7 @@ class PreferenceManager2 @Inject constructor(
                     revertTo = if (previous == FoldHomeLayout.INDEPENDENT) FoldHomeLayout.PAGES else previous,
                 )
             }
-            reloadGridWithNewValue()
+            reloadHelper.reloadGrid()
         },
     )
 
@@ -806,7 +805,7 @@ class PreferenceManager2 @Inject constructor(
         name = "fold_drawer_layout",
         defaultValue = FoldDrawerLayout.EXPAND,
         // "Book" and "zoom" change the device profiles of the large screen.
-        onSet = { reloadGridWithNewValue() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val foldTransitionStyle = foldOptionPreference(
@@ -822,14 +821,14 @@ class PreferenceManager2 @Inject constructor(
     val foldDock = foldOptionPreference(
         name = "fold_dock",
         defaultValue = FoldDock.MERGE,
-        onSet = { reloadGridWithNewValue() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     // OWN changes the device profile of the large screen in landscape.
     val foldLandscape = foldOptionPreference(
         name = "fold_landscape",
         defaultValue = FoldLandscape.AUTO,
-        onSet = { reloadGridWithNewValue() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     /**
@@ -839,14 +838,14 @@ class PreferenceManager2 @Inject constructor(
     val foldLandscapeIconSizeFactor = preference(
         key = floatPreferencesKey("fold_landscape_icon_size_factor"),
         defaultValue = -1f,
-        onSet = { reloadGridWithNewValue() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     /** Like [foldLandscapeIconSizeFactor], for [homeIconLabelSizeFactor]. */
     val foldLandscapeIconLabelSizeFactor = preference(
         key = floatPreferencesKey("fold_landscape_icon_label_size_factor"),
         defaultValue = -1f,
-        onSet = { reloadGridWithNewValue() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val foldWallpaper = foldOptionPreference(
