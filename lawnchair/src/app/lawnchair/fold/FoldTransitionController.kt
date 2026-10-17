@@ -3,8 +3,6 @@ package app.lawnchair.fold
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.PixelFormat
@@ -22,7 +20,6 @@ import androidx.annotation.RequiresApi
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.hotseat.HotseatFoldController
-import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.app.animation.Interpolators
@@ -68,7 +65,8 @@ import kotlin.math.min
  *
  * Inert on phones, tablets, API < 29, and when Lawnchair is the recents provider: there, AOSP's
  * LauncherUnfoldAnimationController gets progress from SystemUI and owns the unfold animation, so
- * the two never animate the same views. The debug replay works everywhere.
+ * the two never animate the same views. The debug replay (`FoldReplay`, debug builds only) works
+ * everywhere, through [startRunForDebug].
  *
  * Reduced motion (animator duration scale 0): no motion, a [FoldTunables.REDUCED_MOTION_DURATION_MILLIS]
  * crossfade. Any failure ends the transition at once with the final layout showing; debug builds
@@ -92,14 +90,11 @@ class FoldTransitionController(
         true
     }
     private val overlay = OverlayDrawable()
-    private val replayRunnable = Runnable { runPendingReplay() }
 
     private var attached = false
     private var resumed = false
     private var lastFoldScreen = FoldScreen.NONE
     private var restAngle = Float.NaN
-    private var pendingReplay: ReplayMode? = null
-    private var replayOpenedDrawer = false
     private var preDrawObserver: ViewTreeObserver? = null
     private var run: Run? = null
 
@@ -130,14 +125,10 @@ class FoldTransitionController(
         resumed = true
         restAngle = Float.NaN
         updateHingeSensor()
-        if (pendingReplay != null) scheduleReplay(REPLAY_DELAY_AFTER_RESUME_MS)
     }
 
     override fun onActivityPaused(activity: Activity) {
         resumed = false
-        handler.removeCallbacks(replayRunnable)
-        pendingReplay = null
-        replayOpenedDrawer = false
         hinge.stop()
         finishNow("pause")
     }
@@ -147,7 +138,6 @@ class FoldTransitionController(
     override fun onActivityDestroyed(activity: Activity) {
         finishNow("destroy")
         hinge.stop()
-        handler.removeCallbacks(replayRunnable)
         launcher.removeOnDeviceProfileChangeListener(this)
         launcher.unregisterActivityLifecycleCallbacks(this)
     }
@@ -192,56 +182,20 @@ class FoldTransitionController(
         startRun("fold (hinge, inner display)", opening = false, large = true, phase = Phase.HINGE)
     }
 
-    /** Handles [ACTION_REPLAY]. Returns true if the intent was ours. */
-    fun onNewIntent(intent: Intent): Boolean {
-        if (intent.action != ACTION_REPLAY) return false
-        if (!PreferenceManager.getInstance(launcher).enableDebugMenu.get()) {
-            Log.w(TAG, "Replay ignored: the debug menu is off")
-            return true
-        }
-        pendingReplay = ReplayMode.fromKey(intent.getStringExtra(EXTRA_MODE))
-        if (resumed) scheduleReplay(REPLAY_DELAY_WHILE_RESUMED_MS)
-        return true
-    }
-
-    private fun scheduleReplay(delayMillis: Long) {
-        handler.removeCallbacks(replayRunnable)
-        handler.postDelayed(replayRunnable, delayMillis)
-    }
-
-    private fun runPendingReplay() {
-        val mode = pendingReplay ?: return
-        if (!resumed || launcher.isDestroyed) {
-            pendingReplay = null
-            return
-        }
-        if (mode.drawer && !replayOpenedDrawer && launcher.stateManager.state != LauncherState.ALL_APPS) {
-            // Open the drawer, then replay once it has settled
-            replayOpenedDrawer = true
-            launcher.stateManager.goToState(LauncherState.ALL_APPS, false)
-            scheduleReplay(REPLAY_DELAY_AFTER_DRAWER_MS)
-            return
-        }
-        replayOpenedDrawer = false
-        pendingReplay = null
-        replay(mode)
-    }
-
     /**
-     * Plays the selected style in place on the current layout, timer-driven, on any device.
-     * On the large layout: unfold = 0 -> 1; fold = 1 -> 0, a short hold, then back to 1, so the
-     * layout ends as it started. On the cover layout (or a phone): fold = the cover-side 1 -> 0;
-     * unfold = the large-layout visuals drawn on this screen, without dock events (the layout
-     * does not actually change, so the dock must not be told it is unfolded).
+     * The debug replay's entry (`FoldReplay`, debug builds only): plays the selected style in place,
+     * timer-driven, [slowFactor] times slower. [timerMillis] and [curve] replace the timer's duration
+     * (before the time scale) and curve, for a fold that opens again.
      */
-    fun replay(mode: ReplayMode) {
-        val large = launcher.deviceProfile.deviceProperties.isTablet
-        if (mode.opening) {
-            startRun("replay $mode", opening = true, notify = large, slow = mode.slow)
-        } else {
-            startRun("replay $mode", opening = false, large = large, bounceBack = large, slow = mode.slow)
-        }
-    }
+    internal fun startRunForDebug(
+        reason: String,
+        opening: Boolean,
+        large: Boolean,
+        notify: Boolean,
+        slowFactor: Float,
+        timerMillis: Long? = null,
+        curve: Interpolator = Interpolators.STANDARD_DECELERATE,
+    ) = startRun(reason, opening, large, notify, slowFactor = slowFactor, timerMillis = timerMillis, curve = curve)
 
     // Running a transition
 
@@ -249,9 +203,10 @@ class FoldTransitionController(
      * Starts an unfold ([opening]: 0 -> 1 on the large layout) or a fold (1 -> 0: on the cover layout
      * after the switch, on the large one while the hinge closes or in a replay), timer-driven unless
      * it starts in [Phase.HINGE]. With [followHinge] an unfold follows the hinge if it moves within
-     * [FoldTunables.HINGE_WAIT_MILLIS]; [bounceBack] opens again after a fold; [slow] is the slow replay;
-     * [capture] is the drawer before the profile change that starts the run.
-     * Every path here starts from a callback that attach() registers, and attach() needs API 29.
+     * [FoldTunables.HINGE_WAIT_MILLIS]; [capture] is the drawer before the profile change that starts
+     * the run; [slowFactor], [timerMillis] and [curve] are the debug replay's (see [startRunForDebug]).
+     * Every path here starts from a callback that attach() registers, and attach() needs API 29, or
+     * from the debug replay, which needs API 29 too.
      */
     @SuppressLint("NewApi")
     private fun startRun(
@@ -261,9 +216,10 @@ class FoldTransitionController(
         notify: Boolean = true,
         phase: Phase = Phase.TIMER,
         followHinge: Boolean = false,
-        bounceBack: Boolean = false,
-        slow: Boolean = false,
         capture: FoldDrawerState.Capture? = null,
+        slowFactor: Float = 1f,
+        timerMillis: Long? = null,
+        curve: Interpolator = Interpolators.STANDARD_DECELERATE,
     ) {
         finishNow("restart")
         val styleType = prefs2.foldTransitionStyle.firstCached()
@@ -277,9 +233,10 @@ class FoldTransitionController(
             large,
             reduced,
         )
-        scene.timeScale = if (phase == Phase.HINGE || reduced) 1f else durationScale() * if (slow) FoldTunables.REPLAY_SLOW_FACTOR else 1f
+        scene.timeScale = if (phase == Phase.HINGE || reduced) 1f else durationScale() * slowFactor
         val millis = when {
             phase == Phase.HINGE -> 0L
+            timerMillis != null -> (timerMillis * scene.timeScale).toLong()
             reduced -> FoldTunables.REDUCED_MOTION_DURATION_MILLIS
             else -> ((if (opening) FoldTunables.UNFOLD_DURATION_MILLIS else FoldTunables.FOLD_DURATION_MILLIS) * scene.timeScale).toLong()
         }
@@ -299,7 +256,7 @@ class FoldTransitionController(
         }
         val from = if (opening) 0f else 1f
         val allowHinge = phase == Phase.HINGE || (followHinge && !reduced && hinge.isStarted)
-        val r = Run(reason, scene, style, notify, allowHinge, SystemClock.uptimeMillis(), hinge.angle, phase, from, 1f - from, millis * NANOS_PER_MILLI, bounceBack)
+        val r = Run(reason, scene, style, notify, allowHinge, SystemClock.uptimeMillis(), hinge.angle, phase, from, 1f - from, millis * NANOS_PER_MILLI, curve)
         run = r
         Log.i(TAG, "start: $reason, style=$styleType (${style.javaClass.simpleName}), large=$large, reducedMotion=$reduced, source=$phase, ${millis}ms")
         try {
@@ -391,14 +348,11 @@ class FoldTransitionController(
     private fun advance(r: Run, step: Long, now: Long): Boolean {
         when (r.phase) {
             Phase.TIMER -> {
-                if (r.holdNanos > 0) r.holdNanos -= step else r.elapsedNanos += step
+                r.elapsedNanos += step
                 val t = if (r.durationNanos <= 0) 1f else (r.elapsedNanos.toFloat() / r.durationNanos).coerceIn(0f, 1f)
                 r.progress = r.from + (r.to - r.from) * r.interpolator.getInterpolation(t)
-                if (t >= 1f) {
-                    if (!r.bounceBack) return true
-                    r.bounceBack = false
-                    restartTimer(r, to = 1f, durationNanos = r.durationNanos, holdNanos = (FoldTunables.REPLAY_HOLD_MILLIS * r.scene.timeScale).toLong() * NANOS_PER_MILLI)
-                } else if (r.allowHinge && now - r.startUptimeMillis <= FoldTunables.HINGE_WAIT_MILLIS && hingeMovedSince(r)) {
+                if (t >= 1f) return true
+                if (r.allowHinge && now - r.startUptimeMillis <= FoldTunables.HINGE_WAIT_MILLIS && hingeMovedSince(r)) {
                     r.phase = Phase.HINGE
                     r.scene.timeScale = 1f
                     Log.i(TAG, "hinge is moving (${hinge.angle}°), following it")
@@ -415,24 +369,19 @@ class FoldTransitionController(
                 if (r.progress >= 1f) return true
                 if (!hinge.isStarted || now - hinge.lastMoveUptimeMillis > FoldTunables.HINGE_IDLE_MILLIS) {
                     Log.i(TAG, "hinge stopped at $angle°, settling open")
-                    r.phase = Phase.TIMER
                     val settle = max(MIN_SETTLE_MILLIS, (FoldTunables.SETTLE_DURATION_MILLIS * (1f - r.progress)).toLong())
-                    restartTimer(r, to = 1f, durationNanos = settle * NANOS_PER_MILLI, holdNanos = 0L)
+                    r.phase = Phase.TIMER
+                    r.from = r.progress
+                    r.to = 1f
+                    r.durationNanos = settle * NANOS_PER_MILLI
+                    r.elapsedNanos = 0L
+                    r.interpolator = Interpolators.STANDARD
                 }
             }
 
             Phase.SETTLING -> Unit
         }
         return false
-    }
-
-    private fun restartTimer(r: Run, to: Float, durationNanos: Long, holdNanos: Long) {
-        r.from = r.progress
-        r.to = to
-        r.durationNanos = durationNanos
-        r.elapsedNanos = 0L
-        r.holdNanos = holdNanos
-        r.interpolator = Interpolators.STANDARD
     }
 
     /**
@@ -593,7 +542,7 @@ class FoldTransitionController(
     /**
      * One transition. [allowHinge]: the hinge may drive it (a fold that started from the hinge, or
      * an unfold while the sensor runs). [elapsedNanos]: time on the timer, in SETTLING the time
-     * since the progress ended. [bounceBack]: the fold replay opens again.
+     * since the progress ended. [interpolator]: the timer's curve.
      */
     private class Run(
         val reason: String,
@@ -607,14 +556,12 @@ class FoldTransitionController(
         var from: Float,
         var to: Float,
         var durationNanos: Long,
-        var bounceBack: Boolean,
+        var interpolator: Interpolator,
     ) {
         var progress = from
         var lastProgress = from
         var dispatchedProgress = Float.NaN
         var elapsedNanos = 0L
-        var holdNanos = 0L
-        var interpolator: Interpolator = Interpolators.STANDARD_DECELERATE
         var lastFrameNanos = -1L
         var ageNanos = 0L
         var overlayAttached = false
@@ -640,29 +587,8 @@ class FoldTransitionController(
         override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
     }
 
-    /** Modes of the debug replay. The drawer ones open the app drawer first. */
-    enum class ReplayMode(val key: String, val opening: Boolean, val slow: Boolean, val drawer: Boolean = false) {
-        UNFOLD("unfold", true, false),
-        FOLD("fold", false, false),
-        UNFOLD_SLOW("unfold_slow", true, true),
-        FOLD_SLOW("fold_slow", false, true),
-        UNFOLD_DRAWER("unfold_drawer", true, false, true),
-        FOLD_DRAWER("fold_drawer", false, false, true),
-        UNFOLD_DRAWER_SLOW("unfold_drawer_slow", true, true, true),
-        FOLD_DRAWER_SLOW("fold_drawer_slow", false, true, true),
-        ;
-
-        companion object {
-            fun fromKey(key: String?) = entries.firstOrNull { it.key == key } ?: UNFOLD
-        }
-    }
-
     companion object {
         private const val TAG = "LC-Fold"
-
-        /** Debug: replays the selected transition in place. Extra [EXTRA_MODE]: a [ReplayMode] key. */
-        const val ACTION_REPLAY = "app.lawnchair.fold.REPLAY"
-        const val EXTRA_MODE = "mode"
 
         private const val NANOS_PER_MILLI = 1_000_000L
         private const val NANOS_PER_SECOND = 1_000_000_000f
@@ -673,17 +599,5 @@ class FoldTransitionController(
 
         private const val HINGE_START_MARGIN = 10f
         private const val MAX_DURATION_SCALE = 10f
-        private const val REPLAY_DELAY_AFTER_RESUME_MS = 500L
-        private const val REPLAY_DELAY_WHILE_RESUMED_MS = 250L
-        private const val REPLAY_DELAY_AFTER_DRAWER_MS = 400L
-
-        /** Brings the launcher to the front and replays the transition there (debug menu entry). */
-        fun requestReplay(context: Context, mode: ReplayMode) {
-            val intent = Intent(context, LawnchairLauncher::class.java)
-                .setAction(ACTION_REPLAY)
-                .putExtra(EXTRA_MODE, mode.key)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
-        }
     }
 }
