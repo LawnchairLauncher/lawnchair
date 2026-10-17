@@ -46,14 +46,6 @@ object FoldTunables {
     /** After the progress ends, how long a style may keep moving until it settles (see FoldStyle.isSettled). */
     const val MAX_SETTLE_MILLIS = 1200L
 
-    // Debug replay
-
-    /** Pause between folding and opening again in the "fold" replay. */
-    const val REPLAY_HOLD_MILLIS = 250L
-
-    /** Slow motion factor of the slow replays. */
-    const val REPLAY_SLOW_FACTOR = 5f
-
     // SIMPLE
 
     /** Distance the newly revealed half slides out of the hinge. */

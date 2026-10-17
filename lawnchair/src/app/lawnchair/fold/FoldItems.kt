@@ -5,7 +5,6 @@ import android.view.Gravity
 import android.view.View
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.CellLayout
-import com.android.launcher3.R
 import com.android.launcher3.Reorderable
 import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.util.MultiTranslateDelegate
@@ -21,10 +20,13 @@ import kotlin.math.min
  * which adds to every other translation (reorder, the dock merge, page pairing) instead of replacing it.
  * That channel belongs to AOSP's unfold animation, which never runs while this engine does (the
  * engine is off when Lawnchair is the recents provider).
+ *
+ * @property state the style's own state for this item (a spring, a glow, saved view properties),
+ * created when the item is first seen.
  */
-class FoldItem internal constructor(
+class FoldItem<S> internal constructor(
     val view: View,
-    internal val tracker: FoldItemTracker,
+    val state: S,
 ) {
     val isWidget = view is NavigableAppWidgetHostView
     private val delegate: MultiTranslateDelegate? = (view as? Reorderable)?.translateDelegate
@@ -58,11 +60,6 @@ class FoldItem internal constructor(
     private var appliedX = 0f
     private var appliedY = 0f
 
-    /** Free for the style that owns the tracker (spring value, glow, saved properties). */
-    var value = 0f
-    var glow = 0f
-    var styleState: Any? = null
-
     fun setTranslation(x: Float, y: Float) {
         val delegate = delegate ?: return
         if (x == appliedX && y == appliedY) return
@@ -81,13 +78,18 @@ class FoldItem internal constructor(
 /**
  * Keeps the list of items on the visible workspace pages, rescanned before every frame so icons
  * bound after the DeviceProfile change are picked up on the frame they first show. Only the pages
- * on screen are scanned, and each view keeps its [FoldItem] in a view tag while tracked. Allocates
- * only when a new view appears; removed views are handed to [onRemoved] so the style can reset
- * them.
+ * on screen are scanned, and each view's [FoldItem] is found by the view. Allocates only when a new
+ * view appears (its state comes from [newState]); removed views are handed to [onRemoved] so the
+ * style can reset them.
  */
-class FoldItemTracker(private val onRemoved: (FoldItem) -> Unit) {
-    val items = ArrayList<FoldItem>()
+class FoldItemTracker<S>(
+    private val newState: () -> S,
+    private val onRemoved: (FoldItem<S>) -> Unit,
+) {
+    val items = ArrayList<FoldItem<S>>()
 
+    private val byView = HashMap<View, FoldItem<S>>()
+    private val pages = ArrayList<CellLayout>()
     private val tmpRect = Rect()
     private val position = FloatArray(2)
 
@@ -96,32 +98,24 @@ class FoldItemTracker(private val onRemoved: (FoldItem) -> Unit) {
         val geometry = scene.geometry
         if (!geometry.isValid) return
         for (i in items.indices) items[i].seen = false
-        val workspace = scene.launcher.workspace
-        // The range array is shared by the workspace: read it at once
-        val range = if (workspace != null && workspace.visibility == View.VISIBLE) workspace.visibleChildrenRange else null
-        val firstPage = range?.get(0) ?: -1
-        val lastPage = range?.get(1) ?: -1
-        if (workspace != null && firstPage >= 0) {
-            for (i in firstPage..lastPage) {
-                val page = workspace.getChildAt(i) as? CellLayout ?: continue
-                if (page.visibility != View.VISIBLE) continue
-                val container = page.shortcutsAndWidgets
-                for (j in 0 until container.childCount) {
-                    val child = container.getChildAt(j)
-                    if (child.visibility != View.VISIBLE || !centerInRoot(child, root)) continue
-                    val x = position[0]
-                    val y = position[1]
-                    if (x < 0f || y < 0f || x > geometry.width || y > geometry.height) continue
-                    val item = find(child) ?: FoldItem(child, this).also {
-                        items.add(it)
-                        child.setTag(R.id.fold_item, it)
-                    }
-                    item.seen = true
-                    item.centerX = x
-                    item.centerY = y
-                    measureIcon(item)
-                    place(item, scene)
+        scene.getVisiblePages(pages)
+        for (i in pages.indices) {
+            val container = pages[i].shortcutsAndWidgets
+            for (j in 0 until container.childCount) {
+                val child = container.getChildAt(j)
+                if (child.visibility != View.VISIBLE || !centerInRoot(child, root)) continue
+                val x = position[0]
+                val y = position[1]
+                if (x < 0f || y < 0f || x > geometry.width || y > geometry.height) continue
+                val item = byView[child] ?: FoldItem(child, newState()).also {
+                    items.add(it)
+                    byView[child] = it
                 }
+                item.seen = true
+                item.centerX = x
+                item.centerY = y
+                measureIcon(item)
+                place(item, scene)
             }
         }
         for (i in items.size - 1 downTo 0) {
@@ -137,11 +131,9 @@ class FoldItemTracker(private val onRemoved: (FoldItem) -> Unit) {
 
     private fun remove(index: Int) {
         val item = items.removeAt(index)
-        if (item.view.getTag(R.id.fold_item) === item) item.view.setTag(R.id.fold_item, null)
+        byView.remove(item.view)
         onRemoved(item)
     }
-
-    private fun find(view: View): FoldItem? = (view.getTag(R.id.fold_item) as? FoldItem)?.takeIf { it.tracker === this }
 
     /** Layout position of [view]'s center in [root], ignoring the view's own translation and every scale. */
     private fun centerInRoot(view: View, root: View): Boolean {
@@ -158,7 +150,7 @@ class FoldItemTracker(private val onRemoved: (FoldItem) -> Unit) {
         return parent === root
     }
 
-    private fun measureIcon(item: FoldItem) {
+    private fun measureIcon(item: FoldItem<S>) {
         val view = item.view
         when (view) {
             is BubbleTextView -> view.getIconBounds(tmpRect)
@@ -171,7 +163,7 @@ class FoldItemTracker(private val onRemoved: (FoldItem) -> Unit) {
         item.iconRadius = min(tmpRect.width(), tmpRect.height()) / 2f
     }
 
-    private fun place(item: FoldItem, scene: FoldScene) {
+    private fun place(item: FoldItem<S>, scene: FoldScene) {
         val geometry = scene.geometry
         val along = if (geometry.isVerticalHinge) item.centerX else item.centerY
         if (scene.largeLayout) {

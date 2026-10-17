@@ -31,11 +31,13 @@ import kotlin.math.roundToInt
 @RequiresApi(Build.VERSION_CODES.Q)
 class WaveFoldStyle : SplitFoldStyle() {
 
-    private val tracker = FoldItemTracker { item ->
-        item.resetTranslation()
-        item.glow = 0f
-        item.value = 0f
+    /** How far an icon is lifted, and the opacity of its glow. */
+    private class Glow {
+        var lift = 0f
+        var alpha = 0f
     }
+
+    private val tracker = FoldItemTracker(::Glow) { item -> item.resetTranslation() }
     private val frame = Matrix()
     private val maskPaint = Paint().apply { blendMode = BlendMode.DST_IN }
     private val bandPaint = Paint().apply { blendMode = BlendMode.SCREEN }
@@ -55,7 +57,7 @@ class WaveFoldStyle : SplitFoldStyle() {
         bandHalf = scene.dpToPx(FoldTunables.WAVE_BAND_WIDTH_DP) / 2f
         liftPx = scene.dpToPx(FoldTunables.WAVE_LIFT_DP)
         settlePx = scene.dpToPx(FoldTunables.WAVE_SETTLE_DP)
-        val accent = Themes.getColorAccent(scene.launcher)
+        val accent = Themes.getColorAccent(scene.rootView.context)
         val light = ColorUtils.blendARGB(accent, Color.WHITE, 0.55f)
         bandPaint.shader = LinearGradient(
             -bandHalf,
@@ -112,20 +114,20 @@ class WaveFoldStyle : SplitFoldStyle() {
         val items = tracker.items
         for (i in items.indices) {
             val item = items[i]
+            val glow = item.state
             val swept = item.onMovingHalf || !scene.largeLayout
             if (!swept || item.isWidget) {
                 item.resetTranslation()
-                item.glow = 0f
-                item.value = 0f
+                glow.lift = 0f
+                glow.alpha = 0f
                 continue
             }
             // 0 until the band reaches the item, 1 once it has settled behind it.
             val t = ((bandCenter - item.distance * span + bandHalf) / (2f * bandHalf + settlePx)).coerceIn(0f, 1f)
             val bump = bump(t)
-            // value = how far the icon is lifted
-            item.value = if (scene.largeLayout) liftPx * bump else 0f
-            item.setTranslation(0f, -item.value)
-            item.glow = bump * FoldTunables.WAVE_GLOW_ALPHA * if (scene.largeLayout) 1f else COVER_FACTOR
+            glow.lift = if (scene.largeLayout) liftPx * bump else 0f
+            item.setTranslation(0f, -glow.lift)
+            glow.alpha = bump * FoldTunables.WAVE_GLOW_ALPHA * if (scene.largeLayout) 1f else COVER_FACTOR
         }
     }
 
@@ -159,12 +161,13 @@ class WaveFoldStyle : SplitFoldStyle() {
         val items = tracker.items
         for (i in items.indices) {
             val item = items[i]
-            if (item.glow < MIN_GLOW) continue
+            val glow = item.state
+            if (glow.alpha < MIN_GLOW) continue
             val radius = item.iconRadius * GLOW_SIZE
             if (radius <= 0f) continue
-            glowPaint.alpha = (item.glow * 255f).roundToInt().coerceIn(0, 255)
+            glowPaint.alpha = (glow.alpha * 255f).roundToInt().coerceIn(0, 255)
             canvas.save()
-            canvas.translate(item.centerX + item.iconOffsetX, item.centerY + item.iconOffsetY - item.value)
+            canvas.translate(item.centerX + item.iconOffsetX, item.centerY + item.iconOffsetY - glow.lift)
             canvas.scale(radius, radius)
             canvas.drawCircle(0f, 0f, 1f, glowPaint)
             canvas.restore()

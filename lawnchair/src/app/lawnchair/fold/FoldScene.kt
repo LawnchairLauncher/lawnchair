@@ -4,12 +4,15 @@ import android.graphics.Matrix
 import android.graphics.Rect
 import android.view.Gravity
 import android.view.Surface
-import app.lawnchair.LawnchairLauncher
+import android.view.View
+import com.android.launcher3.CellLayout
 import com.android.launcher3.LauncherRootView
+import com.android.launcher3.Workspace
 import com.android.launcher3.dragndrop.DragLayer
 
 /**
- * What a [FoldStyle] needs to know about the transition being played.
+ * What a [FoldStyle] needs to know about the transition being played, and the launcher views it
+ * may draw or move.
  *
  * @property opening the direction the transition started in.
  * @property largeLayout true when the transition is shown on the unfolded (two-half) layout: the
@@ -18,7 +21,10 @@ import com.android.launcher3.dragndrop.DragLayer
  * @property reducedMotion the system animator duration scale is 0; styles must not move anything.
  */
 class FoldScene internal constructor(
-    val launcher: LawnchairLauncher,
+    val rootView: LauncherRootView,
+    val dragLayer: DragLayer,
+    private val workspace: Workspace<*>?,
+    private val density: Float,
     val opening: Boolean,
     val largeLayout: Boolean,
     val reducedMotion: Boolean,
@@ -37,10 +43,28 @@ class FoldScene internal constructor(
     var timeScale = 1f
         internal set
 
-    val rootView: LauncherRootView get() = launcher.rootView
-    val dragLayer: DragLayer get() = launcher.dragLayer
+    fun dpToPx(dp: Float): Float = dp * density
 
-    fun dpToPx(dp: Float): Float = dp * launcher.resources.displayMetrics.density
+    /** Sets [out] to the workspace pages on screen, none while the workspace is hidden. */
+    fun getVisiblePages(out: ArrayList<CellLayout>) {
+        out.clear()
+        val workspace = workspace ?: return
+        if (workspace.visibility != View.VISIBLE) return
+        // The range array is shared by the workspace: read it at once
+        val range = workspace.visibleChildrenRange
+        val first = range[0]
+        val last = range[1]
+        if (first < 0) return
+        for (i in first..last) {
+            val page = workspace.getChildAt(i) as? CellLayout ?: continue
+            if (page.visibility == View.VISIBLE) out.add(page)
+        }
+    }
+
+    /** Shifts the wallpaper by [offset] on top of its scroll offset; 0 puts it back. */
+    fun setWallpaperFoldOffset(offset: Float) {
+        workspace?.setWallpaperFoldOffset(offset)
+    }
 }
 
 /**

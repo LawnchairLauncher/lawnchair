@@ -38,6 +38,7 @@ import app.lawnchair.data.wallpaper.service.WallpaperService
 import app.lawnchair.fold.FoldDrawerState
 import app.lawnchair.fold.FoldDualWallpaper
 import app.lawnchair.fold.FoldPosture
+import app.lawnchair.fold.FoldReplay
 import app.lawnchair.fold.FoldTransitionController
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
@@ -264,7 +265,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
 
     override fun onNewIntent(intent: Intent?) {
-        if (intent != null) foldTransitionController.onNewIntent(intent)
+        if (intent != null) FoldReplay.onNewIntent(this, intent)
         if (intent != null && intent.action == LawnchairShortcutActivity.START_ACTION) {
             val handlerString = intent.getStringExtra(LawnchairShortcutActivity.EXTRA_HANDLER)
             val config = handlerString?.let { GestureHandlerConfig.fromString(it) }

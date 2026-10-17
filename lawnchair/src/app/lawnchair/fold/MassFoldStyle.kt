@@ -25,13 +25,20 @@ import kotlin.math.abs
 @RequiresApi(Build.VERSION_CODES.Q)
 class MassFoldStyle : FoldStyle() {
 
-    private val tracker = FoldItemTracker(::release)
+    /** An icon's spring, where it is ([displacement]) and the last [target] it was given. */
+    private class Weight {
+        var spring: SpringAnimation? = null
+        var displacement = 0f
+        var target = 0f
+    }
 
-    private val displacement = object : FloatPropertyCompat<FoldItem>("foldMass") {
-        override fun getValue(item: FoldItem): Float = item.value
+    private val tracker = FoldItemTracker(::Weight, ::release)
 
-        override fun setValue(item: FoldItem, value: Float) {
-            item.value = value
+    private val displacement = object : FloatPropertyCompat<FoldItem<Weight>>("foldMass") {
+        override fun getValue(item: FoldItem<Weight>): Float = item.state.displacement
+
+        override fun setValue(item: FoldItem<Weight>, value: Float) {
+            item.state.displacement = value
             apply(item)
         }
     }
@@ -62,9 +69,9 @@ class MassFoldStyle : FoldStyle() {
             val share = if (item.onMovingHalf) 1f else FoldTunables.MASS_FIXED_HALF_FACTOR
             val target = maxDisplacementPx * speed * (DISTANCE_BASE + item.distance) * share
             val spring = springOf(item)
-            // glow holds the last target given to the spring
-            if (spring.isRunning || abs(target - item.glow) > MIN_TARGET_CHANGE || abs(target - item.value) > MIN_TARGET_CHANGE) {
-                item.glow = target
+            val weight = item.state
+            if (spring.isRunning || abs(target - weight.target) > MIN_TARGET_CHANGE || abs(target - weight.displacement) > MIN_TARGET_CHANGE) {
+                weight.target = target
                 spring.animateToFinalPosition(target)
             }
         }
@@ -73,8 +80,7 @@ class MassFoldStyle : FoldStyle() {
     override fun isSettled(scene: FoldScene): Boolean {
         val items = tracker.items
         for (i in items.indices) {
-            val spring = items[i].styleState as? SpringAnimation ?: continue
-            if (spring.isRunning) return false
+            if (items[i].state.spring?.isRunning == true) return false
         }
         return true
     }
@@ -83,28 +89,27 @@ class MassFoldStyle : FoldStyle() {
         tracker.clear()
     }
 
-    private fun springOf(item: FoldItem): SpringAnimation {
-        (item.styleState as? SpringAnimation)?.let { return it }
+    private fun springOf(item: FoldItem<Weight>): SpringAnimation {
+        item.state.spring?.let { return it }
         val spring = SpringAnimation(item, displacement)
         spring.spring = SpringForce(0f)
             .setStiffness(stiffness)
             .setDampingRatio(FoldTunables.MASS_DAMPING_RATIO)
         spring.setMinimumVisibleChange(DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS)
-        item.styleState = spring
+        item.state.spring = spring
         return spring
     }
 
     /** Displacement is along the hinge normal: toward the hinge on the moving half, the other way elsewhere. */
-    private fun apply(item: FoldItem) {
+    private fun apply(item: FoldItem<Weight>) {
         val sign = if (item.onMovingHalf) 1f else -1f
-        item.setTranslation(towardHingeX * sign * item.value, towardHingeY * sign * item.value)
+        val offset = sign * item.state.displacement
+        item.setTranslation(towardHingeX * offset, towardHingeY * offset)
     }
 
-    private fun release(item: FoldItem) {
-        (item.styleState as? SpringAnimation)?.cancel()
-        item.styleState = null
-        item.value = 0f
-        item.glow = 0f
+    /** The item is no longer tracked: its state goes with it. */
+    private fun release(item: FoldItem<Weight>) {
+        item.state.spring?.cancel()
         item.resetTranslation()
     }
 

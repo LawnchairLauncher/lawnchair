@@ -10,8 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.Preferences
-import app.lawnchair.fold.FoldTransitionController
-import app.lawnchair.fold.FoldTransitionController.ReplayMode
+import app.lawnchair.fold.FoldReplay
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -109,38 +108,7 @@ fun DebugMenuPreferences(
                 )
             }
 
-            PreferenceGroup(heading = "Foldable") {
-                ClickablePreference(
-                    label = "Replay fold transition",
-                    subtitle = "Unfold, with the selected animation, on the current layout",
-                    onClick = { FoldTransitionController.requestReplay(context, ReplayMode.UNFOLD) },
-                )
-                ClickablePreference(
-                    label = "Replay fold transition (fold)",
-                    subtitle = "Fold, then open again",
-                    onClick = { FoldTransitionController.requestReplay(context, ReplayMode.FOLD) },
-                )
-                ClickablePreference(
-                    label = "Replay fold transition (slow)",
-                    subtitle = "Unfold at a fifth of the speed",
-                    onClick = { FoldTransitionController.requestReplay(context, ReplayMode.UNFOLD_SLOW) },
-                )
-                ClickablePreference(
-                    label = "Replay fold transition (fold, slow)",
-                    subtitle = "Fold and open again at a fifth of the speed",
-                    onClick = { FoldTransitionController.requestReplay(context, ReplayMode.FOLD_SLOW) },
-                )
-                ClickablePreference(
-                    label = "Replay fold transition (drawer, slow)",
-                    subtitle = "Opens the app drawer, then unfolds it at a fifth of the speed",
-                    onClick = { FoldTransitionController.requestReplay(context, ReplayMode.UNFOLD_DRAWER_SLOW) },
-                )
-                ClickablePreference(
-                    label = "Replay fold transition (drawer, fold, slow)",
-                    subtitle = "Opens the app drawer, then folds and opens it again slowly",
-                    onClick = { FoldTransitionController.requestReplay(context, ReplayMode.FOLD_DRAWER_SLOW) },
-                )
-            }
+            FoldReplay.Preferences()
 
             PreferenceGroup(heading = "Debug flags") {
                 flags2.forEach {

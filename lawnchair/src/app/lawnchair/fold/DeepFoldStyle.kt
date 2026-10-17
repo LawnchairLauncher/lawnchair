@@ -28,7 +28,14 @@ import kotlin.math.sin
 @RequiresApi(Build.VERSION_CODES.Q)
 class DeepFoldStyle : FoldStyle() {
 
-    private val tracker = FoldItemTracker(::release)
+    /** What raising an icon off the page changed on its view, kept to put back. */
+    private class Raise {
+        var raised = false
+        var savedOutline: ViewOutlineProvider? = null
+        var savedZ = 0f
+    }
+
+    private val tracker = FoldItemTracker(::Raise, ::release)
     private val iconRect = Rect()
 
     /** Outlines the icon area (not the label) of an icon or folder. */
@@ -87,39 +94,38 @@ class DeepFoldStyle : FoldStyle() {
         setWallpaperOffset(scene, 0f)
     }
 
-    private fun raise(item: FoldItem, z: Float) {
+    private fun raise(item: FoldItem<Raise>, z: Float) {
         val view = item.view
-        if (item.styleState == null) {
-            // Save what we change: styleState keeps the outline provider, value the elevation.
-            item.styleState = view.outlineProvider ?: NO_OUTLINE
-            item.value = view.translationZ
+        val raise = item.state
+        if (!raise.raised) {
+            raise.raised = true
+            raise.savedOutline = view.outlineProvider
+            raise.savedZ = view.translationZ
             view.outlineProvider = iconOutline
         }
-        if (view.translationZ != item.value + z) view.translationZ = item.value + z
+        if (view.translationZ != raise.savedZ + z) view.translationZ = raise.savedZ + z
     }
 
-    private fun release(item: FoldItem) {
+    private fun release(item: FoldItem<Raise>) {
         item.resetTranslation()
-        val saved = item.styleState ?: return
+        val raise = item.state
+        if (!raise.raised) return
         val view = item.view
-        view.translationZ = item.value
-        view.outlineProvider = if (saved === NO_OUTLINE) null else saved as ViewOutlineProvider
-        item.styleState = null
-        item.value = 0f
+        view.translationZ = raise.savedZ
+        view.outlineProvider = raise.savedOutline
+        raise.raised = false
+        raise.savedOutline = null
     }
 
     private fun setWallpaperOffset(scene: FoldScene, offset: Float) {
         if (abs(offset - appliedWallpaperOffset) < MIN_WALLPAPER_CHANGE && (offset != 0f || appliedWallpaperOffset == 0f)) return
         appliedWallpaperOffset = offset
-        scene.launcher.workspace?.setWallpaperFoldOffset(offset)
+        scene.setWallpaperFoldOffset(offset)
     }
 
     private companion object {
         const val ICON_CORNER_FRACTION = 0.3f
         const val SHADOW_ALPHA = 0.6f
         const val MIN_WALLPAPER_CHANGE = 0.0005f
-
-        /** Stands for "the view had no outline provider" in the saved state. */
-        val NO_OUTLINE = Any()
     }
 }
