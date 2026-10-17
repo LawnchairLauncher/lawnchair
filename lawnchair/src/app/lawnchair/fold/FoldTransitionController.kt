@@ -42,9 +42,9 @@ import kotlin.math.min
  *
  * Trigger: the DeviceProfile change that a fold or unfold causes: the launcher moves to the other
  * screen and its layout flips between the cover and the large one (with no model reload and no
- * activity recreation). A layout flip on the same screen, like a display size change, is not a
- * fold and plays nothing. The style is started synchronously from that change, before the new
- * layout is drawn, so the first frame on the new screen is already the first frame of the
+ * activity recreation). Any other profile change, like a rotation or a display size change that
+ * keeps the layout, plays nothing. The style is started synchronously from that change, before
+ * the new layout is drawn, so the first frame on the new screen is already the first frame of the
  * transition.
  *
  * Progress source:
@@ -96,7 +96,6 @@ class FoldTransitionController(
 
     private var attached = false
     private var resumed = false
-    private var lastScreen = NO_SCREEN
     private var lastFoldScreen = FoldScreen.NONE
     private var restAngle = Float.NaN
     private var pendingReplay: ReplayMode? = null
@@ -120,8 +119,7 @@ class FoldTransitionController(
     fun attach() {
         if (attached || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         attached = true
-        lastScreen = screenOf(launcher.deviceProfile)
-        lastFoldScreen = launcher.deviceProfile.deviceProperties.foldScreen
+        lastFoldScreen = foldScreenOf(launcher.deviceProfile)
         launcher.addOnDeviceProfileChangeListener(this)
         launcher.registerActivityLifecycleCallbacks(this)
     }
@@ -159,25 +157,21 @@ class FoldTransitionController(
     override fun onDeviceProfileChanged(dp: DeviceProfile) {
         val capture = drawerCapture
         drawerCapture = null
-        val screen = screenOf(dp)
-        val previous = lastScreen
-        lastScreen = screen
-        val foldScreen = dp.deviceProperties.foldScreen
-        val previousFoldScreen = lastFoldScreen
+        val foldScreen = foldScreenOf(dp)
+        val previous = lastFoldScreen
         lastFoldScreen = foldScreen
         restAngle = Float.NaN
         updateHingeSensor()
-        // Same screen (insets, rotation, grid, a window, a resolution change on one screen): a
+        // Same screen (insets, rotation, grid, a resolution change on one screen) or a window: a
         // running transition picks up the new geometry.
-        if (screen == NO_SCREEN || previous == NO_SCREEN || screen == previous || foldScreen == previousFoldScreen) return
+        if (foldScreen == FoldScreen.NONE || previous == FoldScreen.NONE || foldScreen == previous) return
 
         val large = isLarge()
         val current = run
         val foldTrackedOnInner = current != null && !large && current.scene.largeLayout &&
             !current.scene.opening && current.allowHinge
         finishNow(if (large) "unfolded" else "folded")
-        // A fold or unfold moves to the smaller or larger screen and switches the layout with it
-        if (foldTrackedOnInner || large != (screen > previous)) return
+        if (foldTrackedOnInner) return
         if (!isEngineEnabled() || !canRunNow()) return
         if (prefs2.foldTransitionStyle.firstCached() == FoldTransitionStyle.NONE) {
             notifyInstant(large)
@@ -551,17 +545,11 @@ class FoldTransitionController(
     private fun isReducedMotion(): Boolean = !ValueAnimator.areAnimatorsEnabled()
 
     /**
-     * The screen [dp] fills, as its size in pixels in any rotation: a fold or unfold changes it (and
-     * the profile's [FoldScreen] with it), a rotation does not; the larger screen compares greater.
-     * [NO_SCREEN] for a window (multi-window mode).
+     * The screen [dp] fills: a fold or unfold changes it; a rotation, the insets or a display size
+     * change that keeps the layout do not. [FoldScreen.NONE] for a window (multi-window mode), and
+     * on phones and tablets.
      */
-    private fun screenOf(dp: DeviceProfile): Long {
-        val properties = dp.deviceProperties
-        if (properties.isMultiWindowMode) return NO_SCREEN
-        val width = properties.widthPx.toLong()
-        val height = properties.heightPx.toLong()
-        return (min(width, height) shl 32) or max(width, height)
-    }
+    private fun foldScreenOf(dp: DeviceProfile): FoldScreen = if (dp.deviceProperties.isMultiWindowMode) FoldScreen.NONE else dp.deviceProperties.foldScreen
 
     private fun isDrawerOpen(): Boolean = launcher.appsView != null &&
         launcher.stateManager.state == LauncherState.ALL_APPS &&
@@ -671,8 +659,6 @@ class FoldTransitionController(
         private const val MIN_SETTLE_MILLIS = 120L
         private const val PROGRESS_EPSILON = 0.001f
 
-        /** [screenOf] a window that does not fill a screen. */
-        private const val NO_SCREEN = 0L
         private const val HINGE_START_MARGIN = 10f
         private const val MAX_DURATION_SCALE = 10f
         private const val REPLAY_DELAY_AFTER_RESUME_MS = 500L
