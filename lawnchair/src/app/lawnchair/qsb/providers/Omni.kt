@@ -16,7 +16,7 @@
 
 package app.lawnchair.qsb.providers
 
-import app.lawnchair.omni.OmniAskActivity
+import app.lawnchair.omni.OmniSearchHandoff
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 
@@ -30,7 +30,7 @@ data object Omni : QsbSearchProvider(
     type = QsbSearchProviderType.LOCAL,
 ) {
     override suspend fun launch(launcher: Launcher) {
-        launcher.startActivity(OmniAskActivity.createIntent(launcher))
+        OmniSearchHandoff.launch(launcher, origin = "dock")
     }
 
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {

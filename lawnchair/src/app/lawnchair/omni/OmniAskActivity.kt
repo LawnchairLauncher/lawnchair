@@ -16,113 +16,21 @@
 
 package app.lawnchair.omni
 
-import android.app.AlertDialog
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.lifecycle.lifecycleScope
-import app.lawnchair.omni.experience.ExperienceStore
-import com.android.launcher3.R
-import com.omnilink.sdk.OmniJson
 import com.omnilink.sdk.OmniLinkConstants
-import com.omnilink.sdk.PublicOmniRequest
-import com.omnilink.sdk.PublicRequestKind
 import java.io.IOException
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
-import kotlinx.serialization.encodeToString
 
 /** User-visible, on-demand handoff. No long-lived connection or work on the Home startup path. */
 class OmniAskActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val query = intent.getStringExtra(EXTRA_QUERY).orEmpty().trim()
-        if (query.length > OmniSearchPolicy.MAX_QUERY_CHARS) {
-            finish()
-            return
-        }
-        val loading = AlertDialog.Builder(this)
-            .setTitle(R.string.omni_search_provider)
-            .setMessage(R.string.omni_opening_workspace)
-            .setNegativeButton(android.R.string.cancel) { _, _ -> finish() }
-            .setOnCancelListener { finish() }
-            .show()
-        lifecycleScope.launch {
-            val targets = try {
-                workspaceTargets(applicationContext)
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (error: Exception) {
-                Log.w("OmniAskActivity", "Workspace discovery failed", error)
-                null
-            } finally {
-                loading.dismiss()
-            }
-            if (isFinishing || isDestroyed) return@launch
-            if (targets == null) {
-                Toast.makeText(this@OmniAskActivity, R.string.omni_workspace_unavailable, Toast.LENGTH_LONG).show()
-                finish()
-                return@launch
-            }
-            val request = PublicOmniRequest(
-                kind = if (query.isEmpty()) PublicRequestKind.OPEN_OMNI else PublicRequestKind.ASK_OMNI,
-                text = query.takeIf(String::isNotEmpty),
-            )
-            val json = OmniJson.instance.encodeToString(request)
-            fun open(target: Intent) {
-                try {
-                    startActivity(target.putExtra(OmniLinkConstants.EXTRA_PUBLIC_REQUEST_JSON, json))
-                } catch (_: ActivityNotFoundException) {
-                    Toast.makeText(this@OmniAskActivity, R.string.omni_workspace_required, Toast.LENGTH_LONG).show()
-                } catch (_: SecurityException) {
-                    Toast.makeText(this@OmniAskActivity, R.string.omni_workspace_required, Toast.LENGTH_LONG).show()
-                }
-                finish()
-            }
-            val preferred = try {
-                withTimeoutOrNull(400L) { ExperienceStore.get(applicationContext).read().preferredWorkspace }
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (_: Exception) {
-                null
-            }
-            val preferredTarget = targets.firstOrNull { it.second.component?.flattenToString() == preferred }
-            if (preferredTarget != null) {
-                open(preferredTarget.second)
-                return@launch
-            }
-            when (targets.size) {
-                0 -> AlertDialog.Builder(this@OmniAskActivity)
-                    .setTitle(R.string.omni_search_provider)
-                    .setMessage(R.string.omni_workspace_required)
-                    .setPositiveButton(android.R.string.ok) { _, _ -> finish() }
-                    .setOnCancelListener { finish() }
-                    .show()
-
-                1 -> open(targets.single().second)
-
-                else -> AlertDialog.Builder(this@OmniAskActivity)
-                    .setTitle(R.string.omni_choose_workspace)
-                    .setItems(targets.map { it.first }.toTypedArray()) { _, index ->
-                        lifecycleScope.launch {
-                            try {
-                                withTimeoutOrNull(400L) { ExperienceStore.get(applicationContext).update { it.copy(preferredWorkspace = targets[index].second.component?.flattenToString()) } }
-                            } catch (cancelled: CancellationException) {
-                                throw cancelled
-                            } catch (_: Exception) { /* Selection still opens when persistence is unavailable. */ }
-                            if (!isFinishing && !isDestroyed) open(targets[index].second)
-                        }
-                    }
-                    .setOnCancelListener { finish() }
-                    .show()
-            }
+        OmniSearchHandoff.launch(this, queryFrom(intent), "compatibility") {
+            if (!isDestroyed) finish()
         }
     }
 
@@ -165,6 +73,8 @@ class OmniAskActivity : ComponentActivity() {
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             }.distinctBy { it.second.component }.sortedBy { it.second.component?.packageName }
         }
+
+        fun queryFrom(intent: Intent): String = intent.getStringExtra(EXTRA_QUERY).orEmpty()
 
         fun createIntent(context: Context, query: String = ""): Intent = Intent(context, OmniAskActivity::class.java).putExtra(EXTRA_QUERY, query)
     }

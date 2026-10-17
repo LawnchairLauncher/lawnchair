@@ -5,6 +5,13 @@ updates, modifications and ecosystem integration. Original Lawnchair/AOSP author
 credits and rights; see [NOTICE.md](NOTICE.md). Upstream GITHUB_CHANGELOG.md and
 TELEGRAM_CHANGELOG.txt remain historical upstream release notes.
 
+## Direct search/dock handoff — 17 October 2026
+
+- Route Ask Omni and the Omni dock directly from the visible Home Activity through one controller, avoiding a transparent intermediary over the Launcher.
+- Keep loading/selection owned by the active window, deduplicate taps, clean up cancellation/failure and wait for resumed compatibility entry points.
+- Launch before optional preferred-target persistence and tolerate independent preference cancellation; preserve bounded discovery and existing public SDK validation.
+- Add clean-emulator Android-11 cross-process regressions using actual search/dock views, Arabic payloads, multi-target selection, Cancel/retry and the compatibility entry.
+
 ## Search handoff and verified Home folder execution — 16 October 2026
 
 - Fix the multi-install Workspace chooser's hidden list and bound discovery/preference waits without retaining the Activity behind a slow Binder call.

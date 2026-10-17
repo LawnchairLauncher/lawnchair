@@ -205,7 +205,11 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         val intent = omniIntent
         if (intent != null) {
             // Same explicit handoff for the row, its icon and keyboard quick launch.
-            context.startActivity(Intent(intent))
+            if (intent.component?.className == OmniAskActivity::class.java.name) {
+                app.lawnchair.omni.OmniSearchHandoff.launch(launcher, OmniAskActivity.queryFrom(intent), "search")
+            } else {
+                context.startActivity(Intent(intent))
+            }
         } else {
             ItemClickHandler.INSTANCE.onClick(v)
         }
