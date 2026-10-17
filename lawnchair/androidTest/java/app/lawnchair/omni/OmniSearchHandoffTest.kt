@@ -35,10 +35,12 @@ class OmniSearchHandoffTest {
     private val device = UiDevice.getInstance(instrumentation)
 
     @Before
-    fun resetPreferences() = runBlocking(Dispatchers.IO) {
-        ExperienceStore.get(context).update { it.copy(preferredWorkspace = null) }
-        PreferenceManager2.omniPreferencesDataStore(context).edit { values ->
-            values[androidx.datastore.preferences.core.stringPreferencesKey("dock_search_bar_provider")] = "omni"
+    fun resetPreferences() {
+        runBlocking(Dispatchers.IO) {
+            ExperienceStore.get(context).update { it.copy(preferredWorkspace = null) }
+            PreferenceManager2.omniPreferencesDataStore(context).edit { values ->
+                values[androidx.datastore.preferences.core.stringPreferencesKey("dock_search_bar_provider")] = "omni"
+            }
         }
     }
 
