@@ -7,16 +7,24 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * Stretches the content of [view] (the drawer search bar, the personal/work tabs) between two
- * widths without a layout request, so a transition does not lay the whole window out every frame.
+ * Stretches the content of [view] (the drawer search bar, the personal/work tabs) from the side
+ * paddings [fromLeft]/[fromRight] to its own, without a layout request, so a transition does not
+ * lay the whole window out every frame.
  *
  * [capture] keeps the children's frames of the current layout, which is the final one; [apply]
- * maps them linearly onto another content box and measures and lays out only those children (and
- * so only their subtrees), leaving [view]'s padding as it is. If a real layout runs meanwhile, the
- * next [apply] puts the children back. [restore] asks for one normal layout at the end.
+ * maps them linearly onto the content box in between and measures and lays out only those
+ * children (and so only their subtrees), leaving [view]'s padding as it is. If a real layout runs
+ * meanwhile, the next [apply] puts the children back. [restore] asks for one normal layout at the
+ * end.
  */
-internal class FoldStretch(private val view: ViewGroup) {
+internal class FoldStretch(
+    private val view: ViewGroup,
+    private val fromLeft: Int,
+    private val fromRight: Int,
+) {
 
+    private val toLeft = view.paddingLeft
+    private val toRight = view.paddingRight
     private var lefts = IntArray(0)
     private var rights = IntArray(0)
     private var contentLeft = 0
@@ -24,6 +32,7 @@ internal class FoldStretch(private val view: ViewGroup) {
 
     /** Keeps the current layout. Returns false when there is nothing to stretch. */
     fun capture(): Boolean {
+        if (fromLeft == toLeft && fromRight == toRight) return false
         val count = view.childCount
         contentLeft = view.paddingLeft
         contentRight = view.width - view.paddingRight
@@ -33,8 +42,10 @@ internal class FoldStretch(private val view: ViewGroup) {
         return true
     }
 
-    /** Lays the children out in the content box [left]..[right], in [view]'s coordinates. */
-    fun apply(left: Int, right: Int) {
+    /** Lays the children out [fraction] of the way from the from paddings (0) to the view's own (1). */
+    fun apply(fraction: Float) {
+        val left = (fromLeft + (toLeft - fromLeft) * fraction).roundToInt()
+        val right = view.width - (fromRight + (toRight - fromRight) * fraction).roundToInt()
         val scale = (right - left).coerceAtLeast(0).toFloat() / (contentRight - contentLeft)
         for (i in 0 until min(view.childCount, lefts.size)) {
             val child = view.getChildAt(i)

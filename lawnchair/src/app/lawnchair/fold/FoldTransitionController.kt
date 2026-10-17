@@ -74,8 +74,8 @@ import kotlin.math.min
  * crossfade. Any failure ends the transition at once with the final layout showing; debug builds
  * then rethrow it.
  *
- * While the app drawer is open, [DrawerFoldStyle] (river, book or zoom, after `foldDrawerLayout`)
- * replaces the selected home style for that transition.
+ * While the app drawer is open, the [DrawerFoldStyle] of the drawer layout (river, book or zoom,
+ * after `foldDrawerLayout`) replaces the selected home style for that transition.
  */
 class FoldTransitionController(
     private val launcher: LawnchairLauncher,
@@ -289,7 +289,11 @@ class FoldTransitionController(
             reduced -> FoldStyle.createReducedMotion()
 
             // The drawer has its own transitions, which replace the home style while it is open.
-            isDrawerOpen() -> DrawerFoldStyle(drawerLayout(), launcher.appsView, launcher.deviceProfile, capture)
+            isDrawerOpen() -> when (drawerLayout()) {
+                FoldDrawerLayout.EXPAND -> DrawerRiverStyle(launcher.appsView, launcher.deviceProfile, capture)
+                FoldDrawerLayout.PAGES -> DrawerBookStyle(launcher.appsView, launcher.deviceProfile, capture)
+                FoldDrawerLayout.BIG_ICONS -> DrawerZoomStyle(launcher.appsView, launcher.deviceProfile, capture)
+            }
 
             else -> FoldStyle.create(styleType)
         }
