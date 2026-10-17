@@ -88,7 +88,6 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.function.Consumer;
-import java.util.function.IntFunction;
 
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.DeviceProfileOverrides;
@@ -135,6 +134,9 @@ public class DeviceProfile {
     // LC-Note: whether this profile shows the inner item set of the "Independent" home layout
     // (the large screen of a foldable), see FoldItemSets.
     public final boolean isInnerItemSet;
+    // LC-Note: the foldable drawer layout ("book" or "zoom") this profile was built for, with the
+    // cover profile it copies; null for the usual drawer. See FoldDrawerLayouts.
+    public final FoldDrawerLayouts.Drawer foldDrawer;
 
     public boolean isPredictiveBackSwipe;
     public final boolean isQsbInline;
@@ -284,9 +286,7 @@ public class DeviceProfile {
 
     // Notification dots
     public final DotRenderer mDotRendererWorkSpace;
-    // LC-Note: not final, the foldable "zoom" drawer re-creates it (updateAllAppsDotRenderer)
-    public DotRenderer mDotRendererAllApps;
-    private IntFunction<DotRenderer> mAllAppsDotRendererFactory;
+    public final DotRenderer mDotRendererAllApps;
 
     // Taskbar
     private final TaskbarProfile mTaskbarProfile;
@@ -342,6 +342,7 @@ public class DeviceProfile {
         isQsbInline = false;
         isTwoPanelSinglePage = false;
         isInnerItemSet = false;
+        foldDrawer = null;
         isLeftRightSplit = false;
         mIsScalableGrid = false;
         mTypeIndex = 0;
@@ -792,6 +793,9 @@ public class DeviceProfile {
 
         dimensionOverrideProvider.accept(this);
 
+        // LC-Note: the foldable drawer layouts "book" and "zoom" take the cover's drawer metrics
+        foldDrawer = FoldDrawerLayouts.create(this, context, info, wmProxy, themeManager);
+
         // Check if notification dots should show the notification count
         boolean showNotificationCount = PreferenceCacheExtensionsKt
                 .firstCached(preferenceManager2.getShowNotificationCount());
@@ -815,21 +819,6 @@ public class DeviceProfile {
         mDotRendererWorkSpace = createDotRenderer(themeManager, iconSizePx, dotRendererCache, showNotificationCount, typeface, dotColor, countColor);
         mDotRendererAllApps = createDotRenderer(themeManager,
                 getAllAppsProfile().getIconSizePx(), dotRendererCache, showNotificationCount, typeface, dotColor, countColor);
-        // LC-Note: lets the foldable "zoom" drawer size its dots for its larger icons
-        final Typeface dotTypeface = typeface;
-        mAllAppsDotRendererFactory = size -> createDotRenderer(themeManager, size,
-                dotRendererCache, showNotificationCount, dotTypeface, dotColor, countColor);
-    }
-
-    /**
-     * LC-Note: re-creates the all-apps notification dots for the current all-apps icon size, after
-     * the foldable drawer layouts (app.lawnchair.fold.FoldDrawerLayouts) changed it.
-     */
-    public void updateAllAppsDotRenderer() {
-        if (mAllAppsDotRendererFactory != null) {
-            mDotRendererAllApps = mAllAppsDotRendererFactory.apply(
-                    getAllAppsProfile().getIconSizePx());
-        }
     }
 
     public DeviceProperties getDeviceProperties() {
