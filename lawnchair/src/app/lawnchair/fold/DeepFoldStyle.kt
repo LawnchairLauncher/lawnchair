@@ -111,7 +111,7 @@ class DeepFoldStyle : FoldStyle() {
     private fun setWallpaperOffset(scene: FoldScene, offset: Float) {
         if (abs(offset - appliedWallpaperOffset) < MIN_WALLPAPER_CHANGE && (offset != 0f || appliedWallpaperOffset == 0f)) return
         appliedWallpaperOffset = offset
-        scene.launcher.workspace?.setWallpaperFoldOffset(offset)
+        scene.setWallpaperFoldOffset(offset)
     }
 
     private companion object {

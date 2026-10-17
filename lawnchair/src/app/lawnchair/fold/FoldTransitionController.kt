@@ -268,7 +268,15 @@ class FoldTransitionController(
         finishNow("restart")
         val styleType = prefs2.foldTransitionStyle.firstCached()
         val reduced = isReducedMotion()
-        val scene = FoldScene(launcher, opening, large, reduced)
+        val scene = FoldScene(
+            launcher.rootView,
+            launcher.dragLayer,
+            launcher.workspace,
+            launcher.resources.displayMetrics.density,
+            opening,
+            large,
+            reduced,
+        )
         scene.timeScale = if (phase == Phase.HINGE || reduced) 1f else durationScale() * if (slow) FoldTunables.REPLAY_SLOW_FACTOR else 1f
         val millis = when {
             phase == Phase.HINGE -> 0L
@@ -281,7 +289,7 @@ class FoldTransitionController(
             reduced -> FoldStyle.createReducedMotion()
 
             // The drawer has its own transitions, which replace the home style while it is open.
-            isDrawerOpen() -> DrawerFoldStyle(drawerLayout(), capture)
+            isDrawerOpen() -> DrawerFoldStyle(drawerLayout(), launcher.appsView, launcher.deviceProfile, capture)
 
             else -> FoldStyle.create(styleType)
         }

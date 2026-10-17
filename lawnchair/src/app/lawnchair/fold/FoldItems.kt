@@ -88,6 +88,7 @@ class FoldItem internal constructor(
 class FoldItemTracker(private val onRemoved: (FoldItem) -> Unit) {
     val items = ArrayList<FoldItem>()
 
+    private val pages = ArrayList<CellLayout>()
     private val tmpRect = Rect()
     private val position = FloatArray(2)
 
@@ -96,32 +97,24 @@ class FoldItemTracker(private val onRemoved: (FoldItem) -> Unit) {
         val geometry = scene.geometry
         if (!geometry.isValid) return
         for (i in items.indices) items[i].seen = false
-        val workspace = scene.launcher.workspace
-        // The range array is shared by the workspace: read it at once
-        val range = if (workspace != null && workspace.visibility == View.VISIBLE) workspace.visibleChildrenRange else null
-        val firstPage = range?.get(0) ?: -1
-        val lastPage = range?.get(1) ?: -1
-        if (workspace != null && firstPage >= 0) {
-            for (i in firstPage..lastPage) {
-                val page = workspace.getChildAt(i) as? CellLayout ?: continue
-                if (page.visibility != View.VISIBLE) continue
-                val container = page.shortcutsAndWidgets
-                for (j in 0 until container.childCount) {
-                    val child = container.getChildAt(j)
-                    if (child.visibility != View.VISIBLE || !centerInRoot(child, root)) continue
-                    val x = position[0]
-                    val y = position[1]
-                    if (x < 0f || y < 0f || x > geometry.width || y > geometry.height) continue
-                    val item = find(child) ?: FoldItem(child, this).also {
-                        items.add(it)
-                        child.setTag(R.id.fold_item, it)
-                    }
-                    item.seen = true
-                    item.centerX = x
-                    item.centerY = y
-                    measureIcon(item)
-                    place(item, scene)
+        scene.getVisiblePages(pages)
+        for (i in pages.indices) {
+            val container = pages[i].shortcutsAndWidgets
+            for (j in 0 until container.childCount) {
+                val child = container.getChildAt(j)
+                if (child.visibility != View.VISIBLE || !centerInRoot(child, root)) continue
+                val x = position[0]
+                val y = position[1]
+                if (x < 0f || y < 0f || x > geometry.width || y > geometry.height) continue
+                val item = find(child) ?: FoldItem(child, this).also {
+                    items.add(it)
+                    child.setTag(R.id.fold_item, it)
                 }
+                item.seen = true
+                item.centerX = x
+                item.centerY = y
+                measureIcon(item)
+                place(item, scene)
             }
         }
         for (i in items.size - 1 downTo 0) {

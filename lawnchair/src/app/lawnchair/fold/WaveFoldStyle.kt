@@ -55,7 +55,7 @@ class WaveFoldStyle : SplitFoldStyle() {
         bandHalf = scene.dpToPx(FoldTunables.WAVE_BAND_WIDTH_DP) / 2f
         liftPx = scene.dpToPx(FoldTunables.WAVE_LIFT_DP)
         settlePx = scene.dpToPx(FoldTunables.WAVE_SETTLE_DP)
-        val accent = Themes.getColorAccent(scene.launcher)
+        val accent = Themes.getColorAccent(scene.rootView.context)
         val light = ColorUtils.blendARGB(accent, Color.WHITE, 0.55f)
         bandPaint.shader = LinearGradient(
             -bandHalf,

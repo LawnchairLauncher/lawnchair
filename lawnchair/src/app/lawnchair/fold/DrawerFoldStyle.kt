@@ -9,6 +9,7 @@ import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.Reorderable
 import com.android.launcher3.Utilities
+import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.AllAppsRecyclerView
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.allapps.FloatingHeaderView
@@ -26,8 +27,9 @@ import kotlin.math.roundToInt
  * it, in the list's order. The "before" of the large layout is the cover's drawer, rebuilt from the
  * cover profile around the list's first visible item (the drawer keeps its scroll across the
  * change, see [FoldDrawerState]), so the same path plays for a real unfold, a fold tracked on the
- * inner display and the debug replay. [capture] is what the drawer showed right before the profile
- * change that started the run (null for the other runs).
+ * inner display and the debug replay. [appsView] is the open drawer and [dp] the launcher's
+ * profile when the run starts; [capture] is what the drawer showed right before the profile change
+ * that started the run (null for the other runs).
  *
  * - [FoldDrawerLayout.EXPAND], "river": the first row goes straight to its new place; the apps after
  *   it follow one after another ([FoldTunables.DRAWER_RIVER_STAGGER_MILLIS] apart) along a small arc,
@@ -49,6 +51,8 @@ import kotlin.math.roundToInt
 @RequiresApi(Build.VERSION_CODES.Q)
 class DrawerFoldStyle(
     private val layout: FoldDrawerLayout,
+    private val appsView: ActivityAllAppsContainerView<*>,
+    private val dp: DeviceProfile,
     private val capture: FoldDrawerState.Capture?,
 ) : FoldStyle() {
 
@@ -119,14 +123,11 @@ class DrawerFoldStyle(
     private val coords = FloatArray(2)
 
     override fun onStart(scene: FoldScene): Boolean {
-        val launcher = scene.launcher
-        val appsView = launcher.appsView ?: return false
         searching = appsView.isSearching
         list = appsView.activeRecyclerView
         header = appsView.floatingHeaderView
         bar = appsView.searchView
-        rtl = Utilities.isRtl(launcher.resources)
-        val dp = launcher.deviceProfile
+        rtl = Utilities.isRtl(appsView.resources)
         cover = FoldLayout.coverProfileOf(dp)
         large = FoldLayout.largeProfileOf(dp)
         val large = large
@@ -151,13 +152,12 @@ class DrawerFoldStyle(
 
     override fun onPreDraw(scene: FoldScene, progress: Float) {
         val p = progress.coerceIn(0f, 1f)
-        val launcher = scene.launcher
         val list = list ?: return
         if (!prepared) {
             prepared = true
             prepareBar(scene)
             if (!searching) {
-                val onLarge = launcher.deviceProfile === large
+                val onLarge = dp === large
                 when (layout) {
                     FoldDrawerLayout.EXPAND -> {
                         prepareRiver(scene, list, onLarge)
@@ -251,7 +251,7 @@ class DrawerFoldStyle(
                 fromLeft = toLarge(captured.searchBarLeft)
                 fromRight = toLarge(captured.searchBarRight)
             } else {
-                val padding = FoldDrawerLayouts.getSearchBarPadding(scene.launcher, cover) * if (isSearchActive()) 0.5f else 1f
+                val padding = FoldDrawerLayouts.getSearchBarPadding(appsView.context, cover) * if (isSearchActive()) 0.5f else 1f
                 fromLeft = toLarge(padding)
                 fromRight = toLarge(cover.deviceProperties.widthPx - padding)
             }
@@ -261,7 +261,7 @@ class DrawerFoldStyle(
                 fromLeft = toCover(captured.searchBarLeft)
                 fromRight = toCover(captured.searchBarRight)
             } else {
-                val padding = FoldDrawerLayouts.getSearchBarPadding(scene.launcher, large) * if (isSearchActive()) 0.5f else 1f
+                val padding = FoldDrawerLayouts.getSearchBarPadding(appsView.context, large) * if (isSearchActive()) 0.5f else 1f
                 fromLeft = toCover(padding)
                 fromRight = toCover(large.deviceProperties.widthPx - padding)
             }
