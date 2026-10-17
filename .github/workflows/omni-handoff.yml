@@ -1,0 +1,46 @@
+name: Omni search handoff (Android 11)
+on:
+  pull_request:
+    paths:
+      - 'lawnchair/src/app/lawnchair/omni/**'
+      - 'lawnchair/src/app/lawnchair/qsb/**'
+      - 'lawnchair/src/app/lawnchair/allapps/views/SearchResultIcon*'
+      - 'lawnchair/androidTest/**'
+      - 'build.gradle'
+      - '.github/workflows/omni-handoff.yml'
+      - 'scripts/test_omni_handoff_android.sh'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: omni-handoff-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  android11-handoff:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+      - uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v5
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools emulator system-images;android-30;google_apis;x86_64'
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Exercise real search and dock taps across app processes
+        run: bash scripts/test_omni_handoff_android.sh
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: omni-handoff-android11-${{ github.run_number }}
+          path: build/reports/omni-handoff/**
+          if-no-files-found: ignore

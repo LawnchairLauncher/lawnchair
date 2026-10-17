@@ -186,6 +186,9 @@ android {
     }
     namespace "com.android.launcher3"
     defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // Clean-emulator fixture only: tests install a public Workspace receiver in the test APK.
+        testApplicationId "com.omnidev.workspace"
         // Lawnchair Launcher 15.0 Beta 3
         // See CONTRIBUTING.md#versioning-scheme
         versionCode 15_00_02_03_00
@@ -311,6 +314,10 @@ android {
     }
 
     sourceSets {
+        androidTest {
+            java.srcDirs = ['lawnchair/androidTest/java']
+            manifest.srcFile 'lawnchair/androidTest/AndroidManifest.xml'
+        }
         main {
             res.srcDirs = ['res']
             java.srcDirs = ['src', 'src_plugins']
@@ -377,6 +384,9 @@ composeCompiler {
 addFrameworkJar('framework-15.jar')
 
 dependencies {
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+    androidTestImplementation libs.androidx.uiautomator
     lawnImplementation "com.github.obieda-hussien.OmniLinkSDK:omni-link-sdk:v3.0.0"
     implementation projects.iconloaderlib
     implementation projects.searchuilib

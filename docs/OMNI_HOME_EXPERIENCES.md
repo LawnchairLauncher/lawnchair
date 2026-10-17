@@ -200,3 +200,13 @@ launcher.create_home_folder accepts a fresh get_layout expectedRevision, a nonbl
 After a committed mutation, reloadScheduled means the loader still has to bind Home. Read get_layout again and verify the new revision and requested arrangement. Layout snapshots expose folder ID/title/visible-app count for verification, but no hidden member identities. Existing folder contents are not remotely editable in this version.
 
 The direct suite executes 46 JVM tests. APK CI verifies Android APIs separately. Physical Infinix ANR reproduction, end-to-end approval and UI/memory/frame-time validation remain device checks; no physical-device success is claimed.
+
+### Direct search/dock handoff on Android 11
+
+SearchResultIcon and the Omni dock provider now open OmniSearchHandoff from the visible Launcher Activity. Discovery/selection belongs to that window, so no transparent intermediary Activity can remain above Home and absorb touches. The compatibility OmniAskActivity delegates to the same controller, waits until resumed and always finishes after cancellation, failure or successful launch. One request/chooser is active per host; Cancel leaves Home tappable.
+
+Discovery retains the existing bounded worker. Optional preference failures do not prevent opening; saving a chosen Workspace happens after launching it and never blocks delivery. Diagnostics log origin, query character count and target component, never query text. Signing/control/approval policies are unchanged; this is only public, unsent draft ingress.
+
+The Android-11 handoff workflow builds the actual Launcher plus an instrumentation APK containing two exported Workspace fixture receivers. Tests tap the production search row and dock view, select a receiver and verify typed Arabic ASK_OMNI or empty OPEN_OMNI in a separate process. They also cancel/retry and exercise the compatibility Activity. The fixture uses com.omnidev.workspace and must run only on a clean CI emulator; never install this test APK over a personal Workspace installation. No fixture or test dependency is packaged in production APKs.
+
+This covers the missing Launcher-side boundary in the earlier Workspace-only ingress test. Its first run exposed a real packaged-APK NoSuchMethodError for OmniJson.getInstance() before target launch: the SDK contains a JVM field rather than that getter. The handoff now owns a small JSON codec with the same wire defaults while retaining the SDK's typed public request. The separate-process test receiver uses platform-only Java so it does not borrow runtime classes from the instrumented target APK. The submitted video is interaction evidence, not an ANR thread dump; the physical Infinix/OEM stack remains unmeasured.

@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:label="Omni handoff test fixture">
+        <activity android:name="app.lawnchair.omni.fixture.WorkspaceCaptureActivity"
+            android:label="Handoff fixture A" android:exported="true"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="com.omnilink.sdk.action.PUBLIC_OMNI_REQUEST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity-alias android:name="app.lawnchair.omni.fixture.SecondWorkspace"
+            android:targetActivity="app.lawnchair.omni.fixture.WorkspaceCaptureActivity"
+            android:label="Handoff fixture B" android:exported="true">
+            <intent-filter>
+                <action android:name="com.omnilink.sdk.action.PUBLIC_OMNI_REQUEST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+    </application>
+</manifest>
