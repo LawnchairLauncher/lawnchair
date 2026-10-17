@@ -567,6 +567,7 @@ public class DisplayController implements DesktopVisibilityListener {
         private final boolean mIsNightModeActive;
 
         private boolean mIsFoldable;
+        private boolean mDeviceTypeLogged;
 
         public Info(Context displayInfoContext) {
             /* don't need system overrides for external displays */
@@ -740,7 +741,7 @@ public class DisplayController implements DesktopVisibilityListener {
 
         public @DeviceType int getDeviceType() {
             if (mIsDesktopFormFactor) {
-                Log.d("LC-DisplayController", "Device has desktop profile (Desktop)");
+                logDeviceType("Device has desktop profile (Desktop)");
                 return TYPE_DESKTOP;
             }
 
@@ -752,20 +753,31 @@ public class DisplayController implements DesktopVisibilityListener {
                     .reduce(0, (a, b) -> a | b);
 
             if (type == (flagPhone | flagTablet)) {
-                Log.d("LC-DisplayController", "Device has multiple display (Phone|Tablet) based on bounds");
+                logDeviceType("Device has multiple display (Phone|Tablet) based on bounds");
                 return TYPE_MULTI_DISPLAY;
             }
             if (type == flagTablet) {
                 // LC: Hacky stuff but it work!
                 if (mIsFoldable) {
-                    Log.d("LC-DisplayController", "Device is Foldable (Tablet && Hinge Detected)");
+                    logDeviceType("Device is Foldable (Tablet && Hinge Detected)");
                     return TYPE_MULTI_DISPLAY;
                 }
-                Log.d("LC-DisplayController", "Device has tablet profile (Tablet)");
+                logDeviceType("Device has tablet profile (Tablet)");
                 return TYPE_TABLET;
             } else {
-                Log.d("LC-DisplayController", "Device has phone profile (Phone)");
+                logDeviceType("Device has phone profile (Phone)");
                 return TYPE_PHONE;
+            }
+        }
+
+        /**
+         * LC-Note: getDeviceType() is called many times for each display change (once per
+         * DeviceProfile and more), so only log it the first time.
+         */
+        private void logDeviceType(String message) {
+            if (!mDeviceTypeLogged) {
+                mDeviceTypeLogged = true;
+                Log.d("LC-DisplayController", message + ", currentSize=" + currentSize);
             }
         }
 
