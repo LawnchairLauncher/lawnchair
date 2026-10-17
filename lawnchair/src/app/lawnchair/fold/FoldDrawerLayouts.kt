@@ -33,8 +33,9 @@ import kotlin.math.roundToInt
  *
  * Each device profile of the large screen takes its drawer metrics from the cover profile of the
  * same rotation while it is built ([create], called from the `DeviceProfile` constructor), so the
- * fixed page matches the cover exactly when both screens have the same density, and every copy of
- * the profile (multi-window, taskbar) keeps the layout.
+ * fixed page matches the cover exactly when both screens have the same density, and copies of the
+ * profile (the taskbar's) keep the layout. A multi-window profile has no rotation (its window
+ * bounds come from the window metrics), so it isn't the large screen here and keeps today's drawer.
  */
 object FoldDrawerLayouts {
 
