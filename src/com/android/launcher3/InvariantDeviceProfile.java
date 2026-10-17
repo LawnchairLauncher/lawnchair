@@ -581,8 +581,6 @@ public class InvariantDeviceProfile {
                     Math.max(defaultWallpaperSize.x, Math.round(parallaxFactor * displayWidth));
         }
         supportedProfiles = Collections.unmodifiableList(localSupportedProfiles);
-        // LC-Note: the foldable drawer layouts take their metrics from the cover profile
-        FoldDrawerLayouts.applyToProfiles(context, supportedProfiles);
 
         int numMinShownHotseatIconsForTablet = supportedProfiles
                 .stream()
