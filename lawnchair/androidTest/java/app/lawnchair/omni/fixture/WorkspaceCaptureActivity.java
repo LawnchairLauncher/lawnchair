@@ -1,6 +1,7 @@
 package app.lawnchair.omni.fixture;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,6 +14,17 @@ public final class WorkspaceCaptureActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        renderRequest();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        renderRequest();
+    }
+
+    private void renderRequest() {
         try {
             JSONObject payload = new JSONObject(
                     getIntent().getStringExtra(OmniLinkConstants.EXTRA_PUBLIC_REQUEST_JSON));

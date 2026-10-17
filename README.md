@@ -97,7 +97,7 @@ SDK version bump. [Payloads, setup, errors, privacy and test matrix](docs/OMNI_I
 | Production source files | **2,194** |
 | Production source lines | **470,621** |
 | Test source files | **661** |
-| Test source lines | **112,771** |
+| Test source lines | **112,783** |
 | Kotlin files | **1,195** |
 | Kotlin lines | **165,545** |
 | Markdown documents | **40** |
