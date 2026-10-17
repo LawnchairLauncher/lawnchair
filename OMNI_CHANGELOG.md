@@ -8,6 +8,7 @@ TELEGRAM_CHANGELOG.txt remain historical upstream release notes.
 ## Direct search/dock handoff — 17 October 2026
 
 - Route Ask Omni and the Omni dock directly from the visible Home Activity through one controller, avoiding a transparent intermediary over the Launcher.
+- Fix the packaged SDK's OmniJson getter/field mismatch exposed by Android-11 instrumentation; serialize the same typed public payload with a local codec instead of calling the missing getter.
 - Keep loading/selection owned by the active window, deduplicate taps, clean up cancellation/failure and wait for resumed compatibility entry points.
 - Launch before optional preferred-target persistence and tolerate independent preference cancellation; preserve bounded discovery and existing public SDK validation.
 - Add clean-emulator Android-11 cross-process regressions using actual search/dock views, Arabic payloads, multi-target selection, Cancel/retry and the compatibility entry.

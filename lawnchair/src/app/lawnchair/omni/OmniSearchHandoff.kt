@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.withResumed
 import app.lawnchair.omni.experience.ExperienceStore
 import com.android.launcher3.R
-import com.omnilink.sdk.OmniJson
 import com.omnilink.sdk.OmniLinkConstants
 import com.omnilink.sdk.PublicOmniRequest
 import com.omnilink.sdk.PublicRequestKind
@@ -31,6 +30,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 /** A user tap stays owned by the visible Home window until the external target is launched. */
 object OmniSearchHandoff {
@@ -39,6 +39,13 @@ object OmniSearchHandoff {
     // Main-only, one request/chooser per window. No Activity survives terminal cleanup.
     private val sessions = WeakHashMap<ComponentActivity, Job>()
     private val persistence = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    // Keep the public typed payload, but own its codec. The packaged SDK exposes OmniJson's
+    // instance as a JVM field while the consumer compiled a getter, crashing at the first tap.
+    private val wireJson = Json {
+        encodeDefaults = false
+        explicitNulls = false
+    }
 
     fun launch(activity: ComponentActivity, query: String = "", origin: String = "search", onComplete: () -> Unit = {}) {
         check(Looper.myLooper() == Looper.getMainLooper())
@@ -67,7 +74,7 @@ object OmniSearchHandoff {
                 val preferred = optionalPreference {
                     ExperienceStore.get(appContext).read().preferredWorkspace
                 }
-                val json = OmniJson.instance.encodeToString(
+                val json = wireJson.encodeToString(
                     PublicOmniRequest(
                         kind = if (text.isEmpty()) PublicRequestKind.OPEN_OMNI else PublicRequestKind.ASK_OMNI,
                         text = text.takeIf(String::isNotEmpty),

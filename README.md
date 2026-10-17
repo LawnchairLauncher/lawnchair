@@ -77,8 +77,8 @@ The SDK verifies signing identity, and both applications enforce package/flavor 
 | `launcher.open_app` | Open an exact visible component while Home is resumed; approval and dry run supported |
 | `launcher.open_drawer` | Open the drawer while Home is resumed; approval and dry run supported |
 
-The experience build advertises 24 capabilities, including `launcher.get_layout`, `launcher.move_items`,
-`launcher.set_grid` and `launcher.create_folder`; [schemas and usage](docs/OMNI_HOME_EXPERIENCES.md).
+The experience build advertises 25 capabilities, including `launcher.get_layout`, `launcher.move_items`,
+`launcher.set_grid` and `launcher.create_home_folder`; [schemas and usage](docs/OMNI_HOME_EXPERIENCES.md).
 ADMIN/PRO/OEM may use Home mutations; NORM can read and open; LITE can read health only.
 Update both Launcher and Workspace companion builds to see the full catalog. `protocolVersion` is
 not an APK/catalog version; `launcher.health` reports app versions and `capabilityCatalogVersion`.
@@ -95,11 +95,11 @@ SDK version bump. [Payloads, setup, errors, privacy and test matrix](docs/OMNI_I
 | --- | ---: |
 | Tracked files | **5,020** |
 | Production source files | **2,194** |
-| Production source lines | **470,614** |
+| Production source lines | **470,621** |
 | Test source files | **661** |
-| Test source lines | **112,762** |
-| Kotlin files | **1,196** |
-| Kotlin lines | **165,562** |
+| Test source lines | **112,771** |
+| Kotlin files | **1,195** |
+| Kotlin lines | **165,545** |
 | Markdown documents | **40** |
 <!-- OMNI_METRICS_END -->
 
