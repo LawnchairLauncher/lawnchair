@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.fold.FoldAfterFold
 import app.lawnchair.fold.FoldDock
@@ -19,6 +20,7 @@ import app.lawnchair.fold.FoldOption
 import app.lawnchair.fold.FoldTransitionStyle
 import app.lawnchair.fold.FoldWallpaper
 import app.lawnchair.fold.FoldWallpaperOffsets
+import app.lawnchair.fold.HingeAngleProvider
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.rememberTransformAdapter
@@ -83,11 +85,18 @@ fun FoldablePreferences(
                 options = FoldTransitionStyle.entries,
                 label = stringResource(id = R.string.fold_animation),
             )
+            // A sensor that reports only open and closed can't be followed: the timer plays instead
+            val context = LocalContext.current
+            val postureOnly = remember { HingeAngleProvider.isPostureOnly(context) }
             SwitchPreference(
                 adapter = prefs2.foldTrackHinge.getAdapter(),
                 label = stringResource(id = R.string.fold_track_hinge),
                 description = stringResource(id = R.string.fold_track_hinge_description),
+                enabled = !postureOnly,
             )
+            if (postureOnly) {
+                FoldNote(text = stringResource(id = R.string.fold_track_hinge_posture_only))
+            }
         }
 
         val homeIndependent = isFoldHomeIndependent()

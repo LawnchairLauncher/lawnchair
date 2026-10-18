@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.Choreographer
+import com.android.launcher3.util.Executors
 import kotlin.math.abs
 
 /**
@@ -20,6 +21,9 @@ import kotlin.math.abs
  * the session it came from.
  * Events can arrive faster than the display refreshes; they are coalesced and handed to [Listener]
  * at most once per frame, on the main thread. Nothing is allocated per event.
+ *
+ * What it learns about a posture-only sensor ([isContinuous]) is kept across restarts for the
+ * settings ([isPostureOnly]).
  */
 class HingeAngleProvider(
     context: Context,
@@ -32,6 +36,7 @@ class HingeAngleProvider(
         fun onHingeAngleChanged(angle: Float)
     }
 
+    private val appContext = context.applicationContext
     private val sensorManager = context.getSystemService(SensorManager::class.java)
     private val sensor: Sensor? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         sensorManager?.getDefaultSensor(Sensor.TYPE_HINGE_ANGLE)
@@ -43,6 +48,9 @@ class HingeAngleProvider(
     private var framePending = false
     private var directionAnchor = Float.NaN
     private var moveAnchor = Float.NaN
+
+    /** Whether the hinge moved since [start]: a session that tells a posture-only sensor apart. */
+    private var movedSinceStart = false
 
     val hasSensor: Boolean get() = sensor != null
 
@@ -86,6 +94,9 @@ class HingeAngleProvider(
         if (isStarted) {
             sensorManager?.unregisterListener(this)
             isStarted = false
+            // The hinge moved and every reading was a posture. A hinge at rest proves nothing: a
+            // continuous sensor reads 180° flat too.
+            if (movedSinceStart && !isContinuous) updatePostureOnly(appContext, postureSession = true)
         }
         if (framePending) {
             Choreographer.getInstance().removeFrameCallback(this)
@@ -93,6 +104,7 @@ class HingeAngleProvider(
         }
         directionAnchor = Float.NaN
         moveAnchor = Float.NaN
+        movedSinceStart = false
         angle = Float.NaN
         isOpening = false
     }
@@ -111,8 +123,10 @@ class HingeAngleProvider(
         }
         if (!isContinuous && abs(value - POSTURE_STEP * Math.round(value / POSTURE_STEP)) >= MOVE_EPSILON) {
             isContinuous = true
+            updatePostureOnly(appContext, postureSession = false)
         }
         if (moveAnchor.isNaN() || abs(value - moveAnchor) >= MOVE_EPSILON) {
+            if (!moveAnchor.isNaN()) movedSinceStart = true
             lastMoveUptimeMillis = SystemClock.uptimeMillis()
             moveAnchor = value
         }
@@ -134,5 +148,31 @@ class HingeAngleProvider(
         const val DIRECTION_HYSTERESIS = 2f
         const val MOVE_EPSILON = 0.5f
         private const val POSTURE_STEP = 90f
+
+        // Its own device-protected file, outside the backups
+        private const val PREFS_NAME = "lc_hinge_sensor"
+        private const val KEY_POSTURE_SESSIONS = "lc_posture_only_sessions"
+        private const val POSTURE_ONLY_SESSIONS = 2
+
+        /**
+         * Whether this device's hinge sensor reports postures only: in [POSTURE_ONLY_SESSIONS]
+         * large-screen sessions the hinge moved and no reading was continuous, and no continuous
+         * reading came since. Reads a small file.
+         */
+        fun isPostureOnly(context: Context): Boolean = prefs(context).getInt(KEY_POSTURE_SESSIONS, 0) >= POSTURE_ONLY_SESSIONS
+
+        /** Counts a posture-only session, or forgets them all after a continuous reading. Off the main thread. */
+        private fun updatePostureOnly(context: Context, postureSession: Boolean) {
+            Executors.UI_HELPER_EXECUTOR.execute {
+                val prefs = prefs(context)
+                val sessions = prefs.getInt(KEY_POSTURE_SESSIONS, 0)
+                when {
+                    !postureSession -> if (sessions > 0) prefs.edit().remove(KEY_POSTURE_SESSIONS).apply()
+                    sessions < POSTURE_ONLY_SESSIONS -> prefs.edit().putInt(KEY_POSTURE_SESSIONS, sessions + 1).apply()
+                }
+            }
+        }
+
+        private fun prefs(context: Context) = context.createDeviceProtectedStorageContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 }

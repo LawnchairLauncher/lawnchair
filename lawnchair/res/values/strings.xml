@@ -1111,6 +1111,7 @@
     <string name="fold_transition_none_description">No animation, but also no jump, reload or deletion.</string>
     <string name="fold_track_hinge">Follow hinge angle</string>
     <string name="fold_track_hinge_description">The animation follows your hand and stops when you stop</string>
+    <string name="fold_track_hinge_posture_only">This phone\'s hinge sensor reports only open and closed, so the animation plays at its own pace.</string>
 
     <string name="fold_cover_opens_on">Cover screen opens on</string>
     <string name="fold_after_fold_last_panel">Last panel you used</string>
