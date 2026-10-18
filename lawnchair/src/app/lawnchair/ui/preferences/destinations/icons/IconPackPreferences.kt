@@ -19,6 +19,7 @@ package app.lawnchair.ui.preferences.destinations.icons
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -176,6 +177,7 @@ fun IconPackGrid(
                     }
                 }
                 item {
+                    val toastMessage = stringResource(R.string.error_no_market_or_browser_installed)
                     IconPackItem(
                         label = stringResource(R.string.get_more_icon_packs),
                         icon = { iconModifier ->
@@ -198,12 +200,16 @@ fun IconPackGrid(
                             try {
                                 context.startActivity(intent)
                             } catch (_: Exception) {
-                                context.startActivity(
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        "https://play.google.com/store/search?q=icon+pack&c=apps".toUri(),
-                                    ),
-                                )
+                                try {
+                                    context.startActivity(
+                                        Intent(
+                                            Intent.ACTION_VIEW,
+                                            "https://play.google.com/store/search?q=icon+pack&c=apps".toUri(),
+                                        ),
+                                    )
+                                } catch (_: Exception) {
+                                    Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+                                }
                             }
                         },
                     )

@@ -98,6 +98,7 @@ class LawnchairIconProvider @Inject constructor(
             return overrideItem.toIconEntry()
         }
 
+        // if forced monochrome is enabled, fallback to launcher3 behavior
         if (prefs.forceIconMonochrome.get()) {
             return null
         }
@@ -113,11 +114,9 @@ class LawnchairIconProvider @Inject constructor(
     }
 
     /**
-     * Resolves the launch component for icon-pack lookup.
-     *
-     * Avoid [android.content.pm.PackageManager.getLaunchIntentForPackage], which only sees the
-     * current user — work/private profile apps would otherwise fall back to the system icon.
-     * Prefer the real component from [ComponentInfo], then [LauncherApps] for the app's user.
+     * Resolves launch component and icon entry.
+     * This function tries to resolve the real component so that it works for non-default
+     * users (like work / private profiles)
      */
     private fun resolveComponentName(
         info: PackageItemInfo,
