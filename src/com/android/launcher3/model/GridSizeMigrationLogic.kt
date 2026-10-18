@@ -480,9 +480,9 @@ class GridSizeMigrationLogic {
         val occupied = BooleanArray(hotseatSize)
         for (entry in placedHotseatItems) {
             // LC-Note: the target may still hold dock items past this dock size (it was last
-            // used with a larger dock). They take no slot; marking one would throw
-            // ArrayIndexOutOfBoundsException.
-            if (entry.screenId < occupied.size) {
+            // used with a larger dock), and a corrupt database a negative rank. They take no slot;
+            // marking one would throw ArrayIndexOutOfBoundsException.
+            if (entry.screenId >= 0 && entry.screenId < occupied.size) {
                 occupied[entry.screenId] = true
             }
         }
