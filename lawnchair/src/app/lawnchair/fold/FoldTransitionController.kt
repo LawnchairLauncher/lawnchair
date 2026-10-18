@@ -436,10 +436,11 @@ class FoldTransitionController(
             Log.e(TAG, "${r.style.javaClass.simpleName}.onEnd failed", t)
             failure = failure ?: t
         } finally {
-            // What a style that throws could leave on the whole launcher: the DragLayer's clip and
-            // blur. Nothing else in the launcher sets either.
+            // What a style that throws could leave on the whole launcher: the DragLayer's clip,
+            // blur and animation matrix. Nothing else in the launcher sets any of them.
             val dragLayer = launcher.dragLayer
             dragLayer.clipBounds = null
+            dragLayer.animationMatrix = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dragLayer.setRenderEffect(null)
         }
         if (r.notify) {

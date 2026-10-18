@@ -17,18 +17,21 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /**
- * WINDOW (default): the content is a fixed plane and the moving half is a window onto it.
+ * WINDOW (default): the whole screen comes into focus, and the new half opens like a window onto
+ * the content, which is a fixed plane.
  *
  * The moving half rotates toward the viewer around the hinge. To keep the content still in space,
  * the panel shows the plane through a perspective warp ([Matrix.setPolyToPoly] of the four corners,
  * computed from an eye over the fixed half): at the hinge the content is untouched; toward the free
  * edge it narrows. On top of that, toward the free edge only (cubic falloff, so the hinge edge stays
  * sharp), the content blurs (API 31+, [RenderEffect]; none below) and the panel darkens. The fixed
- * half never moves; it only sharpens from a light blur. Everything is a function of progress, so it
- * follows the hinge when it is tracked.
+ * half, the page you were on, starts lightly blurred and sharpens first (by
+ * [FoldTunables.WINDOW_FIXED_SHARP_AT]); and the whole screen settles from
+ * [FoldTunables.WINDOW_SETTLE_SCALE] to 1 about the fixed half's outer edge. Everything is a function
+ * of progress, so it follows the hinge when it is tracked.
  *
- * On the cover layout after a fold, the cover content (the fixed plane) sharpens from the same
- * light blur.
+ * On the cover layout after a fold, the cover page settles the same way about its outer edge and
+ * sharpens from the same light blur.
  *
  * The blur is "progressive": three images of the moving half (sharp, a middle radius, the full
  * radius) are mixed by gradient masks, all inside one RenderEffect on the moving half's RenderNode.
@@ -38,6 +41,7 @@ import kotlin.math.sin
 class WindowFoldStyle : SplitFoldStyle() {
 
     private val warp = Matrix()
+    private val settle = Matrix()
     private val src = FloatArray(8)
     private val dst = FloatArray(8)
     private val shadePaint = Paint()
@@ -57,19 +61,24 @@ class WindowFoldStyle : SplitFoldStyle() {
 
     override fun onPreDraw(scene: FoldScene, progress: Float) {
         val p = progress.coerceIn(0f, 1f)
+        val geometry = scene.geometry
+        // How far from the rest state: 1 - progress on the large layout, progress on the cover
+        val amount = if (scene.largeLayout) 1f - p else p
+        val zoom = 1f + (FoldTunables.WINDOW_SETTLE_SCALE - 1f) * amount
+        settle.setScale(zoom, zoom, geometry.outerEdgeX, geometry.outerEdgeY)
+        transformDragLayer(scene, settle)
         if (!scene.largeLayout) {
-            // Cover layout: the fixed plane comes into focus as the fold settles (1 -> 0).
-            setFixedBlur(scene, p)
+            // Cover layout: the page comes into focus as the fold settles (1 -> 0).
+            setFixedBlur(scene, amount)
             return
         }
-        val geometry = scene.geometry
         if (geometry.version != geometryVersion) {
             geometryVersion = geometry.version
             onGeometryChanged(scene)
         }
         clipDragLayerToFixedHalf(scene)
-        val amount = 1f - p
-        setFixedBlur(scene, amount)
+        // The page you were on is sharp before the new half
+        setFixedBlur(scene, (1f - p / FoldTunables.WINDOW_FIXED_SHARP_AT).coerceAtLeast(0f))
         updateWarp(geometry, amount)
         setMovingBlur(amount)
         shadePaint.alpha = (FoldTunables.WINDOW_MAX_SHADE * amount * 255f).roundToInt().coerceIn(0, 255)
@@ -80,6 +89,7 @@ class WindowFoldStyle : SplitFoldStyle() {
         if (!scene.largeLayout || !geometry.isValid) return
         recordMovingHalf(scene)
         val save = canvas.save()
+        canvas.concat(settle)
         canvas.clipRect(geometry.movingRect)
         canvas.save()
         canvas.concat(warp)

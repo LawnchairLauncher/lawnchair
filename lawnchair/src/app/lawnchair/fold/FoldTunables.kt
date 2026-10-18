@@ -62,8 +62,14 @@ object FoldTunables {
     /** Blur radius at the free edge of the moving half at progress 0. */
     const val WINDOW_MAX_BLUR_DP = 24f
 
-    /** Blur radius of the fixed half at progress 0. */
-    const val WINDOW_FIXED_BLUR_DP = 4f
+    /** Blur radius of the fixed half (the page you were on) at progress 0. */
+    const val WINDOW_FIXED_BLUR_DP = 12f
+
+    /** Progress at which the fixed half is sharp again, before the moving half. */
+    const val WINDOW_FIXED_SHARP_AT = 0.8f
+
+    /** Scale of the whole screen at progress 0; it settles to 1 about the fixed half's outer edge. */
+    const val WINDOW_SETTLE_SCALE = 1.06f
 
     /** Darkening at the free edge of the moving half at progress 0 (0..1). */
     const val WINDOW_MAX_SHADE = 0.55f

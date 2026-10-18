@@ -1,5 +1,6 @@
 package app.lawnchair.fold
 
+import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.RenderNode
 import android.os.Build
@@ -12,7 +13,7 @@ import androidx.annotation.RequiresApi
  * half is drawn by the style, in the overlay, from [movingNode]: a RenderNode that records the
  * DragLayer every frame and only references its children's display lists. So the moving half is
  * always the live content (icons bound late, widgets updating) with the style's transform on top,
- * and nothing is copied into a bitmap.
+ * and nothing is copied into a bitmap. The fixed half can take part through [transformDragLayer].
  */
 @RequiresApi(Build.VERSION_CODES.Q)
 abstract class SplitFoldStyle : FoldStyle() {
@@ -20,6 +21,7 @@ abstract class SplitFoldStyle : FoldStyle() {
     protected val movingNode = RenderNode("FoldMovingHalf")
 
     private val dragLayerClip = Rect()
+    private val dragLayerMatrix = Matrix()
     private var savedDragLayerClip: Rect? = null
     private var dragLayerClipped = false
 
@@ -58,12 +60,26 @@ abstract class SplitFoldStyle : FoldStyle() {
         }
     }
 
+    /**
+     * Draws the live views through [matrix], in root coordinates, on top of their own transforms.
+     * It is the DragLayer's animation matrix: drawing only, touch is not affected.
+     */
+    protected fun transformDragLayer(scene: FoldScene, matrix: Matrix) {
+        val dragLayer = scene.dragLayer
+        dragLayerMatrix.set(matrix)
+        dragLayerMatrix.preTranslate(dragLayer.left.toFloat(), dragLayer.top.toFloat())
+        dragLayerMatrix.postTranslate(-dragLayer.left.toFloat(), -dragLayer.top.toFloat())
+        dragLayer.animationMatrix = dragLayerMatrix
+    }
+
     override fun onEnd(scene: FoldScene) {
+        val dragLayer = scene.dragLayer
         if (dragLayerClipped) {
             dragLayerClipped = false
-            scene.dragLayer.clipBounds = savedDragLayerClip
+            dragLayer.clipBounds = savedDragLayerClip
             savedDragLayerClip = null
         }
+        dragLayer.animationMatrix = null
         movingNode.discardDisplayList()
     }
 }

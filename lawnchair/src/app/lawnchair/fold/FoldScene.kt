@@ -104,6 +104,18 @@ class FoldGeometry {
         else -> 0f
     }
 
+    /** The middle of the screen edge across from the moving half: the fixed half's outer edge, the cover's on the cover. */
+    val outerEdgeX: Float get() = when (movingEdge) {
+        Gravity.LEFT -> width.toFloat()
+        Gravity.RIGHT -> 0f
+        else -> width / 2f
+    }
+    val outerEdgeY: Float get() = when (movingEdge) {
+        Gravity.TOP -> height.toFloat()
+        Gravity.BOTTOM -> 0f
+        else -> height / 2f
+    }
+
     /** Returns true if anything changed. */
     fun update(width: Int, height: Int, movingEdge: Int): Boolean {
         if (width == this.width && height == this.height && movingEdge == this.movingEdge) return false
