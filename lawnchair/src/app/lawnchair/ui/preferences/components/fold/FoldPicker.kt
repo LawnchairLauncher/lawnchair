@@ -216,7 +216,7 @@ fun FoldPreviewHeader(
             InvariantDeviceProfile.INSTANCE.get(context).getDeviceProfile(context)
                 .deviceProperties.foldScreen == FoldScreen.LARGE
         }
-        if (onLargeScreen && animation != FoldTransitionStyle.NONE) {
+        if (onLargeScreen) {
             Button(
                 onClick = {
                     context.startActivity(

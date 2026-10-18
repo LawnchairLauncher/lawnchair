@@ -18,7 +18,6 @@ import com.android.launcher3.dragndrop.DragLayer
  * @property largeLayout true when the transition is shown on the unfolded (two-half) layout: the
  * moving half is visible and progress 1 is the rest state. False on the cover layout after a fold,
  * where progress runs from 1 to 0 and 0 is the rest state.
- * @property reducedMotion the system animator duration scale is 0; styles must not move anything.
  */
 class FoldScene internal constructor(
     val rootView: LauncherRootView,
@@ -27,7 +26,6 @@ class FoldScene internal constructor(
     private val density: Float,
     val opening: Boolean,
     val largeLayout: Boolean,
-    val reducedMotion: Boolean,
 ) {
     val geometry = FoldGeometry()
 
@@ -102,6 +100,18 @@ class FoldGeometry {
         Gravity.TOP -> 1f
         Gravity.BOTTOM -> -1f
         else -> 0f
+    }
+
+    /** The middle of the screen edge across from the moving half: the fixed half's outer edge, the cover's on the cover. */
+    val outerEdgeX: Float get() = when (movingEdge) {
+        Gravity.LEFT -> width.toFloat()
+        Gravity.RIGHT -> 0f
+        else -> width / 2f
+    }
+    val outerEdgeY: Float get() = when (movingEdge) {
+        Gravity.TOP -> height.toFloat()
+        Gravity.BOTTOM -> 0f
+        else -> height / 2f
     }
 
     /** Returns true if anything changed. */

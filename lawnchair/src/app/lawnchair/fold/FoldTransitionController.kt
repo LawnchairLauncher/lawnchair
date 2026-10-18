@@ -68,8 +68,8 @@ import kotlin.math.min
  * the two never animate the same views. The debug replay (`FoldReplay`, debug builds only) works
  * everywhere, through [startRunForDebug].
  *
- * Reduced motion (animator duration scale 0): no motion, a [FoldTunables.REDUCED_MOTION_DURATION_MILLIS]
- * crossfade. Any failure ends the transition at once with the final layout showing; debug builds
+ * Reduced motion (animator duration scale 0): no motion, Simple's fade in
+ * [FoldTunables.REDUCED_MOTION_DURATION_MILLIS]. Any failure ends the transition at once with the final layout showing; debug builds
  * then rethrow it.
  *
  * While the app drawer is open, the [DrawerFoldStyle] of the drawer layout (river, book or zoom,
@@ -140,7 +140,7 @@ class FoldTransitionController(
     /**
      * Plays the selected style once as an unfold, in place on the large screen: "Try it on the
      * home screen" in the Foldable screen settings, which brings the launcher to the front first.
-     * Ignored on the cover, in a window, while a transition runs and with the style None.
+     * Ignored on the cover, in a window and while a transition runs.
      */
     fun requestPreview() {
         if (!attached) return
@@ -152,7 +152,6 @@ class FoldTransitionController(
         if (!previewRequested) return
         previewRequested = false
         if (run != null || !isLarge() || !isEngineEnabled() || !canRunNow()) return
-        if (prefs2.foldTransitionStyle.firstCached() == FoldTransitionStyle.NONE) return
         startRun("preview", opening = true, large = true)
     }
 
@@ -186,11 +185,7 @@ class FoldTransitionController(
         finishNow(if (large) "unfolded" else "folded")
         if (foldTrackedOnInner) return
         if (!isEngineEnabled() || !canRunNow()) return
-        if (prefs2.foldTransitionStyle.firstCached() == FoldTransitionStyle.NONE) {
-            notifyInstant(large)
-        } else {
-            startRun(if (large) "unfold" else "fold", opening = large, followHinge = large, capture = capture)
-        }
+        startRun(if (large) "unfold" else "fold", opening = large, followHinge = large, capture = capture)
     }
 
     override fun onHingeAngleChanged(angle: Float) {
@@ -203,7 +198,6 @@ class FoldTransitionController(
         }
         if (hinge.isOpening || restAngle - angle < FoldTunables.CLOSING_THRESHOLD_ANGLE) return
         if (!isEngineEnabled() || !canRunNow() || isReducedMotion()) return
-        if (prefs2.foldTransitionStyle.firstCached() == FoldTransitionStyle.NONE) return
         startRun("fold (hinge, inner display)", opening = false, large = true, phase = Phase.HINGE)
     }
 
@@ -256,7 +250,6 @@ class FoldTransitionController(
             launcher.resources.displayMetrics.density,
             opening,
             large,
-            reduced,
         )
         // The timer follows the system animator duration scale, times the replay's slow factor
         val timeScale = if (phase == Phase.HINGE || reduced) 1f else durationScale() * slowFactor
@@ -267,9 +260,8 @@ class FoldTransitionController(
             else -> ((if (opening) FoldTunables.UNFOLD_DURATION_MILLIS else FoldTunables.FOLD_DURATION_MILLIS) * timeScale).toLong()
         }
         val style = when {
-            styleType == FoldTransitionStyle.NONE -> NoneFoldStyle()
-
-            reduced -> FoldStyle.createReducedMotion()
+            // Simple's fade: nothing moves
+            reduced -> SimpleFoldStyle()
 
             // The drawer has its own transitions, which replace the home style while it is open.
             isDrawerOpen() -> when (drawerLayout()) {
@@ -292,7 +284,7 @@ class FoldTransitionController(
             }
             if (!style.onStart(scene)) {
                 Log.w(TAG, "${style.javaClass.simpleName} can't run here, showing the final layout")
-                r.style = NoneFoldStyle()
+                r.style = FoldStyle()
             } else {
                 attachToViews(r)
             }
@@ -436,10 +428,12 @@ class FoldTransitionController(
             Log.e(TAG, "${r.style.javaClass.simpleName}.onEnd failed", t)
             failure = failure ?: t
         } finally {
-            // What a style that throws could leave on the whole launcher: the DragLayer's clip and
-            // blur. Nothing else in the launcher sets either.
+            // What a style that throws could leave on the whole launcher: the DragLayer's clip,
+            // blur, animation matrix and transition alpha. Nothing else in the launcher sets any of them.
             val dragLayer = launcher.dragLayer
             dragLayer.clipBounds = null
+            dragLayer.animationMatrix = null
+            dragLayer.transitionAlpha = 1f
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dragLayer.setRenderEffect(null)
         }
         if (r.notify) {
@@ -465,18 +459,6 @@ class FoldTransitionController(
         if (BuildConfig.DEBUG) throw t
     }
 
-    private fun notifyInstant(large: Boolean) {
-        val dock = dock ?: return
-        try {
-            dock.onFoldStart(large)
-            dock.onFoldProgress(if (large) 1f else 0f, large)
-            dock.onFoldEnd(large)
-        } catch (t: Throwable) {
-            Log.e(TAG, "the dock failed", t)
-            if (BuildConfig.DEBUG) throw t
-        }
-    }
-
     private fun dispatchProgress(r: Run) {
         if (r.progress == r.dispatchedProgress) return
         r.dispatchedProgress = r.progress
@@ -494,9 +476,7 @@ class FoldTransitionController(
     private fun canRunNow(): Boolean = resumed && launcher.isStarted && !launcher.isDestroyed &&
         !launcher.isInMultiWindowMode && launcher.rootView.isAttachedToWindow
 
-    private fun shouldTrackHinge(): Boolean = isEngineEnabled() && hinge.hasSensor &&
-        prefs2.foldTrackHinge.firstCached() &&
-        prefs2.foldTransitionStyle.firstCached() != FoldTransitionStyle.NONE
+    private fun shouldTrackHinge(): Boolean = isEngineEnabled() && hinge.hasSensor && prefs2.foldTrackHinge.firstCached()
 
     /**
      * The hinge sensor runs only while the launcher is resumed on the large screen: that is where a

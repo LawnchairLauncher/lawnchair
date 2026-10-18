@@ -25,8 +25,11 @@ import androidx.annotation.RequiresApi
  * Rules: no allocations in [onPreDraw] and [onDrawOverlay]; never hide content without drawing it
  * somewhere else in the same frame; prefer drawing live views ([android.graphics.RenderNode]
  * copies) over bitmaps.
+ *
+ * FoldStyle itself draws nothing: it stands in for a style that can't run, so the dock still gets
+ * its events over the transition.
  */
-abstract class FoldStyle {
+open class FoldStyle {
 
     open fun usesOverlay(scene: FoldScene): Boolean = false
 
@@ -45,15 +48,8 @@ abstract class FoldStyle {
                 FoldTransitionStyle.WINDOW -> WindowFoldStyle()
                 FoldTransitionStyle.SIMPLE -> SimpleFoldStyle()
                 FoldTransitionStyle.WAVE -> WaveFoldStyle()
-                FoldTransitionStyle.NONE -> NoneFoldStyle()
+                FoldTransitionStyle.BOOK -> BookFoldStyle()
             }
         }
-
-        /** Used instead of the selected style when the system asks for reduced motion: a crossfade, no motion. */
-        @RequiresApi(Build.VERSION_CODES.Q)
-        fun createReducedMotion(): FoldStyle = SimpleFoldStyle(fadeOnly = true)
     }
 }
-
-/** No motion: the final layout is shown as soon as it is laid out. Listeners still get their events. */
-class NoneFoldStyle : FoldStyle()

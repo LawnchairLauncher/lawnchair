@@ -15,14 +15,15 @@ import com.android.launcher3.util.Themes
 import kotlin.math.roundToInt
 
 /**
- * WAVE, Lawnchair's signature: a band of light in the accent color (Material You by default)
- * sweeps from the hinge across the moving half. The moving half is dim ahead of the band and
- * revealed behind it; each icon glows, lifts [FoldTunables.WAVE_LIFT_DP] and settles as the band
- * passes, so its reveal time is its distance from the hinge. Closing runs the same path back: the
- * band returns to the hinge and dims the icons behind it.
+ * WAVE, Lawnchair's signature: one band of light in the accent color (Material You by default)
+ * crosses the whole screen in the opening direction. It enters at the fixed half's outer edge,
+ * crosses the hinge and leaves at the moving half's free edge. The icons of the page you were on
+ * glow and lift [FoldTunables.WAVE_LIFT_DP] as it passes; the moving half is dim ahead of the band
+ * and revealed behind it, its icons glowing and lifting the same way. Closing runs the same path
+ * back, dimming the moving half behind the band.
  *
- * On the cover screen after a fold the band sweeps back to the hinge edge once, lighting the
- * icons it passes. The fixed half never changes.
+ * On the cover screen after a fold the band plays the rest of that way back once, from the hinge
+ * edge to the outer edge, lighting the icons it passes.
  *
  * Drawn on live views like the other split styles; the band, the reveal mask and the glows are
  * gradients created once per geometry and positioned with canvas transforms, so nothing is
@@ -101,12 +102,14 @@ class WaveFoldStyle : SplitFoldStyle() {
         val p = progress.coerceIn(0f, 1f)
         if (scene.largeLayout) {
             clipDragLayerToFixedHalf(scene)
-            // From the hinge (half of the band shows there) to past the free edge.
-            bandCenter = p * (span + bandHalf)
+            // From past the fixed half's outer edge (the halves are the same size) to past the
+            // free edge. The timer's curve is fast at the start: squaring the progress leaves the
+            // page you were on about a third of the time.
+            bandCenter = (2f * p * p - 1f) * (span + bandHalf)
             bandPaint.alpha = (FoldTunables.WAVE_BAND_ALPHA * 255f).roundToInt()
         } else {
-            // Cover: from past the far edge back to past the hinge edge.
-            bandCenter = -bandHalf + p * (span + 2f * bandHalf)
+            // Cover: from past the hinge edge to past the outer edge, as the fold settles.
+            bandCenter = -bandHalf + (1f - p) * (span + 2f * bandHalf)
             bandPaint.alpha = (FoldTunables.WAVE_BAND_ALPHA * COVER_FACTOR * 255f).roundToInt()
         }
 
@@ -115,15 +118,16 @@ class WaveFoldStyle : SplitFoldStyle() {
         for (i in items.indices) {
             val item = items[i]
             val glow = item.state
-            val swept = item.onMovingHalf || !scene.largeLayout
-            if (!swept || item.isWidget) {
+            if (item.isWidget) {
                 item.resetTranslation()
                 glow.lift = 0f
                 glow.alpha = 0f
                 continue
             }
+            // Where the item is in hinge space: the fixed half is on the negative side
+            val u = if (scene.largeLayout && !item.onMovingHalf) -item.distance * span else item.distance * span
             // 0 until the band reaches the item, 1 once it has settled behind it.
-            val t = ((bandCenter - item.distance * span + bandHalf) / (2f * bandHalf + settlePx)).coerceIn(0f, 1f)
+            val t = ((bandCenter - u + bandHalf) / (2f * bandHalf + settlePx)).coerceIn(0f, 1f)
             val bump = bump(t)
             glow.lift = if (scene.largeLayout) liftPx * bump else 0f
             item.setTranslation(0f, -glow.lift)
@@ -134,12 +138,12 @@ class WaveFoldStyle : SplitFoldStyle() {
     override fun onDrawOverlay(scene: FoldScene, canvas: Canvas, progress: Float) {
         val geometry = scene.geometry
         if (!geometry.isValid) return
-        val save = canvas.save()
         if (scene.largeLayout) {
-            canvas.clipRect(geometry.movingRect)
             // The moving half, dimmed ahead of the band.
             recordMovingHalf(scene)
-            val layer = canvas.saveLayer(
+            val save = canvas.save()
+            canvas.clipRect(geometry.movingRect)
+            canvas.saveLayer(
                 geometry.movingRect.left.toFloat(),
                 geometry.movingRect.top.toFloat(),
                 geometry.movingRect.right.toFloat(),
@@ -150,9 +154,9 @@ class WaveFoldStyle : SplitFoldStyle() {
             canvas.concat(frame)
             canvas.translate(bandCenter, 0f)
             canvas.drawRect(-bandCenter, 0f, span - bandCenter, length, maskPaint)
-            canvas.restoreToCount(layer)
+            canvas.restoreToCount(save)
         }
-        // The band of light, then the glows on top of the icons it passes.
+        // The band of light over the whole screen, then the glows on top of the icons it passes.
         canvas.save()
         canvas.concat(frame)
         canvas.translate(bandCenter, 0f)
@@ -172,7 +176,6 @@ class WaveFoldStyle : SplitFoldStyle() {
             canvas.drawCircle(0f, 0f, 1f, glowPaint)
             canvas.restore()
         }
-        canvas.restoreToCount(save)
     }
 
     override fun onEnd(scene: FoldScene) {

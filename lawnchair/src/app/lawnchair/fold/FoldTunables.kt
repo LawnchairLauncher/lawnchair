@@ -45,8 +45,8 @@ object FoldTunables {
 
     // SIMPLE
 
-    /** Distance the newly revealed half slides out of the hinge. */
-    const val SIMPLE_TRANSLATE_DP = 32f
+    /** Opacity of the fixed half (the page you were on) as the new layout starts to fade in. */
+    const val SIMPLE_FIXED_ALPHA = 0.55f
 
     // WINDOW
 
@@ -62,8 +62,14 @@ object FoldTunables {
     /** Blur radius at the free edge of the moving half at progress 0. */
     const val WINDOW_MAX_BLUR_DP = 24f
 
-    /** Blur radius of the fixed half at progress 0. */
-    const val WINDOW_FIXED_BLUR_DP = 4f
+    /** Blur radius of the fixed half (the page you were on) at progress 0. */
+    const val WINDOW_FIXED_BLUR_DP = 12f
+
+    /** Progress at which the fixed half is sharp again, before the moving half. */
+    const val WINDOW_FIXED_SHARP_AT = 0.8f
+
+    /** Scale of the whole screen at progress 0; it settles to 1 about the fixed half's outer edge. */
+    const val WINDOW_SETTLE_SCALE = 1.06f
 
     /** Darkening at the free edge of the moving half at progress 0 (0..1). */
     const val WINDOW_MAX_SHADE = 0.55f
@@ -93,6 +99,21 @@ object FoldTunables {
 
     /** Opacity of the moving half ahead of the band (not revealed yet). */
     const val WAVE_DIM_ALPHA = 0.15f
+
+    // BOOK
+
+    /** Angle of the moving half about the hinge at progress 0, its free edge away from you. */
+    const val BOOK_MOVING_DEGREES = 78f
+
+    /** Angle of the fixed half (the page you were on) about the hinge at progress 0. */
+    const val BOOK_FIXED_DEGREES = 30f
+
+    /** Eye distance in front of the middle of the hinge, as a multiple of a half's width. */
+    const val BOOK_EYE_DISTANCE = 3f
+
+    /** Darkening at the hinge at progress 0, clear at the outer edge: the moving half, the fixed half. */
+    const val BOOK_MOVING_SHADE = 0.6f
+    const val BOOK_FIXED_SHADE = 0.36f
 
     // App drawer
 
