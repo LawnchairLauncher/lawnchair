@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.components.fold
 
+import android.graphics.Matrix
 import android.os.Build
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.material3.ColorScheme
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import app.lawnchair.fold.FoldDock
@@ -22,7 +24,10 @@ import app.lawnchair.fold.FoldDrawerLayout
 import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldOption
 import app.lawnchair.fold.FoldTransitionStyle
+import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.max
+import kotlin.math.sin
 
 /** The mock's type size: 1 em is this share of the preview's width. */
 internal const val EM = 1f / 18.3f
@@ -32,6 +37,9 @@ internal val Pad = 3.dp
 internal val Gap = 2.dp
 
 private val Standard = CubicBezierEasing(0.2f, 0f, 0f, 1f)
+
+/** Open book's curve in the mock. */
+private val BookCurve = CubicBezierEasing(0.3f, 0f, 0f, 1f)
 
 /**
  * Draws the schematic device of the mock, sized in its em ([EM]). Holds the frame being drawn, so
@@ -59,6 +67,13 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
     private val light = lerp(if (dark) scheme.primary else scheme.inversePrimary, Color.White, 0.5f)
     private val bandBrush = Brush.horizontalGradient(listOf(Color.Transparent, light.copy(alpha = 0.6f), Color.Transparent), 0f, 1f)
 
+    // Open book: each page dark at the hinge
+    private val movingShadeBrush = Brush.horizontalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = 0.65f)), 0f, 1f)
+    private val fixedShadeBrush = Brush.horizontalGradient(listOf(Color.Black.copy(alpha = 0.45f), Color.Transparent), 0f, 1f)
+    private val turn = Matrix()
+    private val flatCorners = FloatArray(8)
+    private val turnedCorners = FloatArray(8)
+
     private var t = 0f
     private var em = 0f
     private var pad = 0f
@@ -70,35 +85,41 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
     /** Opacity of what is drawn now. */
     private var alpha = 1f
 
-    /** Light wave: icons on the moving half pop in as the band passes them. */
+    /** Light wave: icons pop as the band passes them, in on the moving half, a pulse on the fixed one. */
     private var pop = false
 
-    /** The preview at loop time [time]; without [withMoving], Window's moving half is left to [drawMoving]. */
-    fun DrawScope.drawPreview(option: FoldOption, animation: FoldTransitionStyle?, time: Float, withMoving: Boolean) {
+    /** The preview at loop time [time]; with [layered], the halves' content is left to [drawHalf] (Window's blurred layers). */
+    fun DrawScope.drawPreview(option: FoldOption, animation: FoldTransitionStyle?, time: Float, layered: Boolean) {
         measure(time)
         drawRoundRect(frame, cornerRadius = CornerRadius(radius + pad))
-        half(pad, screen)
-        half(fixedLeft, screen)
         when (option) {
-            is FoldTransitionStyle -> split(FoldHomeLayout.PAGES, option, docks = true, withMoving)
+            is FoldTransitionStyle -> split(FoldHomeLayout.PAGES, option, docks = true, layered)
 
-            is FoldHomeLayout -> when {
-                animation != null -> split(option, animation, docks = option == FoldHomeLayout.PAGES, withMoving)
-                option == FoldHomeLayout.PAGES -> split(option, FoldTransitionStyle.SIMPLE, docks = false, withMoving)
-                else -> grow(option)
+            is FoldHomeLayout -> if (animation != null || option == FoldHomeLayout.PAGES) {
+                split(option, animation, docks = animation != null && option == FoldHomeLayout.PAGES, layered)
+            } else {
+                halves()
+                grow(option)
             }
 
-            is FoldDrawerLayout -> clipRect(pad, pad, size.width - pad, size.height - pad) { drawer(option) }
+            is FoldDrawerLayout -> {
+                halves()
+                clipRect(pad, pad, size.width - pad, size.height - pad) { drawer(option) }
+            }
 
-            is FoldDock -> dock(option)
+            is FoldDock -> {
+                halves()
+                dock(option)
+            }
         }
     }
 
-    /** Window's moving half alone, for its blurred layer. */
-    fun DrawScope.drawMoving(option: FoldOption, time: Float) {
+    /** One half's content alone, for Window's blurred layer of that half (the layer zooms it). */
+    fun DrawScope.drawHalf(option: FoldOption, time: Float, moving: Boolean) {
         measure(time)
         val home = option as? FoldHomeLayout ?: FoldHomeLayout.PAGES
-        moving(home, FoldTransitionStyle.WINDOW, docks = home == FoldHomeLayout.PAGES)
+        val docks = home == FoldHomeLayout.PAGES
+        if (moving) moving(home, FoldTransitionStyle.WINDOW, docks) else fixed(home, FoldTransitionStyle.WINDOW, docks)
     }
 
     private fun DrawScope.measure(time: Float) {
@@ -111,25 +132,72 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
         radius = halfRadius(size.width, this)
     }
 
-    /** The halves apart: the fixed one shows the cover page until the unfold, the moving one enters with [style]. */
-    private fun DrawScope.split(home: FoldHomeLayout, style: FoldTransitionStyle, docks: Boolean, withMoving: Boolean) {
-        if (home == FoldHomeLayout.PAGES) {
-            page(fixedLeft, 0)
-            if (docks) dock4()
-        } else {
-            clipRect(fixedLeft, pad, fixedLeft + hw, pad + hh) {
-                val folded = foldedAt(t)
-                alpha = folded
-                page(fixedLeft, 0)
-                alpha = 1f - folded
-                openHome(home)
-                alpha = 1f
-            }
-        }
-        if (withMoving) moving(home, style, docks)
+    private fun DrawScope.halves() {
+        half(pad, screen)
+        half(fixedLeft, screen)
     }
 
-    private fun DrawScope.moving(home: FoldHomeLayout, style: FoldTransitionStyle, docks: Boolean) {
+    /**
+     * The halves apart, the whole screen taking part: the fixed one shows the cover page until the
+     * unfold, the moving one opens with [style] (null: a layout's own fade), in the opening direction.
+     */
+    private fun DrawScope.split(home: FoldHomeLayout, style: FoldTransitionStyle?, docks: Boolean, layered: Boolean) {
+        // Window: the whole screen settles from a slight zoom about the fixed half's outer edge
+        scale(if (style == FoldTransitionStyle.WINDOW) windowZoom(t) else 1f, Offset(size.width - pad, size.height / 2f)) {
+            // Open book: the pages turn over the dark screen
+            if (style == FoldTransitionStyle.BOOK) {
+                half(pad, offScreen)
+                half(fixedLeft, offScreen)
+            }
+            turned(moving = false, degrees = if (style == FoldTransitionStyle.BOOK) 30f * bookTurn(t) else 0f) {
+                half(fixedLeft, screen)
+                if (!layered) fixed(home, style, docks)
+            }
+            turned(moving = true, degrees = if (style == FoldTransitionStyle.BOOK) 78f * bookTurn(t) else 0f) {
+                half(pad, screen)
+                if (!layered) moving(home, style, docks)
+            }
+        }
+    }
+
+    /** The fixed half: the page you were on, taking part in [style]. */
+    private fun DrawScope.fixed(home: FoldHomeLayout, style: FoldTransitionStyle?, docks: Boolean) {
+        clipRect(fixedLeft, pad, fixedLeft + hw, pad + hh) {
+            val base = when {
+                // A short dip as the new half fades in
+                style == FoldTransitionStyle.SIMPLE -> 1f - 0.45f * seg(t, 0.19f, 0.2f) * (1f - seg(t, 0.2f, 0.3f))
+
+                // Window's blur, a fade where there is none
+                style == FoldTransitionStyle.WINDOW && Build.VERSION.SDK_INT < Build.VERSION_CODES.S -> 1f - 0.5f * windowFixedBlur(t)
+
+                else -> 1f
+            }
+            pop = style == FoldTransitionStyle.WAVE
+            if (home == FoldHomeLayout.PAGES) {
+                alpha = base
+                page(fixedLeft, 0)
+                if (docks) dock4()
+            } else {
+                val folded = foldedAt(t)
+                alpha = base * folded
+                page(fixedLeft, 0)
+                alpha = base * (1f - folded)
+                openHome(home)
+            }
+            alpha = 1f
+            pop = false
+            when (style) {
+                // The band enters at the outer edge and crosses to the hinge
+                FoldTransitionStyle.WAVE -> gradient(bandBrush, fixedLeft + hw * (0.96f - 1.41f * seg(t, 0.21f, 0.32f)), 0.45f * hw, seg(t, 0.2f, 0.21f) * (1f - seg(t, 0.32f, 0.33f)))
+
+                FoldTransitionStyle.BOOK -> gradient(fixedShadeBrush, fixedLeft, hw, 0.8f * seg(t, 0.19f, 0.2f) * bookTurn(t))
+
+                else -> Unit
+            }
+        }
+    }
+
+    private fun DrawScope.moving(home: FoldHomeLayout, style: FoldTransitionStyle?, docks: Boolean) {
         val hingeX = pad + hw
         clipRect(pad, pad, hingeX, pad + hh) {
             when (style) {
@@ -142,15 +210,22 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
                     gradient(edgeBrush, edge, 0.32f * hw, seg(t, 0.19f, 0.21f) * (1f - seg(t, 0.4f, 0.46f)))
                 }
 
-                // A band of light sweeps out from the hinge; icons pop in as it passes
+                // The band comes over the hinge and leaves at the free edge; icons pop in as it passes
                 FoldTransitionStyle.WAVE -> {
                     pop = true
                     openMoving(home, docks)
                     pop = false
-                    gradient(bandBrush, pad + hw * (0.96f - 1.41f * seg(t, 0.22f, 0.46f)), 0.45f * hw, seg(t, 0.2f, 0.22f) * (1f - seg(t, 0.46f, 0.47f)))
+                    gradient(bandBrush, pad + hw * (0.96f - 1.41f * seg(t, 0.33f, 0.46f)), 0.45f * hw, seg(t, 0.32f, 0.33f) * (1f - seg(t, 0.46f, 0.47f)))
                 }
 
-                FoldTransitionStyle.SIMPLE, FoldTransitionStyle.BOOK -> {
+                // The page turns flat, its shade at the hinge fading
+                FoldTransitionStyle.BOOK -> {
+                    openMoving(home, docks)
+                    gradient(movingShadeBrush, pad, hw, 0.9f * bookTurn(t))
+                }
+
+                // The new half fades in
+                FoldTransitionStyle.SIMPLE, null -> {
                     alpha = seg(t, 0.2f, 0.3f)
                     openMoving(home, docks)
                     alpha = 1f
@@ -158,6 +233,40 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
             }
             off()
         }
+    }
+
+    /**
+     * Draws [block] with the moving or the fixed half turned [degrees] about its hinge edge, its
+     * outer edge going away, in the mock's perspective (26 em, from the middle of the hinge edge).
+     */
+    private inline fun DrawScope.turned(moving: Boolean, degrees: Float, block: DrawScope.() -> Unit) {
+        if (degrees <= 0f) return block()
+        val hingeX = if (moving) pad + hw else fixedLeft
+        val outerX = if (moving) pad else fixedLeft + hw
+        val radians = degrees * (PI.toFloat() / 180f)
+        val distance = 26f * em
+        val depth = distance / (distance + hw * sin(radians))
+        val middle = pad + hh / 2f
+        setCorners(flatCorners, hingeX, outerX, pad, pad + hh)
+        setCorners(turnedCorners, hingeX, hingeX + (outerX - hingeX) * cos(radians) * depth, middle - hh / 2f * depth, middle + hh / 2f * depth)
+        if (!turn.setPolyToPoly(flatCorners, 0, turnedCorners, 0, 4)) return block()
+        val canvas = drawContext.canvas
+        canvas.save()
+        canvas.nativeCanvas.concat(turn)
+        block()
+        canvas.restore()
+    }
+
+    /** The hinge edge at [hingeX] from [pad] to the bottom, then the outer edge at [outerX] from [top] to [bottom]. */
+    private fun setCorners(points: FloatArray, hingeX: Float, outerX: Float, top: Float, bottom: Float) {
+        points[0] = hingeX
+        points[1] = pad
+        points[2] = hingeX
+        points[3] = pad + hh
+        points[4] = outerX
+        points[5] = top
+        points[6] = outerX
+        points[7] = bottom
     }
 
     private fun DrawScope.openMoving(home: FoldHomeLayout, docks: Boolean) {
@@ -337,11 +446,15 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
         var scale = 1f
         val center = x + s / 2f
         if (pop && center < pad + hw) {
-            // The nearer the hinge, the sooner the band reaches it
-            val start = 0.17f + 0.24f * (pad + hw - center) / hw
-            val grow = seg(t, start, start + 0.06f)
+            // The moving half's icons appear as the band reaches them, from the hinge out
+            val start = 0.32f + 0.4f / 3f * ((pad + hw - center) / hw - 0.2f)
+            val grow = seg(t, start, start + 0.04f)
             a *= grow
-            scale = if (grow < 1f) 0.6f + 0.58f * grow else 1.18f - 0.18f * seg(t, start + 0.06f, start + 0.12f)
+            scale = if (grow < 1f) 0.6f + 0.58f * grow else 1.18f - 0.18f * seg(t, start + 0.04f, start + 0.08f)
+        } else if (pop) {
+            // The page you were on pulses as the band crosses it, from its outer edge to the hinge
+            val start = 0.21f + 0.1f * ((fixedLeft + hw - center) / hw - 0.2f)
+            scale = 1f + 0.2f * (seg(t, start, start + 0.03f) - seg(t, start + 0.03f, start + 0.07f))
         }
         if (a <= 0f) return
         val d = s * scale
@@ -395,5 +508,14 @@ private fun ease(t: Float, from: Float, to: Float) = Standard.transform(seg(t, f
 /** How much of the open state shows: it eases in between [from] and [to] and goes when the phone folds again. */
 private fun shown(t: Float, from: Float, to: Float) = ease(t, from, to) * (1f - seg(t, 0.79f, 0.8f))
 
-/** Window's blur: 1 as the unfold starts, 0 once open. */
+/** Window's blur of the moving half: 1 as the unfold starts, 0 once open. */
 internal fun windowBlur(t: Float) = if (t < 0.2f) 0f else 1f - ease(t, 0.2f, 0.42f)
+
+/** Window's blur of the fixed half: from the unfold's start, gone before the moving half's. */
+internal fun windowFixedBlur(t: Float) = seg(t, 0.19f, 0.2f) * (1f - ease(t, 0.2f, 0.38f))
+
+/** Window's settle: the whole screen from a slight zoom back to 1 as it unfolds. */
+internal fun windowZoom(t: Float) = 1f + 0.08f * seg(t, 0.19f, 0.2f) * (1f - ease(t, 0.2f, 0.42f))
+
+/** Open book: how far the pages are still turned, 1 as the unfold starts (from just before it), 0 once open. */
+private fun bookTurn(t: Float) = if (t < 0.19f) 0f else 1f - BookCurve.transform(seg(t, 0.2f, 0.46f))
