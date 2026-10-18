@@ -123,10 +123,13 @@ class PreferenceManager2 @Inject constructor(
      * Runs [block] on the main thread once the cache has every value written so far. A preference's
      * onSet runs right after its DataStore write, but the cache is updated by its own collector,
      * which may not have run yet: refresh it from the DataStore, which already has the new value.
+     * If the collector stores a newer value while the read is suspended, that value is kept.
      */
     internal fun withFreshCache(block: () -> Unit) {
         scope.launch {
-            cachedPreferences = preferencesDataStore.data.first()
+            val cacheBeforeRead = cachedPreferences
+            val freshPreferences = preferencesDataStore.data.first()
+            if (cachedPreferences === cacheBeforeRead) cachedPreferences = freshPreferences
             block()
         }
     }
