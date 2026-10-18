@@ -140,7 +140,7 @@ class FoldTransitionController(
     /**
      * Plays the selected style once as an unfold, in place on the large screen: "Try it on the
      * home screen" in the Foldable screen settings, which brings the launcher to the front first.
-     * Ignored on the cover, in a window, while a transition runs and with the style None.
+     * Ignored on the cover, in a window and while a transition runs.
      */
     fun requestPreview() {
         if (!attached) return
@@ -152,7 +152,6 @@ class FoldTransitionController(
         if (!previewRequested) return
         previewRequested = false
         if (run != null || !isLarge() || !isEngineEnabled() || !canRunNow()) return
-        if (prefs2.foldTransitionStyle.firstCached() == FoldTransitionStyle.NONE) return
         startRun("preview", opening = true, large = true)
     }
 
@@ -186,11 +185,7 @@ class FoldTransitionController(
         finishNow(if (large) "unfolded" else "folded")
         if (foldTrackedOnInner) return
         if (!isEngineEnabled() || !canRunNow()) return
-        if (prefs2.foldTransitionStyle.firstCached() == FoldTransitionStyle.NONE) {
-            notifyInstant(large)
-        } else {
-            startRun(if (large) "unfold" else "fold", opening = large, followHinge = large, capture = capture)
-        }
+        startRun(if (large) "unfold" else "fold", opening = large, followHinge = large, capture = capture)
     }
 
     override fun onHingeAngleChanged(angle: Float) {
@@ -203,7 +198,6 @@ class FoldTransitionController(
         }
         if (hinge.isOpening || restAngle - angle < FoldTunables.CLOSING_THRESHOLD_ANGLE) return
         if (!isEngineEnabled() || !canRunNow() || isReducedMotion()) return
-        if (prefs2.foldTransitionStyle.firstCached() == FoldTransitionStyle.NONE) return
         startRun("fold (hinge, inner display)", opening = false, large = true, phase = Phase.HINGE)
     }
 
@@ -266,8 +260,6 @@ class FoldTransitionController(
             else -> ((if (opening) FoldTunables.UNFOLD_DURATION_MILLIS else FoldTunables.FOLD_DURATION_MILLIS) * timeScale).toLong()
         }
         val style = when {
-            styleType == FoldTransitionStyle.NONE -> NoneFoldStyle()
-
             // Simple's fade: nothing moves
             reduced -> SimpleFoldStyle()
 
@@ -292,7 +284,7 @@ class FoldTransitionController(
             }
             if (!style.onStart(scene)) {
                 Log.w(TAG, "${style.javaClass.simpleName} can't run here, showing the final layout")
-                r.style = NoneFoldStyle()
+                r.style = FoldStyle()
             } else {
                 attachToViews(r)
             }
@@ -467,18 +459,6 @@ class FoldTransitionController(
         if (BuildConfig.DEBUG) throw t
     }
 
-    private fun notifyInstant(large: Boolean) {
-        val dock = dock ?: return
-        try {
-            dock.onFoldStart(large)
-            dock.onFoldProgress(if (large) 1f else 0f, large)
-            dock.onFoldEnd(large)
-        } catch (t: Throwable) {
-            Log.e(TAG, "the dock failed", t)
-            if (BuildConfig.DEBUG) throw t
-        }
-    }
-
     private fun dispatchProgress(r: Run) {
         if (r.progress == r.dispatchedProgress) return
         r.dispatchedProgress = r.progress
@@ -496,9 +476,7 @@ class FoldTransitionController(
     private fun canRunNow(): Boolean = resumed && launcher.isStarted && !launcher.isDestroyed &&
         !launcher.isInMultiWindowMode && launcher.rootView.isAttachedToWindow
 
-    private fun shouldTrackHinge(): Boolean = isEngineEnabled() && hinge.hasSensor &&
-        prefs2.foldTrackHinge.firstCached() &&
-        prefs2.foldTransitionStyle.firstCached() != FoldTransitionStyle.NONE
+    private fun shouldTrackHinge(): Boolean = isEngineEnabled() && hinge.hasSensor && prefs2.foldTrackHinge.firstCached()
 
     /**
      * The hinge sensor runs only while the launcher is resumed on the large screen: that is where a

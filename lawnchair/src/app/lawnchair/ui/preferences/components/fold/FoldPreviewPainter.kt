@@ -155,8 +155,6 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
                     openMoving(home, docks)
                     alpha = 1f
                 }
-
-                FoldTransitionStyle.NONE -> if (t >= 0.2f) openMoving(home, docks)
             }
             off()
         }

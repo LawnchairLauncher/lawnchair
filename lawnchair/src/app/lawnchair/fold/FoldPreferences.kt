@@ -72,8 +72,8 @@ enum class FoldDrawerLayout(
 }
 
 /**
- * Animation played while folding and unfolding. The keys of removed styles ("mass", "deep") read as
- * the default, [WINDOW].
+ * Animation played while folding and unfolding. The keys of removed styles read as
+ * [forRemovedKey]: "none" as [SIMPLE], "mass" and "deep" as the default, [WINDOW].
  */
 enum class FoldTransitionStyle(
     override val key: String,
@@ -100,11 +100,12 @@ enum class FoldTransitionStyle(
         labelResourceId = R.string.fold_transition_simple,
         descriptionResourceId = R.string.fold_transition_simple_description,
     ),
-    NONE(
-        key = "none",
-        labelResourceId = R.string.fold_transition_none,
-        descriptionResourceId = R.string.fold_transition_none_description,
-    ),
+    ;
+
+    companion object {
+        /** What a stored key that is no longer an option reads as: None became the calmest style. */
+        fun forRemovedKey(key: String): FoldTransitionStyle = if (key == "none") SIMPLE else WINDOW
+    }
 }
 
 /** Which page the cover screen shows after folding. */

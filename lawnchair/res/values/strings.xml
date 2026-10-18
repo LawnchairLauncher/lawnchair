@@ -1110,8 +1110,6 @@
     <string name="fold_transition_book_description">Both halves straighten together, like a book opening flat in your hands.</string>
     <string name="fold_transition_simple">Simple</string>
     <string name="fold_transition_simple_description">A calm fade and a direct switch, without effects.</string>
-    <string name="fold_transition_none">None</string>
-    <string name="fold_transition_none_description">No animation, but also no jump, reload or deletion.</string>
     <string name="fold_track_hinge">Follow hinge angle</string>
     <string name="fold_track_hinge_description">The animation follows your hand and stops when you stop</string>
     <string name="fold_track_hinge_posture_only">This phone\'s hinge sensor reports only open and closed, so the animation plays at its own pace.</string>
