@@ -43,6 +43,7 @@ import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceCapitalization
 import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorMode
@@ -72,7 +73,9 @@ import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.SafeCloseable
 import com.patrykmichalik.opto.core.PreferenceManager
 import com.patrykmichalik.opto.core.firstBlocking
+import com.patrykmichalik.opto.core.resetBlocking
 import com.patrykmichalik.opto.core.setBlocking
+import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,10 +85,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.invoke
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @LauncherAppSingleton
 class PreferenceManager2 @Inject constructor(
@@ -780,6 +786,38 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = SmartspaceCalendar.fromString(context.getString(R.string.config_default_smart_space_calendar)),
         parse = { SmartspaceCalendar.fromString(it) },
         save = { it.toString() },
+    )
+
+    val smartspaceCustomDateTime = preference(
+        key = stringPreferencesKey(name = "smartspace_custom_datetime"),
+        defaultValue = context.getString(R.string.smartspace_icu_date_pattern_custom_wday_month_day_no_year),
+    )
+
+    val smartspaceCustomDateTimeLocale = preference(
+        key = stringPreferencesKey(name = "smartspace_custom_datetime_locale"),
+        defaultValue = Locale.getDefault().toLanguageTag(),
+    )
+
+    val smartspaceCustomDateTimeCapitalization = preference(
+        key = stringPreferencesKey(name = "smartspace_custom_datetime_capitalization"),
+        defaultValue = SmartspaceCapitalization.fromString(context.getString(R.string.config_default_smartspace_capitalization)),
+        parse = { SmartspaceCapitalization.fromString(it) },
+        save = { it.toString() },
+    )
+
+    val enableCustomSmartspaceDateFormat = preference(
+        key = booleanPreferencesKey(name = "enable_custom_smartspace_date_format"),
+        defaultValue = false, // TODO: Promote feature to stable, and remove this preference
+        onSet = { value ->
+            if (!value) {
+                if (smartspaceCalendar.firstCached() == SmartspaceCalendar.Custom) {
+                    smartspaceCalendar.setBlocking(SmartspaceCalendar.Gregorian)
+                }
+                smartspaceCustomDateTime.resetBlocking()
+                smartspaceCustomDateTimeLocale.resetBlocking()
+                smartspaceCustomDateTimeCapitalization.resetBlocking()
+            }
+        },
     )
 
     val smartspacerMaxCount = preference(
