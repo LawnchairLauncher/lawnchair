@@ -1074,6 +1074,8 @@
     <string name="fold_label">Foldable screen</string>
     <string name="fold_description">Large screen layout and fold transitions</string>
     <string name="fold_option_summary">%1$s: %2$s</string>
+    <string name="fold_preview_folded">Folded: cover screen</string>
+    <string name="fold_preview_unfolded">Unfolded: %1$s, %2$s</string>
 
     <string name="fold_group_large_screen">Large screen</string>
     <string name="fold_group_transition">Transition</string>

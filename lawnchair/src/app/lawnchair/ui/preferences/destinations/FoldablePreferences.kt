@@ -31,6 +31,9 @@ import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.fold.FoldPickerPreference
+import app.lawnchair.ui.preferences.components.fold.FoldPreviewHeader
+import app.lawnchair.ui.preferences.components.fold.hasFoldPreview
 import app.lawnchair.ui.preferences.components.isFoldHomeIndependent
 import app.lawnchair.ui.preferences.components.isFoldHomeMirrored
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
@@ -54,6 +57,13 @@ fun FoldablePreferences(
         backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
+        PreferenceGroup {
+            FoldPreviewHeader(
+                home = prefs2.foldHomeLayout.getAdapter().state.value,
+                animation = prefs2.foldTransitionStyle.getAdapter().state.value,
+            )
+        }
+
         PreferenceGroup(heading = stringResource(id = R.string.fold_group_large_screen)) {
             FoldListPreference(
                 adapter = prefs2.foldHomeLayout.getAdapter(),
@@ -153,7 +163,11 @@ fun FoldablePreferences(
     }
 }
 
-/** A list preference for a foldable option, with the summary of the selected option under the label. */
+/**
+ * A list preference for a foldable option. Options with a preview (home screen, app drawer,
+ * animation, dock) show it and are picked from cards; the others show the summary of the selected
+ * option under the label.
+ */
 @Composable
 private fun <T> FoldListPreference(
     adapter: PreferenceAdapter<T>,
@@ -162,6 +176,10 @@ private fun <T> FoldListPreference(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) where T : Enum<T>, T : FoldOption {
+    if (hasFoldPreview(adapter.state.value)) {
+        FoldPickerPreference(adapter, options, label, modifier, enabled)
+        return
+    }
     val entries = remember(options) {
         options.map { option ->
             ListPreferenceEntry(value = option) {
