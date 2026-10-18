@@ -291,10 +291,10 @@ fun IconPackGrid(
     val lazyListState = rememberLazyListState()
     val padding = 12.dp
 
-    val iconPacksLocal = iconPacks
+    val iconPacksLocal = if (isThemedIconPack) themedIconPacks else iconPacks
 
     val selectedPack = adapter.state.value
-    LaunchedEffect(selectedPack) {
+    LaunchedEffect(selectedPack, iconPacksLocal) {
         val selectedIndex = iconPacksLocal.indexOfFirst { it.packageName == selectedPack }
         if (selectedIndex != -1) {
             lazyListState.animateScrollToItem(selectedIndex)
