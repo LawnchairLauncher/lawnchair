@@ -120,18 +120,17 @@ class PreferenceManager2 @Inject constructor(
     )
 
     /**
-     * A foldable option, stored as its [FoldOption.key]; a missing key reads as [defaultValue], an
-     * unknown one as [fallback] of it ([defaultValue] too, unless given).
+     * A foldable option, stored as its [FoldOption.key]; a missing or unknown key reads as
+     * [defaultValue].
      */
     private inline fun <reified E> foldOptionPreference(
         name: String,
         defaultValue: E,
-        noinline fallback: (String) -> E = { defaultValue },
         noinline onSet: (E) -> Unit = {},
     ) where E : Enum<E>, E : FoldOption = preference(
         key = stringPreferencesKey(name),
         defaultValue = defaultValue,
-        parse = { key -> enumValues<E>().firstOrNull { it.key == key } ?: fallback(key) },
+        parse = { key -> enumValues<E>().firstOrNull { it.key == key } ?: defaultValue },
         save = { it.key },
         onSet = onSet,
     )
@@ -815,8 +814,6 @@ class PreferenceManager2 @Inject constructor(
     val foldTransitionStyle = foldOptionPreference(
         name = "fold_transition_style",
         defaultValue = FoldTransitionStyle.WINDOW,
-        // The stored key is left as it is: "none" keeps reading as Simple until another pick
-        fallback = FoldTransitionStyle::forRemovedKey,
     )
 
     val foldAfterFold = foldOptionPreference(

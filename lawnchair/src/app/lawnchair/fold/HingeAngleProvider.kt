@@ -77,7 +77,7 @@ class HingeAngleProvider(
      * Whether the sensor reports a continuous angle. Some devices report only postures through it
      * (the Galaxy Z Fold3 on One UI 7 sends 0° closed and 90° open, nothing in between), which can't
      * drive a transition. It turns true with the first reading that isn't a multiple of
-     * [POSTURE_STEP] degrees and stays true for the process: it is a property of the device.
+     * [POSTURE_STEP] degrees and stays true for this launcher instance.
      */
     var isContinuous = false
         private set
