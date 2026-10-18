@@ -1103,9 +1103,9 @@
 
     <string name="fold_animation">Animation</string>
     <string name="fold_transition_window">Window</string>
-    <string name="fold_transition_window_description">Content stays fixed in space. The new half opens over it like a window, blurred at first and sharpening as it opens.</string>
+    <string name="fold_transition_window_description">The whole screen comes into focus. The new half opens like a window, blurred at first, and the page you were on sharpens with it.</string>
     <string name="fold_transition_wave">Light wave</string>
-    <string name="fold_transition_wave_description">Light spreads from the hinge and reveals the icons.</string>
+    <string name="fold_transition_wave_description">Light spreads from the hinge side you were looking at across to the opening edge, lighting up the icons as it passes.</string>
     <string name="fold_transition_book">Open book</string>
     <string name="fold_transition_book_description">Both halves straighten together, like a book opening flat in your hands.</string>
     <string name="fold_transition_simple">Simple</string>
