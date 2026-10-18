@@ -25,6 +25,7 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -38,6 +39,7 @@ fun AdvancedIconPreferences(
     val prefs2 = preferenceManager2()
 
     val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
+    val alwaysReloadIcons = prefs2.alwaysReloadIcons.getAdapter()
 
     PreferenceLayout(
         label = stringResource(id = R.string.advanced_icon_settings_title),
@@ -45,10 +47,13 @@ fun AdvancedIconPreferences(
     ) {
         PreferenceGroup {
             SwitchPreference(
-                adapter = prefs2.alwaysReloadIcons.getAdapter(),
+                adapter = alwaysReloadIcons,
                 label = stringResource(id = R.string.always_reload_icons_label),
-                description = stringResource(id = R.string.automatically_reload_icons_description),
+                description = stringResource(id = R.string.always_reload_icons_description),
             )
+            ExpandAndShrink(visible = alwaysReloadIcons.state.value) {
+                WarningPreference(stringResource(R.string.always_reload_icons_warning))
+            }
             SwitchPreference(
                 adapter = prefs.shadowBGIcons.getAdapter(),
                 label = stringResource(id = R.string.shadow_bg_icons_label),

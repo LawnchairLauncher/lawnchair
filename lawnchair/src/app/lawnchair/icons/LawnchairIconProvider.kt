@@ -90,8 +90,6 @@ class LawnchairIconProvider @Inject constructor(
             _themeMap!!
         }
 
-    val systemIconState = themeManager.iconState
-
     private fun resolveIconEntry(componentName: ComponentName, user: UserHandle): IconEntry? {
         val componentKey = ComponentKey(componentName, user)
         // first look for user-overridden icon
@@ -238,7 +236,6 @@ class LawnchairIconProvider @Inject constructor(
             "ti=${prefs.themedIcons.get()}," +
             "dti=${prefs.drawerThemedIcons.get()}," +
             "fm=${prefs.forceIconMonochrome.get()}," +
-            "tb=${prefs.tintIconPackBackgrounds.get()}," +
             "ov=$overrideState"
     }
 
