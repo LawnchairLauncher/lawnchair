@@ -50,6 +50,7 @@ fun PreferenceTemplate(
     colors: ListItemColors = ListItemDefaults.segmentedColors(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+        supportingContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
     ),
     interactionSource: MutableInteractionSource? = null,
 ) {
@@ -109,7 +110,6 @@ fun ProvideTitleTextStyle(content: @Composable () -> Unit) {
 @Composable
 fun ProvideDescriptionTextStyle(content: @Composable () -> Unit) {
     CompositionLocalProvider(
-        LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
         LocalTextStyle provides MaterialTheme.typography.bodyMedium,
         content = content,
     )
