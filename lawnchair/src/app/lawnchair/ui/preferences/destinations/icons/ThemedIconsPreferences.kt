@@ -172,6 +172,10 @@ fun ThemedIconsPreferences(
                     label = stringResource(id = R.string.enforce_themed_icons_title),
                     description = stringResource(id = R.string.enforce_themed_icons_description),
                 )
+                SwitchPreference(
+                    adapter = prefs.transparentIconBackground.getAdapter(),
+                    label = stringResource(id = R.string.transparent_background_icons_label),
+                )
             }
         }
     }

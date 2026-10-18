@@ -38,7 +38,6 @@ fun AdvancedIconPreferences(
     val prefs2 = preferenceManager2()
 
     val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
-    val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
 
     PreferenceLayout(
         label = stringResource(id = R.string.advanced_icon_settings_title),
@@ -51,22 +50,22 @@ fun AdvancedIconPreferences(
                 description = stringResource(id = R.string.automatically_reload_icons_description),
             )
             SwitchPreference(
-                adapter = transparentIconBackground,
-                label = stringResource(id = R.string.transparent_background_icons_label),
+                adapter = prefs.shadowBGIcons.getAdapter(),
+                label = stringResource(id = R.string.shadow_bg_icons_label),
             )
         }
 
         PreferenceGroup(
             heading = stringResource(R.string.auto_adaptive_icons_label),
             description = stringResource(id = (R.string.adaptive_icon_background_description)),
-            showDescription = wrapAdaptiveIcons.state.value && !transparentIconBackground.state.value,
+            showDescription = wrapAdaptiveIcons.state.value,
         ) {
             SwitchPreference(
                 adapter = wrapAdaptiveIcons,
                 label = stringResource(id = R.string.reshape_unthemed_icons_title),
                 description = stringResource(id = R.string.reshape_unthemed_icons_description),
             )
-            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value && !transparentIconBackground.state.value) {
+            ExpandAndShrink(visible = wrapAdaptiveIcons.state.value) {
                 SliderPreference(
                     label = stringResource(id = R.string.background_lightness_label),
                     adapter = prefs.coloredBackgroundLightness.getAdapter(),
