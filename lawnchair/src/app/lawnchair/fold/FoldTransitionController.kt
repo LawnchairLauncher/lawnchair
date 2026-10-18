@@ -171,7 +171,9 @@ class FoldTransitionController(
     }
 
     override fun onHingeAngleChanged(angle: Float) {
-        if (run != null || !isLarge()) return
+        // A posture-only sensor jumps from open to closed: there is no fold to follow on the inner
+        // screen, and the cover plays the timer fold after the switch.
+        if (run != null || !isLarge() || !hinge.isContinuous) return
         if (restAngle.isNaN() || angle > restAngle) {
             restAngle = angle
             return
@@ -366,7 +368,9 @@ class FoldTransitionController(
                 r.progress += (target - r.progress) * follow
                 if (abs(target - r.progress) < PROGRESS_EPSILON) r.progress = target
                 if (BuildConfig.DEBUG) Log.d(TAG, "hinge angle=$angle° -> target=$target, progress=${r.progress}")
-                if (r.progress >= 1f) return true
+                // An unfold ends fully open; a fold tracked on the inner screen starts at 1 and is
+                // ended by the switch to the cover (or settles open if the hinge stops).
+                if (r.scene.opening && r.progress >= 1f) return true
                 if (!hinge.isStarted || now - hinge.lastMoveUptimeMillis > FoldTunables.HINGE_IDLE_MILLIS) {
                     Log.i(TAG, "hinge stopped at $angle°, settling open")
                     val settle = max(MIN_SETTLE_MILLIS, (FoldTunables.SETTLE_DURATION_MILLIS * (1f - r.progress)).toLong())
@@ -391,7 +395,7 @@ class FoldTransitionController(
      */
     private fun hingeMovedSince(r: Run): Boolean {
         val angle = hinge.angle
-        if (angle.isNaN() || hinge.lastMoveUptimeMillis <= r.startUptimeMillis) return false
+        if (!hinge.isContinuous || angle.isNaN() || hinge.lastMoveUptimeMillis <= r.startUptimeMillis) return false
         if (angle < FoldTunables.INNER_DISPLAY_ON_ANGLE - HINGE_START_MARGIN || angle >= FoldTunables.FULLY_OPEN_ANGLE) return false
         return r.startAngle.isNaN() || abs(angle - r.startAngle) >= 1f
     }

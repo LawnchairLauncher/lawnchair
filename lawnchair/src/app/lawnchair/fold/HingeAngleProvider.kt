@@ -65,6 +65,15 @@ class HingeAngleProvider(
     var lastMoveUptimeMillis = 0L
         private set
 
+    /**
+     * Whether the sensor reports a continuous angle. Some devices report only postures through it
+     * (the Galaxy Z Fold3 on One UI 7 sends 0° closed and 90° open, nothing in between), which can't
+     * drive a transition. It turns true with the first reading that isn't a multiple of
+     * [POSTURE_STEP] degrees and stays true for the process: it is a property of the device.
+     */
+    var isContinuous = false
+        private set
+
     fun start(): Boolean {
         if (isStarted) return true
         val manager = sensorManager ?: return false
@@ -100,6 +109,9 @@ class HingeAngleProvider(
                 directionAnchor = value
             }
         }
+        if (!isContinuous && abs(value - POSTURE_STEP * Math.round(value / POSTURE_STEP)) >= MOVE_EPSILON) {
+            isContinuous = true
+        }
         if (moveAnchor.isNaN() || abs(value - moveAnchor) >= MOVE_EPSILON) {
             lastMoveUptimeMillis = SystemClock.uptimeMillis()
             moveAnchor = value
@@ -121,5 +133,6 @@ class HingeAngleProvider(
     companion object {
         const val DIRECTION_HYSTERESIS = 2f
         const val MOVE_EPSILON = 0.5f
+        private const val POSTURE_STEP = 90f
     }
 }
