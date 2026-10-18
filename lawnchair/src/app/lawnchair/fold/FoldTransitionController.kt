@@ -68,8 +68,8 @@ import kotlin.math.min
  * the two never animate the same views. The debug replay (`FoldReplay`, debug builds only) works
  * everywhere, through [startRunForDebug].
  *
- * Reduced motion (animator duration scale 0): no motion, a [FoldTunables.REDUCED_MOTION_DURATION_MILLIS]
- * crossfade. Any failure ends the transition at once with the final layout showing; debug builds
+ * Reduced motion (animator duration scale 0): no motion, Simple's fade in
+ * [FoldTunables.REDUCED_MOTION_DURATION_MILLIS]. Any failure ends the transition at once with the final layout showing; debug builds
  * then rethrow it.
  *
  * While the app drawer is open, the [DrawerFoldStyle] of the drawer layout (river, book or zoom,
@@ -256,7 +256,6 @@ class FoldTransitionController(
             launcher.resources.displayMetrics.density,
             opening,
             large,
-            reduced,
         )
         // The timer follows the system animator duration scale, times the replay's slow factor
         val timeScale = if (phase == Phase.HINGE || reduced) 1f else durationScale() * slowFactor
@@ -269,7 +268,8 @@ class FoldTransitionController(
         val style = when {
             styleType == FoldTransitionStyle.NONE -> NoneFoldStyle()
 
-            reduced -> FoldStyle.createReducedMotion()
+            // Simple's fade: nothing moves
+            reduced -> SimpleFoldStyle()
 
             // The drawer has its own transitions, which replace the home style while it is open.
             isDrawerOpen() -> when (drawerLayout()) {
@@ -437,10 +437,11 @@ class FoldTransitionController(
             failure = failure ?: t
         } finally {
             // What a style that throws could leave on the whole launcher: the DragLayer's clip,
-            // blur and animation matrix. Nothing else in the launcher sets any of them.
+            // blur, animation matrix and transition alpha. Nothing else in the launcher sets any of them.
             val dragLayer = launcher.dragLayer
             dragLayer.clipBounds = null
             dragLayer.animationMatrix = null
+            dragLayer.transitionAlpha = 1f
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dragLayer.setRenderEffect(null)
         }
         if (r.notify) {

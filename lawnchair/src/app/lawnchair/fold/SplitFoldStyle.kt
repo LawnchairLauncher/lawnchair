@@ -13,7 +13,8 @@ import androidx.annotation.RequiresApi
  * half is drawn by the style, in the overlay, from [movingNode]: a RenderNode that records the
  * DragLayer every frame and only references its children's display lists. So the moving half is
  * always the live content (icons bound late, widgets updating) with the style's transform on top,
- * and nothing is copied into a bitmap. The fixed half can take part through [transformDragLayer].
+ * and nothing is copied into a bitmap. The fixed half can take part through [transformDragLayer]
+ * and [fadeDragLayer].
  */
 @RequiresApi(Build.VERSION_CODES.Q)
 abstract class SplitFoldStyle : FoldStyle() {
@@ -72,6 +73,11 @@ abstract class SplitFoldStyle : FoldStyle() {
         dragLayer.animationMatrix = dragLayerMatrix
     }
 
+    /** Fades the live views to [alpha], apart from their own alpha (the DragLayer's transition alpha). */
+    protected fun fadeDragLayer(scene: FoldScene, alpha: Float) {
+        scene.dragLayer.transitionAlpha = alpha
+    }
+
     override fun onEnd(scene: FoldScene) {
         val dragLayer = scene.dragLayer
         if (dragLayerClipped) {
@@ -80,6 +86,7 @@ abstract class SplitFoldStyle : FoldStyle() {
             savedDragLayerClip = null
         }
         dragLayer.animationMatrix = null
+        dragLayer.transitionAlpha = 1f
         movingNode.discardDisplayList()
     }
 }

@@ -45,8 +45,8 @@ object FoldTunables {
 
     // SIMPLE
 
-    /** Distance the newly revealed half slides out of the hinge. */
-    const val SIMPLE_TRANSLATE_DP = 32f
+    /** Opacity of the fixed half (the page you were on) as the new layout starts to fade in. */
+    const val SIMPLE_FIXED_ALPHA = 0.55f
 
     // WINDOW
 

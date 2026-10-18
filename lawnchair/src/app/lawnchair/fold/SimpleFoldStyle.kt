@@ -5,33 +5,27 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 
 /**
- * SIMPLE: what was on the cover stays exactly where it is; the newly revealed half fades in while
- * sliding [FoldTunables.SIMPLE_TRANSLATE_DP] out of the hinge.
- *
- * With [fadeOnly] it is a plain crossfade, used for reduced motion. Nothing moves on the cover
- * layout after a fold: the cover content was on the fixed half already.
+ * SIMPLE: a short fade of the new layout over the whole screen. The newly revealed half fades in
+ * where it is, and the page you were on dips to [FoldTunables.SIMPLE_FIXED_ALPHA] and comes back
+ * with it. Nothing moves, so it is also what every style plays with reduced motion. On the cover
+ * layout after a fold, the cover page comes back from the same dip.
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-class SimpleFoldStyle(
-    private val fadeOnly: Boolean = false,
-) : SplitFoldStyle() {
-
-    private var translatePx = 0f
+class SimpleFoldStyle : SplitFoldStyle() {
 
     override fun onStart(scene: FoldScene): Boolean {
-        translatePx = if (fadeOnly || scene.reducedMotion) 0f else scene.dpToPx(FoldTunables.SIMPLE_TRANSLATE_DP)
         movingNode.setHasOverlappingRendering(true)
         return true
     }
 
     override fun onPreDraw(scene: FoldScene, progress: Float) {
+        val p = progress.coerceIn(0f, 1f)
+        // How far from the rest state: 1 - progress on the large layout, progress on the cover
+        val dip = if (scene.largeLayout) 1f - p else p
+        fadeDragLayer(scene, 1f - (1f - FoldTunables.SIMPLE_FIXED_ALPHA) * dip)
         if (!scene.largeLayout) return
         clipDragLayerToFixedHalf(scene)
-        val p = progress.coerceIn(0f, 1f)
-        val offset = (1f - p) * translatePx
         movingNode.setAlpha(p)
-        movingNode.setTranslationX(scene.geometry.towardHingeX * offset)
-        movingNode.setTranslationY(scene.geometry.towardHingeY * offset)
     }
 
     override fun onDrawOverlay(scene: FoldScene, canvas: Canvas, progress: Float) {

@@ -49,10 +49,6 @@ abstract class FoldStyle {
                 FoldTransitionStyle.NONE -> NoneFoldStyle()
             }
         }
-
-        /** Used instead of the selected style when the system asks for reduced motion: a crossfade, no motion. */
-        @RequiresApi(Build.VERSION_CODES.Q)
-        fun createReducedMotion(): FoldStyle = SimpleFoldStyle(fadeOnly = true)
     }
 }
 
