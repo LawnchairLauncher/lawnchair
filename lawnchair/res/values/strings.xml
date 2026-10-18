@@ -1106,6 +1106,8 @@
     <string name="fold_transition_window_description">Content stays fixed in space. The new half opens over it like a window, blurred at first and sharpening as it opens.</string>
     <string name="fold_transition_wave">Light wave</string>
     <string name="fold_transition_wave_description">Light spreads from the hinge and reveals the icons.</string>
+    <string name="fold_transition_book">Open book</string>
+    <string name="fold_transition_book_description">Both halves straighten together, like a book opening flat in your hands.</string>
     <string name="fold_transition_simple">Simple</string>
     <string name="fold_transition_simple_description">A calm fade and a direct switch, without effects.</string>
     <string name="fold_transition_none">None</string>

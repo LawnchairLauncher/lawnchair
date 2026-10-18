@@ -100,6 +100,21 @@ object FoldTunables {
     /** Opacity of the moving half ahead of the band (not revealed yet). */
     const val WAVE_DIM_ALPHA = 0.15f
 
+    // BOOK
+
+    /** Angle of the moving half about the hinge at progress 0, its free edge away from you. */
+    const val BOOK_MOVING_DEGREES = 78f
+
+    /** Angle of the fixed half (the page you were on) about the hinge at progress 0. */
+    const val BOOK_FIXED_DEGREES = 30f
+
+    /** Eye distance in front of the middle of the hinge, as a multiple of a half's width. */
+    const val BOOK_EYE_DISTANCE = 3f
+
+    /** Darkening at the hinge at progress 0, clear at the outer edge: the moving half, the fixed half. */
+    const val BOOK_MOVING_SHADE = 0.6f
+    const val BOOK_FIXED_SHADE = 0.36f
+
     // App drawer
 
     /** BIG_ICONS: upper bound of the icon and label scale over the cover's (read when the grid loads). */

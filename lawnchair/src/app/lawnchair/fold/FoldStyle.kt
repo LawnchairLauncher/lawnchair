@@ -45,6 +45,7 @@ abstract class FoldStyle {
                 FoldTransitionStyle.WINDOW -> WindowFoldStyle()
                 FoldTransitionStyle.SIMPLE -> SimpleFoldStyle()
                 FoldTransitionStyle.WAVE -> WaveFoldStyle()
+                FoldTransitionStyle.BOOK -> BookFoldStyle()
                 FoldTransitionStyle.NONE -> NoneFoldStyle()
             }
         }

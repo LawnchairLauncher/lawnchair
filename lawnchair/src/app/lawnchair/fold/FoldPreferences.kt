@@ -90,6 +90,11 @@ enum class FoldTransitionStyle(
         labelResourceId = R.string.fold_transition_wave,
         descriptionResourceId = R.string.fold_transition_wave_description,
     ),
+    BOOK(
+        key = "book",
+        labelResourceId = R.string.fold_transition_book,
+        descriptionResourceId = R.string.fold_transition_book_description,
+    ),
     SIMPLE(
         key = "simple",
         labelResourceId = R.string.fold_transition_simple,

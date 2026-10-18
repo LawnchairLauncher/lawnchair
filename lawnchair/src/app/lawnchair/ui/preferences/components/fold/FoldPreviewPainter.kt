@@ -150,7 +150,7 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
                     gradient(bandBrush, pad + hw * (0.96f - 1.41f * seg(t, 0.22f, 0.46f)), 0.45f * hw, seg(t, 0.2f, 0.22f) * (1f - seg(t, 0.46f, 0.47f)))
                 }
 
-                FoldTransitionStyle.SIMPLE -> {
+                FoldTransitionStyle.SIMPLE, FoldTransitionStyle.BOOK -> {
                     alpha = seg(t, 0.2f, 0.3f)
                     openMoving(home, docks)
                     alpha = 1f
