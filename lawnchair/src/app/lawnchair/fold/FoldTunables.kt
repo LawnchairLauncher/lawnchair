@@ -43,9 +43,6 @@ object FoldTunables {
     /** Safety net: a transition never runs longer than this. */
     const val MAX_TRANSITION_MILLIS = 8000L
 
-    /** After the progress ends, how long a style may keep moving until it settles (see FoldStyle.isSettled). */
-    const val MAX_SETTLE_MILLIS = 1200L
-
     // SIMPLE
 
     /** Distance the newly revealed half slides out of the hinge. */
@@ -96,39 +93,6 @@ object FoldTunables {
 
     /** Opacity of the moving half ahead of the band (not revealed yet). */
     const val WAVE_DIM_ALPHA = 0.15f
-
-    // MASS
-
-    /** Displacement of an icon at the hinge at full speed; the free edge gets 1.3x. */
-    const val MASS_MAX_DISPLACEMENT_DP = 24f
-
-    /** Progress per second (in real time, before the slow-replay scale) that counts as full speed. */
-    const val MASS_REFERENCE_VELOCITY = 3f
-
-    /** Share of the effect for icons on the fixed half (and the cover screen). */
-    const val MASS_FIXED_HALF_FACTOR = 0.4f
-
-    /** Spring stiffness (androidx SpringForce units) and damping ratio of each icon. */
-    const val MASS_STIFFNESS = 380f
-    const val MASS_DAMPING_RATIO = 0.42f
-
-    // DEEP
-
-    /** Virtual tilt of the moving half at progress 0. */
-    const val DEEP_MAX_TILT_DEGREES = 50f
-
-    /** Shift of an icon (depth 1) toward the hinge at full tilt. */
-    const val DEEP_MAX_SHIFT_DP = 40f
-
-    /** Depth of widgets and of the wallpaper, relative to icons. */
-    const val DEEP_WIDGET_DEPTH = 0.6f
-    const val DEEP_WALLPAPER_DEPTH = 0.25f
-
-    /** Wallpaper offset (0..1 units) per unit of depth at full tilt. */
-    const val DEEP_WALLPAPER_SHIFT = 0.08f
-
-    /** Elevation of an icon at full tilt (its soft shadow). */
-    const val DEEP_MAX_ELEVATION_DP = 10f
 
     // App drawer
 

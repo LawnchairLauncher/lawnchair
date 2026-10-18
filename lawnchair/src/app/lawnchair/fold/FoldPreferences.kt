@@ -71,7 +71,10 @@ enum class FoldDrawerLayout(
     ),
 }
 
-/** Animation played while folding and unfolding. */
+/**
+ * Animation played while folding and unfolding. The keys of removed styles ("mass", "deep") read as
+ * the default, [WINDOW].
+ */
 enum class FoldTransitionStyle(
     override val key: String,
     @StringRes override val labelResourceId: Int,
@@ -86,16 +89,6 @@ enum class FoldTransitionStyle(
         key = "wave",
         labelResourceId = R.string.fold_transition_wave,
         descriptionResourceId = R.string.fold_transition_wave_description,
-    ),
-    MASS(
-        key = "mass",
-        labelResourceId = R.string.fold_transition_mass,
-        descriptionResourceId = R.string.fold_transition_mass_description,
-    ),
-    DEEP(
-        key = "deep",
-        labelResourceId = R.string.fold_transition_deep,
-        descriptionResourceId = R.string.fold_transition_deep_description,
     ),
     SIMPLE(
         key = "simple",

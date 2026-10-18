@@ -31,18 +31,6 @@ class FoldScene internal constructor(
 ) {
     val geometry = FoldGeometry()
 
-    /** Progress change per second, low-pass filtered: positive while opening, negative while closing. */
-    var velocity = 0f
-        internal set
-
-    /**
-     * How many times slower than real time the transition plays: the slow-replay factor times the
-     * system animator duration scale for the timer, 1 when following the hinge. Styles with their
-     * own clock (springs) slow down by as much, so a slow replay shows the same motion.
-     */
-    var timeScale = 1f
-        internal set
-
     fun dpToPx(dp: Float): Float = dp * density
 
     /** Sets [out] to the workspace pages on screen, none while the workspace is hidden. */
@@ -59,11 +47,6 @@ class FoldScene internal constructor(
             val page = workspace.getChildAt(i) as? CellLayout ?: continue
             if (page.visibility == View.VISIBLE) out.add(page)
         }
-    }
-
-    /** Shifts the wallpaper by [offset] on top of its scroll offset; 0 puts it back. */
-    fun setWallpaperFoldOffset(offset: Float) {
-        workspace?.setWallpaperFoldOffset(offset)
     }
 }
 

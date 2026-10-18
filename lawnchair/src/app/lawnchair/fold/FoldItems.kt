@@ -14,15 +14,15 @@ import kotlin.math.min
 
 /**
  * A home screen item (icon, folder or widget) on a visible workspace page, seen by the per-item
- * styles (WAVE, MASS, DEEP).
+ * style (WAVE).
  *
  * Styles move items only through the [TRANSLATE_INDEX] channel of their [MultiTranslateDelegate],
  * which adds to every other translation (reorder, the dock merge, page pairing) instead of replacing it.
  * That channel belongs to AOSP's unfold animation, which never runs while this engine does (the
  * engine is off when Lawnchair is the recents provider).
  *
- * @property state the style's own state for this item (a spring, a glow, saved view properties),
- * created when the item is first seen.
+ * @property state the style's own state for this item (Wave's glow), created when the item is
+ * first seen.
  */
 class FoldItem<S> internal constructor(
     val view: View,

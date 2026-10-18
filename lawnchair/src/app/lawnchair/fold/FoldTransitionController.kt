@@ -235,12 +235,13 @@ class FoldTransitionController(
             large,
             reduced,
         )
-        scene.timeScale = if (phase == Phase.HINGE || reduced) 1f else durationScale() * slowFactor
+        // The timer follows the system animator duration scale, times the replay's slow factor
+        val timeScale = if (phase == Phase.HINGE || reduced) 1f else durationScale() * slowFactor
         val millis = when {
             phase == Phase.HINGE -> 0L
-            timerMillis != null -> (timerMillis * scene.timeScale).toLong()
+            timerMillis != null -> (timerMillis * timeScale).toLong()
             reduced -> FoldTunables.REDUCED_MOTION_DURATION_MILLIS
-            else -> ((if (opening) FoldTunables.UNFOLD_DURATION_MILLIS else FoldTunables.FOLD_DURATION_MILLIS) * scene.timeScale).toLong()
+            else -> ((if (opening) FoldTunables.UNFOLD_DURATION_MILLIS else FoldTunables.FOLD_DURATION_MILLIS) * timeScale).toLong()
         }
         val style = when {
             styleType == FoldTransitionStyle.NONE -> NoneFoldStyle()
@@ -311,29 +312,11 @@ class FoldTransitionController(
             val step = if (r.lastFrameNanos < 0) 0L else (frameTimeNanos - r.lastFrameNanos).coerceIn(0L, MAX_FRAME_STEP_NANOS)
             r.lastFrameNanos = frameTimeNanos
             r.ageNanos += step
-            val now = SystemClock.uptimeMillis()
-            var done: Boolean
-            if (r.phase == Phase.SETTLING) {
-                // The progress is over; the style's own motion (springs) comes to rest.
-                r.elapsedNanos += step
-                done = r.style.isSettled(r.scene) ||
-                    r.elapsedNanos > FoldTunables.MAX_SETTLE_MILLIS * r.scene.timeScale * NANOS_PER_MILLI
-            } else {
-                done = advance(r, step, now)
-                if (r.ageNanos > FoldTunables.MAX_TRANSITION_MILLIS * NANOS_PER_MILLI) {
-                    Log.w(TAG, "transition took too long, ending it")
-                    done = true
-                } else if (done && !r.style.isSettled(r.scene)) {
-                    r.phase = Phase.SETTLING
-                    r.elapsedNanos = 0L
-                    done = false
-                }
+            var done = advance(r, step, SystemClock.uptimeMillis())
+            if (r.ageNanos > FoldTunables.MAX_TRANSITION_MILLIS * NANOS_PER_MILLI) {
+                Log.w(TAG, "transition took too long, ending it")
+                done = true
             }
-            if (step > 0) {
-                val raw = (r.progress - r.lastProgress) * NANOS_PER_SECOND / step
-                r.scene.velocity += (raw - r.scene.velocity) * (1f - exp(-step / VELOCITY_SMOOTHING_NANOS))
-            }
-            r.lastProgress = r.progress
             if (r.notify) dispatchProgress(r)
             if (done) {
                 finishNow("done")
@@ -356,7 +339,6 @@ class FoldTransitionController(
                 if (t >= 1f) return true
                 if (r.allowHinge && now - r.startUptimeMillis <= FoldTunables.HINGE_WAIT_MILLIS && hingeMovedSince(r)) {
                     r.phase = Phase.HINGE
-                    r.scene.timeScale = 1f
                     Log.i(TAG, "hinge is moving (${hinge.angle}°), following it")
                 }
             }
@@ -382,8 +364,6 @@ class FoldTransitionController(
                     r.interpolator = Interpolators.STANDARD
                 }
             }
-
-            Phase.SETTLING -> Unit
         }
         return false
     }
@@ -538,15 +518,14 @@ class FoldTransitionController(
 
     /**
      * TIMER: the timer drives the progress (from the start, or settling open after the hinge
-     * stopped). HINGE: the hinge angle does. SETTLING: the progress is over and the style's own
-     * motion comes to rest.
+     * stopped). HINGE: the hinge angle does.
      */
-    private enum class Phase { TIMER, HINGE, SETTLING }
+    private enum class Phase { TIMER, HINGE }
 
     /**
      * One transition. [allowHinge]: the hinge may drive it (a fold that started from the hinge, or
-     * an unfold while the sensor runs). [elapsedNanos]: time on the timer, in SETTLING the time
-     * since the progress ended. [interpolator]: the timer's curve.
+     * an unfold while the sensor runs). [elapsedNanos]: time on the timer. [interpolator]: the
+     * timer's curve.
      */
     private class Run(
         val reason: String,
@@ -563,7 +542,6 @@ class FoldTransitionController(
         var interpolator: Interpolator,
     ) {
         var progress = from
-        var lastProgress = from
         var dispatchedProgress = Float.NaN
         var elapsedNanos = 0L
         var lastFrameNanos = -1L
@@ -595,8 +573,6 @@ class FoldTransitionController(
         private const val TAG = "LC-Fold"
 
         private const val NANOS_PER_MILLI = 1_000_000L
-        private const val NANOS_PER_SECOND = 1_000_000_000f
-        private const val VELOCITY_SMOOTHING_NANOS = 30_000_000f
         private const val MAX_FRAME_STEP_NANOS = 34L * NANOS_PER_MILLI
         private const val MIN_SETTLE_MILLIS = 120L
         private const val PROGRESS_EPSILON = 0.001f

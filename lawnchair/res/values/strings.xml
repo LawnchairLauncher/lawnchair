@@ -1103,10 +1103,6 @@
     <string name="fold_transition_window_description">Content stays fixed in space and the moving half is a window passing over it.</string>
     <string name="fold_transition_wave">Light wave</string>
     <string name="fold_transition_wave_description">Light spreads from the hinge and reveals the icons.</string>
-    <string name="fold_transition_mass">Weight</string>
-    <string name="fold_transition_mass_description">Icons lag behind according to your hand speed and settle back softly.</string>
-    <string name="fold_transition_deep">Depth</string>
-    <string name="fold_transition_deep_description">Layers move apart according to their depth.</string>
     <string name="fold_transition_simple">Simple</string>
     <string name="fold_transition_simple_description">A calm fade and a direct switch, without effects.</string>
     <string name="fold_transition_none">None</string>
