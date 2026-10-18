@@ -39,13 +39,13 @@
     <string name="action_paste">Вставити</string>
     <string name="action_done">Виконано</string>
     <string name="select_all">Виділити все</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="deselect_all">Зняти виділення з усього</string>
+    <string name="inverse_selection">Зворотний відбір</string>
     <string name="loading">Завантаження…</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="download_update">Download update</string>
+    <string name="dismiss">Відхилити</string>
+    <string name="download_update">Завантажити оновлення</string>
     <string name="install_update">Встановіть оновлення</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">Переглянути зміни</string>
     <string name="pro_updated">You\'re up-to-date</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Updates</string>
@@ -117,7 +117,7 @@
     <string name="my_folder_label">Моя папка</string>
     <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">Щоб виконувати певні дії під час використання жестів (наприклад, блокування телефона), Lawnchair потребує доступу до спеціальних можливостей.\n\nLawnchair не відстежує ваші дії, хоча всі служби спеціальних можливостей і вимагають такого дозволу. Lawnchair ігнорує будь-які події, надіслані системою.\n\nДля блокування телефона або відкриття екрана нещодавніх програм Lawnchair використовує функцію `performGlobalAction` служби спеціальних можливостей.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
