@@ -227,16 +227,6 @@ public class WallpaperOffsetInterpolator {
         Message.obtain(mHandler, MSG_JUMP_TO_FINAL, mWindowToken).sendToTarget();
     }
 
-    /**
-     * LC-Note: shifts the wallpaper by {@code offset} (in offset units) on top of the scroll
-     * offset, until it is set back to 0. Used by the fold transition's parallax. Applied on the
-     * offset handler thread like every other update.
-     */
-    public void setExtraOffset(float offset) {
-        Message.obtain(mHandler, MSG_SET_EXTRA_OFFSET, Float.floatToIntBits(offset), 0,
-                mWindowToken).sendToTarget();
-    }
-
     public void setWindowToken(IBinder token) {
         mWindowToken = token;
         if (mWindowToken == null && mRegistered) {
@@ -263,7 +253,6 @@ public class WallpaperOffsetInterpolator {
     private static final int MSG_APPLY_OFFSET = 3;
     private static final int MSG_SET_NUM_PARALLAX = 4;
     private static final int MSG_JUMP_TO_FINAL = 5;
-    private static final int MSG_SET_EXTRA_OFFSET = 6;
 
     private static class OffsetHandler extends Handler {
 
@@ -277,7 +266,6 @@ public class WallpaperOffsetInterpolator {
 
         private float mFinalOffset;
         private float mOffsetX;
-        private float mExtraOffset;
 
         public OffsetHandler(Context context) {
             super(UI_HELPER_EXECUTOR.getLooper());
@@ -342,25 +330,12 @@ public class WallpaperOffsetInterpolator {
                     mAnimating = false;
                     return;
                 }
-                case MSG_SET_EXTRA_OFFSET: {
-                    float extra = Float.intBitsToFloat(msg.arg1);
-                    if (Float.compare(extra, mExtraOffset) != 0) {
-                        mExtraOffset = extra;
-                        setOffsetSafely(token);
-                    }
-                    return;
-                }
             }
         }
 
         private void setOffsetSafely(IBinder token) {
-            // LC-Note: the fold parallax shift, mirrored when it would leave the range
-            float offset = mCurrentOffset + mExtraOffset;
-            if (offset < 0f || offset > 1f) {
-                offset = Utilities.boundToRange(mCurrentOffset - mExtraOffset, 0f, 1f);
-            }
             try {
-                mWM.setWallpaperOffsets(token, offset, 0.5f);
+                mWM.setWallpaperOffsets(token, mCurrentOffset, 0.5f);
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, "Error updating wallpaper offset: " + e);
             }

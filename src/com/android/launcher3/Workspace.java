@@ -4589,13 +4589,5 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         updateSideDockPagePadding(); // LC-Note
     }
 
-    /**
-     * LC-Note: shifts the wallpaper on top of its scroll offset, for the fold transition's
-     * parallax. 0 restores the normal offset.
-     */
-    public void setWallpaperFoldOffset(float offset) {
-        mWallpaperOffset.setExtraOffset(offset);
-    }
-
     // LC-Note: foldables — end.
 }
