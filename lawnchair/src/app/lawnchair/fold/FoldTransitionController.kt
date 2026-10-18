@@ -93,6 +93,8 @@ class FoldTransitionController(
 
     private var attached = false
     private var resumed = false
+    private var previewRequested = false
+    private val previewRunnable = Runnable { startPreview() }
     private var lastFoldScreen = FoldScreen.NONE
     private var restAngle = Float.NaN
     private var preDrawObserver: ViewTreeObserver? = null
@@ -125,12 +127,33 @@ class FoldTransitionController(
         resumed = true
         restAngle = Float.NaN
         updateHingeSensor()
+        if (previewRequested) launcher.rootView.postDelayed(previewRunnable, PREVIEW_DELAY_MILLIS)
     }
 
     override fun onActivityPaused(activity: Activity) {
         resumed = false
         hinge.stop()
+        launcher.rootView.removeCallbacks(previewRunnable)
         finishNow("pause")
+    }
+
+    /**
+     * Plays the selected style once as an unfold, in place on the large screen: "Try it on the
+     * home screen" in the Foldable screen settings, which brings the launcher to the front first.
+     * Ignored on the cover, in a window, while a transition runs and with the style None.
+     */
+    fun requestPreview() {
+        if (!attached) return
+        previewRequested = true
+        if (resumed) launcher.rootView.postDelayed(previewRunnable, PREVIEW_DELAY_MILLIS)
+    }
+
+    private fun startPreview() {
+        if (!previewRequested) return
+        previewRequested = false
+        if (run != null || !isLarge() || !isEngineEnabled() || !canRunNow()) return
+        if (prefs2.foldTransitionStyle.firstCached() == FoldTransitionStyle.NONE) return
+        startRun("preview", opening = true, large = true)
     }
 
     // Registered by attach() only, on API 29+
@@ -571,6 +594,12 @@ class FoldTransitionController(
 
     companion object {
         private const val TAG = "LC-Fold"
+
+        /** The intent action that asks the launcher for [requestPreview]. */
+        const val ACTION_PREVIEW = "app.lawnchair.fold.PREVIEW"
+
+        // After the launcher is back in front, once the settings window has gone
+        private const val PREVIEW_DELAY_MILLIS = 450L
 
         private const val NANOS_PER_MILLI = 1_000_000L
         private const val MAX_FRAME_STEP_NANOS = 34L * NANOS_PER_MILLI

@@ -266,6 +266,7 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     override fun onNewIntent(intent: Intent?) {
         if (intent != null) FoldReplay.onNewIntent(this, intent)
+        if (intent?.action == FoldTransitionController.ACTION_PREVIEW) foldTransitionController.requestPreview()
         if (intent != null && intent.action == LawnchairShortcutActivity.START_ACTION) {
             val handlerString = intent.getStringExtra(LawnchairShortcutActivity.EXTRA_HANDLER)
             val config = handlerString?.let { GestureHandlerConfig.fromString(it) }

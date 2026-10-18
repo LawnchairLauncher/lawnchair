@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.components.fold
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -17,11 +18,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -29,12 +32,16 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldOption
+import app.lawnchair.fold.FoldScreen
+import app.lawnchair.fold.FoldTransitionController
 import app.lawnchair.fold.FoldTransitionStyle
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.bottomSheetHandler
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
@@ -202,5 +209,25 @@ fun FoldPreviewHeader(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
         )
+        // Only on the large screen: there is no half to open on the cover
+        val context = LocalContext.current
+        val configuration = LocalConfiguration.current
+        val onLargeScreen = remember(configuration) {
+            InvariantDeviceProfile.INSTANCE.get(context).getDeviceProfile(context)
+                .deviceProperties.foldScreen == FoldScreen.LARGE
+        }
+        if (onLargeScreen && animation != FoldTransitionStyle.NONE) {
+            Button(
+                onClick = {
+                    context.startActivity(
+                        Intent(context, LawnchairLauncher::class.java)
+                            .setAction(FoldTransitionController.ACTION_PREVIEW)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                    )
+                },
+            ) {
+                Text(text = stringResource(id = R.string.fold_preview_try))
+            }
+        }
     }
 }
