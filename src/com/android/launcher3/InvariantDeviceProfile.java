@@ -443,8 +443,9 @@ public class InvariantDeviceProfile {
             DeviceProfileOverrides.PreviewOverrides previewOverrides) {
         this.closestProfile = displayOption.grid;
         
+        // LC-Note: Not only in English. Lawnchair shows the toggle in every language, and labels
+        // break at spaces or between words, which also works for other scripts.
         enableTwoLinesInAllApps = Flags.enableTwolineToggle()
-                && Utilities.isEnglishLanguage(context)
                 && mPrefs.get(ENABLE_TWOLINE_ALLAPPS_TOGGLE);
         mLocale = context.getResources().getConfiguration().locale.toString();
 
