@@ -18,6 +18,7 @@ package app.lawnchair
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
@@ -25,6 +26,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Process
 import android.provider.Settings
 import android.util.Log
 import androidx.compose.foundation.layout.Spacer
@@ -83,8 +85,13 @@ class LawnchairApp : LauncherApplication() {
      * seconds after start, on a background thread. It is a no-op once written for this install.
      */
     private fun scheduleBaselineProfileInstall() {
-        val isMainProcess = Build.VERSION.SDK_INT < Build.VERSION_CODES.P ||
+        val isMainProcess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Application.getProcessName() == packageName
+        } else {
+            // API 26–27 has no Application.getProcessName().
+            getSystemService(ActivityManager::class.java)?.runningAppProcesses
+                ?.any { it.pid == Process.myPid() && it.processName == packageName } == true
+        }
         if (!isMainProcess) return
         Executors.ORDERED_BG_EXECUTOR.handler.postDelayed(
             {
