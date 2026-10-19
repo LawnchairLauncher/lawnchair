@@ -103,7 +103,7 @@ public class LoaderCursor extends CursorWrapper {
     private final IntArray mItemsToRemove = new IntArray();
     private final IntArray mRestoredRows = new IntArray();
     private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
-    // LC-Note: Subgrid positioning — base cells of the half-stepped items loaded so far.
+    // LC-Note: Subgrid positioning, base cells of the half-stepped items loaded so far.
     private final IntSparseArrayMap<GridOccupancy> mSubgridOccupied = new IntSparseArrayMap<>();
 
     // CollectionInfo objects, which have not yet been loaded from the DB, but are expected to
@@ -287,7 +287,7 @@ public class LoaderCursor extends CursorWrapper {
      * Returns the x position for the item in the cell layout's grid
      */
     public int getSpanX() {
-        // LC-Note: Subgrid positioning, the column can hold a REAL half-cell span.
+        // LC-Note: Subgrid positioning, the column can hold a half-cell REAL.
         return ItemInfo.decodeSubgridSpanBase(getFloat(mSpanXIndex));
     }
 
@@ -541,8 +541,7 @@ public class LoaderCursor extends CursorWrapper {
         info.screenId = getInt(mScreenIndex);
         info.cellX = getInt(mCellXIndex);
         info.cellY = getInt(mCellYIndex);
-        // LC-Note: Subgrid positioning — recover half-cell offsets/sizes from the (possibly REAL)
-        // columns. Base reads above stay integer (getInt truncates), so legacy behavior is unchanged.
+        // LC-Note: Subgrid positioning, the half steps of REAL columns. getInt above truncates.
         info.subX = ItemInfo.decodeSubgridStep(getFloat(mCellXIndex));
         info.subY = ItemInfo.decodeSubgridStep(getFloat(mCellYIndex));
         info.subSpanX = ItemInfo.decodeSubgridSpanStep(getFloat(mSpanXIndex));
@@ -647,12 +646,19 @@ public class LoaderCursor extends CursorWrapper {
 
         final int countX = mIDP.numColumns;
         final int countY = mIDP.numRows;
-        boolean subgrid = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableSubgridPositioning());
-        // LC-Note: Subgrid positioning — an item whose whole cells fit can still stick out half a
-        // cell past the page. Pull it back on to the page and persist that, instead of deleting it.
-        if (subgrid && item.cellX >= 0 && item.cellY >= 0
-                && item.cellX + item.spanX <= countX && item.cellY + item.spanY <= countY
-                && clampSubgridToGrid(item, countX, countY)) {
+        if (item.container == Favorites.CONTAINER_DESKTOP && item.cellX < 0 || item.cellY < 0
+                || item.cellX + item.spanX > countX || item.cellY + item.spanY > countY) {
+            Log.e(TAG, "Error loading shortcut " + item
+                    + " into cell (" + containerIndex + "-" + item.screenId + ":"
+                    + item.cellX + "," + item.cellY
+                    + ") out of screen bounds ( " + countX + "x" + countY + ")");
+            return false;
+        }
+        // LC-Note: Subgrid positioning, an item can stick out half a cell past the page. Move it
+        // back on to the page instead of deleting it.
+        boolean subgrid = PreferenceCacheExtensionsKt.firstCached(
+                preferenceManager2.getEnableSubgridPositioning());
+        if (subgrid && clampSubgridToGrid(item, countX, countY)) {
             FileLog.w("LC-LoaderCursor", "Clamped half-cell overflow of " + item + " to the "
                     + countX + "x" + countY + " grid");
             updater()
@@ -661,18 +667,6 @@ public class LoaderCursor extends CursorWrapper {
                     .putSubgrid(Favorites.SPANX, item.spanX, item.subSpanX)
                     .putSubgrid(Favorites.SPANY, item.spanY, item.subSpanY)
                     .commit();
-        }
-        // LC-Note: Subgrid positioning, check the half-cell extent.
-        float x = item.cellX + (subgrid ? item.subX * 0.5f : 0);
-        float y = item.cellY + (subgrid ? item.subY * 0.5f : 0);
-        float width = item.spanX + (subgrid ? item.subSpanX * 0.5f : 0);
-        float height = item.spanY + (subgrid ? item.subSpanY * 0.5f : 0);
-        if (x < 0 || y < 0 || x + width > countX || y + height > countY) {
-            Log.e(TAG, "Error loading shortcut " + item
-                    + " into cell (" + containerIndex + "-" + item.screenId + ":"
-                    + item.cellX + "," + item.cellY
-                    + ") out of screen bounds ( " + countX + "x" + countY + ")");
-            return false;
         }
 
         if (!mOccupied.containsKey(item.screenId)) {
@@ -702,10 +696,8 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            // LC-Note: Subgrid free placement lets any workspace item, folders included, share a
-            // base cell with a half-stepped neighbour, so don't drop it. Which of the two loads
-            // second depends on row order, so a stricter check for folders would delete them.
-            // Keep such overlaps when subgrid is off too, or turning it off would delete them.
+            // LC-Note: Subgrid placement lets any item, folders included, share a base cell with a
+            // half-stepped one. Keep those with subgrid off too, or turning it off deletes them.
             return PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getAllowWidgetOverlap())
                     || subgrid || subgridOverlap;
         }
@@ -727,9 +719,8 @@ public class LoaderCursor extends CursorWrapper {
     }
 
     /**
-     * LC-Note: Subgrid positioning. Keeps an item's half-cell extent on the {@code countX} x
-     * {@code countY} page by moving its leading edge back and, if it is larger than the page,
-     * shrinking it to the page size. Works in half cells; the base cell must already be on the page.
+     * LC-Note: Subgrid positioning. Moves an item whose base cells are on the page back from the
+     * edge, and shrinks it to the page if it is larger.
      *
      * @return whether the item was changed
      */

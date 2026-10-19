@@ -157,14 +157,9 @@ public interface WorkspaceLayoutManager {
         }
         int childId = info.getViewId();
 
-        // LC-Note: Subgrid positioning — only the workspace honors half-cell offsets/sizes, and only
-        // when the preference is enabled. Hotseat/folder containers and the disabled state keep 0.
-        boolean subgridEnabled = container == LauncherSettings.Favorites.CONTAINER_DESKTOP
-                && layout.isSubgridEnabled();
-        lp.setSubX(subgridEnabled ? info.subX : 0);
-        lp.setSubY(subgridEnabled ? info.subY : 0);
-        lp.setSubSpanX(subgridEnabled ? info.subSpanX : 0);
-        lp.setSubSpanY(subgridEnabled ? info.subSpanY : 0);
+        // LC-Note: Subgrid positioning, half steps only on the workspace.
+        lp.setSubgrid(info, container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                && layout.isSubgridEnabled());
 
         boolean markCellsAsOccupied = !(child instanceof Folder);
         if (!layout.addViewToCellLayout(child, -1, childId, lp, markCellsAsOccupied)) {

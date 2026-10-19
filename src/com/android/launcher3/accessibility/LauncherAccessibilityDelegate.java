@@ -259,8 +259,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
         } else {
             layout = (CellLayout) host.getParent().getParent();
         }
-        // LC-Note: Subgrid positioning — occupancy checks always pass in subgrid mode, so bound
-        // growth by the page size (in half cells) instead.
+        // LC-Note: Subgrid positioning ignores occupancy, so bound growth by the page size.
         boolean subgrid = layout.isSubgridEnabled();
         if ((providerInfo.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0) {
             if (subgrid ? info.spanX * 2 + info.subSpanX < layout.getCountX() * 2
@@ -283,7 +282,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
         }
 
         if ((providerInfo.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0) {
-            // LC-Note: Subgrid positioning, bound by the page size as above.
+            // LC-Note: Subgrid positioning, see above.
             if (subgrid ? info.spanY * 2 + info.subSpanY < layout.getCountY() * 2
                     : (layout.isRegionVacant(info.cellX, info.cellY + info.spanY, info.spanX, 1) ||
                     layout.isRegionVacant(info.cellX, info.cellY - 1, info.spanX, 1))) {
@@ -308,8 +307,8 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
     private boolean performResizeAction(int action, View host, LauncherAppWidgetInfo info) {
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) host.getLayoutParams();
         CellLayout layout = (CellLayout) host.getParent().getParent();
-        // LC-Note: Subgrid free placement bypasses occupancy, and overlapping half-cell widgets can
-        // share a base cell — (un)marking here would clobber a neighbour's cell, so skip it.
+        // LC-Note: Subgrid placement ignores occupancy, and (un)marking could clear the cells of a
+        // widget that shares them.
         boolean subgrid = layout.isSubgridEnabled();
         if (!subgrid) {
             layout.markCellsAsUnoccupiedForView(host);
@@ -341,7 +340,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             info.spanY --;
         }
 
-        // LC-Note: Skipped in subgrid mode, see above.
+        // LC-Note: Subgrid positioning, see above.
         if (!subgrid) {
             layout.markCellsAsOccupiedForView(host);
         }
@@ -353,10 +352,8 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
     }
 
     /**
-     * LC-Note: Subgrid positioning. Resizes the widget by one cell, working in half cells so a
-     * half-cell position or size is kept, and keeps it on the page by moving it back from the edge.
-     * Like the integer path, width grows to the right (to the left in RTL) and shrinks from the
-     * right, height grows and shrinks at the bottom. Announces the new size, in half cells.
+     * LC-Note: Subgrid positioning. Resizes the widget by one cell like the whole-cell path, in
+     * half cells, and moves it back from the page edge instead of refusing.
      */
     private void performSubgridResizeAction(int action, View host, CellLayoutLayoutParams lp,
             LauncherAppWidgetInfo info, CellLayout layout) {
@@ -374,7 +371,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
         }
         posHalf = Math.max(0, Math.min(posHalf, countHalf - newSizeHalf));
 
-        // Same encoding as AppWidgetResizeFrame: a half-cell span is base 1 with a step of -1.
+        // A half-cell span is a base span of 1 with a step of -1, as in AppWidgetResizeFrame.
         int cell = posHalf / 2;
         int sub = posHalf % 2;
         int span = Math.max(1, newSizeHalf / 2);
@@ -385,18 +382,18 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             info.spanX = span;
             info.subSpanX = subSpan;
             lp.setCellX(cell);
-            lp.setSubX(sub);
+            lp.subX = sub;
             lp.cellHSpan = span;
-            lp.setSubSpanX(subSpan);
+            lp.subSpanX = subSpan;
         } else {
             info.cellY = cell;
             info.subY = sub;
             info.spanY = span;
             info.subSpanY = subSpan;
             lp.setCellY(cell);
-            lp.setSubY(sub);
+            lp.subY = sub;
             lp.cellVSpan = span;
-            lp.setSubSpanY(subSpan);
+            lp.subSpanY = subSpan;
         }
         announceConfirmation(mContext.getString(R.string.widget_resized,
                 AppWidgetResizeFrame.formatHalfCells(mContext, info.spanX * 2 + info.subSpanX),

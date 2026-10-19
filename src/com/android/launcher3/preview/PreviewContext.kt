@@ -141,7 +141,7 @@ constructor(
 
     private class NoOpWidgetSizeHandler(context: Context) : WidgetSizeHandler(context) {
 
-        // LC-Note: Float spans for subgrid (half-cell) sizes.
+        // LC-Note: Float spans for subgrid positioning.
         override fun updateSizeRangesAsync(
             widgetId: Int,
             info: AppWidgetProviderInfo,

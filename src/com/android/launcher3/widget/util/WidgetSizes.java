@@ -43,12 +43,8 @@ public final class WidgetSizes {
 
     /**
      * Returns the list of all possible sizes, in dp, for a widget of given spans on this device.
+     * LC-Note: Float spans for subgrid positioning.
      */
-    public static ArrayList<SizeF> getWidgetSizesDp(Context context, int spanX, int spanY) {
-        return getWidgetSizesDp(context, (float) spanX, (float) spanY);
-    }
-
-    /** LC-Note: Float spans for subgrid (half-cell) sizes. */
     public static ArrayList<SizeF> getWidgetSizesDp(Context context, float spanX, float spanY) {
         ArrayList<SizeF> sizes = new ArrayList<>(2);
         final float density = context.getResources().getDisplayMetrics().density;
@@ -66,7 +62,7 @@ public final class WidgetSizes {
         return getWidgetSizePx(profile, (float) spanX, (float) spanY);
     }
 
-    /** LC-Note: Float spans for subgrid (half-cell) sizes. */
+    /** LC-Note: Float spans for subgrid positioning. */
     public static Size getWidgetSizePx(DeviceProfile profile, float spanX, float spanY) {
         final float hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacePx.x;
         final float vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacePx.y;
@@ -85,7 +81,7 @@ public final class WidgetSizes {
      * <p>This size is used by the widget picker. It should NEVER be shared with app widgets.
      *
      * <p>For sizes shared with app widgets, please refer to
-     * {@link #getWidgetSizesDp(Context, int, int)} &
+     * {@link #getWidgetSizesDp(Context, float, float)} &
      */
     public static Size getWidgetItemSizePx(Context context, DeviceProfile profile,
             WidgetItem widgetItem) {
@@ -105,12 +101,12 @@ public final class WidgetSizes {
      */
     public static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Context context,
             int spanX, int spanY) {
-        // LC-Note: Subgrid positioning, include the view's half-cell span.
+        // LC-Note: Subgrid positioning, with the view's half-cell span.
         float width = spanX;
         float height = spanY;
         if (widgetView.getLayoutParams() instanceof CellLayoutLayoutParams lp) {
-            width += lp.getSubSpanX() * 0.5f;
-            height += lp.getSubSpanY() * 0.5f;
+            width += lp.subSpanX * 0.5f;
+            height += lp.subSpanY * 0.5f;
         }
         updateWidgetSizeRangesAsync(
                 widgetView.getAppWidgetId(), widgetView.getAppWidgetInfo(), context, width, height);
@@ -124,7 +120,7 @@ public final class WidgetSizes {
      */
     public static void updateWidgetSizeRangesAsync(int widgetId,
             AppWidgetProviderInfo info, Context context, float spanX, float spanY) {
-        // LC-Note: Float spans for subgrid (half-cell) sizes.
+        // LC-Note: Float spans for subgrid positioning.
         if (widgetId <= 0 || info == null) {
             return;
         }
@@ -135,13 +131,8 @@ public final class WidgetSizes {
 
     /**
      * Returns the bundle to be used as the default options for a widget with provided size.
+     * LC-Note: Float spans for subgrid positioning.
      */
-    public static Bundle getWidgetSizeOptions(Context context, ComponentName provider, int spanX,
-            int spanY) {
-        return getWidgetSizeOptions(context, provider, (float) spanX, (float) spanY);
-    }
-
-    /** LC-Note: Float spans for subgrid (half-cell) sizes. */
     public static Bundle getWidgetSizeOptions(Context context, ComponentName provider, float spanX,
             float spanY) {
         ArrayList<SizeF> paddedSizes = getWidgetSizesDp(context, spanX, spanY);

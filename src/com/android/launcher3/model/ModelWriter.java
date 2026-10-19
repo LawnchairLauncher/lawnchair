@@ -187,7 +187,7 @@ public class ModelWriter {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
         notifyItemModified(item);
 
-        // LC-Note: Subgrid positioning — preserve half-cell offsets when moving items.
+        // LC-Note: Subgrid positioning
         enqueueDeleteRunnable(new UpdateItemRunnable(item, () -> new ContentWriter(mContext)
                 .put(Favorites.CONTAINER, item.container)
                 .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
@@ -211,7 +211,7 @@ public class ModelWriter {
             updateItemInfoProps(item, container, screen, item.cellX, item.cellY);
 
             final ContentValues values = new ContentValues();
-            // LC-Note: Subgrid positioning — preserve half-cell offsets when bulk-moving items.
+            // LC-Note: Subgrid positioning
             new ContentWriter(values, mContext)
                     .put(Favorites.CONTAINER, item.container)
                     .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
@@ -333,7 +333,7 @@ public class ModelWriter {
         item.spanX = spanX;
         item.spanY = spanY;
         notifyItemModified(item);
-        // LC-Note: Subgrid positioning — persist half-cell offsets/sizes as REAL when present.
+        // LC-Note: Subgrid positioning
         new UpdateItemRunnable(item, () -> new ContentWriter(mContext)
                 .put(Favorites.CONTAINER, item.container)
                 .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
