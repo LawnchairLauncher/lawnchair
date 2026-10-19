@@ -696,10 +696,12 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            // LC-Note: Subgrid placement lets any item, folders included, share a base cell with a
-            // half-stepped one. Keep those with subgrid off too, or turning it off deletes them.
+            // LC-Note: Subgrid placement lets any item, folders included, overlap another. Once
+            // the setting has been changed, keep overlaps with it off too, or turning it off
+            // deletes them. Half-stepped overlaps are kept in any case.
             return PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getAllowWidgetOverlap())
-                    || subgrid || subgridOverlap;
+                    || subgrid || subgridOverlap || preferenceManager2.getCachedPreferences()
+                    .contains(preferenceManager2.getEnableSubgridPositioning().getKey());
         }
     }
 
