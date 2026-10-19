@@ -2271,6 +2271,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
                 mTargetCell = findNearestArea((int) mDragViewVisualCenter[0], (int)
                         mDragViewVisualCenter[1], spanX, spanY, dropTargetLayout, mTargetCell);
+                // LC-Note: Subgrid positioning
+                dropTargetLayout.findSubgridFolderTarget(mDragViewVisualCenter[0],
+                        mDragViewVisualCenter[1], d.dragInfo, mTargetCell);
                 float distance = dropTargetLayout.getDistanceFromWorkspaceCellVisualCenter(
                         mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
 
@@ -2745,6 +2748,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1], item.spanX, item.spanY,
                     mDragTargetLayout, mTargetCell);
+            // LC-Note: Subgrid positioning
+            mDragTargetLayout.findSubgridFolderTarget(mDragViewVisualCenter[0],
+                    mDragViewVisualCenter[1], item, mTargetCell);
             int reorderX = mTargetCell[0];
             int reorderY = mTargetCell[1];
 
@@ -2758,6 +2764,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             boolean nearestDropOccupied = mDragTargetLayout.isNearestDropLocationOccupied((int)
                             mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], item.spanX,
                     item.spanY, child, mTargetCell);
+            // LC-Note: Subgrid positioning, a folder target can be off the nearest cell, which is
+            // then empty. Don't show the drop outline with the folder ring.
+            if (mDragTargetLayout.isSubgridEnabled() && (mDragMode == DRAG_MODE_CREATE_FOLDER
+                    || mDragMode == DRAG_MODE_ADD_TO_FOLDER)) {
+                nearestDropOccupied = true;
+            }
 
             manageReorderOnDragOver(d, targetCellDistance, nearestDropOccupied, minSpanX, minSpanY,
                     reorderX, reorderY);
@@ -3116,6 +3128,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                 mTargetCell = findNearestArea(touchXY[0], touchXY[1], spanX, spanY,
                         cellLayout, mTargetCell);
+                // LC-Note: Subgrid positioning
+                cellLayout.findSubgridFolderTarget(mDragViewVisualCenter[0],
+                        mDragViewVisualCenter[1], d.dragInfo, mTargetCell);
                 float distance = cellLayout.getDistanceFromWorkspaceCellVisualCenter(
                         mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
                 if (willCreateUserFolder(d.dragInfo, cellLayout, mTargetCell, distance, true)
@@ -3193,6 +3208,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (touchXY != null) {
                 mTargetCell = findNearestArea(touchXY[0], touchXY[1], spanX, spanY,
                         cellLayout, mTargetCell);
+                // LC-Note: Subgrid positioning
+                cellLayout.findSubgridFolderTarget(mDragViewVisualCenter[0],
+                        mDragViewVisualCenter[1], d.dragInfo, mTargetCell);
                 float distance = cellLayout.getDistanceFromWorkspaceCellVisualCenter(
                         mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
                 if (createUserFolderIfNecessary(view, container, cellLayout, mTargetCell, distance,

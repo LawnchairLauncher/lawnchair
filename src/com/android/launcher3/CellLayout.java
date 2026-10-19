@@ -68,6 +68,7 @@ import com.android.launcher3.celllayout.ReorderParameters;
 import com.android.launcher3.celllayout.ReorderPreviewAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -566,7 +567,9 @@ public class CellLayout extends ViewGroup {
             DelegatedCellDrawing cellDrawing = mDelegatedCellDrawings.get(i);
             canvas.save();
             if (cellDrawing.mDelegateCellX >= 0 && cellDrawing.mDelegateCellY >= 0) {
-                cellToPoint(cellDrawing.mDelegateCellX, cellDrawing.mDelegateCellY, mTempLocation);
+                // LC-Note: Subgrid positioning
+                delegateCellToPoint(cellDrawing.mDelegateCellX, cellDrawing.mDelegateCellY,
+                        mTempLocation);
                 canvas.translate(mTempLocation[0], mTempLocation[1]);
             }
             cellDrawing.drawUnderItem(canvas);
@@ -738,7 +741,8 @@ public class CellLayout extends ViewGroup {
             DelegatedCellDrawing bg = mDelegatedCellDrawings.get(i);
             canvas.save();
             if (bg.mDelegateCellX >= 0 && bg.mDelegateCellY >= 0) {
-                cellToPoint(bg.mDelegateCellX, bg.mDelegateCellY, mTempLocation);
+                // LC-Note: Subgrid positioning
+                delegateCellToPoint(bg.mDelegateCellX, bg.mDelegateCellY, mTempLocation);
                 canvas.translate(mTempLocation[0], mTempLocation[1]);
             }
             bg.drawOverItem(canvas);
@@ -1104,6 +1108,58 @@ public class CellLayout extends ViewGroup {
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
         rect.offset(Math.round(lp.subX * 0.5f * (mCellWidth + mBorderSpace.x)),
                 Math.round(lp.subY * 0.5f * (mCellHeight + mBorderSpace.y)));
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. {@link #cellToPoint} for a drawing delegated to the cell, such
+     * as a folder ring, moved with the icon there.
+     */
+    private void delegateCellToPoint(int cellX, int cellY, int[] result) {
+        cellToPoint(cellX, cellY, result);
+        View child = getChildAt(cellX, cellY);
+        if (canCreateFolder(child)) {
+            mTempRect.set(result[0], result[1], result[0], result[1]);
+            offsetBySubgrid(child, mTempRect);
+            result[0] = mTempRect.left;
+            result[1] = mTempRect.top;
+        }
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. The nearest whole cell misses half of a half-placed icon. If
+     * {@code item} at ({@code x}, {@code y}) can go into a folder and is within the folder radius
+     * of such an icon, closer than to the icon in {@code cell}, puts the icon's cell in it.
+     */
+    public void findSubgridFolderTarget(float x, float y, ItemInfo item, int[] cell) {
+        if (!isSubgridEnabled() || item == null || item.spanX != 1 || item.spanY != 1
+                || !Folder.willAccept(item)) {
+            return;
+        }
+        float nearest = isFolderTarget(getChildAt(cell[0], cell[1]))
+                ? getDistanceFromWorkspaceCellVisualCenter(x, y, cell) : Float.MAX_VALUE;
+        int[] iconCell = new int[2];
+        for (int i = 0; i < mShortcutsAndWidgets.getChildCount(); i++) {
+            View child = mShortcutsAndWidgets.getChildAt(i);
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
+            iconCell[0] = lp.getCellX();
+            iconCell[1] = lp.getCellY();
+            // The folder code finds its target by cell, so skip icons it wouldn't find there.
+            if ((lp.subX == 0 && lp.subY == 0) || !isFolderTarget(child)
+                    || getChildAt(iconCell[0], iconCell[1]) != child) {
+                continue;
+            }
+            float distance = getDistanceFromWorkspaceCellVisualCenter(x, y, iconCell);
+            if (distance < nearest && distance <= getFolderCreationRadius(iconCell)) {
+                nearest = distance;
+                cell[0] = iconCell[0];
+                cell[1] = iconCell[1];
+            }
+        }
+    }
+
+    /** LC-Note: Subgrid positioning. The dragged item is hidden while dragging, so skip it. */
+    private boolean isFolderTarget(View child) {
+        return canCreateFolder(child) && child.getVisibility() == VISIBLE;
     }
 
     public int getCellWidth() {
