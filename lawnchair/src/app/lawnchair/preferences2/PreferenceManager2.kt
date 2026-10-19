@@ -336,7 +336,6 @@ class PreferenceManager2 @Inject constructor(
     val enableSubgridPositioning = preference(
         key = booleanPreferencesKey(name = "enable_subgrid_positioning"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_subgrid_positioning),
-        onSet = { reloadHelper.reloadGrid() },
     )
 
     val forceWidgetResize = preference(
@@ -920,6 +919,14 @@ class PreferenceManager2 @Inject constructor(
             .drop(1)
             .distinctUntilChanged()
             .onEach { reloadHelper.reloadGrid() }
+            .launchIn(scope)
+
+        // LC-Note: Subgrid positioning. Reload the items, so they show their half steps as
+        // saved: changes made with it off drop them in the database, not in memory.
+        enableSubgridPositioning.get()
+            .drop(1)
+            .distinctUntilChanged()
+            .onEach { LauncherAppState.getInstance(context).model.reloadIfActive() }
             .launchIn(scope)
     }
 
