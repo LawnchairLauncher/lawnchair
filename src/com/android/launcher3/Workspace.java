@@ -2182,7 +2182,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             mStatsLogManager.logger().withItemInfo(destInfo).withInstanceId(d.logInstanceId)
                     .log(LauncherEvent.LAUNCHER_ITEM_DROP_FOLDER_CREATED);
             FolderIcon fi = mLauncher.addFolder(target, container, screenId, targetCell[0],
-                    targetCell[1]);
+                    targetCell[1], destInfo);
             destInfo.cellX = -1;
             destInfo.cellY = -1;
             sourceInfo.cellX = -1;

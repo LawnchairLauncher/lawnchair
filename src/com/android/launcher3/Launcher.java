@@ -1973,10 +1973,13 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     /**
      * Creates and adds new folder to CellLayout
+     * LC-Note: Subgrid positioning, the folder takes the half steps of the item it replaces.
      */
     public FolderIcon addFolder(CellLayout layout, int container, final int screenId, int cellX,
-            int cellY) {
+            int cellY, ItemInfo replaced) {
         final FolderInfo folderInfo = new FolderInfo();
+        folderInfo.subX = replaced.subX;
+        folderInfo.subY = replaced.subY;
 
         // Update the model
         getModelWriter().addItemToDatabase(folderInfo, container, screenId, cellX, cellY);

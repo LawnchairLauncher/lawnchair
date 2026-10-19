@@ -1052,6 +1052,7 @@ public class CellLayout extends ViewGroup {
                 cellToPoint(cellX, cellY, outPoint);
                 draggableChild.getWorkspaceVisualDragBounds(mTempRect);
                 mTempRect.offset(outPoint[0], outPoint[1]);
+                offsetBySubgrid(child, mTempRect); // LC-Note: Subgrid positioning
                 outPoint[0] = mTempRect.centerX();
                 outPoint[1] = mTempRect.centerY();
                 return;
@@ -1082,6 +1083,8 @@ public class CellLayout extends ViewGroup {
         cellBoundsWithSpacing.inset(-mBorderSpace.x / 2, -mBorderSpace.y / 2);
 
         if (canCreateFolder(getChildAt(targetCell[0], targetCell[1])) && spanX == 1 && spanY == 1) {
+            // LC-Note: Subgrid positioning, the cell as the icon is drawn, like its center.
+            offsetBySubgrid(getChildAt(targetCell[0], targetCell[1]), cellBoundsWithSpacing);
             // Take only the circle in the smaller dimension, to ensure we don't start reordering
             // too soon before accepting a folder drop.
             int minRadius = centerPoint[0] - cellBoundsWithSpacing.left;
@@ -1094,6 +1097,13 @@ public class CellLayout extends ViewGroup {
         // Multiply by span to scale radius
         return (float) Math.hypot(spanX * cellBoundsWithSpacing.width() / 2f,
                 spanY * cellBoundsWithSpacing.height() / 2f);
+    }
+
+    /** LC-Note: Subgrid positioning. Moves {@code rect} by the half steps of {@code child}. */
+    private void offsetBySubgrid(View child, Rect rect) {
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
+        rect.offset(Math.round(lp.subX * 0.5f * (mCellWidth + mBorderSpace.x)),
+                Math.round(lp.subY * 0.5f * (mCellHeight + mBorderSpace.y)));
     }
 
     public int getCellWidth() {
