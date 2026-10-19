@@ -157,6 +157,7 @@
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
 
     <string name="folders_filter_duplicates">Only show unique apps</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">My folder</string>
     <string name="sort_active_items_action">Sort active items</string>
 
