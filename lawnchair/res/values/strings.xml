@@ -187,6 +187,8 @@
 
     -->
     <string name="settings">Settings</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
 
     <string name="general_label">General</string>
     <string name="general_description">Colors, icon packs, notification dots</string>
