@@ -129,6 +129,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     // LC-Note: In half cells while subgrid positioning is on.
     private int mRunningHInc;
     private int mRunningVInc;
+    // LC-Note: Subgrid positioning, whether a resize step was taken.
+    private boolean mSubgridResized;
     private int mMinHSpan;
     private int mMinVSpan;
     private int mMaxHSpan;
@@ -525,9 +527,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 (mDeltaY + mDeltaYAddOn) / (yThreshold / scale) - mRunningVInc);
 
         if (!onDismiss && (hSpanInc == 0 && vSpanInc == 0)) return;
-        // LC-Note: Subgrid writes the model on dismiss, skip that if nothing was resized.
-        if (subgrid && onDismiss && hSpanInc == 0 && vSpanInc == 0 && mRunningHInc == 0
-                && mRunningVInc == 0) {
+        // LC-Note: Subgrid writes the model on dismiss, skip that if nothing was resized. The
+        // running increments can't tell: growing one edge and then the other cancels them out.
+        if (subgrid && onDismiss && hSpanInc == 0 && vSpanInc == 0 && !mSubgridResized) {
             return;
         }
 
@@ -626,6 +628,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         lp.subSpanY = spanY - newSpanY * 2;
         mRunningHInc += hSpanDelta;
         mRunningVInc += vSpanDelta;
+        mSubgridResized = true;
 
         if (onDismiss) {
             mCellLayout.persistViewGeometry(mWidgetView);
