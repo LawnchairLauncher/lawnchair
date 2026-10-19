@@ -104,6 +104,13 @@ public class ModelWriter {
         item.cellX = modelPos.cellX;
         item.cellY = modelPos.cellY;
         item.screenId = modelPos.screenId;
+        // LC-Note: Subgrid positioning, half steps only exist on the workspace.
+        if (container != Favorites.CONTAINER_DESKTOP) {
+            item.subX = 0;
+            item.subY = 0;
+            item.subSpanX = 0;
+            item.subSpanY = 0;
+        }
     }
 
     /**

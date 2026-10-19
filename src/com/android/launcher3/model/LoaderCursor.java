@@ -542,10 +542,13 @@ public class LoaderCursor extends CursorWrapper {
         info.cellX = getInt(mCellXIndex);
         info.cellY = getInt(mCellYIndex);
         // LC-Note: Subgrid positioning, the half steps of REAL columns. getInt above truncates.
-        info.subX = ItemInfo.decodeSubgridStep(getFloat(mCellXIndex));
-        info.subY = ItemInfo.decodeSubgridStep(getFloat(mCellYIndex));
-        info.subSpanX = ItemInfo.decodeSubgridSpanStep(getFloat(mSpanXIndex));
-        info.subSpanY = ItemInfo.decodeSubgridSpanStep(getFloat(mSpanYIndex));
+        // Only workspace items have them; older versions also wrote them for folders and the dock.
+        if (container == Favorites.CONTAINER_DESKTOP) {
+            info.subX = ItemInfo.decodeSubgridStep(getFloat(mCellXIndex));
+            info.subY = ItemInfo.decodeSubgridStep(getFloat(mCellYIndex));
+            info.subSpanX = ItemInfo.decodeSubgridSpanStep(getFloat(mSpanXIndex));
+            info.subSpanY = ItemInfo.decodeSubgridSpanStep(getFloat(mSpanYIndex));
+        }
     }
 
     /**
