@@ -462,8 +462,10 @@ public class InvariantDeviceProfile {
         gridType = closestProfile.gridType;
         defaultLayoutId = closestProfile.defaultLayoutId;
 
-        numFolderRows = closestProfile.numFolderRows;
-        numFolderColumns = closestProfile.numFolderColumns;
+        // LC-Note: copies, because DeviceProfileOverrides writes the folder settings into these
+        // arrays and the settings take their defaults from closestProfile's (the grid option's).
+        numFolderRows = closestProfile.numFolderRows.clone();
+        numFolderColumns = closestProfile.numFolderColumns.clone();
         folderStyle = closestProfile.folderStyle;
 
         cellStyle = closestProfile.cellStyle;
