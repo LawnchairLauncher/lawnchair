@@ -11,6 +11,7 @@ import com.android.launcher3.allapps.AllAppsRecyclerView
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.util.ScrollableLayoutManager
 import com.android.launcher3.views.ActivityContext
+import kotlin.math.min
 
 /**
  * The second page of the "book" drawer ([FoldDrawerLayout.PAGES]).
@@ -31,6 +32,11 @@ import com.android.launcher3.views.ActivityContext
  * which would leave the second page empty: the [ScrollableLayoutManager] stops scrolling there
  * ([scrollToEnd]), for drags, flings and the fast scroller alike, and its scroll range is shorter by
  * the second page's shift ([scrollRangeCut]) so the scroll bar ends there too.
+ *
+ * A row moves to the fixed page only once it is whole there, so while the list scrolls the row
+ * at the fixed page's bottom shows on the second page. When a drag or fling stops, the list settles
+ * on the nearest row ([settle]): a row starts at the top of both pages, the fixed page shows whole
+ * rows and the second page starts with the next one, so no row is left cut between them.
  *
  * Keyboard and accessibility follow the visual order, fixed page rows then second page rows: in
  * layout order the second page's rows already come right after the fixed page's, so the default
@@ -76,8 +82,23 @@ class FoldDrawerBook private constructor(
     private val clipped = ArrayList<View>()
     private val clipRect = Rect()
 
+    /** Whether the list was dragged since it was last idle: only then does it [settle]. */
+    private var dragged = false
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                dragged = true
+            } else if (newState == RecyclerView.SCROLL_STATE_IDLE && dragged) {
+                dragged = false
+                settle()
+            }
+        }
+    }
+
     init {
         rv.addOnAttachStateChangeListener(this)
+        rv.addOnScrollListener(scrollListener)
         if (rv.isAttachedToWindow) onViewAttachedToWindow(rv)
     }
 
@@ -211,6 +232,33 @@ class FoldDrawerBook private constructor(
     /** How much shorter the list's scroll range is than its items' height, see [scrollToEnd]. */
     val scrollRangeCut: Int get() = if (isActive) shiftY else 0
 
+    /**
+     * After a drag or a fling, scrolls by less than a row so that a row starts at the top of the
+     * pages ([FoldBookScroll.settle]), or back to the end when a layout left the list past it. Not
+     * at the top or the end, nor while the fast scroller is dragged or a transition plays; keyboard,
+     * accessibility and fast scroller scrolls don't drag the list, so they never settle.
+     */
+    private fun settle() {
+        if (!isActive || !transitionProgress.isNaN() || rv.scrollbar?.isDraggingThumb == true) return
+        if (rv.computeVerticalScrollOffset() <= 0) return
+        val lm = rv.layoutManager ?: return
+        // The top row reaching into the pages
+        var rowTop = Int.MAX_VALUE
+        var rowBottom = 0
+        for (i in 0 until rv.childCount) {
+            val child = rv.getChildAt(i)
+            val top = lm.getDecoratedTop(child)
+            val bottom = lm.getDecoratedBottom(child)
+            if (bottom > pageTop && top < rowTop) {
+                rowTop = top
+                rowBottom = bottom
+            }
+        }
+        if (rowTop == Int.MAX_VALUE) return
+        val dy = FoldBookScroll.settle(rowTop - pageTop, rowBottom - pageTop, scrollToEnd())
+        if (dy != 0) rv.smoothScrollBy(0, dy)
+    }
+
     /** Whether [child] is on the second page (not fully visible on the fixed page). */
     private fun isOnMovingPage(child: View): Boolean {
         val lm = rv.layoutManager ?: return false
@@ -298,4 +346,17 @@ internal object FoldBookScroll {
      * past that).
      */
     fun toEnd(lastBottom: Int, shiftY: Int, pageBottom: Int): Int = lastBottom - shiftY - pageBottom
+
+    /**
+     * How far to scroll once the list stops, the row at the pages' top being from [rowTop] to
+     * [rowBottom] (relative to that top) and [toEnd] left to the end ([FoldDrawerBook.scrollToEnd]):
+     * the row whole into the pages or out of them, whichever is nearer (into them on a tie), but
+     * not past the end. Nothing at the end, and back to it when past it.
+     */
+    fun settle(rowTop: Int, rowBottom: Int, toEnd: Int): Int {
+        if (toEnd <= 0) return toEnd
+        if (rowTop >= 0) return 0
+        val down = min(rowBottom, toEnd)
+        return if (-rowTop <= down) rowTop else down
+    }
 }
