@@ -160,48 +160,6 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
             )
         }
 
-        val glassBlurIcons = prefs.glassBlurIcons.getAdapter()
-
-        PreferenceGroup(heading = stringResource(id = R.string.glass_blur_label)) {
-            SwitchPreference(
-                adapter = glassBlurIcons,
-                label = stringResource(id = R.string.glass_blur_icons_label),
-                description = stringResource(id = R.string.glass_blur_icons_description),
-            )
-            ExpandAndShrink(visible = glassBlurIcons.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.glass_blur_radius_label),
-                    adapter = prefs.glassBlurRadius.getAdapter(),
-                    step = 2,
-                    valueRange = 4..64,
-                    showUnit = "dp",
-                )
-            }
-            ExpandAndShrink(visible = glassBlurIcons.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.glass_blur_tint_label),
-                    adapter = prefs.glassBlurTint.getAdapter(),
-                    valueRange = 0F..0.6F,
-                    step = 0.05f,
-                    showAsPercentage = true,
-                )
-            }
-            ExpandAndShrink(visible = glassBlurIcons.state.value) {
-                SwitchPreference(
-                    adapter = prefs.glassBlurFolders.getAdapter(),
-                    label = stringResource(id = R.string.glass_blur_folders_label),
-                    description = stringResource(id = R.string.glass_blur_folders_description),
-                )
-            }
-            ExpandAndShrink(visible = glassBlurIcons.state.value) {
-                SwitchPreference(
-                    adapter = prefs.glassBlurWidgets.getAdapter(),
-                    label = stringResource(id = R.string.glass_blur_widgets_label),
-                    description = stringResource(id = R.string.glass_blur_widgets_description),
-                )
-            }
-        }
-
         val accentColorAdapter = prefs2.accentColor.getAdapter()
         val showColorStyle = !(Utilities.ATLEAST_S && accentColorAdapter.state.value == ColorOption.SystemAccent) ||
             !Utilities.ATLEAST_S

@@ -76,11 +76,6 @@ class PreferenceManager @Inject constructor(
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", true)
     val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false)
     val shadowBGIcons = BoolPref("pref_shadowBGIcons", true)
-    val glassBlurIcons = BoolPref("pref_glassBlurIcons", false, recreate)
-    val glassBlurRadius = IntPref("pref_glassBlurRadius", 24, recreate)
-    val glassBlurTint = FloatPref("pref_glassBlurTint", 0.2f, recreate)
-    val glassBlurFolders = BoolPref("pref_glassBlurFolders", true, recreate)
-    val glassBlurWidgets = BoolPref("pref_glassBlurWidgets", true, recreate)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
 
     private val isPhone: Boolean get() = deviceType == InvariantDeviceProfile.TYPE_PHONE
