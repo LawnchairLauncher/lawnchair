@@ -27,6 +27,11 @@ import com.android.launcher3.views.ActivityContext
  * its fast scroller, focus and accessibility stay as they are; only view translations change, and
  * touch, drag and accessibility bounds follow them.
  *
+ * The list ends when its last row reaches the bottom of the second page, not of the fixed one,
+ * which would leave the second page empty: the [ScrollableLayoutManager] stops scrolling there
+ * ([scrollToEnd]), for drags, flings and the fast scroller alike, and its scroll range is shorter by
+ * the second page's shift ([scrollRangeCut]) so the scroll bar ends there too.
+ *
  * Keyboard and accessibility follow the visual order, fixed page rows then second page rows: in
  * layout order the second page's rows already come right after the fixed page's, so the default
  * focus search (up, down, tab) and the accessibility traversal (children sorted by layout position)
@@ -189,6 +194,23 @@ class FoldDrawerBook private constructor(
         clipped.clear()
     }
 
+    /**
+     * How far the list can still scroll down before its last row reaches the bottom of the second
+     * page; negative when a layout put it past that (a fold, a scroll to a position, apps removed).
+     * [Int.MAX_VALUE] when the book isn't active or the last item isn't laid out (it is then at
+     * least a row away, as a page of rows is laid out below the visible ones).
+     */
+    fun scrollToEnd(): Int {
+        if (!isActive) return Int.MAX_VALUE
+        val lm = rv.layoutManager ?: return Int.MAX_VALUE
+        val count = lm.itemCount
+        val last = (if (count > 0) lm.findViewByPosition(count - 1) else null) ?: return Int.MAX_VALUE
+        return FoldBookScroll.toEnd(lm.getDecoratedBottom(last), shiftY, pageTop + pageHeight)
+    }
+
+    /** How much shorter the list's scroll range is than its items' height, see [scrollToEnd]. */
+    val scrollRangeCut: Int get() = if (isActive) shiftY else 0
+
     /** Whether [child] is on the second page (not fully visible on the fixed page). */
     private fun isOnMovingPage(child: View): Boolean {
         val lm = rv.layoutManager ?: return false
@@ -265,4 +287,15 @@ class FoldDrawerBook private constructor(
         @JvmStatic
         fun of(rv: RecyclerView?): FoldDrawerBook? = rv?.getTag(R.id.fold_drawer_book) as? FoldDrawerBook
     }
+}
+
+/** The scroll arithmetic of the book, in pixels of the list's layout coordinates. Pure. */
+internal object FoldBookScroll {
+
+    /**
+     * How far the list can scroll down until its last row, whose bottom is laid out at
+     * [lastBottom], is drawn at [pageBottom] on the second page, moved up by [shiftY] (negative:
+     * past that).
+     */
+    fun toEnd(lastBottom: Int, shiftY: Int, pageBottom: Int): Int = lastBottom - shiftY - pageBottom
 }
