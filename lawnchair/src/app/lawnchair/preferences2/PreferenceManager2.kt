@@ -476,6 +476,7 @@ class PreferenceManager2 @Inject constructor(
     val drawerSuggestionTabs = preference(
         key = booleanPreferencesKey(name = "drawer_suggestion_tabs"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_drawer_suggestion_tabs),
+        onSet = { reloadHelper.recreate() },
     )
 
     val enableFontSelection = preference(
