@@ -450,6 +450,11 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
+    protected boolean canDrawGlassBlur() {
+        return false;
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         if (mPreviewBitmap != null
                 && (mInfo.restoreStatus & LauncherAppWidgetInfo.FLAG_UI_NOT_READY) != 0) {
