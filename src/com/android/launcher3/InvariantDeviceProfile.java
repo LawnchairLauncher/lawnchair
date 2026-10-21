@@ -305,10 +305,11 @@ public class InvariantDeviceProfile {
         String gridName = prefs.get(GRID_NAME);
         initGrid(context, gridName);
         // LC-Note: Every reload takes the grid from the grid size (getCurrentGridName), which needs
-        // the device type set above. Do so now too, so that a fresh install (no grid name yet: the
-        // closest default grid, on foldables the responsive practical) gets the reload's grid
-        // without waiting for one.
-        String currentGridName = getCurrentGridName(context);
+        // the device type set above. On foldables, do so now too, so that a fresh install (no grid
+        // name yet: the closest default grid, the responsive practical) gets the reload's grid
+        // without waiting for one. Phones and tablets keep their first grid until a reload.
+        String currentGridName = deviceType == TYPE_MULTI_DISPLAY
+                ? getCurrentGridName(context) : prefs.get(GRID_NAME);
         if (!TextUtils.equals(currentGridName, prefs.get(GRID_NAME))) {
             initGrid(context, currentGridName);
         }
