@@ -1537,7 +1537,11 @@ public class DeviceProfile {
         }
         var allAppLeftRightMarginMultiplier = PreferenceCacheExtensionsKt
                 .firstCached(preferenceManager2.getDrawerLeftRightMarginFactor());
-        var marginMultiplier = allAppLeftRightMarginMultiplier * (!getDeviceProperties().isTablet() ? 100 : 10);
+        // LC-Note: Responsive grids already have real side padding (from the spec), like tablets;
+        // ×100 is only for the near-zero padding of other phone grids. Otherwise a foldable's cover
+        // on a responsive grid (e.g. practical) gets about ten times the padding.
+        var marginMultiplier = allAppLeftRightMarginMultiplier
+                * (!getDeviceProperties().isTablet() && !mIsResponsiveGrid ? 100 : 10);
         allAppsLeftRightMargin = (int) (allAppsLeftRightMargin * marginMultiplier);
 
         // todo fix how drawer padding values are calculated in responsive grid type
