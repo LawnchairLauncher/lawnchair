@@ -17,7 +17,6 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
@@ -30,13 +29,10 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Executors;
 
-import app.lawnchair.blur.GlassBlur;
-
 /**
  * Launcher AppWidgetHostView with support for rounded corners and a fallback View.
  */
-public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHostView implements LocalColorExtractor.Listener,
-        GlassBlur.Host {
+public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHostView implements LocalColorExtractor.Listener {
 
     private static final ViewOutlineProvider VIEW_OUTLINE_PROVIDER = new ViewOutlineProvider() {
         @Override
@@ -68,10 +64,6 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
     
     // Lawnchair: LocalColorExtractor
     private final LocalColorExtractor mColorExtractor;
-
-    // LC-Note: live blur of the wallpaper behind the widget background
-    private final GlassBlur mGlassBlur = new GlassBlur(this, GlassBlur.Type.WIDGET);
-    private final Rect mGlassBlurBounds = new Rect();
 
     public BaseLauncherAppWidgetHostView(Context context) {
         super(context);
@@ -107,27 +99,6 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mColorExtractor.setListener(null);
-        releaseGlassBlur();
-    }
-
-    @Override
-    public void releaseGlassBlur() {
-        mGlassBlur.release();
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        if (canDrawGlassBlur()) {
-            mGlassBlur.drawWidget(canvas, mGlassBlurBounds, mEnforcedCornerRadius);
-        }
-        super.dispatchDraw(canvas);
-    }
-
-    /**
-     * LC-Note: placeholders draw their content before the glass blur would punch through it.
-     */
-    protected boolean canDrawGlassBlur() {
-        return true;
     }
 
     @Override
@@ -139,15 +110,6 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
         }
 
         enforceRoundedCorners();
-        if (mGlassBlur.isEnabled()) {
-            View background = RoundedCornerEnforcement.findBackground(this);
-            if (background == null) {
-                mGlassBlurBounds.setEmpty();
-            } else {
-                RoundedCornerEnforcement.computeRoundedRectangle(this, background,
-                        mGlassBlurBounds);
-            }
-        }
     }
 
     @UiThread
