@@ -118,6 +118,11 @@ class PreferenceManager2 @Inject constructor(
 
     fun getCachedPreferences(): Preferences = cachedPreferences
 
+    /** Replace the live DataStore and its synchronous cache together when restoring a backup. */
+    suspend fun restorePreferences(preferences: Preferences) {
+        cachedPreferences = preferencesDataStore.updateData { preferences }
+    }
+
     private val reloadHelper = ReloadHelper(context)
 
     val darkStatusBar = preference(
