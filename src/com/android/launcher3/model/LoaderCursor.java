@@ -105,8 +105,8 @@ public class LoaderCursor extends CursorWrapper {
     private final IntArray mItemsToRemove = new IntArray();
     private final IntArray mRestoredRows = new IntArray();
     private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
-    // LC-Note: items kept in the database but not loaded, see checkAndAddItem.
-    private int mKeptNotLoadedCount;
+    // LC-Note: items of the inner item set kept in the database but not loaded, see checkAndAddItem.
+    private int mKeptInnerItemCount;
 
     // CollectionInfo objects, which have not yet been loaded from the DB, but are expected to
     // found eventually as the loading progresses
@@ -484,10 +484,10 @@ public class LoaderCursor extends CursorWrapper {
      * @return true is any item was removed.
      */
     public boolean commitDeleted() {
-        if (mKeptNotLoadedCount > 0) {
+        if (mKeptInnerItemCount > 0) {
             // LC-Note: see checkAndAddItem.
-            FileLog.d(TAG, "Keeping " + mKeptNotLoadedCount
-                    + " items that don't fit (dock past its size, or inner set) in the database");
+            FileLog.d(TAG, "Keeping " + mKeptInnerItemCount
+                    + " items of the inner set that don't fit in the database");
         }
         if (mItemsToRemove.size() > 0) {
             // Remove dead items
@@ -602,13 +602,17 @@ public class LoaderCursor extends CursorWrapper {
             if (mRestoreEventLogger != null) {
                 mRestoreEventLogger.logSingleFavoritesItemRestored(itemType);
             }
-        } else if (isHotseatItemOutOfBounds(info) || FoldItemSets.isInnerItem(info)) {
+        } else if (isHotseatItemOutOfBounds(info)) {
             // LC-Note: The hotseat can be smaller for a while (e.g. while a foldable is folded, or
-            // with fewer unfolded dock icons, which runs no grid migration), and an item of the
-            // inner set of "Independent" may not fit while it is hidden. Deleting either would
-            // lose it for good: don't bind it, keep it in the database so it shows up again once
-            // there is room. Logged once per load, see commitDeleted.
-            mKeptNotLoadedCount++;
+            // after a transient DeviceProfile change), and deleting the item would lose it for
+            // good. Don't bind it, but keep it in the database so it shows up again once the
+            // hotseat is large enough.
+            FileLog.d(TAG, "Keeping hotseat item out of bounds in the database: " + info);
+        } else if (FoldItemSets.isInnerItem(info)) {
+            // LC-Note: an item of the inner set of "Independent" (see FoldItemSets) may not fit
+            // while it is hidden. Keep it in the database like the hotseat items above. Logged
+            // once per load, as the whole set can be hidden, see commitDeleted.
+            mKeptInnerItemCount++;
         } else {
             markDeleted("Item position overlap", RestoreError.OVERLAPPING_ITEM);
         }

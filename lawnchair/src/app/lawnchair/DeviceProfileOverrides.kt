@@ -100,16 +100,6 @@ class DeviceProfileOverrides @Inject constructor(
     fun getTextFactors(typeIndex: Int) = TextFactors(preferenceManager2, iconTextSizeFactor = labelScaleFor(typeIndex))
 
     /**
-     * Scale of the responsive grids' icon size for the profile of type [typeIndex]. Responsive
-     * grids take their icon size from their cell specs, not from the icon size factor, so this is
-     * [iconScaleFor] relative to portrait: 1 for every profile but one with its own size.
-     */
-    fun getResponsiveIconScale(typeIndex: Int): Float {
-        val portrait = iconScaleFor(INDEX_DEFAULT)
-        return if (portrait > 0f) iconScaleFor(typeIndex) / portrait else 1f
-    }
-
-    /**
      * The home icon size factor of the profile of type [typeIndex]. The large screen of a foldable
      * in landscape ([INDEX_TWO_PANEL_LANDSCAPE]) has its own with [FoldLandscape.OWN] once it is
      * set; every other profile, and every other device, has the portrait one.

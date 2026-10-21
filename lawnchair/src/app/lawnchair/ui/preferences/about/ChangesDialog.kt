@@ -196,32 +196,32 @@ private fun getTimeAgo(context: Context, dateString: String): String {
 
             diffMillis < TimeUnit.HOURS.toMillis(1) -> {
                 val minutes = TimeUnit.MILLISECONDS.toMinutes(diffMillis)
-                context.getString(R.string.time_minutes_ago, minutes)
+                context.resources.getQuantityString(R.plurals.time_minutes_ago, minutes.toInt(), minutes)
             }
 
             diffMillis < TimeUnit.DAYS.toMillis(1) -> {
                 val hours = TimeUnit.MILLISECONDS.toHours(diffMillis)
-                context.getString(R.string.time_hours_ago, hours)
+                context.resources.getQuantityString(R.plurals.time_hours_ago, hours.toInt(), hours)
             }
 
             diffMillis < TimeUnit.DAYS.toMillis(7) -> {
                 val days = TimeUnit.MILLISECONDS.toDays(diffMillis)
-                context.getString(R.string.time_days_ago, days)
+                context.resources.getQuantityString(R.plurals.time_days_ago, days.toInt(), days)
             }
 
             diffMillis < TimeUnit.DAYS.toMillis(30) -> {
                 val weeks = TimeUnit.MILLISECONDS.toDays(diffMillis) / 7
-                context.getString(R.string.time_weeks_ago, weeks)
+                context.resources.getQuantityString(R.plurals.time_weeks_ago, weeks.toInt(), weeks)
             }
 
             diffMillis < TimeUnit.DAYS.toMillis(365) -> {
                 val months = TimeUnit.MILLISECONDS.toDays(diffMillis) / 30
-                context.getString(R.string.time_months_ago, months)
+                context.resources.getQuantityString(R.plurals.time_months_ago, months.toInt(), months)
             }
 
             else -> {
                 val years = TimeUnit.MILLISECONDS.toDays(diffMillis) / 365
-                context.getString(R.string.time_years_ago, years)
+                context.resources.getQuantityString(R.plurals.time_years_ago, years.toInt(), years)
             }
         }
     } catch (e: Exception) {

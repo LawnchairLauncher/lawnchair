@@ -117,6 +117,7 @@ import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.LawnchairUtilsKt;
 import app.lawnchair.animation.PhysicsAnimator;
+import app.lawnchair.blur.GlassBlur;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -124,7 +125,7 @@ import app.lawnchair.animation.PhysicsAnimator;
  * too aggressive.
  */
 public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
-        FloatingIconViewCompanion, DraggableView, Reorderable {
+        FloatingIconViewCompanion, DraggableView, Reorderable, GlassBlur.Host {
 
     public static final String TAG = "BubbleTextView";
 
@@ -223,6 +224,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private final Paint mRunningAppIndicatorPaint;
     private final Rect mRunningAppIconBounds = new Rect();
     private RunningAppState mRunningAppState;
+
+    // LC-Note: live blur of the wallpaper behind workspace icons
+    private final GlassBlur mGlassBlur = new GlassBlur(this, GlassBlur.Type.ICON);
+    private final Rect mGlassBlurBounds = new Rect();
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mLineIndicatorColor;
@@ -810,6 +815,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         if (mIcon != null) {
             mIcon.setVisible(isVisible, false);
         }
+        if (!isVisible) {
+            releaseGlassBlur();
+        }
     }
 
     @Override
@@ -921,9 +929,38 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @Override
     public void onDraw(Canvas canvas) {
+        drawGlassBlurIfNecessary(canvas);
         super.onDraw(canvas);
         drawDotIfNecessary(canvas);
         drawRunningAppIndicatorIfNecessary(canvas);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        releaseGlassBlur();
+    }
+
+    @Override
+    public void releaseGlassBlur() {
+        mGlassBlur.release();
+    }
+
+    /**
+     * LC-Note: draws the blur of the wallpaper behind the icon, before the icon itself.
+     */
+    protected void drawGlassBlurIfNecessary(Canvas canvas) {
+        if (!mGlassBlur.isEnabled() || mDisplay != DISPLAY_WORKSPACE || mIcon == null
+                || !mIsIconVisible) {
+            return;
+        }
+        getIconBounds(mGlassBlurBounds);
+        // The canvas is translated by the scroll position, unlike the icon bounds
+        int scrollX = getScrollX();
+        int scrollY = getScrollY();
+        canvas.translate(scrollX, scrollY);
+        mGlassBlur.drawIcon(canvas, mGlassBlurBounds, mIcon.bitmapInfo.icon);
+        canvas.translate(-scrollX, -scrollY);
     }
 
     /**

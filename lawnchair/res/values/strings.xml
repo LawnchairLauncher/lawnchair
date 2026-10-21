@@ -66,12 +66,30 @@
 
     <!-- Time ago strings -->
     <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dm</item>
+        <item quantity="other">%dm</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dh</item>
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dd</item>
+        <item quantity="other">%dd</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dw</item>
+        <item quantity="other">%dw</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dmo</item>
+        <item quantity="other">%dmo</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dy</item>
+        <item quantity="other">%dy</item>
+    </plurals>
 
     <string name="managed_by_lawnchair">Managed by Lawnchair</string>
 
@@ -139,6 +157,7 @@
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
 
     <string name="folders_filter_duplicates">Only show unique apps</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">My folder</string>
     <string name="sort_active_items_action">Sort active items</string>
 
@@ -168,6 +187,8 @@
 
     -->
     <string name="settings">Settings</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
 
     <string name="general_label">General</string>
     <string name="general_description">Colors, icon packs, notification dots</string>
@@ -308,6 +329,16 @@
 
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+
+    <string name="glass_blur_label">Glass blur</string>
+    <string name="glass_blur_icons_label">Blur wallpaper behind icons</string>
+    <string name="glass_blur_icons_description">Live frosted glass behind home screen icons. Works best with translucent icons. Requires window blurs to be enabled, and root access to blur more than 10 items at once.</string>
+    <string name="glass_blur_radius_label">Blur radius</string>
+    <string name="glass_blur_tint_label">White tint</string>
+    <string name="glass_blur_folders_label">Folders</string>
+    <string name="glass_blur_folders_description">Folder icons and open folders. Folder colors and opacities set how dark the glass is</string>
+    <string name="glass_blur_widgets_label">Widgets</string>
+    <string name="glass_blur_widgets_description">Visible through translucent widgets</string>
 
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="shadow_bg_icons_label">Show shadow behind icons</string>

@@ -90,8 +90,7 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
      * keys that DisplayController.Info looks up for them.
      */
     private fun getInternalDisplayStates(context: Context): List<CachedDisplayInfo> {
-        if (getDisplay(context)?.displayId != DEFAULT_DISPLAY) return emptyList()
-        if (!isFoldable(context)) return emptyList()
+        if (!isFoldable(context) || getDisplay(context)?.displayId != DEFAULT_DISPLAY) return emptyList()
         // Built like DisplayController.Info#normalizedDisplayInfo, so that it is found in the cache
         val current = getDisplayInfo(context).normalize(this)
 

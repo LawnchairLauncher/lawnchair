@@ -92,13 +92,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import app.lawnchair.blur.GlassBlur;
 import app.lawnchair.fold.FoldDrawerLayouts;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
 public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion,
-        DraggableView, Reorderable {
+        DraggableView, Reorderable, GlassBlur.Host {
 
     private final MultiTranslateDelegate mTranslateDelegate = new MultiTranslateDelegate(this);
     @Thunk ActivityContext mActivity;
@@ -119,6 +120,9 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     PreviewBackground mBackground = new PreviewBackground(getContext());
     private boolean mBackgroundIsVisible = true;
+
+    // LC-Note: live blur of the wallpaper behind the folder icon background
+    private final GlassBlur mGlassBlur = new GlassBlur(this, GlassBlur.Type.FOLDER_ICON);
 
     FolderGridOrganizer mPreviewVerifier;
     ClippedFolderIconLayoutRule mPreviewLayoutRule;
@@ -606,6 +610,8 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         mPreviewItemManager.recomputePreviewDrawingParams();
 
         if (!mBackground.drawingDelegated()) {
+            mGlassBlur.drawFolderIcon(canvas, mBackground.getOffsetX(), mBackground.getOffsetY(),
+                    mBackground.getScaledRadius());
             mBackground.drawBackground(canvas);
         }
 
@@ -618,6 +624,17 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         }
 
         drawDot(canvas);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        releaseGlassBlur();
+    }
+
+    @Override
+    public void releaseGlassBlur() {
+        mGlassBlur.release();
     }
 
     public void drawDot(Canvas canvas) {

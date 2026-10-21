@@ -297,7 +297,8 @@ public class DeviceProfile {
     public int flingToDeleteThresholdVelocity;
 
     private int mHotseatQsbSpaceBase; // LC-Note: This is to keep QSB space as a reference to be used later.
-    // LC-Note: scale of the responsive cell specs' icon size (FoldLandscape.OWN)
+    // LC-Note: Home screen > Icon size for this profile's type (its own with FoldLandscape.OWN),
+    // which scales the responsive cell specs' icon size
     private float mResponsiveIconScale = 1f;
 
     /** Used only as an alternative to mocking when null values cannot be used. */
@@ -468,7 +469,7 @@ public class DeviceProfile {
 
         mTypeIndex = displayOptionSpec.typeIndex;
         mResponsiveIconScale = DeviceProfileOverrides.INSTANCE.get(context)
-                .getResponsiveIconScale(mTypeIndex);
+                .iconScaleFor(mTypeIndex);
 
         mTaskbarProfile = TaskbarProfile.Factory.createTaskbarProfile(
                 res,
@@ -1261,10 +1262,15 @@ public class DeviceProfile {
         return Math.round(extraHeight);
     }
 
-    /** LC-Note: the responsive cell specs' icon size, scaled by {@link #mResponsiveIconScale}. */
+    /**
+     * LC-Note: the responsive cell specs' icon size, scaled by Home screen > Icon size like the
+     * grids sized from the IDP (whose iconSize DeviceProfileOverrides scales). The specs never see
+     * that setting otherwise. The factor is the one of this profile's type
+     * ({@link #mResponsiveIconScale}): the large screen of a foldable in landscape can have its own.
+     */
     private int getResponsiveIconSizePx() {
-        return Math.max(1, Math.round(
-                mResponsiveWorkspaceCellSpec.getIconSize() * mResponsiveIconScale));
+        return Math.max(1, Math.round(mResponsiveWorkspaceCellSpec.getIconSize()
+                * mResponsiveIconScale));
     }
 
     private int getCellLayoutHeightSpecification() {
