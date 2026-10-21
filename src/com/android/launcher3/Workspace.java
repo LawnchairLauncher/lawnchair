@@ -1515,6 +1515,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     @Override
+    protected boolean canWrapPastEnd(boolean maxEnd) {
+        if (!mPreferenceManger.getInfiniteScrolling().get()) {
+            return false;
+        }
+        // LC-Note: The side before the first page belongs to the feed while it is on.
+        return getPageAtEnd(maxEnd) != 0
+                || !PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getEnableFeed());
+    }
+
+    @Override
     protected boolean shouldFlingForVelocity(int velocityX) {
         // When the overlay is moving, the fling or settle transition is controlled by the overlay.
         return Float.compare(Math.abs(mOverlayProgress), 0) == 0
