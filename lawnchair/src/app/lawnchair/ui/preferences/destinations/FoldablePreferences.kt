@@ -69,13 +69,16 @@ fun FoldablePreferences(
 
         PreferenceGroup(heading = stringResource(id = R.string.fold_group_large_screen)) {
             val homeLayout = prefs2.foldHomeLayout.getAdapter()
+            val drawerLayout = prefs2.foldDrawerLayout.getAdapter()
             FoldListPreference(
                 adapter = homeLayout,
                 options = FoldHomeLayout.entries,
                 label = stringResource(id = R.string.fold_home_screen),
             )
-            // "Same as cover" shows one page and "Independent" has its own pages
-            ExpandAndShrink(visible = homeLayout.state.value.let { it == FoldHomeLayout.PAGES || it == FoldHomeLayout.EXPAND }) {
+            // "Same as cover" shows one page and "Independent" has its own pages; the "Two pages"
+            // drawer follows the order too
+            val homePages = homeLayout.state.value.let { it == FoldHomeLayout.PAGES || it == FoldHomeLayout.EXPAND }
+            ExpandAndShrink(visible = homePages || drawerLayout.state.value == FoldDrawerLayout.PAGES) {
                 FoldListPreference(
                     adapter = prefs2.foldPageOrder.getAdapter(),
                     options = FoldPageOrder.entries,
@@ -83,7 +86,7 @@ fun FoldablePreferences(
                 )
             }
             FoldListPreference(
-                adapter = prefs2.foldDrawerLayout.getAdapter(),
+                adapter = drawerLayout,
                 options = FoldDrawerLayout.entries,
                 label = stringResource(id = R.string.fold_app_drawer),
             )

@@ -1120,7 +1120,7 @@
     <string name="fold_page_order_opening">Opening direction</string>
     <string name="fold_page_order_opening_description">The page you were on stays on the half you hold, and unfolding adds the next page on the half that opens.</string>
     <string name="fold_page_order_reading">Reading direction</string>
-    <string name="fold_page_order_reading_description">Pages follow your language, like a book. The page you were on stays on the half you hold when it can, so unfolding may add the page before it.</string>
+    <string name="fold_page_order_reading_description">Pages follow your language, like a book. On the home screen, the page you were on stays on the half you hold when it can, so unfolding may add the page before it.</string>
 
     <string name="fold_app_drawer">App drawer</string>
     <string name="fold_drawer_expand">Expand</string>

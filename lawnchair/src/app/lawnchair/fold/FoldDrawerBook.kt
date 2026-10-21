@@ -16,30 +16,32 @@ import kotlin.math.min
 /**
  * The second page of the "book" drawer ([FoldDrawerLayout.PAGES]).
  *
- * The A-Z grid is laid out on the fixed half only ([FoldDrawerLayouts.adjustAppsGridPadding]),
- * with one more screenful of rows laid out below the visible ones. Before every frame, every child
- * that is not fully visible on the fixed page (its bottom is past the fixed page's bottom edge) is
- * moved onto the moving half, up by as many whole rows as fit on a page. So the fixed page only
- * ever shows full rows, the row it cuts is the first row of the moving page, no app is hidden, and
+ * The A-Z grid is laid out on the first page's half only
+ * ([FoldDrawerLayouts.adjustAppsGridPadding]): the fixed half, or with the "Page order" option
+ * [FoldPageOrder.READING] the language's start side ([FoldDrawerLayouts.Drawer]). One more
+ * screenful of rows is laid out below the visible ones. Before every frame, every child that is
+ * not fully visible on the first page (its bottom is past the first page's bottom edge) is moved
+ * onto the other half, up by as many whole rows as fit on a page. So the first page only ever
+ * shows full rows, the row it cuts is the first row of the second page, no app is hidden, and
  * the rows of both pages line up. Both pages scroll together, by rows: when a row becomes fully
- * visible at the bottom of the fixed page it leaves the top of the moving page; until then the part
- * of it above the grid's top edge is clipped, since the moving half has no header rows to slide
- * under. The RecyclerView,
+ * visible at the bottom of the first page it leaves the top of the second page; until then the
+ * part of it above the grid's top edge is clipped, since the second page has no header rows to
+ * slide under. The RecyclerView,
  * its fast scroller, focus and accessibility stay as they are; only view translations change, and
  * touch, drag and accessibility bounds follow them.
  *
- * The list ends when its last row reaches the bottom of the second page, not of the fixed one,
+ * The list ends when its last row reaches the bottom of the second page, not of the first one,
  * which would leave the second page empty: the [ScrollableLayoutManager] stops scrolling there
  * ([scrollToEnd]), for drags, flings and the fast scroller alike, and its scroll range is shorter by
  * the second page's shift ([scrollRangeCut]) so the scroll bar ends there too.
  *
- * A row moves to the fixed page only once it is whole there, so while the list scrolls the row
- * at the fixed page's bottom shows on the second page. When a drag or fling stops, the list settles
- * on the nearest row ([settle]): a row starts at the top of both pages, the fixed page shows whole
+ * A row moves to the first page only once it is whole there, so while the list scrolls the row
+ * at the first page's bottom shows on the second page. When a drag or fling stops, the list settles
+ * on the nearest row ([settle]): a row starts at the top of both pages, the first page shows whole
  * rows and the second page starts with the next one, so no row is left cut between them.
  *
- * Keyboard and accessibility follow the visual order, fixed page rows then second page rows: in
- * layout order the second page's rows already come right after the fixed page's, so the default
+ * Keyboard and accessibility follow the visual order, first page rows then second page rows: in
+ * layout order the second page's rows already come right after the first page's, so the default
  * focus search (up, down, tab) and the accessibility traversal (children sorted by layout position)
  * read the pages in order. Called by the list's [ScrollableLayoutManager], the book also moves
  * left/right focus across the hinge by where the items are drawn, keeps the list still when a
@@ -151,7 +153,7 @@ class FoldDrawerBook private constructor(
         pageTop = rv.paddingTop
         pageHeight = (bottom - pageTop).coerceAtLeast(0)
         (lm as? ScrollableLayoutManager)?.setFoldExtraLayoutSpace(pageHeight)
-        // Up by whole rows, so the cut row lands where the fixed page's first full row would be
+        // Up by whole rows, so the cut row lands where the first page's first full row would be
         // and the rows of both pages line up.
         var rowHeight = 0
         for (i in 0 until rv.childCount) {
@@ -166,14 +168,14 @@ class FoldDrawerBook private constructor(
         val rising = !transitionProgress.isNaN() && pageHeight > 0
         for (i in 0 until rv.childCount) {
             val child = rv.getChildAt(i)
-            // Not fully visible on the fixed page: it belongs to the moving page.
-            val onMovingPage = lm.getDecoratedBottom(child) > bottom
-            val tx = if (onMovingPage) shiftX else 0f
-            var ty = if (onMovingPage) -shiftY.toFloat() else 0f
-            if (onMovingPage && rising) ty += riseOffset(child.top - shiftY)
+            // Not fully visible on the first page: it belongs to the second page.
+            val onSecondPage = lm.getDecoratedBottom(child) > bottom
+            val tx = if (onSecondPage) shiftX else 0f
+            var ty = if (onSecondPage) -shiftY.toFloat() else 0f
+            if (onSecondPage && rising) ty += riseOffset(child.top - shiftY)
             if (child.translationX != tx) child.translationX = tx
             if (child.translationY != ty) child.translationY = ty
-            clipAbovePage(child, if (onMovingPage) pageTop - (child.top + ty) else 0f)
+            clipAbovePage(child, if (onSecondPage) pageTop - (child.top + ty) else 0f)
         }
         // Views that left the list (recycled) lose their clip
         for (i in clipped.size - 1 downTo 0) {
@@ -259,8 +261,8 @@ class FoldDrawerBook private constructor(
         if (dy != 0) rv.smoothScrollBy(0, dy)
     }
 
-    /** Whether [child] is on the second page (not fully visible on the fixed page). */
-    private fun isOnMovingPage(child: View): Boolean {
+    /** Whether [child] is on the second page (not fully visible on the first page). */
+    private fun isOnSecondPage(child: View): Boolean {
         val lm = rv.layoutManager ?: return false
         return lm.getDecoratedBottom(child) > rv.height - rv.paddingBottom
     }
@@ -300,7 +302,7 @@ class FoldDrawerBook private constructor(
 
     /** Brings [child] on screen. Returns null to use the default behaviour, else whether the list scrolled. */
     fun requestChildRectangleOnScreen(parent: RecyclerView, child: View, immediate: Boolean): Boolean? {
-        if (!isActive || !isOnMovingPage(child)) return null
+        if (!isActive || !isOnSecondPage(child)) return null
         // On the second page: no scroll while it shows there whole, else just enough to show it.
         val top = child.top - shiftY
         val bottom = top + child.height

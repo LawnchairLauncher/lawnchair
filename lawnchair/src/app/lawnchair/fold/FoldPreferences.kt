@@ -50,7 +50,8 @@ enum class FoldHomeLayout(
 
 /**
  * Order of the home pages on the large screen with [FoldHomeLayout.PAGES] and
- * [FoldHomeLayout.EXPAND]; the other layouts keep [OPENING]. See [FoldPagePairs].
+ * [FoldHomeLayout.EXPAND]; the other layouts keep [OPENING]. See [FoldPagePairs]. Also the order of
+ * the [FoldDrawerLayout.PAGES] drawer's two pages, whatever the home layout ([FoldDrawerLayouts]).
  */
 enum class FoldPageOrder(
     override val key: String,

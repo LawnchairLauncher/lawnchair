@@ -8,6 +8,7 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.Utilities
 import com.android.launcher3.deviceprofile.DeviceProperties
 import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.util.DisplayController
@@ -18,9 +19,11 @@ import kotlin.math.roundToInt
  * The app drawer of an unfolded foldable ([FoldDrawerLayout], pref `foldDrawerLayout`).
  *
  * - [FoldDrawerLayout.EXPAND]: today's drawer, more columns (the "when unfolded" drawer columns).
- * - [FoldDrawerLayout.PAGES], "book": the fixed half shows the cover's drawer, with its columns,
- *   cell sizes and paddings; the moving half continues the list where the fixed half ends, like the
- *   second page of a book ([FoldDrawerBook]). Both pages scroll together, by rows.
+ * - [FoldDrawerLayout.PAGES], "book": the first page shows the cover's drawer, with its columns,
+ *   cell sizes and paddings; the other half continues the list where the first page ends, like the
+ *   second page of a book ([FoldDrawerBook]). Both pages scroll together, by rows. The first page
+ *   is on the side where the "Page order" option starts ([FoldPageOrder]): the fixed half with
+ *   [FoldPageOrder.OPENING], the language's start side with [FoldPageOrder.READING].
  * - [FoldDrawerLayout.BIG_ICONS], "zoom": the cover's columns across the whole width, icons and
  *   labels scaled up (at most [FoldTunables.DRAWER_BIG_ICONS_MAX_SCALE]).
  *
@@ -28,12 +31,12 @@ import kotlin.math.roundToInt
  * cover screen and landscape (horizontal fold line) keep today's drawer. The search bar spans the
  * whole width in every layout; search results use the whole width too.
  *
- * Header rows (predictions, the personal/work tabs) follow the grid: on the fixed half for PAGES,
+ * Header rows (predictions, the personal/work tabs) follow the grid: on the first page for PAGES,
  * across the width for the others. Drawer folders are grid items like apps.
  *
  * Each device profile of the large screen takes its drawer metrics from the cover profile of the
  * same rotation while it is built ([create], called from the `DeviceProfile` constructor), so the
- * fixed page matches the cover exactly when both screens have the same density, and copies of the
+ * first page matches the cover exactly when both screens have the same density, and copies of the
  * profile (the taskbar's) keep the layout. A multi-window profile has no rotation (its window
  * bounds come from the window metrics), so it isn't the large screen here and keeps today's drawer.
  */
@@ -41,8 +44,18 @@ object FoldDrawerLayouts {
 
     private const val TAG = "LC-FoldDrawer"
 
-    /** The drawer layout a large-screen profile was built for, and the cover profile it copies. */
-    class Drawer(val layout: FoldDrawerLayout, val cover: DeviceProfile)
+    /**
+     * The drawer layout a large-screen profile was built for, and the cover profile it copies. For
+     * PAGES, whether the first page is on the right half ([FoldPagePairs.isPageOrderRtl]) and
+     * whether it is on the moving half ([FoldPagePairs.isFixedHalfSecond]); never with
+     * [FoldPageOrder.OPENING], whose first page is on the fixed half as before the option.
+     */
+    class Drawer(
+        val layout: FoldDrawerLayout,
+        val cover: DeviceProfile,
+        val isFirstPageOnRight: Boolean = false,
+        val isFirstPageOnMovingHalf: Boolean = false,
+    )
 
     /** Columns of the drawer grid; the cover's for PAGES and BIG_ICONS. Called from `DeviceProfile`. */
     @JvmStatic
@@ -88,7 +101,17 @@ object FoldDrawerLayouts {
             else -> applyBigIcons(dp, cover)
         }
         Log.d(TAG, "$layout on ${properties.widthPx}x${properties.heightPx}: ${dp.numShownAllAppsColumns} columns, scale $scale")
-        return Drawer(layout, cover)
+        if (layout != FoldDrawerLayout.PAGES) return Drawer(layout, cover)
+        // The pages follow the "Page order" option, like the home pages
+        val order = prefs2.foldPageOrder.firstCached(prefs2)
+        val isRtl = Utilities.isRtl(context.resources)
+        val movingHalfLeft = FoldPosture.isMovingHalfLeft(properties.rotationHint)
+        return Drawer(
+            layout,
+            cover,
+            isFirstPageOnRight = FoldPagePairs.isPageOrderRtl(order, isRtl, movingHalfLeft),
+            isFirstPageOnMovingHalf = FoldPagePairs.isFixedHalfSecond(order, isRtl, movingHalfLeft),
+        )
     }
 
     /**
@@ -185,21 +208,28 @@ object FoldDrawerLayouts {
 
     /**
      * Side paddings of the A-Z apps grids (not the search results) and of the header rows above
-     * them. PAGES puts both on the fixed half: the moving half's width is added on its side. Called
+     * them. PAGES puts both on the first page: the other half's width is added on its side. Called
      * from the drawer container and its header.
      */
     @JvmStatic
     fun adjustAppsGridPadding(dp: DeviceProfile, padding: Rect) {
-        if (dp.foldDrawer?.layout != FoldDrawerLayout.PAGES) return
+        val drawer = dp.foldDrawer?.takeIf { it.layout == FoldDrawerLayout.PAGES } ?: return
         val half = dp.deviceProperties.widthPx / 2
-        if (FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) == true) padding.left += half else padding.right += half
+        if (drawer.isFirstPageOnRight) padding.left += half else padding.right += half
     }
 
-    /** Horizontal shift from the fixed page to the moving page (PAGES), in pixels. */
+    /** Horizontal shift from the first page to the second page (PAGES), in pixels. */
     fun bookShiftX(dp: DeviceProfile): Int {
         val half = dp.deviceProperties.widthPx / 2
-        return if (FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) == true) -half else half
+        return if (dp.foldDrawer?.isFirstPageOnRight == true) -half else half
     }
+
+    /**
+     * Whether [dp] has the PAGES drawer with its first page on the moving half. Its unfold can't
+     * keep the rows seen on the cover in place, so the engine plays [SimpleFoldStyle] instead of
+     * [DrawerBookStyle] then.
+     */
+    fun isBookFirstPageOnMovingHalf(dp: DeviceProfile): Boolean = dp.foldDrawer?.let { it.layout == FoldDrawerLayout.PAGES && it.isFirstPageOnMovingHalf } == true
 
     /**
      * Side padding of the drawer search bar. For PAGES it is the cover's, so the bar spans both

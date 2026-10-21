@@ -266,7 +266,7 @@ class FoldTransitionController(
             // The drawer has its own transitions, which replace the home style while it is open.
             isDrawerOpen() -> when (drawerLayout()) {
                 FoldDrawerLayout.EXPAND -> DrawerRiverStyle(launcher.appsView, launcher.deviceProfile, capture)
-                FoldDrawerLayout.PAGES -> DrawerBookStyle(launcher.appsView, launcher.deviceProfile, capture)
+                FoldDrawerLayout.PAGES -> if (isBookFirstPageOnMovingHalf()) SimpleFoldStyle() else DrawerBookStyle(launcher.appsView, launcher.deviceProfile, capture)
                 FoldDrawerLayout.BIG_ICONS -> DrawerZoomStyle(launcher.appsView, launcher.deviceProfile, capture)
             }
 
@@ -507,6 +507,15 @@ class FoldTransitionController(
     private fun drawerLayout(): FoldDrawerLayout {
         val large = FoldLayout.largeProfileOf(launcher.deviceProfile) ?: return FoldDrawerLayout.EXPAND
         return FoldDrawerLayouts.drawerLayoutOf(large) ?: FoldDrawerLayout.EXPAND
+    }
+
+    /**
+     * Whether the large screen's book drawer has its first page on the moving half ("Page order").
+     * Its transition keeps the first page still, which needs it on the fixed half: else Simple's fade.
+     */
+    private fun isBookFirstPageOnMovingHalf(): Boolean {
+        val large = FoldLayout.largeProfileOf(launcher.deviceProfile) ?: return false
+        return FoldDrawerLayouts.isBookFirstPageOnMovingHalf(large)
     }
 
     private fun durationScale(): Float {
