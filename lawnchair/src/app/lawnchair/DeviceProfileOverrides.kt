@@ -1,6 +1,7 @@
 package app.lawnchair
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import app.lawnchair.fold.FoldLandscape
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -11,7 +12,6 @@ import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE
 import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE
 import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT
-import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
@@ -57,22 +57,7 @@ class DeviceProfileOverrides @Inject constructor(
         .first { it.second == gridName }
         .first
 
-    fun getGridName(gridInfo: DBGridInfo): String {
-        val grids = predefinedGrids
-        val match = grids
-            .firstOrNull { it.first.numRows >= gridInfo.numRows && it.first.numColumns >= gridInfo.numColumns }
-            ?: grids.last()
-        // LC-Note: Grids can have the same size (e.g. 4_by_6 and practical on foldables), so keep
-        // the current one rather than always switching to the first of them.
-        val currentGridName = LauncherPrefs.get(context).get(LauncherPrefs.GRID_NAME)
-        val current = grids.firstOrNull { it.second == currentGridName }
-        if (current != null && current.first.numRows == match.first.numRows &&
-            current.first.numColumns == match.first.numColumns
-        ) {
-            return current.second
-        }
-        return match.second
-    }
+    fun getGridName(gridInfo: DBGridInfo): String = pickGridName(predefinedGrids, gridInfo)
 
     fun getCurrentGridName() = getGridName(getGridInfo())
 
@@ -314,4 +299,18 @@ class DeviceProfileOverrides @Inject constructor(
         @JvmField
         val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getDPO)
     }
+}
+
+/**
+ * The name of the first of [grids] (in their XML order) that holds [gridInfo]'s rows and columns,
+ * else of the largest, the last one. Grids can have the same size: on foldables the regular 4_by_6
+ * and the responsive practical, whose fixed cell sizes ignore the row and column settings. The
+ * first of them is always used, so foldables get 4_by_6 like upstream (and like phones), also with
+ * more rows or columns than any grid has.
+ */
+@VisibleForTesting
+internal fun pickGridName(grids: List<Pair<DeviceProfileOverrides.DBGridInfo, String>>, gridInfo: DeviceProfileOverrides.DBGridInfo): String {
+    val largest = grids.last().first
+    return grids.firstOrNull { it.first.numRows >= gridInfo.numRows && it.first.numColumns >= gridInfo.numColumns }?.second
+        ?: grids.first { it.first.numRows == largest.numRows && it.first.numColumns == largest.numColumns }.second
 }
