@@ -138,7 +138,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
-import app.lawnchair.blur.GlassBlur;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
 import app.lawnchair.theme.color.tokens.ColorTokens;
@@ -296,9 +295,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private KeyboardInsetAnimationCallback mKeyboardInsetAnimationCallback;
 
     private @NonNull GradientDrawable mBackground;
-
-    // LC-Note: live blur of the wallpaper behind the folder background
-    private final GlassBlur mGlassBlur = new GlassBlur(this, GlassBlur.Type.OPEN_FOLDER);
 
     PreferenceManager2 preferenceManager2;
 
@@ -662,7 +658,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mFolderName.removeOnFocusChangeListener(this);
-        mGlassBlur.release();
     }
 
     @Override
@@ -2051,8 +2046,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        // LC-Note: the blur follows the clip path of the reveal animation
-        mGlassBlur.drawOpenFolder(canvas, mBackground, mClipPath);
         if (mClipPath != null) {
             int count = canvas.save();
             canvas.clipPath(mClipPath);

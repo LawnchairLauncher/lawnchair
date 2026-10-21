@@ -40,7 +40,6 @@ import app.lawnchair.ui.preferences.components.colorpreference.ColorContrastWarn
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
-import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
@@ -159,48 +158,6 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
                 label = stringResource(id = R.string.advanced_icon_settings_title),
                 destination = GeneralAdvancedIcons,
             )
-        }
-
-        val glassBlurIcons = prefs.glassBlurIcons.getAdapter()
-
-        PreferenceGroup(heading = stringResource(id = R.string.glass_blur_label)) {
-            SwitchPreference(
-                adapter = glassBlurIcons,
-                label = stringResource(id = R.string.glass_blur_icons_label),
-                description = stringResource(id = R.string.glass_blur_icons_description),
-            )
-            ExpandAndShrink(visible = glassBlurIcons.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.glass_blur_radius_label),
-                    adapter = prefs.glassBlurRadius.getAdapter(),
-                    step = 2,
-                    valueRange = 4..64,
-                    showUnit = "dp",
-                )
-            }
-            ExpandAndShrink(visible = glassBlurIcons.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.glass_blur_tint_label),
-                    adapter = prefs.glassBlurTint.getAdapter(),
-                    valueRange = 0F..0.6F,
-                    step = 0.05f,
-                    showAsPercentage = true,
-                )
-            }
-            ExpandAndShrink(visible = glassBlurIcons.state.value) {
-                SwitchPreference(
-                    adapter = prefs.glassBlurFolders.getAdapter(),
-                    label = stringResource(id = R.string.glass_blur_folders_label),
-                    description = stringResource(id = R.string.glass_blur_folders_description),
-                )
-            }
-            ExpandAndShrink(visible = glassBlurIcons.state.value) {
-                SwitchPreference(
-                    adapter = prefs.glassBlurWidgets.getAdapter(),
-                    label = stringResource(id = R.string.glass_blur_widgets_label),
-                    description = stringResource(id = R.string.glass_blur_widgets_description),
-                )
-            }
         }
 
         val accentColorAdapter = prefs2.accentColor.getAdapter()
