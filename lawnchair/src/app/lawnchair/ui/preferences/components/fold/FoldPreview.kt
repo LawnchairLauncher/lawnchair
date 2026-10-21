@@ -34,6 +34,7 @@ import app.lawnchair.fold.FoldDock
 import app.lawnchair.fold.FoldDrawerLayout
 import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldOption
+import app.lawnchair.fold.FoldPageOrder
 import app.lawnchair.fold.FoldTransitionStyle
 
 /** One loop of a preview: folded (0–0.2), unfolding (0.2–0.4), open (0.4–0.8), folded again. */
@@ -47,8 +48,8 @@ private const val MOVING_BLUR_EM = 0.6f
 private const val FIXED_BLUR_EM = 0.4f
 
 /** Whether [option] has a [FoldPreview]. */
-fun hasFoldPreview(option: FoldOption): Boolean = option is FoldHomeLayout || option is FoldDrawerLayout ||
-    option is FoldTransitionStyle || option is FoldDock
+fun hasFoldPreview(option: FoldOption): Boolean = option is FoldHomeLayout || option is FoldPageOrder ||
+    option is FoldDrawerLayout || option is FoldTransitionStyle || option is FoldDock
 
 /**
  * The loop time of a [FoldPreview], 0..1 over [LOOP_MILLIS]; a new [restartKey] starts it over.
@@ -73,11 +74,11 @@ fun rememberFoldPreviewTime(restartKey: Any? = null): State<Float> {
 fun foldedAt(time: Float): Float = 1f - seg(time, 0.19f, 0.2f) + seg(time, 0.79f, 0.8f)
 
 /**
- * A looping picture of a foldable [option] (a home screen layout, an animation, an app drawer layout
- * or a dock): the cover screen, the unfold, the large screen open. The fixed half is on the right,
- * as on a book-style foldable in its natural rotation; it is a picture, not the device's real side.
- * The animations use the whole screen and run the way the phone opens: from the fixed half across
- * the hinge to the moving half's free edge.
+ * A looping picture of a foldable [option] (a home screen layout or its page order, an animation,
+ * an app drawer layout or a dock): the cover screen, the unfold, the large screen open. The fixed
+ * half is on the right, as on a book-style foldable in its natural rotation; it is a picture, not
+ * the device's real side. The animations use the whole screen and run the way the phone opens:
+ * from the fixed half across the hinge to the moving half's free edge.
  * With [animation], a home screen layout unfolds with it; without, the layout's own change shows.
  * Decorative: the row or card around it says what it shows.
  */

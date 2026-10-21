@@ -36,6 +36,7 @@ import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldItemSets
 import app.lawnchair.fold.FoldLandscape
 import app.lawnchair.fold.FoldOption
+import app.lawnchair.fold.FoldPageOrder
 import app.lawnchair.fold.FoldTransitionStyle
 import app.lawnchair.fold.FoldWallpaper
 import app.lawnchair.font.FontCache
@@ -806,6 +807,13 @@ class PreferenceManager2 @Inject constructor(
     // The last value of foldHomeLayout, for its onSet (the cache may already hold the new one).
     @Volatile
     private var lastFoldHomeLayout: FoldHomeLayout = foldHomeLayout.firstCached(this)
+
+    // The reload rebinds the pages in the new order and maps "Expand" pages again.
+    val foldPageOrder = foldOptionPreference(
+        name = "fold_page_order",
+        defaultValue = FoldPageOrder.OPENING,
+        onSet = { reloadHelper.reloadGrid() },
+    )
 
     val foldDrawerLayout = foldOptionPreference(
         name = "fold_drawer_layout",

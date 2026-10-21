@@ -1,8 +1,10 @@
 package app.lawnchair.fold
 
+import android.content.Context
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.Utilities
 import com.android.launcher3.deviceprofile.DeviceProperties
 
 /**
@@ -31,15 +33,41 @@ object FoldLayout {
 
     /**
      * Whether a wide "Expand" page shows its even cover page on the end half (cells >= columns, the
-     * physical right half). The even page goes on the fixed half when the hinge side is known, like
-     * the page the user was on with "Two pages"; otherwise on the start half, as AOSP does.
+     * physical right half). With [FoldPageOrder.OPENING] the even page goes on the fixed half when
+     * the hinge side is known, like the page the user was on with "Two pages"; otherwise on the
+     * start half, as AOSP does. With [FoldPageOrder.READING] it comes first in the UI language.
      */
     @JvmStatic
-    fun isEvenCoverPageOnEnd(dp: DeviceProfile): Boolean {
+    fun isEvenCoverPageOnEnd(context: Context, dp: DeviceProfile): Boolean {
         // CellLayout cells don't mirror in RTL (only folder pages invert), so the end half is
-        // always the physical right half: the even page goes there when the moving half is left.
+        // always the physical right half: the even page goes there when the moving half is left,
+        // or when the language reads right to left.
+        if (pageOrder(PreferenceManager2.getInstance(context)) == FoldPageOrder.READING) {
+            return Utilities.isRtl(context.resources)
+        }
         return FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) ?: false
     }
+
+    /**
+     * The order of the home pages on the large screen: the preference with "Two pages" and
+     * "Expand", [FoldPageOrder.OPENING] with the layouts it doesn't apply to.
+     */
+    @JvmStatic
+    fun pageOrder(prefs2: PreferenceManager2): FoldPageOrder = when (prefs2.foldHomeLayout.firstCached(prefs2)) {
+        FoldHomeLayout.PAGES, FoldHomeLayout.EXPAND -> prefs2.foldPageOrder.firstCached(prefs2)
+        else -> FoldPageOrder.OPENING
+    }
+
+    /** Whether pages run right to left on [dp]'s two panels, see [FoldPagePairs.isPageOrderRtl]. */
+    @JvmStatic
+    fun isPageOrderRtl(dp: DeviceProfile, prefs2: PreferenceManager2, isRtlLanguage: Boolean): Boolean = FoldPagePairs.isPageOrderRtl(pageOrder(prefs2), isRtlLanguage, FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint))
+
+    /**
+     * Whether the fixed half of [dp]'s two panels shows the second page of each pair, see
+     * [FoldPagePairs.isFixedHalfSecond].
+     */
+    @JvmStatic
+    fun isFixedHalfSecond(dp: DeviceProfile, prefs2: PreferenceManager2, isRtlLanguage: Boolean): Boolean = FoldPagePairs.isFixedHalfSecond(pageOrder(prefs2), isRtlLanguage, FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint))
 
     /** Whether the cover screen opens on the panel last touched on the large screen. */
     @JvmStatic

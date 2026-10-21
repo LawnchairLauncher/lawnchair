@@ -48,6 +48,27 @@ enum class FoldHomeLayout(
     ),
 }
 
+/**
+ * Order of the home pages on the large screen with [FoldHomeLayout.PAGES] and
+ * [FoldHomeLayout.EXPAND]; the other layouts keep [OPENING]. See [FoldPagePairs].
+ */
+enum class FoldPageOrder(
+    override val key: String,
+    @StringRes override val labelResourceId: Int,
+    @StringRes override val descriptionResourceId: Int,
+) : FoldOption {
+    OPENING(
+        key = "opening",
+        labelResourceId = R.string.fold_page_order_opening,
+        descriptionResourceId = R.string.fold_page_order_opening_description,
+    ),
+    READING(
+        key = "reading",
+        labelResourceId = R.string.fold_page_order_reading,
+        descriptionResourceId = R.string.fold_page_order_reading_description,
+    ),
+}
+
 /** App drawer layout on the large (unfolded) screen. */
 enum class FoldDrawerLayout(
     override val key: String,

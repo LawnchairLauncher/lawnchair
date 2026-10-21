@@ -1116,6 +1116,11 @@
     <string name="fold_home_mirror_description">The exact layout of the cover screen, just larger. No need to arrange two screens. The app drawer keeps its own layout setting.</string>
     <string name="fold_home_independent">Independent</string>
     <string name="fold_home_independent_description">A separate layout for the large screen. It starts as a copy of the cover screen, and widgets may need to be set up again there.</string>
+    <string name="fold_page_order">Page order</string>
+    <string name="fold_page_order_opening">Opening direction</string>
+    <string name="fold_page_order_opening_description">The page you were on stays on the half you hold, and unfolding adds the next page on the half that opens.</string>
+    <string name="fold_page_order_reading">Reading direction</string>
+    <string name="fold_page_order_reading_description">Pages follow your language, like a book. The page you were on stays on the half you hold when it can, so unfolding may add the page before it.</string>
 
     <string name="fold_app_drawer">App drawer</string>
     <string name="fold_drawer_expand">Expand</string>

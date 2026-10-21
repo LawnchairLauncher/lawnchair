@@ -152,6 +152,7 @@ import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.fold.FoldItemSets;
 import app.lawnchair.fold.FoldLayout;
+import app.lawnchair.fold.FoldPagePairs;
 import app.lawnchair.fold.FoldPosture;
 import com.android.launcher3.model.data.WorkspaceData;
 import app.lawnchair.preferences.PreferenceManager;
@@ -434,13 +435,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         DeviceProfile grid = mLauncher.getDeviceProfile();
         Rect padding = grid.cellLayoutPaddingPx;
         // LC-Note: with a foldable's side dock, the page on the fixed half (each pair's first
-        // page) takes back on its outer edge, under the column, the width setInsets took off both
-        // sides of the workspace. The moving half's page keeps the full half.
+        // page, or its second one, see isOnFoldFixedHalf) takes back on its outer edge, under the
+        // column, the width setInsets took off both sides of the workspace. The moving half's page
+        // keeps the full half.
         int sideDockInset = grid.getSideDockPageInset();
         mWorkspaceScreens.forEach(cellLayout -> {
             int index = sideDockInset > 0 ? indexOfChild(cellLayout) : -1;
-            int inset = index >= 0 && getLeftmostVisiblePageForIndex(index) == index
-                    ? sideDockInset : 0;
+            int inset = index >= 0 && isOnFoldFixedHalf(index) ? sideDockInset : 0;
             int left = grid.isSideDockOnLeft() ? inset : 0;
             cellLayout.setPadding(padding.left + left, padding.top, padding.right + inset - left,
                     padding.bottom);
@@ -1081,7 +1082,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public IntSet getCurrentPageScreenIds() {
-        return IntSet.wrap(getScreenIdForPageIndex(getCurrentPage()));
+        // LC-Note: on a foldable's large screen, the page on the fixed half, which the next bind
+        // keeps there: the second of the pair with FoldPageOrder.READING (see FoldPagePairs).
+        int page = FoldPagePairs.fixedHalfPage(getCurrentPage(), mScreenOrder.size(),
+                mFoldFixedHalfSecond);
+        return IntSet.wrap(getScreenIdForPageIndex(page));
     }
 
     public int getScreenIdForPageIndex(int index) {
@@ -4142,6 +4147,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     // was looking at when the workspace was bound, so it sits on the fixed half. Set when a bind
     // starts; the next bind (possibly on the model thread) reads it.
     private volatile int mFoldAnchorScreenId = -1;
+    // LC-Note: whether the fixed half shows the second page of each pair, so the anchor ends its
+    // pair (FoldPageOrder.READING, see FoldPagePairs). Set with the anchor when a bind starts.
+    private volatile boolean mFoldFixedHalfSecond;
     // LC-Note: screen of the panel last touched in the visible pair (FoldAfterFold.LAST_PANEL).
     private volatile int mLastTouchedPanelScreenId = -1;
     // LC-Note: the page last shown in each item set of "Independent" (cover, inner; see
@@ -4158,15 +4166,20 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     /**
      * LC-Note: sets the screen that starts a pair on the large screen of a foldable. Pairs are
      * then (anchor, anchor + 1), (anchor + 2, anchor + 3)... and backwards, so the page the user
-     * was on stays on the fixed half and the next page shows on the moving half.
+     * was on stays on the fixed half and the next page shows on the moving half. When the fixed
+     * half shows the second page of each pair (isFoldFixedHalfSecond), the anchor ends its pair
+     * instead, see FoldPagePairs.
      */
     public void setFoldAnchorScreenId(int screenId) {
-        if (mFoldAnchorScreenId == screenId) {
+        boolean fixedHalfSecond = isFoldFixedHalfSecond();
+        if (mFoldAnchorScreenId == screenId && mFoldFixedHalfSecond == fixedHalfSecond) {
             return;
         }
         int oldParity = getFoldPairParity();
+        boolean oldFixedHalfSecond = mFoldFixedHalfSecond;
         mFoldAnchorScreenId = screenId;
-        if (getFoldPairParity() != oldParity) {
+        mFoldFixedHalfSecond = fixedHalfSecond;
+        if (getFoldPairParity() != oldParity || fixedHalfSecond != oldFixedHalfSecond) {
             if (mPageIndicator != null) {
                 mPageIndicator.setMarkersCount(getPageIndicatorMarkersCount());
             }
@@ -4187,8 +4200,23 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (!isTwoPanelEnabled()) {
             return 0;
         }
-        int anchorIndex = mScreenOrder.indexOf(mFoldAnchorScreenId);
-        return anchorIndex > 0 ? anchorIndex % 2 : 0;
+        return FoldPagePairs.pairParity(mScreenOrder.indexOf(mFoldAnchorScreenId),
+                mFoldFixedHalfSecond);
+    }
+
+    /**
+     * LC-Note: whether, with the current device profile and page order, the fixed half shows the
+     * second page of each pair (FoldPageOrder.READING with the fixed half on the language's end
+     * side). The pairs on screen follow the value taken by the last bind.
+     */
+    public boolean isFoldFixedHalfSecond() {
+        return isTwoPanelEnabled() && FoldLayout.isFixedHalfSecond(mLauncher.getDeviceProfile(),
+                mPreferenceManager2, Utilities.isRtl(getResources()));
+    }
+
+    /** LC-Note: whether the page at {@code index} is laid out on the fixed half of its pair. */
+    private boolean isOnFoldFixedHalf(int index) {
+        return (getLeftmostVisiblePageForIndex(index) == index) != mFoldFixedHalfSecond;
     }
 
     @Override
@@ -4198,7 +4226,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             return super.getLeftmostVisiblePageForIndex(pageIndex);
         }
         // Pairs are (1, 2), (3, 4)...: the first page is alone and shown next to the second one.
-        return Math.max(0, pageIndex - Math.floorMod(pageIndex - parity, 2));
+        return FoldPagePairs.pairStart(pageIndex, parity);
     }
 
     @Override
@@ -4312,18 +4340,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     /**
      * LC-Note: on the large screen of a foldable, pages run from the fixed half to the moving
-     * half, so the next page shows on the half that opens, whatever the UI language. Otherwise,
-     * and when the hinge side is unknown, pages follow the UI language as usual.
+     * half (FoldPageOrder.OPENING), so the next page shows on the half that opens, whatever the UI
+     * language. Otherwise (FoldPageOrder.READING), and when the hinge side is unknown, pages
+     * follow the UI language as usual.
      */
     private void updatePageDirection() {
         boolean isRtl = Utilities.isRtl(getResources());
         if (isTwoPanelEnabled()) {
-            // Pages run towards the moving half: right to left when it is the left half.
-            Boolean movingHalfLeft = FoldPosture.isMovingHalfLeft(
-                    mLauncher.getDeviceProfile().getDeviceProperties().getRotationHint());
-            if (movingHalfLeft != null) {
-                isRtl = movingHalfLeft;
-            }
+            // Right to left when pages run towards the moving half and it is the left half.
+            isRtl = FoldLayout.isPageOrderRtl(mLauncher.getDeviceProfile(), mPreferenceManager2,
+                    isRtl);
         }
         if (isRtl == mIsRtl) {
             return;

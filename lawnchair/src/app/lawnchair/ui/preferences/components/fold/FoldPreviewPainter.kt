@@ -1,6 +1,8 @@
 package app.lawnchair.ui.preferences.components.fold
 
 import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.os.Build
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.material3.ColorScheme
@@ -17,16 +19,21 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import app.lawnchair.fold.FoldDock
 import app.lawnchair.fold.FoldDrawerLayout
 import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldOption
+import app.lawnchair.fold.FoldPageOrder
 import app.lawnchair.fold.FoldTransitionStyle
+import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.max
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /** The mock's type size: 1 em is this share of the preview's width. */
@@ -74,6 +81,14 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
     private val flatCorners = FloatArray(8)
     private val turnedCorners = FloatArray(8)
 
+    // Page order: the pages' numbers, in the language's digits
+    private val pageNumbers = Array(3) { String.format(Locale.getDefault(), "%d", it + 1) }
+    private val numberPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = light.toArgb()
+        textAlign = Paint.Align.CENTER
+        typeface = Typeface.DEFAULT_BOLD
+    }
+
     private var t = 0f
     private var em = 0f
     private var pad = 0f
@@ -110,6 +125,11 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
             is FoldDock -> {
                 halves()
                 dock(option)
+            }
+
+            is FoldPageOrder -> {
+                halves()
+                pageOrder(option)
             }
         }
     }
@@ -405,6 +425,35 @@ internal class FoldPreviewPainter(scheme: ColorScheme) {
                 off()
             }
         }
+    }
+
+    /**
+     * The pages as the large screen opens, numbered: cover page 2 stays on the fixed half and the
+     * moving half opens beside it on page 3, or with [FoldPageOrder.READING] in a left-to-right
+     * language on page 1, which comes before it. Right to left, reading order is the opening one.
+     */
+    private fun DrawScope.pageOrder(order: FoldPageOrder) {
+        numberedPage(fixedLeft, 2)
+        val before = order == FoldPageOrder.READING && layoutDirection == LayoutDirection.Ltr
+        val shown = shown(t, 0.2f, 0.34f)
+        clipRect(pad, pad, pad + hw, pad + hh) {
+            // The new page comes out from the hinge as the half opens
+            alpha = shown
+            translate(left = (1f - shown) * 1.6f * em) { numberedPage(pad, if (before) 1 else 3) }
+            alpha = 1f
+        }
+        off()
+    }
+
+    /** A page of the mock numbered [number] (1 to 3), on the half at [left]: the number above two rows of icons. */
+    private fun DrawScope.numberedPage(left: Float, number: Int) {
+        if (alpha > 0f) {
+            numberPaint.textSize = 5f * em
+            numberPaint.alpha = (alpha * 255).roundToInt()
+            val baseline = pad + 0.36f * hh - (numberPaint.ascent() + numberPaint.descent()) / 2f
+            drawContext.canvas.nativeCanvas.drawText(pageNumbers[number - 1], left + hw / 2f, baseline, numberPaint)
+        }
+        grid(left + 0.9f * em, pad + 0.62f * hh, hw - 1.8f * em, 3, 6, 0.9f * em, em, 2 * number)
     }
 
     /** The mock's cover page: 9 icons in 3 columns, on the half at [left]. */

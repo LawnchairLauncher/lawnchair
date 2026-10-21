@@ -17,6 +17,7 @@ import app.lawnchair.fold.FoldDrawerLayout
 import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldLandscape
 import app.lawnchair.fold.FoldOption
+import app.lawnchair.fold.FoldPageOrder
 import app.lawnchair.fold.FoldTransitionStyle
 import app.lawnchair.fold.FoldWallpaper
 import app.lawnchair.fold.FoldWallpaperOffsets
@@ -67,11 +68,20 @@ fun FoldablePreferences(
         }
 
         PreferenceGroup(heading = stringResource(id = R.string.fold_group_large_screen)) {
+            val homeLayout = prefs2.foldHomeLayout.getAdapter()
             FoldListPreference(
-                adapter = prefs2.foldHomeLayout.getAdapter(),
+                adapter = homeLayout,
                 options = FoldHomeLayout.entries,
                 label = stringResource(id = R.string.fold_home_screen),
             )
+            // "Same as cover" shows one page and "Independent" has its own pages
+            ExpandAndShrink(visible = homeLayout.state.value.let { it == FoldHomeLayout.PAGES || it == FoldHomeLayout.EXPAND }) {
+                FoldListPreference(
+                    adapter = prefs2.foldPageOrder.getAdapter(),
+                    options = FoldPageOrder.entries,
+                    label = stringResource(id = R.string.fold_page_order),
+                )
+            }
             FoldListPreference(
                 adapter = prefs2.foldDrawerLayout.getAdapter(),
                 options = FoldDrawerLayout.entries,
@@ -173,9 +183,9 @@ fun FoldablePreferences(
 }
 
 /**
- * A list preference for a foldable option. Options with a preview (home screen, app drawer,
- * animation, dock) show it and are picked from cards; the others show the summary of the selected
- * option under the label.
+ * A list preference for a foldable option. Options with a preview (home screen, page order, app
+ * drawer, animation, dock) show it and are picked from cards; the others show the summary of the
+ * selected option under the label.
  */
 @Composable
 private fun <T> FoldListPreference(

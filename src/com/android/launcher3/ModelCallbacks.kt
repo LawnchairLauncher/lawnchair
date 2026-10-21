@@ -9,6 +9,7 @@ import androidx.annotation.AnyThread
 import androidx.annotation.UiThread
 import androidx.annotation.VisibleForTesting
 import app.lawnchair.fold.FoldItemSets
+import app.lawnchair.fold.FoldPagePairs
 import com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_WORKSPACE_TRACE_METHOD_NAME
 import com.android.launcher3.LauncherConstants.TraceEvents.SINGLE_TRACE_COOKIE
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
@@ -308,8 +309,13 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             if (launcher.deviceProfile.deviceProperties.isTwoPanels && actualIds.contains(pairId)) {
                 result.add(pairId)
             }
-            // LC-Note: on foldables the pair is the next page, also bind it first.
-            val nextIndex = actualIds.indexOf(firstId) + 1
+            // LC-Note: on foldables the pair is the next page (or the one before, see
+            // FoldPagePairs), also bind it first.
+            val nextIndex =
+                FoldPagePairs.pairedPage(
+                    actualIds.indexOf(firstId),
+                    launcher.workspace.isFoldFixedHalfSecond,
+                )
             if (launcher.deviceProfile.deviceProperties.isTwoPanels && nextIndex < actualIds.size()) {
                 result.add(actualIds[nextIndex])
             }
