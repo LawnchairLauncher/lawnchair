@@ -126,9 +126,12 @@ public interface WorkspaceLayoutManager {
                                 prefs.getEnableLabelInDock()));
             }
         } else {
-            // Show folder title if not in the hotseat
+            // Show folder title if not in the hotseat, unless folder names are hidden
             if (child instanceof FolderIcon) {
-                ((FolderIcon) child).setTextVisible(true);
+                PreferenceManager2 prefs = PreferenceManager2.getInstance(child.getContext());
+                ((FolderIcon) child).setTextVisible(
+                        PreferenceCacheExtensionsKt.firstCached(
+                                prefs.getShowFolderLabelsOnHomeScreen()));
             }
             layout = getScreenWithId(screenId);
         }
