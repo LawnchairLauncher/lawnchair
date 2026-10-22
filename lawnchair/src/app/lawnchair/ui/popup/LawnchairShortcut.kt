@@ -9,11 +9,13 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
+import android.content.pm.PackageManager
 import android.content.pm.SuspendDialogInfo
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.net.Uri
+import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
 import android.view.View
@@ -133,6 +135,8 @@ class LawnchairShortcut {
             "com.github.librecaptcha.apps.fdroidclient",
         )
 
+        private const val SUSPEND_APPS_PERMISSION = "android.permission.SUSPEND_APPS"
+
         val OPEN_IN_STORE =
             SystemShortcut.Factory { activity: ActivityContext, itemInfo: ItemInfo, originalView: View ->
                 if (itemInfo.itemType != ITEM_TYPE_APPLICATION) return@Factory null
@@ -145,11 +149,28 @@ class LawnchairShortcut {
             }
 
         val PAUSE_APPS = SystemShortcut.Factory { activity: LawnchairLauncher, itemInfo: ItemInfo, originalView: View ->
+            val context = activity.asContext()
+            if (context.checkCallingOrSelfPermission(SUSPEND_APPS_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+                return@Factory null
+            }
             val targetCmp = itemInfo.targetComponent
             val packageName = targetCmp?.packageName ?: return@Factory null
 
+            val unsuspendableApps = try {
+                AppGlobals.getPackageManager().getUnsuspendablePackagesForUser(
+                    arrayOf(packageName),
+                    context.userId,
+                )
+            } catch (e: RemoteException) {
+                Log.e("LawnchairShortcut", "Fail to query suspension authority for $packageName", e)
+                return@Factory null
+            }
+            if (packageName in unsuspendableApps) {
+                return@Factory null
+            }
+
             if (ApplicationInfoWrapper(
-                    activity.asContext(),
+                    context,
                     packageName,
                     itemInfo.user,
                 ).isSuspended()
@@ -221,11 +242,12 @@ class LawnchairShortcut {
         @SuppressLint("NewApi")
         override fun onClick(view: View) {
             val context = view.context
-            val appLabel = ApplicationInfoWrapper(
-                context,
-                mItemInfo.targetComponent?.packageName ?: "",
-                mItemInfo.user,
-            ).toString()
+            val appLabel = context.packageManager.getApplicationLabel(
+                context.packageManager.getApplicationInfo(
+                    mItemInfo.targetComponent?.packageName ?: "",
+                    0,
+                ),
+            )
             AlertDialog.Builder(context)
                 .setIcon(R.drawable.ic_hourglass_top)
                 .setTitle(context.getString(R.string.pause_apps_dialog_title, appLabel))
