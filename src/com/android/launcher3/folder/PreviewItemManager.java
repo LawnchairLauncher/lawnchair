@@ -395,6 +395,14 @@ public class PreviewItemManager {
         return mIconSize;
     }
 
+    /**
+     * Updates a folder preview entry with the item's drawable, bounds, and folder callback.
+     * Item icons follow the containing folder's workspace or drawer themed-icon preference;
+     * pending installs and app pairs use their dedicated drawables.
+     *
+     * @param p the preview entry to update
+     * @param item the item to display in the preview
+     */
     @VisibleForTesting
     public void setDrawable(PreviewItemDrawingParams p, ItemInfo item) {
         // Lawnchair: Find the correct folder size depending on which parent owned them

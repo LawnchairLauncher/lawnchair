@@ -11,6 +11,12 @@ import dev.kdrag0n.monet.theme.ColorScheme
 /** Shared colors for Personal/Work tabs in the app drawer. */
 object AllAppsTabColors {
 
+    /**
+     * Returns the selected tab's background for [uiColorMode].
+     *
+     * Preserves manually selected colors, uses the matching light or dark variant for dynamic
+     * colors, and falls back to the theme token when no custom color is configured.
+     */
     fun selectedBackground(
         context: Context,
         scheme: ColorScheme,
