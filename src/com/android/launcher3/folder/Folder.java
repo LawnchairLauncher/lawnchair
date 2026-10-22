@@ -2287,6 +2287,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             // Call Kotlin extension helper
             FolderUtils.sortAlphabetically(mInfo, getModelWriter());
 
+            if (mContent.areViewsBound()) {
+                mContent.bindItems(mInfo.getContents());
+            }
+
             // Mark items as invalidated to force reload
             mItemsInvalidated = true;
             
