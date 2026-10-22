@@ -332,6 +332,12 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      */
     public FastBitmapDrawable newIcon(Context context, @DrawableCreationFlags int creationFlags) {
         var shouldTheme = PreferenceManager.getInstance(context).getThemedIcons().get();
+        return newIcon(context, creationFlags, shouldTheme);
+    }
+
+    // LC-Note: Let callers use the themed-icon preference for the surface displaying the icon.
+    public FastBitmapDrawable newIcon(Context context, @DrawableCreationFlags int creationFlags,
+            boolean shouldTheme) {
         if (!shouldTheme) {
             creationFlags &= ~FLAG_THEMED;
         }

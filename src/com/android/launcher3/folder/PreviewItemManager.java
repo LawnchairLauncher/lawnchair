@@ -417,7 +417,7 @@ public class PreviewItemManager {
             boolean themed = mIcon.isInAppDrawer()
                     ? prefs.getDrawerThemedIcons().get()
                     : prefs.getThemedIcons().get();
-            p.drawable = withIcon.newIcon(mContext, themed ? FLAG_THEMED : 0);
+            p.drawable = withIcon.newIcon(mContext, themed ? FLAG_THEMED : 0, themed);
             p.drawable.setBounds(0, 0, iconSize, iconSize);
         }
 
