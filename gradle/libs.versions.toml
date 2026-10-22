@@ -45,7 +45,7 @@ androidx-concurrent-futures = "androidx.concurrent:concurrent-futures:1.3.0"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.2.2"
 androidx-core-animation = "androidx.core:core-animation:1.0.0"
 androidx-core-ktx = "androidx.core:core-ktx:1.19.1"
-androidx-datastore-preferences = "androidx.datastore:datastore-preferences:1.2.1"
+androidx-datastore-preferences = "androidx.datastore:datastore-preferences:1.3.0"
 androidx-dynamicanimation = "androidx.dynamicanimation:dynamicanimation:1.1.0"
 androidx-espresso-core = "androidx.test.espresso:espresso-core:3.7.0"
 androidx-graphics-core = "androidx.graphics:graphics-core:1.0.4"
@@ -55,7 +55,7 @@ androidx-junit = "androidx.test.ext:junit:1.3.0"
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-navigation-compose = "androidx.navigation:navigation-compose:2.10.2"
-androidx-palette-ktx = "androidx.palette:palette-ktx:1.0.0"
+androidx-palette-ktx = "androidx.palette:palette-ktx:1.1.0"
 androidx-preference-ktx = "androidx.preference:preference-ktx:1.2.1"
 androidx-profileinstaller = "androidx.profileinstaller:profileinstaller:1.4.1"
 androidx-recyclerview = "androidx.recyclerview:recyclerview:1.4.0"
@@ -70,7 +70,7 @@ compose-bom = "androidx.compose:compose-bom:2026.09.00"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-beta01"
+compose-material3 = "androidx.compose.material3:material3:1.5.0-beta02"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }
@@ -102,7 +102,7 @@ opto-domain = { group = "com.patrykmichalik.opto", name = "domain", version.ref 
 # Retrofit & OkHttp
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-kotlinx = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
-okhttp = "com.squareup.okhttp3:okhttp:5.5.0"
+okhttp = "com.squareup.okhttp3:okhttp:5.5.1"
 
 # Room
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
@@ -112,7 +112,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 # KotlinX
 kotlinx-coroutines-android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0"
 kotlinx-coroutines-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0"
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0"
 
 protobuf-protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }

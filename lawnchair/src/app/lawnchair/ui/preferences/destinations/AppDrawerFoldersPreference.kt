@@ -265,7 +265,7 @@ fun FolderEditSheet(
             )
             if (!hideAppPicker) {
                 ClickablePreference(
-                    label = "Manage apps",
+                    label = stringResource(R.string.folder_manage_apps),
                     subtitle = resources.getQuantityString(
                         R.plurals.apps_count,
                         itemCount,
