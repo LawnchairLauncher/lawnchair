@@ -16,6 +16,12 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="reduce_home_screen_motion_label">Reduce home screen motion</string>
+    <string name="reduce_home_screen_motion_description">Remove home screen zoom and bounce effects</string>
+    <string name="folder_motion_label">Folder motion</string>
+    <string name="folder_motion_morph_choice">Morph</string>
+    <string name="folder_motion_grow_choice">Grow</string>
+    <string name="folder_motion_instant_choice">Instant</string>
     <!-- TODO: Rename all strings to follow CONTRIBUTING.md guidelines -->
     <!--
 
