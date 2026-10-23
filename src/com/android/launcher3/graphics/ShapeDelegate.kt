@@ -359,25 +359,36 @@ interface ShapeDelegate {
         }
 
         fun pickBestShape(shapeStr: String): ShapeDelegate {
-            val baseShape =
-                if (shapeStr.isNotEmpty()) {
-                    PathParser.createPathFromPathData(shapeStr).apply {
-                        transform(
-                            Matrix().apply {
-                                setScale(
-                                    AREA_CALC_SIZE / DEFAULT_PATH_SIZE,
-                                    AREA_CALC_SIZE / DEFAULT_PATH_SIZE,
-                                )
-                            }
-                        )
-                    }
+            // LC-Note: config_icon_mask is a framework resource that a ROM overlay can replace
+            // with an unparsable value (seen in the wild with a line break inside a coordinate).
+            // Fall back to the platform default mask instead of failing launcher startup.
+            val parsedPath =
+                if (shapeStr.isEmpty()) {
+                    null
                 } else {
-                    AdaptiveIconDrawable(null, ColorDrawable(Color.BLACK)).let {
-                        it.setBounds(0, 0, AREA_CALC_SIZE, AREA_CALC_SIZE)
-                        it.iconMask
+                    try {
+                        PathParser.createPathFromPathData(shapeStr)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error parsing icon mask", e)
+                        null
                     }
                 }
-            return pickBestShape(baseShape, shapeStr)
+            val baseShape =
+                parsedPath?.apply {
+                    transform(
+                        Matrix().apply {
+                            setScale(
+                                AREA_CALC_SIZE / DEFAULT_PATH_SIZE,
+                                AREA_CALC_SIZE / DEFAULT_PATH_SIZE,
+                            )
+                        }
+                    )
+                } ?: AdaptiveIconDrawable(null, ColorDrawable(Color.BLACK)).let {
+                    it.setBounds(0, 0, AREA_CALC_SIZE, AREA_CALC_SIZE)
+                    it.iconMask
+                }
+            // Ignore a mask that failed to parse, so it is not parsed a second time below.
+            return pickBestShape(baseShape, if (parsedPath != null) shapeStr else "")
         }
 
         fun pickBestShape(baseShape: Path, shapeStr: String): ShapeDelegate {
