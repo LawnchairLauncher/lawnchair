@@ -34,7 +34,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.util.Property;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
