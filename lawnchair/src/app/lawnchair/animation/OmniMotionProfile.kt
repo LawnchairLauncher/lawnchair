@@ -39,7 +39,6 @@ object OmniMotionProfile {
     private val iosHome = PathInterpolator(0.16f, 1.0f, 0.30f, 1.0f)
     private val samsungHome = PathInterpolator(0.34f, 0.0f, 0.20f, 1.0f)
 
-
     private val fusionAppLaunch = PathInterpolator(0.20f, 0.0f, 0.10f, 1.0f)
     private val pixelAppLaunch = PathInterpolator(0.16f, 0.0f, 0.20f, 1.0f)
     private val iosAppLaunch = PathInterpolator(0.22f, 1.0f, 0.36f, 1.0f)
@@ -86,7 +85,6 @@ object OmniMotionProfile {
         STYLE_SAMSUNG -> samsungHome
         else -> fusionHome
     }
-
 
     /**
      * Curve for app-window launches. Kept separate from workspace reveals so each surface
