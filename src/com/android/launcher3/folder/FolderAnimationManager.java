@@ -115,7 +115,9 @@ public class FolderAnimationManager {
                 res.getInteger(R.integer.config_materialFolderExpandDuration));
         mDelay = res.getInteger(R.integer.config_folderDelay);
 
-        mFolderInterpolator = OmniMotionProfile.getHomeRevealInterpolator();
+        mFolderInterpolator = mIsOpening
+                ? OmniMotionProfile.getHomeRevealInterpolator()
+                : OmniMotionProfile.getFolderCloseInterpolator();
         mLargeFolderPreviewItemOpenInterpolator = OmniMotionProfile.getHomeRevealInterpolator();
         mLargeFolderPreviewItemCloseInterpolator = OmniMotionProfile.getFolderCloseInterpolator();
     }
