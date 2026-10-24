@@ -63,6 +63,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private static final int SNAP_DURATION_MS = 150;
     private static final float DIMMED_HANDLE_ALPHA = 0f;
     private static final float RESIZE_THRESHOLD = 0.66f;
+    // LC-Note: Threshold for growing towards the screen edge once the finger has reached it.
+    // Using 1 - RESIZE_THRESHOLD means the step can't be undone right after it is taken.
+    private static final float EDGE_RESIZE_THRESHOLD = 1f - RESIZE_THRESHOLD;
     private static final int RESIZE_TRANSITION_DURATION_MS = 150;
 
     private static final String KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN = "launcher.reconfigurable_widget_education_tip_seen";
@@ -124,6 +127,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     private boolean mHorizontalResizeActive;
     private boolean mVerticalResizeActive;
+
+    // LC-Note: Whether the finger dragging the left/right handle is at that screen edge.
+    private boolean mHorizontalEdgeReached;
 
     private int mRunningHInc;
     private int mRunningVInc;
@@ -412,10 +418,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             mDragHandles[INDEX_BOTTOM].setAlpha(mBottomBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
         }
 
+        // LC-Note: Bound the widget's edge (the frame overhangs it by mBackgroundPadding) so the
+        // last column stays reachable; include 0 so an overhanging frame isn't pulled inward.
         if (mLeftBorderActive) {
-            mDeltaXRange.set(-getLeft(), getWidth() - 2 * mTouchTargetWidth);
+            mDeltaXRange.setIncludingZero(-getLeft() - mBackgroundPadding,
+                    getWidth() - 2 * mTouchTargetWidth);
         } else if (mRightBorderActive) {
-            mDeltaXRange.set(2 * mTouchTargetWidth - getWidth(), mDragLayer.getWidth() - getRight());
+            mDeltaXRange.setIncludingZero(2 * mTouchTargetWidth - getWidth(),
+                    mDragLayer.getWidth() - getRight() + mBackgroundPadding);
         } else {
             mDeltaXRange.set(0, 0);
         }
@@ -450,6 +460,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mBaselineY.applyDelta(mTopBorderActive, mBottomBorderActive, mDeltaY, mTempRange1);
         lp.y = mTempRange1.start;
         lp.height = mTempRange1.size();
+
+        // LC-Note: The finger can't travel past the screen edge, see getHSpanIncrement.
+        int fingerX = mXDown + deltaX;
+        mHorizontalEdgeReached = (mLeftBorderActive && fingerX <= mBackgroundPadding)
+                || (mRightBorderActive && fingerX >= mDragLayer.getWidth() - mBackgroundPadding);
 
         resizeWidgetIfNeeded(false);
 
@@ -492,6 +507,22 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     /**
+     * LC-Note: Like {@link #getSpanIncrement(float)}, but once the finger hits the screen edge a
+     * partial step towards it counts, so the last column stays reachable.
+     */
+    private int getHSpanIncrement(float deltaFrac) {
+        if (mHorizontalEdgeReached) {
+            if (mRightBorderActive && deltaFrac > EDGE_RESIZE_THRESHOLD) {
+                return Math.max(1, Math.round(deltaFrac));
+            }
+            if (mLeftBorderActive && deltaFrac < -EDGE_RESIZE_THRESHOLD) {
+                return Math.min(-1, Math.round(deltaFrac));
+            }
+        }
+        return getSpanIncrement(deltaFrac);
+    }
+
+    /**
      *  Based on the current deltas, we determine if and how to resize the widget.
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
@@ -503,7 +534,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         float xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacePx.x;
         float yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacePx.y;
 
-        int hSpanInc = getSpanIncrement((mDeltaX + mDeltaXAddOn) / xThreshold - mRunningHInc);
+        // LC-Note: Horizontal steps use the edge-aware increment, see getHSpanIncrement.
+        int hSpanInc = getHSpanIncrement((mDeltaX + mDeltaXAddOn) / xThreshold - mRunningHInc);
         int vSpanInc = getSpanIncrement((mDeltaY + mDeltaYAddOn) / yThreshold - mRunningVInc);
 
         if (!onDismiss && (hSpanInc == 0 && vSpanInc == 0)) return;
@@ -596,6 +628,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mDeltaYAddOn = mRunningVInc * yThreshold;
         mDeltaX = 0;
         mDeltaY = 0;
+        mHorizontalEdgeReached = false; // LC-Note: Reset along with the deltas.
 
         post(() -> snapToWidget(true));
     }
@@ -872,6 +905,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         public void set(int s, int e) {
             start = s;
             end = e;
+        }
+
+        /**
+         * LC-Note: Same as {@link #set(int, int)}, but widens the range to contain 0 so that
+         * clamping a zero delta never moves the edge.
+         */
+        public void setIncludingZero(int s, int e) {
+            set(Math.min(s, 0), Math.max(e, 0));
         }
 
         public int size() {
