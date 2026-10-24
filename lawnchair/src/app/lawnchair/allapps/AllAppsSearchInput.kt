@@ -36,6 +36,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
+import app.lawnchair.fold.FoldDrawerLayouts
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -343,7 +344,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     private fun setupPadding() {
         launcher.deviceProfile.let { dp ->
-            val padding = dp.getAllAppsIconStartMargin(context)
+            // The foldable "book" drawer spans the bar over both pages
+            val padding = FoldDrawerLayouts.getSearchBarPadding(context, dp)
             initialPaddingLeft = padding
             initialPaddingRight = padding
             // Keep the narrower padding of an active search (see the focus and text listeners)

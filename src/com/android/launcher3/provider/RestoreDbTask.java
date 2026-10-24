@@ -86,6 +86,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import app.lawnchair.fold.FoldItemSets;
+
 /**
  * Utility class to update DB schema after it has been restored.
  *
@@ -348,9 +350,12 @@ public class RestoreDbTask {
      */
     protected void removeScreenIdGaps(SQLiteDatabase db) {
         FileLog.d(TAG, "Removing gaps between screenIds");
+        // LC-Note: only the cover item set; the inner set of "Independent" (FoldItemSets) keeps
+        // its own page numbers.
+        String coverDesktop = Favorites.CONTAINER + " = " + Favorites.CONTAINER_DESKTOP + " AND "
+                + FoldItemSets.whereItemSet(false);
         IntArray distinctScreens = LauncherDbUtils.queryIntArray(true, db, Favorites.TABLE_NAME,
-                Favorites.SCREEN, Favorites.CONTAINER + " = " + Favorites.CONTAINER_DESKTOP, null,
-                Favorites.SCREEN);
+                Favorites.SCREEN, coverDesktop, null, Favorites.SCREEN);
         if (distinctScreens.isEmpty()) {
             return;
         }
@@ -362,8 +367,7 @@ public class RestoreDbTask {
             sql.append("WHEN ").append(Favorites.SCREEN).append(" == ")
                     .append(distinctScreens.get(i)).append(" THEN ").append(screenId++).append("\n");
         }
-        sql.append("ELSE screen\nEND WHERE ").append(Favorites.CONTAINER).append(" = ")
-                .append(Favorites.CONTAINER_DESKTOP).append(";");
+        sql.append("ELSE screen\nEND WHERE ").append(coverDesktop).append(";");
         db.execSQL(sql.toString());
     }
 

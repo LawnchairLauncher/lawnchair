@@ -24,6 +24,7 @@ import static com.android.launcher3.InvariantDeviceProfile.createDisplayOptionSp
 import static com.android.launcher3.InvariantDeviceProfile.deviceType;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
+import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
@@ -92,6 +93,10 @@ import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.DeviceProfileOverrides;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.fold.FoldDockLayout;
+import app.lawnchair.fold.FoldDrawerLayouts;
+import app.lawnchair.fold.FoldLayout;
+import app.lawnchair.fold.FoldScreen;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -121,6 +126,17 @@ public class DeviceProfile {
     // Device properties
 
     private final DeviceProperties mDeviceProperties;
+
+    // LC-Note: whether two panels are shown as one wide page per pair of pages ("Expand" home
+    // layout on a foldable, or FeatureFlags.FOLDABLE_SINGLE_PAGE). Decided with the profile, so
+    // every consumer agrees until the next profile.
+    public final boolean isTwoPanelSinglePage;
+    // LC-Note: whether this profile shows the inner item set of the "Independent" home layout
+    // (the large screen of a foldable), see FoldItemSets.
+    public final boolean isInnerItemSet;
+    // LC-Note: the foldable drawer layout ("book" or "zoom") this profile was built for, with the
+    // cover profile it copies; null for the usual drawer. See FoldDrawerLayouts.
+    public final FoldDrawerLayouts.Drawer foldDrawer;
 
     public boolean isPredictiveBackSwipe;
     public final boolean isQsbInline;
@@ -226,6 +242,13 @@ public class DeviceProfile {
     public int hotseatCellHeightPx;
     private int mHotseatColumnSpan;
     private int mHotseatWidthPx; // not used in vertical bar layout
+    // LC-Note: an unfolded foldable showing the cover's dock count (see FoldDockLayout)
+    private boolean mIsFoldDockSameAsCover;
+    // LC-Note: FoldDock.SIDE, the dock is a column on the outer edge of the fixed half
+    private boolean mIsSideDock;
+    private boolean mIsSideDockOnLeft;
+    /** LC-Note: width reserved for the side dock column on an outer edge of the workspace. */
+    public int sideDockWidthPx;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
     public int hotseatBarBottomSpacePx;
@@ -274,6 +297,9 @@ public class DeviceProfile {
     public int flingToDeleteThresholdVelocity;
 
     private int mHotseatQsbSpaceBase; // LC-Note: This is to keep QSB space as a reference to be used later.
+    // LC-Note: Home screen > Icon size for this profile's type (its own with FoldLandscape.OWN),
+    // which scales the responsive cell specs' icon size
+    private float mResponsiveIconScale = 1f;
 
     /** Used only as an alternative to mocking when null values cannot be used. */
     @VisibleForTesting
@@ -315,6 +341,9 @@ public class DeviceProfile {
         mIconSizeSteps = null;
         isPredictiveBackSwipe = false;
         isQsbInline = false;
+        isTwoPanelSinglePage = false;
+        isInnerItemSet = false;
+        foldDrawer = null;
         isLeftRightSplit = false;
         mIsScalableGrid = false;
         mTypeIndex = 0;
@@ -360,7 +389,9 @@ public class DeviceProfile {
             @NonNull final ViewScaleProvider viewScaleProvider,
             @NonNull final Consumer<DeviceProfile> dimensionOverrideProvider,
             boolean isTransientTaskbar, DisplayOptionSpec displayOptionSpec) {
-        mTextFactors = DeviceProfileOverrides.INSTANCE.get(context).getTextFactors();
+        // LC-Note: per profile type: a foldable's large screen in landscape can have its own labels
+        mTextFactors = DeviceProfileOverrides.INSTANCE.get(context)
+                .getTextFactors(displayOptionSpec.typeIndex);
 
         preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
         allAppsCellHeightMultiplier = PreferenceCacheExtensionsKt
@@ -377,14 +408,22 @@ public class DeviceProfile {
                 .firstCached(preferenceManager2.getDrawerPaddingTopFactor()), 1f, 2f);
         this.inv = inv;
 
+        boolean allowTwoPanels = !FoldLayout.isHomeMirrored(preferenceManager2);
         mDeviceProperties = DeviceProperties.Factory.createDeviceProperties(
                 info,
                 windowBounds,
                 transposeLayoutWithOrientation,
                 isMultiDisplay,
                 isMultiWindowMode,
-                isGestureMode
+                isGestureMode,
+                allowTwoPanels
         );
+        isInnerItemSet = mDeviceProperties.getFoldScreen() == FoldScreen.LARGE
+                && FoldLayout.isHomeIndependent(preferenceManager2);
+        // LC-Note: two panels shown as one wide page, with "Expand" or FOLDABLE_SINGLE_PAGE; not
+        // with the inner item set of "Independent", whose pages the wide-page mapper can't number.
+        isTwoPanelSinglePage = mDeviceProperties.isTwoPanels() && !isInnerItemSet
+                && (FOLDABLE_SINGLE_PAGE.get() || FoldLayout.isHomeExpanded(preferenceManager2));
 
         mInsets.set(windowBounds.insets);
         this.mDisplayOptionSpec = displayOptionSpec;
@@ -429,6 +468,8 @@ public class DeviceProfile {
         mIconSizeSteps = new IconSizeSteps(res);
 
         mTypeIndex = displayOptionSpec.typeIndex;
+        mResponsiveIconScale = DeviceProfileOverrides.INSTANCE.get(context)
+                .iconScaleFor(mTypeIndex);
 
         mTaskbarProfile = TaskbarProfile.Factory.createTaskbarProfile(
                 res,
@@ -521,9 +562,23 @@ public class DeviceProfile {
         numShownHotseatIcons = displayOptionSpec.numShownHotseatIcons;
         numHotseatRows = Math.max(1, Math.min(2, PreferenceManager.getInstance(context).getHotseatRows().get()));
         numHotseatPages = Math.max(1, Math.min(5, PreferenceManager.getInstance(context).getDockPages().get()));
+        // LC-Note: the side dock is one column, so it has 1 row and 1 page
+        Boolean sideDockOnLeft = FoldDockLayout.getSideDockOnLeft(context, this);
+        mIsSideDock = sideDockOnLeft != null;
+        mIsSideDockOnLeft = mIsSideDock && sideDockOnLeft;
+        if (mIsSideDock) {
+            numHotseatRows = 1;
+            numHotseatPages = 1;
+        }
+        numShownHotseatIcons = FoldDockLayout.getShownHotseatIcons(context, inv,
+                mDeviceProperties.isTwoPanels(), numShownHotseatIcons, numHotseatRows,
+                numHotseatPages);
+        mIsFoldDockSameAsCover = numShownHotseatIcons != displayOptionSpec.numShownHotseatIcons;
         mHotseatColumnSpan = inv.numColumns;
 
-        numShownAllAppsColumns = displayOptionSpec.numAllAppsColumns;
+        // LC-Note: the foldable drawer layouts "book" and "zoom" keep the cover's columns
+        numShownAllAppsColumns = FoldDrawerLayouts.getShownAllAppsColumns(preferenceManager2, inv,
+                mDeviceProperties, displayOptionSpec.numAllAppsColumns);
 
         int hotseatBarBottomSpace = pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
         int minQsbMargin = res.getDimensionPixelSize(R.dimen.min_qsb_margin);
@@ -615,7 +670,8 @@ public class DeviceProfile {
         // for the available height to be correct
         if (mIsResponsiveGrid) {
             int availableResponsiveWidth =
-                    mDeviceProperties.getAvailableWidthPx() - (isVerticalBarLayout() ? hotseatBarSizePx : 0);
+                    mDeviceProperties.getAvailableWidthPx() - (isVerticalBarLayout() ? hotseatBarSizePx : 0)
+                            - (mIsSideDock ? 2 * sideDockWidthPx : 0);
             int numWorkspaceColumns = getPanelCount() * inv.numColumns;
             // don't use availableHeightPx because it subtracts mInsets.bottom
             int availableResponsiveHeight = mDeviceProperties.getHeightPx() - mInsets.top
@@ -672,6 +728,11 @@ public class DeviceProfile {
         // width and get centered, leaving a visible side gap even at factor 0.
         desiredWorkspaceHorizontalMarginPx =
                 Math.round(desiredWorkspaceHorizontalMarginPx * workspacePaddingHorizontalFactor);
+        if (mIsSideDock) {
+            // LC-Note: room for the side dock on both outer edges, so both panels stay on their
+            // halves of the screen (the hinge stays between them)
+            desiredWorkspaceHorizontalMarginPx += sideDockWidthPx;
+        }
         desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
 
         splitPlaceholderInset = res.getDimensionPixelSize(R.dimen.split_placeholder_inset);
@@ -732,6 +793,9 @@ public class DeviceProfile {
         mViewScaleProvider = viewScaleProvider;
 
         dimensionOverrideProvider.accept(this);
+
+        // LC-Note: the foldable drawer layouts "book" and "zoom" take the cover's drawer metrics
+        foldDrawer = FoldDrawerLayouts.create(this, context, info, wmProxy, themeManager);
 
         // Check if notification dots should show the notification count
         boolean showNotificationCount = PreferenceCacheExtensionsKt
@@ -914,7 +978,15 @@ public class DeviceProfile {
         // Extra height needed for additional dock rows
         int extraRowsHeight = (numHotseatRows - 1) * hotseatCellHeightPx;
 
-        if (isVerticalBarLayout()) {
+        // LC-Note: the side dock column is one cell wide plus an edge margin on each side
+        sideDockWidthPx = mIsSideDock ? hotseatCellHeightPx + 2 * edgeMarginPx : 0;
+
+        if (mIsSideDock) {
+            // LC-Note: the bottom bar keeps only the dock search bar; the icons are in the column
+            hotseatBarSizePx = (isQsbEnable
+                    ? hotseatQsbSpace + getHotseatProfile().getQsbVisualHeight() : 0)
+                    + hotseatBarBottomSpacePx;
+        } else if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + getHotseatProfile().getBarEdgePaddingPx()
                     + getHotseatProfile().getBarWorkspaceSpacePx()
                     + space;
@@ -947,12 +1019,19 @@ public class DeviceProfile {
      * necessary.
      */
     public void recalculateHotseatWidthAndBorderSpace() {
+        if (mIsSideDock) {
+            // LC-Note: the side dock spaces its icons like the workspace rows, as AOSP does
+            // for the vertical hotseat with responsive grids
+            hotseatBorderSpace = cellLayoutBorderSpacePx.y;
+            return;
+        }
         if (!mIsScalableGrid) return;
 
         updateHotseatWidthAndBorderSpace(inv.numColumns);
         int numWorkspaceColumns = getPanelCount() * inv.numColumns;
         if (mDeviceProperties.isTwoPanels()) {
-            updateHotseatWidthAndBorderSpace(inv.numDatabaseHotseatIcons);
+            updateHotseatWidthAndBorderSpace(mIsFoldDockSameAsCover
+                    ? numShownHotseatIcons : inv.numDatabaseHotseatIcons);
             // If hotseat doesn't fit with current width, increase column span to fit by multiple
             // of 2.
             while (hotseatBorderSpace < getHotseatProfile().getMinIconSpacePx()
@@ -1186,11 +1265,12 @@ public class DeviceProfile {
     /**
      * LC-Note: the responsive cell specs' icon size, scaled by Home screen > Icon size like the
      * grids sized from the IDP (whose iconSize DeviceProfileOverrides scales). The specs never see
-     * that setting otherwise.
+     * that setting otherwise. The factor is the one of this profile's type
+     * ({@link #mResponsiveIconScale}): the large screen of a foldable in landscape can have its own.
      */
     private int getResponsiveIconSizePx() {
         return Math.max(1, Math.round(mResponsiveWorkspaceCellSpec.getIconSize()
-                * PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHomeIconSizeFactor())));
+                * mResponsiveIconScale));
     }
 
     private int getCellLayoutHeightSpecification() {
@@ -1457,7 +1537,11 @@ public class DeviceProfile {
         }
         var allAppLeftRightMarginMultiplier = PreferenceCacheExtensionsKt
                 .firstCached(preferenceManager2.getDrawerLeftRightMarginFactor());
-        var marginMultiplier = allAppLeftRightMarginMultiplier * (!getDeviceProperties().isTablet() ? 100 : 10);
+        // LC-Note: Responsive grids already have real side padding (from the spec), like tablets;
+        // ×100 is only for the near-zero padding of other phone grids. Otherwise a foldable's cover
+        // on a responsive grid (e.g. practical) gets about ten times the padding.
+        var marginMultiplier = allAppLeftRightMarginMultiplier
+                * (!getDeviceProperties().isTablet() && !mIsResponsiveGrid ? 100 : 10);
         allAppsLeftRightMargin = (int) (allAppsLeftRightMargin * marginMultiplier);
 
         // todo fix how drawer padding values are calculated in responsive grid type
@@ -1881,7 +1965,25 @@ public class DeviceProfile {
      */
     public Rect getHotseatLayoutPadding(Context context) {
         Rect hotseatBarPadding = new Rect();
-        if (isVerticalBarLayout()) {
+        if (mIsSideDock) {
+            // LC-Note: the hotseat fills the screen; its padding leaves the column, one cell wide,
+            // centered vertically between the top inset and the bottom bar
+            int width = mDeviceProperties.getWidthPx();
+            int height = mDeviceProperties.getHeightPx();
+            int columnHeight = hotseatCellHeightPx * numShownHotseatIcons
+                    + hotseatBorderSpace * (numShownHotseatIcons - 1);
+            int areaTop = mInsets.top + workspacePadding.top;
+            int areaBottom = height - hotseatBarSizePx;
+            int top = Math.max(areaTop, areaTop + (areaBottom - areaTop - columnHeight) / 2);
+            int bottom = Math.max(0, height - top - columnHeight);
+            int outer = edgeMarginPx;
+            int inner = width - outer - hotseatCellHeightPx;
+            if (mIsSideDockOnLeft) {
+                hotseatBarPadding.set(mInsets.left + outer, top, inner - mInsets.left, bottom);
+            } else {
+                hotseatBarPadding.set(inner - mInsets.right, top, mInsets.right + outer, bottom);
+            }
+        } else if (isVerticalBarLayout()) {
             // The hotseat icons will be placed in the middle of the hotseat cells.
             // Changing the hotseatCellHeightPx is not affecting hotseat icon positions
             // in vertical bar layout.
@@ -2035,7 +2137,10 @@ public class DeviceProfile {
      * Returns the number of pixels the QSB is translated from the bottom of the screen.
      */
     public int getQsbOffsetY() {
-        if (mDeviceProperties.isPhone() && isQsbInline) {
+        if (mIsSideDock) {
+            // LC-Note: the side dock's search bar sits at the bottom, as on phones
+            return hotseatBarBottomSpacePx - getHotseatProfile().getQsbShadowHeight();
+        } else if (mDeviceProperties.isPhone() && isQsbInline) {
             return getHotseatBarBottomPadding()
                     - ((getHotseatProfile().getQsbHeight() - hotseatCellHeightPx) / 2);
         } else if (isQsbOnTop() || (mDeviceProperties.isLandscape() && isQsbInline)) { // LC-Note: isQsbOnTop
@@ -2158,6 +2263,36 @@ public class DeviceProfile {
      */
     public boolean isVerticalBarLayout() {
         return mDeviceProperties.isLandscape() && mDeviceProperties.getTransposeLayoutWithOrientation();
+    }
+
+    /** LC-Note: whether the dock is a column on the outer edge of a foldable's fixed half. */
+    public boolean isSideDock() {
+        return mIsSideDock;
+    }
+
+    /** LC-Note: whether the side dock is on the left edge (the fixed half is the left one). */
+    public boolean isSideDockOnLeft() {
+        return mIsSideDockOnLeft;
+    }
+
+    /**
+     * LC-Note: with the side dock and two paired pages, the workspace keeps its normal side
+     * margins: this width comes off both sides of its padding, and only the page on the fixed half
+     * takes it back, on its outer edge (Workspace#updateCellLayoutMeasures). The moving half's
+     * page gets the full half. 0 otherwise, e.g. with "Expand" (one wide page across the hinge
+     * keeps the margins on both sides so its columns still split at the hinge).
+     */
+    public int getSideDockPageInset() {
+        if (!mIsSideDock || isTwoPanelSinglePage) {
+            return 0;
+        }
+        return Math.max(0, Math.min(sideDockWidthPx,
+                Math.min(workspacePadding.left, workspacePadding.right)));
+    }
+
+    /** LC-Note: whether the hotseat is a single column (phone landscape, or the side dock). */
+    public boolean hasVerticalHotseat() {
+        return isVerticalBarLayout() || mIsSideDock;
     }
 
     public boolean isSeascape() {
@@ -2638,8 +2773,10 @@ public class DeviceProfile {
                 mOverrideProvider = DEFAULT_DIMENSION_PROVIDER;
             }
             if (mDisplayOptionSpec == null) {
+                // LC-Note: "Same as cover" lays the large screen of a foldable out as one page.
                 mDisplayOptionSpec = createDefaultDisplayOptionSpec(mInfo, mWindowBounds,
-                        mIsMultiDisplay, mInv);
+                        mIsMultiDisplay && !FoldLayout.isHomeMirrored(
+                                PreferenceManager2.INSTANCE.get(mContext)), mInv);
             }
             return new DeviceProfile(mContext, mInv, mInfo, mWMProxy, mThemeManager,
                     mWindowBounds, mDotRendererCache,

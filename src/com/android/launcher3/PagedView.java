@@ -204,7 +204,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public void initParentViews(View parent) {
         if (mPageIndicatorViewId > -1) {
             mPageIndicator = parent.findViewById(mPageIndicatorViewId);
-            mPageIndicator.setMarkersCount(getChildCount() / getPanelCount());
+            mPageIndicator.setMarkersCount(getPageIndicatorMarkersCount());
         }
     }
 
@@ -466,8 +466,22 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     private void updatePageIndicator() {
         if (mPageIndicator != null) {
-            mPageIndicator.setActiveMarker(getNextPage());
+            mPageIndicator.setActiveMarker(getPageIndexForPageIndicator(getNextPage()));
         }
+    }
+
+    /**
+     * Returns the number of page indicator markers: one per set of panels shown together.
+     */
+    protected int getPageIndicatorMarkersCount() {
+        return getChildCount() / getPanelCount();
+    }
+
+    /**
+     * Returns the page index given to the page indicator for the page at {@code pageIndex}.
+     */
+    protected int getPageIndexForPageIndicator(int pageIndex) {
+        return pageIndex;
     }
     protected void pageBeginTransition() {
         if (!mIsPageInTransition) {
@@ -851,8 +865,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 childStart += primaryDimension + getChildGap(i, i + delta);
 
                 // This makes sure that the space is added after the page, not after each panel
-                int lastPanel = mIsRtl ? 0 : panelCount - 1;
-                if (i % panelCount == lastPanel) {
+                if (isLastPanelOfPage(i, panelCount)) {
                     childStart += mPageSpacing;
                 }
             }
@@ -874,6 +887,15 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected int getChildGap(int fromIndex, int toIndex) {
         return 0;
+    }
+
+    /**
+     * Returns whether the panel at {@code index} is the last one laid out of the panels shown
+     * together, ie. whether the page spacing goes after it.
+     */
+    protected boolean isLastPanelOfPage(int index, int panelCount) {
+        int lastPanel = mIsRtl ? 0 : panelCount - 1;
+        return index % panelCount == lastPanel;
     }
 
     protected void updateMinAndMaxScrollX() {
@@ -906,7 +928,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     private void dispatchPageCountChanged() {
         if (mPageIndicator != null) {
-            mPageIndicator.setMarkersCount(getChildCount() / getPanelCount());
+            mPageIndicator.setMarkersCount(getPageIndicatorMarkersCount());
         }
         // This ensures that when children are added, they get the correct transforms / alphas
         // in accordance with any scroll effects.

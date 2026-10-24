@@ -47,6 +47,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
@@ -344,9 +345,14 @@ public class HotseatPredictionController implements DragController.DragListener,
             return;
         }
         WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo((WorkspaceItemInfo) info);
+        // LC-Note: the writer maps a presenter position (dock page, cell) to the model rank, so
+        // pass the prediction's presenter position rather than its rank, which also keeps it in
+        // the dock of the shown item set ("Independent", see FoldItemSets).
+        CellPosMapper.CellPos presenterPos =
+                mLauncher.getCellPosMapper().mapModelToPresenter(workspaceItemInfo);
         mLauncher.getModelWriter().addItemToDatabase(workspaceItemInfo,
-                LauncherSettings.Favorites.CONTAINER_HOTSEAT, workspaceItemInfo.screenId,
-                workspaceItemInfo.cellX, workspaceItemInfo.cellY);
+                LauncherSettings.Favorites.CONTAINER_HOTSEAT, presenterPos.screenId,
+                presenterPos.cellX, presenterPos.cellY);
         ObjectAnimator.ofFloat(icon, SCALE_PROPERTY, 1, 0.8f, 1).start();
         icon.pin(workspaceItemInfo);
         mLauncher.getStatsLogManager().logger()

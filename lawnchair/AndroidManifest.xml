@@ -181,6 +181,22 @@
             </intent-filter>
         </receiver>
 
+        <!-- Foldables: one wallpaper image per screen (Foldable screen > Wallpaper > Per screen).
+             Enabled at startup on foldables only, see FoldDualWallpaper.updateServiceEnabled. -->
+        <service
+            android:name="app.lawnchair.fold.FoldDualWallpaperService"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/fold_dual_wallpaper_label"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/fold_dual_wallpaper" />
+        </service>
+
         <service
             android:name="app.lawnchair.bugreport.UploaderService"
             android:enabled="true"

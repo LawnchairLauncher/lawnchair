@@ -150,6 +150,11 @@ import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.fold.FoldItemSets;
+import app.lawnchair.fold.FoldLayout;
+import app.lawnchair.fold.FoldPagePairs;
+import app.lawnchair.fold.FoldPosture;
+import com.android.launcher3.model.data.WorkspaceData;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.smartspace.DoubleShadowTextView;
@@ -383,7 +388,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
 
         Rect padding = grid.workspacePadding;
-        setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        // LC-Note: with a foldable's side dock only the fixed half's page makes room for it
+        int sideDockInset = grid.getSideDockPageInset();
+        setPadding(padding.left - sideDockInset, padding.top, padding.right - sideDockInset,
+                padding.bottom);
         mInsets.set(insets);
 
         if (mWorkspaceFadeInAdjacentScreens) {
@@ -401,6 +409,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         updateCellLayoutMeasures();
         updateWorkspaceWidgetsSizes();
         setPageIndicatorInset();
+        updatePageDirection();
     }
 
     private void setPageIndicatorInset() {
@@ -423,9 +432,19 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     private void updateCellLayoutMeasures() {
-        Rect padding = mLauncher.getDeviceProfile().cellLayoutPaddingPx;
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        Rect padding = grid.cellLayoutPaddingPx;
+        // LC-Note: with a foldable's side dock, the page on the fixed half (each pair's first
+        // page, or its second one, see isOnFoldFixedHalf) takes back on its outer edge, under the
+        // column, the width setInsets took off both sides of the workspace. The moving half's page
+        // keeps the full half.
+        int sideDockInset = grid.getSideDockPageInset();
         mWorkspaceScreens.forEach(cellLayout -> {
-            cellLayout.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+            int index = sideDockInset > 0 ? indexOfChild(cellLayout) : -1;
+            int inset = index >= 0 && isOnFoldFixedHalf(index) ? sideDockInset : 0;
+            int left = grid.isSideDockOnLeft() ? inset : 0;
+            cellLayout.setPadding(padding.left + left, padding.top, padding.right + inset - left,
+                    padding.bottom);
             cellLayout.setSpaceBetweenCellLayoutsPx(getPageSpacing() / 4);
         });
     }
@@ -565,7 +584,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     private boolean isTwoPanelEnabled() {
-        return !FOLDABLE_SINGLE_PAGE.get() && mLauncher.mDeviceProfile.getDeviceProperties().isTwoPanels();
+        // LC-Note: "Expand" (and FOLDABLE_SINGLE_PAGE) shows two panels as one wide page.
+        return !mLauncher.mDeviceProfile.isTwoPanelSinglePage
+                && mLauncher.mDeviceProfile.getDeviceProperties().isTwoPanels();
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -655,6 +676,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         cl.setOnInterceptTouchListener(this);
         cl.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         super.onViewAdded(child);
+        updateSideDockPagePadding(); // LC-Note
     }
 
     /**
@@ -684,7 +706,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         int cellHSpan = mLauncher.getDeviceProfile().inv.numColumns;
-        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 1);
+        // LC-Note: on a wide "Expand" page, cover page 0 may be on the end half.
+        int cellX = mLauncher.getCellPosMapper()
+                instanceof CellPosMapper.TwoPanelCellPosMapper mapper
+                && mapper.isEvenPageOnEnd() ? cellHSpan : 0;
+        CellLayoutLayoutParams lp = new CellLayoutLayoutParams(cellX, 0, cellHSpan, 1);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(
                 mFirstPagePinnedItem, 0, R.id.search_container_workspace, lp, true)) {
@@ -706,6 +732,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         removeAllViews();
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
+        mLastTouchedPanelScreenId = -1;
+        mPairCompletionScreenIds.clear();
 
         // Ensure there is always at least one page during bind lifecycle.
         bindAndInitFirstWorkspaceScreen();
@@ -738,7 +766,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // created CellLayout.
         DeviceProfile dp = mLauncher.getDeviceProfile();
         CellLayout newScreen;
-        if (FOLDABLE_SINGLE_PAGE.get() && dp.getDeviceProperties().isTwoPanels()) {
+        if (dp.isTwoPanelSinglePage) {
+            // LC-Note: MultipageCellLayout simulates a seam at the hinge so no item or widget
+            // spans it. Keep it: an item across the seam would sit on two cover pages, and the
+            // loader would delete it on the cover as out of bounds (cellX + spanX > columns).
             newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                     R.layout.workspace_screen_foldable, this, false /* attachToRoot */);
         } else {
@@ -785,7 +816,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 lastChildOnScreen = true;
             }
             CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
-            if (!FOLDABLE_SINGLE_PAGE.get() && getLeftmostVisiblePageForIndex(indexOfChild(cl))
+            if (!FOLDABLE_SINGLE_PAGE.get() && !mLauncher.getDeviceProfile().isTwoPanelSinglePage
+                    && getLeftmostVisiblePageForIndex(indexOfChild(cl))
                     == getLeftmostVisiblePageForIndex(getPageCount() - 1)) {
                 childOnFinalScreen = true;
             }
@@ -984,15 +1016,24 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mScreenOrder.removeValue(emptyScreenId);
 
         int newScreenId = LauncherAppState.getInstance(getContext())
-                .getModel().getModelDbController().getNewScreenId();
+                .getModel().getModelDbController()
+                // LC-Note: numbered within the shown item set of "Independent".
+                .getNewScreenId(getCellPosMapper().isInnerItemSet());
         // Launcher database isn't aware of empty pages that are already bound, so we need to
         // skip those IDs manually.
-        while (mWorkspaceScreens.containsKey(newScreenId)) {
+        // LC-Note: a wide "Expand" page needs an even id, the odd one is its second cover page.
+        boolean evenOnly = mLauncher.getDeviceProfile().isTwoPanelSinglePage;
+        while (mWorkspaceScreens.containsKey(newScreenId) || (evenOnly && newScreenId % 2 != 0)) {
             newScreenId++;
         }
 
         mWorkspaceScreens.put(newScreenId, cl);
         mScreenOrder.add(newScreenId);
+        if (isTwoPanelEnabled()) {
+            // LC-Note: two panels commit a pair of pages; the one that stays empty only completes
+            // the pair, don't persist it until it gets items.
+            mPairCompletionScreenIds.add(newScreenId);
+        }
         persistCurrentScreenOrderSync();
 
         return newScreenId;
@@ -1041,7 +1082,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public IntSet getCurrentPageScreenIds() {
-        return IntSet.wrap(getScreenIdForPageIndex(getCurrentPage()));
+        // LC-Note: on a foldable's large screen, the page on the fixed half, which the next bind
+        // keeps there: the second of the pair with FoldPageOrder.READING (see FoldPagePairs).
+        int page = FoldPagePairs.fixedHalfPage(getCurrentPage(), mScreenOrder.size(),
+                mFoldFixedHalfSecond);
+        return IntSet.wrap(getScreenIdForPageIndex(page));
     }
 
     public int getScreenIdForPageIndex(int index) {
@@ -1079,6 +1124,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public CellLayout getScreenPair(CellLayout cellLayout) {
         if (!isTwoPanelEnabled()) {
             return null;
+        }
+        if (getFoldPairParity() != 0) {
+            return getFoldPairScreen(cellLayout); // LC-Note: pairs may start on odd pages
         }
         int screenId = getCellLayoutId(cellLayout);
         if (screenId == -1) {
@@ -1192,6 +1240,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            trackTouchedPanel(ev.getX());
+        }
         if (shouldSkipPagedViewInterceptionForIconSwipe(ev)) {
             return false;
         } // Lawnchair: Icon swipe gesture feature
@@ -1507,8 +1558,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public void showPageIndicatorAtCurrentScroll() {
         if (mPageIndicator != null) {
-            // LC-Note: Use wrap-aware scroll for continuous infinite-scroll indicator animation.
-            mPageIndicator.setScroll(getScrollForPageIndicator(), computeMaxScroll());
+            if (getFoldPairParity() != 0) {
+                setPageIndicatorScrollForFoldPairs();
+            } else {
+                // LC-Note: Use wrap-aware scroll for continuous infinite-scroll indicator animation.
+                mPageIndicator.setScroll(getScrollForPageIndicator(), computeMaxScroll());
+            }
             var isHotseatEnabled = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.isHotseatEnabled());
             mPageIndicator.setVisibility(isHotseatEnabled ? VISIBLE : INVISIBLE);
         }
@@ -1573,6 +1628,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
         if (prevPage != mCurrentPage) {
+            // LC-Note: a new pair is shown, none of its panels was touched yet.
+            mLastTouchedPanelScreenId = -1;
             StatsLogManager.EventEnum event = (prevPage < mCurrentPage)
                     ? LAUNCHER_SWIPERIGHT : LAUNCHER_SWIPELEFT;
             mLauncher.getStatsLogManager().logger()
@@ -1666,12 +1723,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWallpaperOffset.setWindowToken(getWindowToken());
         computeScroll();
         mLauncher.getStateManager().addStateListener(mAccessibilityDropListener);
+        FoldPosture.addListener(mFoldPostureListener);
+        updatePageDirection();
     }
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mWallpaperOffset.setWindowToken(null);
         mLauncher.getStateManager().removeStateListener(mAccessibilityDropListener);
+        FoldPosture.removeListener(mFoldPostureListener);
     }
 
     @Override
@@ -1687,6 +1747,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
         super.onLayout(changed, left, top, right, bottom);
         updatePageAlphaValues();
+        updateFoldPairMarkersCount(); // LC-Note
     }
 
     @Override
@@ -3386,6 +3447,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (pageGroupStart < 0 || pageGroupStart + panelCount > mScreenOrder.size()) {
             return false;
         }
+        // LC-Note: on foldables pairs may start on odd pages; only full pairs swap with each other,
+        // a page alone at either end stays where it is.
+        for (int i = 0; i < panelCount; i++) {
+            if (getLeftmostVisiblePageForIndex(pageGroupStart + i) != pageGroupStart) {
+                return false;
+            }
+        }
         for (int i = 0; i < panelCount; i++) {
             if (isExtraEmptyScreen(mScreenOrder.get(pageGroupStart + i))) {
                 return false;
@@ -3418,6 +3486,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (screenSwapMap.size() == 0) {
             return false;
         }
+        addWidePageSwaps(screenSwapMap, screenOrderSnapshot, fromStart, targetStart); // LC-Note
         for (int i = 0; i < panelCount; i++) {
             int fromIndex = fromStart + i;
             int targetIndex = targetStart + i;
@@ -3431,7 +3500,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             mLauncher.getModelWriter().persistWorkspaceScreenOrderSync(getPersistableScreenOrder());
             mDeferStripEmptyScreensForScreenRemap = true;
             mLauncher.getModelWriter().moveWorkspaceScreensInDatabase(
-                    screenSwapMap, this::onWorkspaceScreenRemapFinished);
+                    toModelScreenSwapMap(screenSwapMap), this::onWorkspaceScreenRemapFinished);
         }
         int remappedDefaultPage = mScreenOrder.indexOf(defaultScreenId);
         if (remappedDefaultPage >= 0 && remappedDefaultPage != defaultPage) {
@@ -3446,6 +3515,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public IntArray getReorderablePageGroupStarts() {
+        if (getFoldPairParity() != 0) {
+            return getFoldPairGroupStarts(); // LC-Note: pairs may start on odd pages
+        }
         IntArray starts = new IntArray();
         int panelCount = getPanelCount();
         IntArray candidateStarts = getPageGroupStarts(mScreenOrder, panelCount);
@@ -3512,35 +3584,26 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         IntArray persistableOrder = new IntArray();
         for (int i = 0; i < mScreenOrder.size(); i++) {
             int screenId = mScreenOrder.get(i);
-            if (!isExtraEmptyScreen(screenId)) {
+            // LC-Note: also skip empty pages that only complete a pair on two panels.
+            if (!isExtraEmptyScreen(screenId) && !isEmptyPairCompletionScreen(screenId)) {
                 persistableOrder.add(screenId);
             }
+        }
+        if (mLauncher.getDeviceProfile().isTwoPanelSinglePage) {
+            return getPersistableScreenOrderForWidePages(persistableOrder);
         }
         return persistableOrder;
     }
 
     private IntSet getPersistedWorkspaceScreenIds() {
         return getPersistedWorkspaceScreenIds(
-                LauncherPrefs.get(getContext()).get(LauncherPrefs.WORKSPACE_SCREEN_ORDER));
+                LauncherPrefs.get(getContext()).get(getScreenOrderPref()));
     }
 
     @VisibleForTesting
     static IntSet getPersistedWorkspaceScreenIds(String persistedOrder) {
-        IntSet ids = new IntSet();
-        if (persistedOrder == null || persistedOrder.isBlank()) {
-            return ids;
-        }
-        for (String part : persistedOrder.split(",")) {
-            try {
-                int id = Integer.parseInt(part.trim());
-                if (id >= 0) {
-                    ids.add(id);
-                }
-            } catch (NumberFormatException ignored) {
-                // Skip invalid entries.
-            }
-        }
-        return ids;
+        // LC-Note: one parser for the persisted page order, see WorkspaceData.parseScreenOrder.
+        return IntSet.wrap(WorkspaceData.parseScreenOrder(persistedOrder));
     }
 
     @VisibleForTesting
@@ -4010,6 +4073,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             return getContext().getString(R.string.home_screen);
         }
         int panelCount = getPanelCount();
+        if (getFoldPairParity() != 0) {
+            return getFoldPairPageDescription(page, extraScreenId); // LC-Note: count pairs
+        }
         int currentPage = (page / panelCount) + 1;
         int totalPages = nScreens / panelCount + nScreens % panelCount;
 
@@ -4072,4 +4138,492 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
     }
+
+    // LC-Note: foldables — begin. The large screen of a foldable: pairs that start on the page the
+    // user was on, page direction from the hinge, last touched panel, "Expand", "Independent",
+    // side dock, the fold transition's wallpaper offset. AOSP methods above call in with hooks.
+
+    // LC-Note: on the large screen of a foldable, pairs start at this screen, the page the user
+    // was looking at when the workspace was bound, so it sits on the fixed half. Set when a bind
+    // starts; the next bind (possibly on the model thread) reads it.
+    private volatile int mFoldAnchorScreenId = -1;
+    // LC-Note: whether the fixed half shows the second page of each pair, so the anchor ends its
+    // pair (FoldPageOrder.READING, see FoldPagePairs). Set with the anchor when a bind starts.
+    private volatile boolean mFoldFixedHalfSecond;
+    // LC-Note: screen of the panel last touched in the visible pair (FoldAfterFold.LAST_PANEL).
+    private volatile int mLastTouchedPanelScreenId = -1;
+    // LC-Note: the page last shown in each item set of "Independent" (cover, inner; see
+    // FoldItemSets), so each screen reopens on its own page. Read and written by the bind.
+    private final IntSet[] mLastPagesBySet =
+            {IntSet.wrap(FIRST_SCREEN_ID), IntSet.wrap(FIRST_SCREEN_ID)};
+    private int mFoldPairMarkersCount = -1;
+    // LC-Note: screens shown on the large screen only to complete a pair of screen ids. They are
+    // left out of the persisted screen order while empty, so the cover screen doesn't gain blank
+    // pages. Pages with items are always persisted.
+    private final IntSet mPairCompletionScreenIds = new IntSet();
+    private final Runnable mFoldPostureListener = this::updatePageDirection;
+
+    /**
+     * LC-Note: sets the screen that starts a pair on the large screen of a foldable. Pairs are
+     * then (anchor, anchor + 1), (anchor + 2, anchor + 3)... and backwards, so the page the user
+     * was on stays on the fixed half and the next page shows on the moving half. When the fixed
+     * half shows the second page of each pair (isFoldFixedHalfSecond), the anchor ends its pair
+     * instead, see FoldPagePairs.
+     */
+    public void setFoldAnchorScreenId(int screenId) {
+        boolean fixedHalfSecond = isFoldFixedHalfSecond();
+        if (mFoldAnchorScreenId == screenId && mFoldFixedHalfSecond == fixedHalfSecond) {
+            return;
+        }
+        int oldParity = getFoldPairParity();
+        boolean oldFixedHalfSecond = mFoldFixedHalfSecond;
+        mFoldAnchorScreenId = screenId;
+        mFoldFixedHalfSecond = fixedHalfSecond;
+        if (getFoldPairParity() != oldParity || fixedHalfSecond != oldFixedHalfSecond) {
+            if (mPageIndicator != null) {
+                mPageIndicator.setMarkersCount(getPageIndicatorMarkersCount());
+            }
+            updateSideDockPagePadding();
+            requestLayout();
+        }
+    }
+
+    /** LC-Note: the screen that starts a pair on the large screen of a foldable, or -1. */
+    public int getFoldAnchorScreenId() {
+        return mFoldAnchorScreenId;
+    }
+
+    /**
+     * Returns 1 when pairs start on odd pages (the first page is then alone), 0 for even pairs.
+     */
+    private int getFoldPairParity() {
+        if (!isTwoPanelEnabled()) {
+            return 0;
+        }
+        return FoldPagePairs.pairParity(mScreenOrder.indexOf(mFoldAnchorScreenId),
+                mFoldFixedHalfSecond);
+    }
+
+    /**
+     * LC-Note: whether, with the current device profile and page order, the fixed half shows the
+     * second page of each pair (FoldPageOrder.READING with the fixed half on the language's end
+     * side). The pairs on screen follow the value taken by the last bind.
+     */
+    public boolean isFoldFixedHalfSecond() {
+        return isTwoPanelEnabled() && FoldLayout.isFixedHalfSecond(mLauncher.getDeviceProfile(),
+                mPreferenceManager2, Utilities.isRtl(getResources()));
+    }
+
+    /** LC-Note: whether the page at {@code index} is laid out on the fixed half of its pair. */
+    private boolean isOnFoldFixedHalf(int index) {
+        return (getLeftmostVisiblePageForIndex(index) == index) != mFoldFixedHalfSecond;
+    }
+
+    @Override
+    public int getLeftmostVisiblePageForIndex(int pageIndex) {
+        int parity = getFoldPairParity();
+        if (parity == 0) {
+            return super.getLeftmostVisiblePageForIndex(pageIndex);
+        }
+        // Pairs are (1, 2), (3, 4)...: the first page is alone and shown next to the second one.
+        return FoldPagePairs.pairStart(pageIndex, parity);
+    }
+
+    @Override
+    protected boolean isLastPanelOfPage(int index, int panelCount) {
+        if (getFoldPairParity() == 0) {
+            return super.isLastPanelOfPage(index, panelCount);
+        }
+        // Space the pairs apart, but not the first page while it is alone, so that it is shown
+        // next to the second page.
+        int nextIndex = mIsRtl ? index - 1 : index + 1;
+        int earlier = Math.min(index, nextIndex);
+        int later = Math.max(index, nextIndex);
+        return earlier >= 0 && later < getChildCount()
+                && getLeftmostVisiblePageForIndex(later) == later
+                && getLeftmostVisiblePageForIndex(earlier) != earlier;
+    }
+
+    /**
+     * Returns the first page of the last pair that can be scrolled to, when pairs start on odd
+     * pages. The last page may be alone, with nothing on the moving half, unless it is empty: it
+     * then only completes a pair of screen ids and isn't shown on its own.
+     */
+    private int getLastFoldPairStart() {
+        int lastPage = getChildCount() - 1;
+        int lastStart = getLeftmostVisiblePageForIndex(lastPage);
+        if (lastStart == lastPage && lastPage > 0 && getPageAt(lastPage) instanceof CellLayout cl
+                && cl.getShortcutsAndWidgets().getChildCount() == 0) {
+            lastStart = getLeftmostVisiblePageForIndex(lastPage - 1);
+        }
+        return lastStart;
+    }
+
+    @Override
+    protected int computeMinScroll() {
+        if (mIsRtl && getFoldPairParity() != 0 && getChildCount() > 0) {
+            return getScrollForPage(getLastFoldPairStart());
+        }
+        return super.computeMinScroll();
+    }
+
+    @Override
+    protected int computeMaxScroll() {
+        if (!mIsRtl && getFoldPairParity() != 0 && getChildCount() > 0) {
+            return getScrollForPage(getLastFoldPairStart());
+        }
+        return super.computeMaxScroll();
+    }
+
+    @Override
+    protected int getPageIndicatorMarkersCount() {
+        if (getFoldPairParity() == 0) {
+            return super.getPageIndicatorMarkersCount();
+        }
+        // The first page alone, then pairs.
+        int markers = 0;
+        int lastStart = getLastFoldPairStart();
+        for (int page = 0; page <= lastStart; page++) {
+            if (getLeftmostVisiblePageForIndex(page) == page) {
+                markers++;
+            }
+        }
+        return markers;
+    }
+
+    @Override
+    protected int getPageIndexForPageIndicator(int pageIndex) {
+        // PageIndicatorDots halves the page index on two panels.
+        return getFoldPairParity() == 0 ? pageIndex : 2 * getFoldPairIndex(pageIndex);
+    }
+
+    /**
+     * LC-Note: index of the pair holding {@code pageIndex} when pairs start on odd pages: the
+     * first page alone is pair 0, (1, 2) pair 1... Derived from
+     * {@link #getLeftmostVisiblePageForIndex}, the one definition of the pairs.
+     */
+    private int getFoldPairIndex(int pageIndex) {
+        return (getLeftmostVisiblePageForIndex(pageIndex) + getFoldPairParity()) / 2;
+    }
+
+    /**
+     * LC-Note: pairs that start on odd pages are not evenly spaced, as the first and last pages
+     * may be alone. Maps the scroll onto evenly spaced pairs for the page indicator.
+     */
+    private void setPageIndicatorScrollForFoldPairs() {
+        int unit = Math.max(1, getMeasuredWidth());
+        int totalScroll = (getPageIndicatorMarkersCount() - 1) * unit;
+        int scroll = getScrollX();
+        float position = 0;
+        int marker = 0;
+        int previousScroll = 0;
+        int lastStart = getLastFoldPairStart();
+        for (int page = 0; page <= lastStart; page++) {
+            if (getLeftmostVisiblePageForIndex(page) != page) {
+                continue;
+            }
+            int pageScroll = getScrollForPage(page);
+            if (marker > 0 && pageScroll != previousScroll) {
+                float progress = (float) (scroll - previousScroll) / (pageScroll - previousScroll);
+                if (progress <= 1) {
+                    position = marker - 1 + Math.max(0, progress);
+                    break;
+                }
+            }
+            position = marker;
+            previousScroll = pageScroll;
+            marker++;
+        }
+        int currentScroll = Math.round(position * unit);
+        mPageIndicator.setScroll(mIsRtl ? totalScroll - currentScroll : currentScroll, totalScroll);
+    }
+
+    /**
+     * LC-Note: on the large screen of a foldable, pages run from the fixed half to the moving
+     * half (FoldPageOrder.OPENING), so the next page shows on the half that opens, whatever the UI
+     * language. Otherwise (FoldPageOrder.READING), and when the hinge side is unknown, pages
+     * follow the UI language as usual.
+     */
+    private void updatePageDirection() {
+        boolean isRtl = Utilities.isRtl(getResources());
+        if (isTwoPanelEnabled()) {
+            // Right to left when pages run towards the moving half and it is the left half.
+            isRtl = FoldLayout.isPageOrderRtl(mLauncher.getDeviceProfile(), mPreferenceManager2,
+                    isRtl);
+        }
+        if (isRtl == mIsRtl) {
+            return;
+        }
+        mIsRtl = isRtl;
+        // Keep the overlay edge effect on the side of the first page.
+        EdgeEffectCompat edgeGlowLeft = mEdgeGlowLeft;
+        mEdgeGlowLeft = mEdgeGlowRight;
+        mEdgeGlowRight = edgeGlowLeft;
+        mWallpaperOffset.setIsRtl(isRtl);
+        if (mPageIndicator != null) {
+            mPageIndicator.setIsRtl(isRtl);
+        }
+        requestLayout();
+    }
+
+    /**
+     * LC-Note: whether pages are laid out right to left. On the large screen of a foldable, the
+     * fixed half is then the right half.
+     */
+    public boolean isPageOrderRtl() {
+        return mIsRtl;
+    }
+
+    /**
+     * LC-Note: remembers which panel of the visible pair is touched (FoldAfterFold.LAST_PANEL),
+     * when the cover screen will still have it: it has items or is persisted (an empty,
+     * unpersisted page is stripped on the cover). Decided here, on the main thread, so the rebind
+     * (which may run on the model thread) only reads an int.
+     */
+    private void trackTouchedPanel(float x) {
+        float contentX = x + getScrollX();
+        int pageIndex = INVALID_PAGE;
+        int screenId = -1;
+        if (mLauncher.getDeviceProfile().isTwoPanelSinglePage) {
+            // "Expand": the touched half of the wide page is one of its two cover pages. Cells
+            // don't mirror in RTL, so the end half (cells >= columns) is the physical right half.
+            pageIndex = getNextPage();
+            View page = getPageAt(pageIndex);
+            int wideScreenId = getScreenIdForPageIndex(pageIndex);
+            if (page == null || wideScreenId < 0) {
+                return;
+            }
+            boolean onEndHalf = contentX - page.getLeft() >= page.getWidth() / 2f;
+            int columns = mLauncher.getDeviceProfile().inv.numColumns;
+            screenId = getCellPosMapper().mapPresenterToModel(
+                    onEndHalf ? columns : 0, 0, wideScreenId, CONTAINER_DESKTOP).screenId;
+        } else if (isTwoPanelEnabled()) {
+            for (int visiblePage : getVisiblePageIndices()) {
+                View page = getPageAt(visiblePage);
+                if (page != null && contentX >= page.getLeft() && contentX < page.getRight()) {
+                    pageIndex = visiblePage;
+                    screenId = getScreenIdForPageIndex(visiblePage);
+                    break;
+                }
+            }
+        }
+        if (screenId == -1) {
+            return;
+        }
+        boolean kept = hasDesktopItemsOnScreen(getPageAt(pageIndex), screenId)
+                || getPersistedWorkspaceScreenIds().contains(screenId);
+        mLastTouchedPanelScreenId = kept ? screenId : -1;
+    }
+
+    /**
+     * Returns the screens to keep showing when the workspace is rebound. LC-Note: when the large
+     * screen of a foldable folds, this is the panel last touched if the cover should open on it.
+     */
+    public IntSet getScreenIdsToKeepOnRebind() {
+        int screenId = mLastTouchedPanelScreenId;
+        if (screenId != -1 && !isTwoPanelEnabled()
+                && FoldLayout.opensLastPanelAfterFold(mPreferenceManager2)) {
+            return IntSet.wrap(screenId);
+        }
+        return getCurrentPageScreenIds();
+    }
+
+    /**
+     * LC-Note: with "Independent" (FoldItemSets), page ids of one item set mean nothing in the
+     * other one. Called by the bind that shows the other set: remembers {@code previous}, the
+     * pages of the set it replaces, and returns the pages last shown in the set it binds (last
+     * panel doesn't cross sets).
+     */
+    public IntSet swapItemSetPages(IntSet previous) {
+        boolean innerSet = getCellPosMapper().isInnerItemSet();
+        mLastPagesBySet[innerSet ? 0 : 1] = previous;
+        return mLastPagesBySet[innerSet ? 1 : 0];
+    }
+
+    /** Re-syncs the pair markers: an empty last page alone becomes a pair once it has items. */
+    private void updateFoldPairMarkersCount() {
+        if (getFoldPairParity() != 0 && mPageIndicator != null) {
+            int markers = getPageIndicatorMarkersCount();
+            if (markers != mFoldPairMarkersCount) {
+                mFoldPairMarkersCount = markers;
+                mPageIndicator.setMarkersCount(markers);
+            }
+        }
+    }
+
+    /** Returns the page shown next to {@code cellLayout} when pairs start on odd pages. */
+    @Nullable
+    private CellLayout getFoldPairScreen(CellLayout cellLayout) {
+        int index = indexOfChild(cellLayout);
+        if (index < 0) {
+            return null;
+        }
+        int start = getLeftmostVisiblePageForIndex(index);
+        View pair = getPageAt(index == start ? index + 1 : start);
+        return pair instanceof CellLayout ? (CellLayout) pair : null;
+    }
+
+    /** Every pair the user can scroll to, a page alone at either end too (page reorder strip). */
+    private IntArray getFoldPairGroupStarts() {
+        IntArray starts = new IntArray();
+        int lastStart = getLastFoldPairStart();
+        for (int page = 0; page <= lastStart; page++) {
+            if (getLeftmostVisiblePageForIndex(page) == page
+                    && !isExtraEmptyScreen(mScreenOrder.get(page))) {
+                starts.add(page);
+            }
+        }
+        return starts;
+    }
+
+    /** Counts pairs, not page / 2: the first page alone is pair 1, then (1, 2) is pair 2... */
+    private String getFoldPairPageDescription(int page, int extraScreenId) {
+        int lastPage = extraScreenId >= 0 ? Math.max(0, extraScreenId - 1) : getChildCount() - 1;
+        int lastStart = Math.min(getLeftmostVisiblePageForIndex(lastPage),
+                getLastFoldPairStart());
+        int currentStart = Math.min(getLeftmostVisiblePageForIndex(page), lastStart);
+        return getContext().getString(R.string.workspace_scroll_format,
+                getFoldPairIndex(currentStart) + 1, getFoldPairIndex(lastStart) + 1);
+    }
+
+    /**
+     * LC-Note: marks a screen added only to complete a pair of screen ids on two panels.
+     */
+    public void addPairCompletionScreenId(int screenId) {
+        mPairCompletionScreenIds.add(screenId);
+    }
+
+    private boolean isEmptyPairCompletionScreen(int screenId) {
+        if (!mPairCompletionScreenIds.contains(screenId)) {
+            return false;
+        }
+        CellLayout screen = mWorkspaceScreens.get(screenId);
+        return screen != null && screen.getShortcutsAndWidgets().getChildCount() == 0
+                && !screen.isDropPending();
+    }
+
+    /**
+     * LC-Note: with "Expand", the workspace only has the even (wide page) screen ids, and the
+     * odd cover pages live inside them. Keeps the persisted order as it is while the wide pages
+     * keep their order, so the cover order never changes; otherwise (pages added, removed or
+     * reordered) writes each odd cover page right after its wide page.
+     */
+    private IntArray getPersistableScreenOrderForWidePages(IntArray widePageOrder) {
+        IntArray persistedOrder = getPersistedWorkspaceScreenOrder();
+        IntArray persistedWidePages = new IntArray();
+        for (int i = 0; i < persistedOrder.size(); i++) {
+            int screenId = persistedOrder.get(i);
+            if (mWorkspaceScreens.containsKey(screenId) && !persistedWidePages.contains(screenId)) {
+                persistedWidePages.add(screenId);
+            }
+        }
+        IntSet persistedScreenIds = IntSet.wrap(persistedOrder);
+        if (persistedWidePages.equals(widePageOrder)) {
+            // Same wide page order: keep the persisted order, only add a second cover page that
+            // just got its first items, right after its wide page.
+            for (int i = 0; i < widePageOrder.size(); i++) {
+                int screenId = widePageOrder.get(i);
+                int secondScreenId = screenId + 1;
+                if (screenId % 2 == 0 && !persistedScreenIds.contains(secondScreenId)
+                        && hasDesktopItemsOnScreen(mWorkspaceScreens.get(screenId), secondScreenId)) {
+                    persistedOrder.add(persistedOrder.indexOf(screenId) + 1, secondScreenId);
+                }
+            }
+            return persistedOrder;
+        }
+        IntArray order = new IntArray();
+        for (int i = 0; i < widePageOrder.size(); i++) {
+            int screenId = widePageOrder.get(i);
+            order.add(screenId);
+            int secondScreenId = screenId + 1;
+            if (screenId % 2 == 0 && (persistedScreenIds.contains(secondScreenId)
+                    || hasDesktopItemsOnScreen(mWorkspaceScreens.get(screenId), secondScreenId))) {
+                order.add(secondScreenId);
+            }
+        }
+        return order;
+    }
+
+    /** LC-Note: each item set of the "Independent" home layout has its own page order. */
+    private ConstantItem<String> getScreenOrderPref() {
+        return FoldItemSets.screenOrderPref(getCellPosMapper().isInnerItemSet());
+    }
+
+    private IntArray getPersistedWorkspaceScreenOrder() {
+        return WorkspaceData.parseScreenOrder(
+                LauncherPrefs.get(getContext()).get(getScreenOrderPref()));
+    }
+
+    /**
+     * LC-Note: whether {@code page} shows items of {@code screenId}. A wide "Expand" page holds
+     * the items of two model screens, so only those with that model screen id count there. Reads
+     * views: main thread only.
+     */
+    private boolean hasDesktopItemsOnScreen(@Nullable View page, int screenId) {
+        if (!(page instanceof CellLayout cellLayout)) {
+            return false;
+        }
+        ShortcutAndWidgetContainer container = cellLayout.getShortcutsAndWidgets();
+        if (!mLauncher.getDeviceProfile().isTwoPanelSinglePage) {
+            return container.getChildCount() > 0;
+        }
+        for (int i = 0; i < container.getChildCount(); i++) {
+            if (container.getChildAt(i).getTag() instanceof ItemInfo info
+                    && info.container == CONTAINER_DESKTOP && info.screenId == screenId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** With "Expand", moves the second (odd) cover page of each swapped wide page along. */
+    private void addWidePageSwaps(SparseIntArray screenSwapMap, IntArray screenOrderSnapshot,
+            int fromStart, int targetStart) {
+        if (mLauncher.getDeviceProfile().isTwoPanelSinglePage) {
+            int fromScreenId = screenOrderSnapshot.get(fromStart);
+            int targetScreenId = screenOrderSnapshot.get(targetStart);
+            if (fromScreenId % 2 == 0 && targetScreenId % 2 == 0) {
+                screenSwapMap.put(fromScreenId + 1, targetScreenId + 1);
+                screenSwapMap.put(targetScreenId + 1, fromScreenId + 1);
+            }
+        }
+    }
+
+    /**
+     * LC-Note: page ids of the shown item set ("Independent", see FoldItemSets) as model screen
+     * ids, so the database remap never touches the other set.
+     */
+    private SparseIntArray toModelScreenSwapMap(SparseIntArray screenSwapMap) {
+        if (!getCellPosMapper().isInnerItemSet()) {
+            return screenSwapMap;
+        }
+        SparseIntArray modelSwapMap = new SparseIntArray(screenSwapMap.size());
+        for (int i = 0; i < screenSwapMap.size(); i++) {
+            int from = screenSwapMap.keyAt(i);
+            int to = screenSwapMap.valueAt(i);
+            if (from >= 0 && to >= 0) {
+                modelSwapMap.put(FoldItemSets.toModelScreenId(from, true),
+                        FoldItemSets.toModelScreenId(to, true));
+            }
+        }
+        return modelSwapMap;
+    }
+
+    /**
+     * LC-Note: with a foldable's side dock, moves the room for the column to the page now on the
+     * fixed half, after pages were added, removed or moved or the pairs changed.
+     */
+    private void updateSideDockPagePadding() {
+        if (mLauncher.getDeviceProfile().getSideDockPageInset() > 0) {
+            updateCellLayoutMeasures();
+        }
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        updateSideDockPagePadding(); // LC-Note
+    }
+
+    // LC-Note: foldables — end.
 }

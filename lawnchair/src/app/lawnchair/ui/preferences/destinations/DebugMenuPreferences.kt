@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.Preferences
+import app.lawnchair.fold.FoldReplay
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -107,6 +108,8 @@ fun DebugMenuPreferences(
                 )
             }
 
+            FoldReplay.Preferences()
+
             PreferenceGroup(heading = "Debug flags") {
                 flags2.forEach {
                     SwitchPreference(
@@ -164,7 +167,7 @@ fun DebugMenuPreferences(
 }
 
 private val PreferenceManager2.debugFlags: List<Preference<Boolean, Boolean, Preferences.Key<Boolean>>>
-    get() = listOf(showComponentNames, legacyPopupOptionsMigrated)
+    get() = listOf(showComponentNames, legacyPopupOptionsMigrated, foldForceShowSettings)
 
 private val PreferenceManager2.textFlags: List<Preference<String, String, Preferences.Key<String>>>
     get() = listOf(additionalFonts, launcherPopupOrder)

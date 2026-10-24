@@ -97,6 +97,7 @@ import javax.inject.Inject;
 
 import app.lawnchair.DeviceProfileOverrides.DBGridInfo;
 import app.lawnchair.DeviceProfileOverrides;
+import app.lawnchair.fold.FoldDrawerLayouts;
 
 @LauncherAppSingleton
 public class InvariantDeviceProfile {
@@ -303,6 +304,15 @@ public class InvariantDeviceProfile {
 
         String gridName = prefs.get(GRID_NAME);
         initGrid(context, gridName);
+        // LC-Note: Every reload takes the grid from the grid size (getCurrentGridName), which needs
+        // the device type set above. On foldables, do so now too, so that a fresh install (no grid
+        // name yet: the closest default grid, the responsive practical) gets the reload's grid
+        // without waiting for one. Phones and tablets keep their first grid until a reload.
+        String currentGridName = deviceType == TYPE_MULTI_DISPLAY
+                ? getCurrentGridName(context) : prefs.get(GRID_NAME);
+        if (!TextUtils.equals(currentGridName, prefs.get(GRID_NAME))) {
+            initGrid(context, currentGridName);
+        }
 
         dc.setPriorityListener(
                 (displayContext, info, flags) -> {
@@ -442,6 +452,9 @@ public class InvariantDeviceProfile {
             DeviceProfileOverrides.DBGridInfo dbGridInfo,
             DeviceProfileOverrides.PreviewOverrides previewOverrides) {
         this.closestProfile = displayOption.grid;
+        // LC-Note: Set before they are read below (numSearchContainerColumns), not after.
+        this.deviceType = displayInfo.getDeviceType();
+        this.displayInfo = displayInfo;
         
         // LC-Note: Not only in English. Lawnchair shows the toggle in every language, and labels
         // break at spaces or between words, which also works for other scripts.
@@ -488,8 +501,6 @@ public class InvariantDeviceProfile {
         numAllAppsRowsForCellHeightCalculation =
                 closestProfile.mNumAllAppsRowsForCellHeightCalculation;
         appListAlignedWithWorkspaceRow = closestProfile.mAllAppsAlignedWithWorkspaceRow;
-        this.deviceType = displayInfo.getDeviceType();
-        this.displayInfo = displayInfo;
 
         inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
 
@@ -549,6 +560,9 @@ public class InvariantDeviceProfile {
         }
         iconBitmapSize = ResourceUtils.pxFromDp(maxIconSize, metrics);
         allAppsIconBitmapSize = ResourceUtils.pxFromDp(maxAllAppsIconSize, metrics);
+        // LC-Note: the foldable "zoom" drawer shows its icons larger; cache all icons that large
+        iconBitmapSize = FoldDrawerLayouts.getIconCacheBitmapSize(context, iconBitmapSize,
+                allAppsIconBitmapSize);
         fillResIconDpi = getLauncherIconDensity(Math.max(iconBitmapSize, allAppsIconBitmapSize));
 
         final List<DeviceProfile> localSupportedProfiles = new ArrayList<>();

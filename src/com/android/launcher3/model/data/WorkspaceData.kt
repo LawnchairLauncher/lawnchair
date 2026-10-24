@@ -21,6 +21,7 @@ import android.util.SparseArray
 import androidx.annotation.VisibleForTesting
 import androidx.core.util.putAll
 import androidx.core.util.valueIterator
+import app.lawnchair.fold.FoldItemSets
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.BuildConfigs
@@ -46,16 +47,26 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
 
     /** Creates an array of valid workspace screens based on current items in the model. */
     // LC-Note: Add context to replace QSB_ON_FIRST_SCREEN config
-    fun collectWorkspaceScreens(context: Context): IntArray {
+    fun collectWorkspaceScreens(context: Context): IntArray = collectWorkspaceScreens(context, innerSet = false)
+
+    /**
+     * LC-Note: screens of one item set of the "Independent" home layout, numbered from 0 (see
+     * FoldItemSets). Without inner items, the cover set is every desktop screen as before.
+     */
+    fun collectWorkspaceScreens(context: Context, innerSet: Boolean): IntArray {
         val prefs2 = PreferenceManager2.INSTANCE.get(context)
         val smartspaceEnabled = prefs2.enableSmartspace.firstCached()
 
         val screenSet = IntSet()
-        forEach { if (it.container == CONTAINER_DESKTOP) screenSet.add(it.screenId) }
+        forEach {
+            if (it.container == CONTAINER_DESKTOP && FoldItemSets.isInnerItem(it) == innerSet) {
+                screenSet.add(FoldItemSets.toPresenterScreenId(it.screenId))
+            }
+        }
         if (smartspaceEnabled || screenSet.isEmpty) {
             screenSet.add(Workspace.FIRST_SCREEN_ID)
         }
-        val persistedOrder = LauncherPrefs.get(context).get(LauncherPrefs.WORKSPACE_SCREEN_ORDER)
+        val persistedOrder = LauncherPrefs.get(context).get(FoldItemSets.screenOrderPref(innerSet))
         return mergeWorkspaceScreens(screenSet.array, persistedOrder)
     }
 
@@ -190,21 +201,26 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
 
         private val VERSION_COUNTER = AtomicInteger()
 
+        /**
+         * LC-Note: the one parser of a persisted page order ("2,0,1"): valid, non-negative ids in
+         * order, without duplicates.
+         */
+        @JvmStatic
+        fun parseScreenOrder(persistedOrder: String?): IntArray {
+            val order = IntArray()
+            persistedOrder
+                ?.split(",")
+                ?.mapNotNull { it.trim().toIntOrNull() }
+                ?.filter { it >= 0 }
+                ?.forEach { if (!order.contains(it)) order.add(it) }
+            return order
+        }
+
         @VisibleForTesting
         fun mergeWorkspaceScreens(itemScreens: IntArray, persistedOrder: String): IntArray {
             if (persistedOrder.isBlank()) return itemScreens
 
-            val merged = IntArray()
-            val persistedScreens =
-                persistedOrder
-                    .split(",")
-                    .mapNotNull { it.trim().toIntOrNull() }
-                    .filter { it >= 0 }
-            persistedScreens.forEach { screenId ->
-                if (!merged.contains(screenId)) {
-                    merged.add(screenId)
-                }
-            }
+            val merged = parseScreenOrder(persistedOrder)
             itemScreens.forEach { screenId ->
                 if (!merged.contains(screenId)) {
                     merged.add(screenId)

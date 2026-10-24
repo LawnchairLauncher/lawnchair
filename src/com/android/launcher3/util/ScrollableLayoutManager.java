@@ -16,6 +16,7 @@
 package com.android.launcher3.util;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.SparseIntArray;
 import android.view.View;
 
@@ -26,6 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.State;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
+import app.lawnchair.fold.FoldDrawerBook;
 
 /**
  * Extension of {@link GridLayoutManager} with support for smooth scrolling
@@ -51,6 +54,9 @@ public class ScrollableLayoutManager extends GridLayoutManager {
      */
     private int[] mTotalHeightCache = new int[1];
     private int mLastValidHeightIndex = 0;
+
+    // LC-Note: extra rows laid out below the visible ones (foldable "book" drawer, its zoom)
+    private int mFoldExtraLayoutSpacePx = 0;
 
     public ScrollableLayoutManager(Context context) {
         super(context, 1, GridLayoutManager.VERTICAL, false);
@@ -113,14 +119,77 @@ public class ScrollableLayoutManager extends GridLayoutManager {
     @Override
     public int computeVerticalScrollRange(State state) {
         Adapter adapter = mRv == null ? null : mRv.getAdapter();
-        return adapter == null ? 0 : getItemsHeight(adapter, adapter.getItemCount());
+        if (adapter == null) {
+            return 0;
+        }
+        // LC-Note: the foldable "book" drawer's list ends earlier, see scrollVerticallyBy
+        FoldDrawerBook book = FoldDrawerBook.of(mRv);
+        int cut = book != null ? book.getScrollRangeCut() : 0;
+        return Math.max(0, getItemsHeight(adapter, adapter.getItemCount()) - cut);
+    }
+
+    /**
+     * LC-Note: the foldable "book" drawer (app.lawnchair.fold.FoldDrawerBook) shows the rows below
+     * the visible ones on a second page, so its list ends when the last row reaches the bottom of
+     * that page, not of the visible one.
+     */
+    @Override
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, State state) {
+        FoldDrawerBook book = dy > 0 ? FoldDrawerBook.of(mRv) : null;
+        if (book == null) {
+            return super.scrollVerticallyBy(dy, recycler, state);
+        }
+        int scrolled = super.scrollVerticallyBy(
+                Math.min(dy, Math.max(0, book.scrollToEnd())), recycler, state);
+        // The last row may have been laid out only by this scroll, past the end: back to it
+        int toEnd = book.scrollToEnd();
+        if (toEnd < 0 && scrolled > 0) {
+            scrolled += super.scrollVerticallyBy(Math.max(toEnd, -scrolled), recycler, state);
+        }
+        return scrolled;
     }
 
     @Override
     protected void calculateExtraLayoutSpace(RecyclerView.State state, int[] extraLayoutSpace) {
         super.calculateExtraLayoutSpace(state, extraLayoutSpace);
         @Px int extraSpacePx = (int) (getHeight() * EXTRA_BOTTOM_SPACE_BY_HEIGHT_PERCENT);
-        extraLayoutSpace[1] = Math.max(extraLayoutSpace[1], extraSpacePx);
+        extraLayoutSpace[1] = Math.max(extraLayoutSpace[1],
+                Math.max(extraSpacePx, mFoldExtraLayoutSpacePx));
+    }
+
+    /**
+     * LC-Note: lays out {@code px} more pixels of items below the visible area, for the foldable
+     * drawer (app.lawnchair.fold.FoldDrawerBook) which shows them elsewhere.
+     */
+    public void setFoldExtraLayoutSpace(@Px int px) {
+        if (px != mFoldExtraLayoutSpacePx) {
+            mFoldExtraLayoutSpacePx = px;
+            requestLayout();
+        }
+    }
+
+    // LC-Note: the foldable "book" drawer (app.lawnchair.fold.FoldDrawerBook) draws children away
+    // from their layout position and steers focus by where they are drawn.
+    @Override
+    public View onInterceptFocusSearch(@NonNull View focused, int direction) {
+        FoldDrawerBook book = FoldDrawerBook.of(mRv);
+        View next = book != null ? book.onInterceptFocusSearch(focused, direction) : null;
+        return next != null ? next : super.onInterceptFocusSearch(focused, direction);
+    }
+
+    // LC-Note: see onInterceptFocusSearch
+    @Override
+    public boolean requestChildRectangleOnScreen(@NonNull RecyclerView parent,
+            @NonNull View child, @NonNull Rect rect, boolean immediate,
+            boolean focusedChildVisible) {
+        FoldDrawerBook book = FoldDrawerBook.of(parent);
+        Boolean scrolled = book != null
+                ? book.requestChildRectangleOnScreen(parent, child, immediate) : null;
+        if (scrolled != null) {
+            return scrolled;
+        }
+        return super.requestChildRectangleOnScreen(parent, child, rect, immediate,
+                focusedChildVisible);
     }
 
     /**
