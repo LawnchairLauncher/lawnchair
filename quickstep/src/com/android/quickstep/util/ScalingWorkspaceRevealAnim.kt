@@ -139,8 +139,11 @@ class ScalingWorkspaceRevealAnim(
         Animations.cancelOngoingAnimation(workspace)
         Animations.cancelOngoingAnimation(hotseat)
 
+        // LC-Note: Reduced motion reveals the workspace at its final scale.
         val fromSize =
-            if (workspace.scaleX != MAX_SIZE) {
+            if (app.lawnchair.util.HomeScreenMotion.isReduced(launcher)) {
+                MAX_SIZE
+            } else if (workspace.scaleX != MAX_SIZE) {
                 workspace.scaleX
             } else {
                 MIN_SIZE
@@ -163,7 +166,7 @@ class ScalingWorkspaceRevealAnim(
             SCALE_INTERPOLATOR,
         )
 
-        if (playAlphaReveal) {
+        if (playAlphaReveal && !app.lawnchair.util.HomeScreenMotion.isReduced(launcher)) {
             // Fade in quickly at the beginning of the animation, so the content doesn't look like
             // it's popping into existence out of nowhere.
             val fadeClamp = FADE_DURATION_MS.toFloat() / SCALE_DURATION_MS

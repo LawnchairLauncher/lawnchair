@@ -98,7 +98,8 @@ public class StaggeredWorkspaceAnim {
 
         DeviceProfile grid = launcher.getDeviceProfile();
         long duration = grid.isTaskbarPresent ? mTaskbarDurationInMs : DURATION_MS;
-        if (staggerWorkspace) {
+        // LC-Note: Skip the staggered reveal when reduced motion is enabled.
+        if (staggerWorkspace && !app.lawnchair.util.HomeScreenMotion.isReduced(launcher)) {
             Workspace<?> workspace = launcher.getWorkspace();
             Hotseat hotseat = launcher.getHotseat();
 
