@@ -36,17 +36,17 @@ object OmniMotionProfile {
 
     private val fusionHome = PathInterpolator(0.20f, 0.0f, 0.0f, 1.0f)
     private val pixelHome = PathInterpolator(0.18f, 0.0f, 0.0f, 1.0f)
-    private val iosHome = PathInterpolator(0.16f, 1.0f, 0.30f, 1.0f)
+    private val iosHome = PathInterpolator(0.32f, 0.72f, 0.0f, 1.0f)
     private val samsungHome = PathInterpolator(0.34f, 0.0f, 0.20f, 1.0f)
 
     private val fusionAppLaunch = PathInterpolator(0.20f, 0.0f, 0.10f, 1.0f)
     private val pixelAppLaunch = PathInterpolator(0.16f, 0.0f, 0.20f, 1.0f)
-    private val iosAppLaunch = PathInterpolator(0.22f, 1.0f, 0.36f, 1.0f)
+    private val iosAppLaunch = PathInterpolator(0.32f, 0.72f, 0.0f, 1.0f)
     private val samsungAppLaunch = PathInterpolator(0.30f, 0.0f, 0.15f, 1.0f)
 
     private val fusionDrawerSettle = PathInterpolator(0.20f, 0.0f, 0.0f, 1.0f)
     private val pixelDrawerSettle = PathInterpolator(0.22f, 0.0f, 0.0f, 1.0f)
-    private val iosDrawerSettle = PathInterpolator(0.18f, 1.0f, 0.30f, 1.0f)
+    private val iosDrawerSettle = PathInterpolator(0.32f, 0.72f, 0.0f, 1.0f)
     private val samsungDrawerSettle = PathInterpolator(0.34f, 0.0f, 0.20f, 1.0f)
 
     private val fusionFolderClose = PathInterpolator(0.40f, 0.0f, 1.0f, 1.0f)
