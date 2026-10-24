@@ -24,6 +24,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.model.data.ItemInfo;
+
 /**
  * Represents the logic of where a view is in a CellLayout and its size
  */
@@ -38,6 +40,18 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
     private int mTmpCellX;
 
     private int mTmpCellY;
+
+    /**
+     * LC-Note: Subgrid positioning. Half-cell steps of the position and span, see
+     * {@link ItemInfo#subX} and {@link ItemInfo#subSpanX}. Non-zero only on the workspace.
+     */
+    public int subX;
+
+    public int subY;
+
+    public int subSpanX;
+
+    public int subSpanY;
 
     /**
      * Indicates that the temporary coordinates should be used to layout the items
@@ -98,6 +112,11 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
         this.mTmpCellX = source.getTmpCellX();
         this.mTmpCellY = source.getTmpCellY();
         this.useTmpCoords = source.useTmpCoords;
+        // LC-Note: Subgrid positioning
+        this.subX = source.subX;
+        this.subY = source.subY;
+        this.subSpanX = source.subSpanX;
+        this.subSpanY = source.subSpanY;
     }
 
     public CellLayoutLayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan) {
@@ -129,25 +148,27 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
             int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,
             @Nullable Rect inset) {
         if (isLockedToGrid) {
-            final int myCellHSpan = cellHSpan;
-            final int myCellVSpan = cellVSpan;
-            int myCellX = useTmpCoords ? getTmpCellX() : getCellX();
-            int myCellY = useTmpCoords ? getTmpCellY() : getCellY();
+            // LC-Note: Subgrid positioning, in float cells. With no half steps this gives the
+            // same result as the integer math.
+            final float myCellHSpan = cellHSpan + subSpanX * 0.5f;
+            final float myCellVSpan = cellVSpan + subSpanY * 0.5f;
+            float myCellX = (useTmpCoords ? getTmpCellX() : getCellX()) + subX * 0.5f;
+            float myCellY = (useTmpCoords ? getTmpCellY() : getCellY()) + subY * 0.5f;
 
             if (invertHorizontally) {
-                myCellX = colCount - myCellX - cellHSpan;
+                myCellX = colCount - myCellX - myCellHSpan;
             }
 
-            int hBorderSpacing = (myCellHSpan - 1) * borderSpace.x;
-            int vBorderSpacing = (myCellVSpan - 1) * borderSpace.y;
+            float hBorderSpacing = (myCellHSpan - 1) * borderSpace.x;
+            float vBorderSpacing = (myCellVSpan - 1) * borderSpace.y;
 
             float myCellWidth = ((myCellHSpan * cellWidth) + hBorderSpacing) / cellScaleX;
             float myCellHeight = ((myCellVSpan * cellHeight) + vBorderSpacing) / cellScaleY;
 
             width = Math.round(myCellWidth) - leftMargin - rightMargin;
             height = Math.round(myCellHeight) - topMargin - bottomMargin;
-            x = leftMargin + (myCellX * cellWidth) + (myCellX * borderSpace.x);
-            y = topMargin + (myCellY * cellHeight) + (myCellY * borderSpace.y);
+            x = leftMargin + Math.round((myCellX * cellWidth) + (myCellX * borderSpace.x));
+            y = topMargin + Math.round((myCellY * cellHeight) + (myCellY * borderSpace.y));
 
             if (inset != null) {
                 x += inset.left;
@@ -215,5 +236,16 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
 
     public void setTmpCellY(int tmpCellY) {
         this.mTmpCellY = tmpCellY;
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Copies the half steps of {@code info}, or clears them when
+     * {@code enabled} is false.
+     */
+    public void setSubgrid(ItemInfo info, boolean enabled) {
+        subX = enabled ? info.subX : 0;
+        subY = enabled ? info.subY : 0;
+        subSpanX = enabled ? info.subSpanX : 0;
+        subSpanY = enabled ? info.subSpanY : 0;
     }
 }

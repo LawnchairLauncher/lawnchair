@@ -28,6 +28,10 @@ import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.pm.UserCache;
 
+import app.lawnchair.LawnchairApp;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.lawnchair.preferences2.PreferenceManager2;
+
 /**
  * A wrapper around {@link ContentValues} with some utility methods.
  */
@@ -57,6 +61,31 @@ public class ContentWriter {
     public ContentWriter put(String key, Integer value) {
         mValues.put(key, value);
         return this;
+    }
+
+    /** LC-Note: Subgrid positioning, for half-cell (REAL) values. */
+    public ContentWriter put(String key, Float value) {
+        mValues.put(key, value);
+        return this;
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Writes {@code base + sub * 0.5} as a REAL, so the schema doesn't
+     * change. The half step is only written while subgrid positioning is on, so whole-cell writes
+     * with it off don't keep a stale one.
+     */
+    public ContentWriter putSubgrid(String key, int base, int sub) {
+        if (sub != 0 && isSubgridEnabled()) {
+            return put(key, base + sub * 0.5f);
+        }
+        return put(key, base);
+    }
+
+    private boolean isSubgridEnabled() {
+        // PendingRequestArgs writes itself to a parcel without a context.
+        Context context = mContext != null ? mContext : LawnchairApp.getInstance();
+        return PreferenceCacheExtensionsKt.firstCached(
+                PreferenceManager2.getInstance(context).getEnableSubgridPositioning());
     }
 
     public ContentWriter put(String key, Long value) {

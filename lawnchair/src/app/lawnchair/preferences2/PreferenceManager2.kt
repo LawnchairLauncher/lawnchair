@@ -72,6 +72,7 @@ import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.SafeCloseable
 import com.patrykmichalik.opto.core.PreferenceManager
 import com.patrykmichalik.opto.core.firstBlocking
+import com.patrykmichalik.opto.core.getFromPreferences
 import com.patrykmichalik.opto.core.setBlocking
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -80,6 +81,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
@@ -347,6 +349,11 @@ class PreferenceManager2 @Inject constructor(
         key = booleanPreferencesKey(name = "allow_widget_overlap"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_allow_widget_overlap),
         onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val enableSubgridPositioning = preference(
+        key = booleanPreferencesKey(name = "enable_subgrid_positioning"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_enable_subgrid_positioning),
     )
 
     val forceWidgetResize = preference(
@@ -930,6 +937,18 @@ class PreferenceManager2 @Inject constructor(
             .drop(1)
             .distinctUntilChanged()
             .onEach { reloadHelper.reloadGrid() }
+            .launchIn(scope)
+
+        // LC-Note: Subgrid positioning. Reload the items, so they show their half steps as
+        // saved: changes made with it off drop them in the database, not in memory. The loader
+        // reads the cache, so update it first, as the collector above may not have run yet.
+        preferencesDataStore.data
+            .distinctUntilChangedBy { enableSubgridPositioning.getFromPreferences(it) }
+            .drop(1)
+            .onEach {
+                cachedPreferences = it
+                LauncherAppState.getInstance(context).model.reloadIfActive()
+            }
             .launchIn(scope)
     }
 

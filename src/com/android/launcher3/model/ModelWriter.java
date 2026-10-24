@@ -104,6 +104,13 @@ public class ModelWriter {
         item.cellX = modelPos.cellX;
         item.cellY = modelPos.cellY;
         item.screenId = modelPos.screenId;
+        // LC-Note: Subgrid positioning, half steps only exist on the workspace.
+        if (container != Favorites.CONTAINER_DESKTOP) {
+            item.subX = 0;
+            item.subY = 0;
+            item.subSpanX = 0;
+            item.subSpanY = 0;
+        }
     }
 
     /**
@@ -187,10 +194,11 @@ public class ModelWriter {
         updateItemInfoProps(item, container, screenId, cellX, cellY);
         notifyItemModified(item);
 
+        // LC-Note: Subgrid positioning
         enqueueDeleteRunnable(new UpdateItemRunnable(item, () -> new ContentWriter(mContext)
                 .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
+                .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
+                .putSubgrid(Favorites.CELLY, item.cellY, item.subY)
                 .put(Favorites.RANK, item.rank)
                 .put(Favorites.SCREEN, item.screenId)));
     }
@@ -210,11 +218,13 @@ public class ModelWriter {
             updateItemInfoProps(item, container, screen, item.cellX, item.cellY);
 
             final ContentValues values = new ContentValues();
-            values.put(Favorites.CONTAINER, item.container);
-            values.put(Favorites.CELLX, item.cellX);
-            values.put(Favorites.CELLY, item.cellY);
-            values.put(Favorites.RANK, item.rank);
-            values.put(Favorites.SCREEN, item.screenId);
+            // LC-Note: Subgrid positioning
+            new ContentWriter(values, mContext)
+                    .put(Favorites.CONTAINER, item.container)
+                    .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
+                    .putSubgrid(Favorites.CELLY, item.cellY, item.subY)
+                    .put(Favorites.RANK, item.rank)
+                    .put(Favorites.SCREEN, item.screenId);
 
             contentValues.add(values);
         }
@@ -330,13 +340,14 @@ public class ModelWriter {
         item.spanX = spanX;
         item.spanY = spanY;
         notifyItemModified(item);
+        // LC-Note: Subgrid positioning
         new UpdateItemRunnable(item, () -> new ContentWriter(mContext)
                 .put(Favorites.CONTAINER, item.container)
-                .put(Favorites.CELLX, item.cellX)
-                .put(Favorites.CELLY, item.cellY)
+                .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
+                .putSubgrid(Favorites.CELLY, item.cellY, item.subY)
                 .put(Favorites.RANK, item.rank)
-                .put(Favorites.SPANX, item.spanX)
-                .put(Favorites.SPANY, item.spanY)
+                .putSubgrid(Favorites.SPANX, item.spanX, item.subSpanX)
+                .putSubgrid(Favorites.SPANY, item.spanY, item.subSpanY)
                 .put(Favorites.SCREEN, item.screenId))
                 .executeOnModelThread();
     }
