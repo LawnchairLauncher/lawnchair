@@ -18,10 +18,8 @@ package com.android.quickstep.util
 
 import android.animation.AnimatorSet
 import android.graphics.Matrix
-import android.graphics.Path
 import android.graphics.RectF
 import android.view.View
-import android.view.animation.PathInterpolator
 import androidx.core.graphics.transform
 import com.android.app.animation.Interpolators
 import com.android.app.animation.Interpolators.LINEAR
@@ -49,25 +47,15 @@ class ScalingWorkspaceRevealAnim(
     windowTargetRect: RectF?
 ) {
     companion object {
-        private const val FADE_DURATION_MS = 200L
-        private const val SCALE_DURATION_MS = 1000L
+        private val FADE_DURATION_MS = OmniFusionMotion.CONTENT_FADE_DURATION_MS
+        private val SCALE_DURATION_MS = OmniFusionMotion.RADIAL_REVEAL_DURATION_MS
         private const val MAX_ALPHA = 1f
         private const val MIN_ALPHA = 0f
         private const val MAX_SIZE = 1f
         private const val MIN_SIZE = 0.85f
 
-        /**
-         * Custom interpolator for both the home and wallpaper scaling. Necessary because EMPHASIZED
-         * is too aggressive, but EMPHASIZED_DECELERATE is too soft.
-         */
-        private val SCALE_INTERPOLATOR =
-            PathInterpolator(
-                Path().apply {
-                    moveTo(0f, 0f)
-                    cubicTo(0.045f, 0.0356f, 0.0975f, 0.2055f, 0.15f, 0.3952f)
-                    cubicTo(0.235f, 0.6855f, 0.235f, 1f, 1f, 1f)
-                }
-            )
+        /** Keep the established radial scale curve while sharing its definition. */
+        private val SCALE_INTERPOLATOR = OmniFusionMotion.RADIAL_SCALE_INTERPOLATOR
     }
 
     private val animation = PendingAnimation(SCALE_DURATION_MS)

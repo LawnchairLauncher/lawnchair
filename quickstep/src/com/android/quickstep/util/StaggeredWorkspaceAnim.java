@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -60,9 +59,10 @@ import com.android.systemui.plugins.ResourceProvider;
  */
 public class StaggeredWorkspaceAnim {
 
-    private static final int APP_CLOSE_ROW_START_DELAY_MS = 10;
+    private static final int APP_CLOSE_ROW_START_DELAY_MS =
+            OmniFusionMotion.HOME_REVEAL_ROW_STAGGER_DELAY_MS;
     // Should be used for animations running alongside this StaggeredWorkspaceAnim.
-    public static final int DURATION_MS = 250;
+    public static final int DURATION_MS = OmniFusionMotion.STAGGERED_HOME_REVEAL_DURATION_MS;
     public static final int DURATION_TASKBAR_MS =
             QuickstepTransitionManager.getTaskbarToHomeDuration();
 
@@ -283,7 +283,7 @@ public class StaggeredWorkspaceAnim {
 
         v.setAlpha(0);
         ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 0f, 1f);
-        alpha.setInterpolator(LINEAR);
+        alpha.setInterpolator(OmniFusionMotion.INTERPOLATOR);
         alpha.setDuration(duration);
         alpha.setStartDelay(startDelay);
         alpha.addListener(new AnimatorListenerAdapter() {

@@ -32,7 +32,6 @@ import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.View;
 
-import com.android.app.animation.Interpolators;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -52,7 +51,7 @@ import com.android.systemui.plugins.ResourceProvider;
 public class WorkspaceRevealAnim {
 
     // Should be used for animations running alongside this WorkspaceRevealAnim.
-    public static final int DURATION_MS = 350;
+    public static final int DURATION_MS = OmniFusionMotion.HOME_REVEAL_DURATION_MS;
     private static final FloatProperty<Workspace<?>> WORKSPACE_SCALE_PROPERTY =
             WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_REVEAL_ANIM);
 
@@ -96,18 +95,18 @@ public class WorkspaceRevealAnim {
                 .getSysUIMultiplier().animateToValue(0f, 1f));
 
         mAnimators.setDuration(DURATION_MS);
-        mAnimators.setInterpolator(Interpolators.DECELERATED_EASE);
+        mAnimators.setInterpolator(OmniFusionMotion.INTERPOLATOR);
     }
 
     private <T extends View>  void addRevealAnimatorsForView(T v, FloatProperty<T> scaleProperty) {
         ObjectAnimator scale = ObjectAnimator.ofFloat(v, scaleProperty, mScaleStart, 1f);
         scale.setDuration(DURATION_MS);
-        scale.setInterpolator(Interpolators.DECELERATED_EASE);
+        scale.setInterpolator(OmniFusionMotion.INTERPOLATOR);
         mAnimators.play(scale);
 
         ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 0, 1f);
         alpha.setDuration(DURATION_MS);
-        alpha.setInterpolator(Interpolators.DECELERATED_EASE);
+        alpha.setInterpolator(OmniFusionMotion.INTERPOLATOR);
         mAnimators.play(alpha);
 
         mAnimators.addListener(new AnimatorListenerAdapter() {
