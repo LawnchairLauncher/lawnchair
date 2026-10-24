@@ -39,6 +39,22 @@ object OmniMotionProfile {
     private val iosHome = PathInterpolator(0.16f, 1.0f, 0.30f, 1.0f)
     private val samsungHome = PathInterpolator(0.34f, 0.0f, 0.20f, 1.0f)
 
+
+    private val fusionAppLaunch = PathInterpolator(0.20f, 0.0f, 0.10f, 1.0f)
+    private val pixelAppLaunch = PathInterpolator(0.16f, 0.0f, 0.20f, 1.0f)
+    private val iosAppLaunch = PathInterpolator(0.22f, 1.0f, 0.36f, 1.0f)
+    private val samsungAppLaunch = PathInterpolator(0.30f, 0.0f, 0.15f, 1.0f)
+
+    private val fusionDrawerSettle = PathInterpolator(0.20f, 0.0f, 0.0f, 1.0f)
+    private val pixelDrawerSettle = PathInterpolator(0.22f, 0.0f, 0.0f, 1.0f)
+    private val iosDrawerSettle = PathInterpolator(0.18f, 1.0f, 0.30f, 1.0f)
+    private val samsungDrawerSettle = PathInterpolator(0.34f, 0.0f, 0.20f, 1.0f)
+
+    private val fusionFolderClose = PathInterpolator(0.40f, 0.0f, 1.0f, 1.0f)
+    private val pixelFolderClose = PathInterpolator(0.40f, 0.0f, 0.60f, 1.0f)
+    private val iosFolderClose = PathInterpolator(0.40f, 0.0f, 0.20f, 1.0f)
+    private val samsungFolderClose = PathInterpolator(0.50f, 0.0f, 0.10f, 1.0f)
+
     private val fusionRadial = PathInterpolator(
         Path().apply {
             moveTo(0f, 0f)
@@ -69,6 +85,52 @@ object OmniMotionProfile {
         STYLE_IOS -> iosHome
         STYLE_SAMSUNG -> samsungHome
         else -> fusionHome
+    }
+
+
+    /**
+     * Curve for app-window launches. Kept separate from workspace reveals so each surface
+     * can have its own motion character without adding work to the frame loop.
+     */
+    @JvmStatic
+    fun getAppLaunchInterpolator(): Interpolator = when (activeStyle) {
+        STYLE_PIXEL -> pixelAppLaunch
+        STYLE_IOS -> iosAppLaunch
+        STYLE_SAMSUNG -> samsungAppLaunch
+        else -> fusionAppLaunch
+    }
+
+    /** Curve used only when the app drawer settles after a user releases their gesture. */
+    @JvmStatic
+    fun getAppDrawerSettleInterpolator(): Interpolator = when (activeStyle) {
+        STYLE_PIXEL -> pixelDrawerSettle
+        STYLE_IOS -> iosDrawerSettle
+        STYLE_SAMSUNG -> samsungDrawerSettle
+        else -> fusionDrawerSettle
+    }
+
+    /** Closing motion is tuned independently from opening motion. */
+    @JvmStatic
+    fun getFolderCloseInterpolator(): Interpolator = when (activeStyle) {
+        STYLE_PIXEL -> pixelFolderClose
+        STYLE_IOS -> iosFolderClose
+        STYLE_SAMSUNG -> samsungFolderClose
+        else -> fusionFolderClose
+    }
+
+    /**
+     * Give each profile a subtle duration character while keeping Fusion's existing timing.
+     * Clamp short transitions to avoid making label/fade animations effectively disappear.
+     */
+    @JvmStatic
+    fun scaleFolderDuration(baseDurationMs: Int): Int {
+        val factor = when (activeStyle) {
+            STYLE_PIXEL -> 0.96f
+            STYLE_IOS -> 0.92f
+            STYLE_SAMSUNG -> 1.04f
+            else -> 1.0f
+        }
+        return (baseDurationMs * factor).toInt().coerceAtLeast(120)
     }
 
     @JvmStatic
