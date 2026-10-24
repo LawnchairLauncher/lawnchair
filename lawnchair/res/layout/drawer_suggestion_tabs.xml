@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Frequent / Recent / New apps at the top of the app drawer. The tab strip is built like the
+     drawer's Personal/Work tabs (all_apps_personal_work_tabs.xml); the icons are added in code. -->
+<app.lawnchair.allapps.suggestions.AppSuggestionsHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone">
+
+    <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/all_apps_header_pill_height"
+        android:orientation="horizontal"
+        launcher:alignOnIcon="true">
+
+        <Button
+            style="@style/DrawerSuggestionTab"
+            android:layout_marginEnd="@dimen/all_apps_tabs_button_horizontal_padding"
+            android:text="@string/drawer_suggestion_tab_frequent" />
+
+        <Button
+            style="@style/DrawerSuggestionTab"
+            android:layout_marginHorizontal="@dimen/all_apps_tabs_button_horizontal_padding"
+            android:text="@string/drawer_suggestion_tab_recent" />
+
+        <Button
+            style="@style/DrawerSuggestionTab"
+            android:layout_marginStart="@dimen/all_apps_tabs_button_horizontal_padding"
+            android:text="@string/drawer_suggestion_tab_new" />
+    </com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/drawer_suggestion_tab_empty"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:attr/textColorSecondary"
+        android:visibility="gone" />
+</app.lawnchair.allapps.suggestions.AppSuggestionsHeaderView>
