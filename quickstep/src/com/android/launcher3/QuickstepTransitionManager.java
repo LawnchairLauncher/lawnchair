@@ -34,7 +34,6 @@ import static android.window.StartingWindowInfo.STARTING_WINDOW_TYPE_SPLASH_SCRE
 import static android.window.TransitionFilter.CONTAINER_ORDER_TOP;
 
 import static com.android.app.animation.Interpolators.ACCELERATE_1_5;
-import static com.android.app.animation.Interpolators.AGGRESSIVE_EASE;
 import static com.android.app.animation.Interpolators.DECELERATE_1_5;
 import static com.android.app.animation.Interpolators.DECELERATE_1_7;
 import static com.android.app.animation.Interpolators.EXAGGERATED_EASE;
@@ -119,6 +118,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 
+import app.lawnchair.animation.OmniMotionProfile;
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
@@ -175,8 +177,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Manages the opening and closing app transitions from Launcher
@@ -282,7 +282,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private boolean mAreAnimationsEnabled = true;
 
     private final Interpolator mOpeningXInterpolator;
-    private final Interpolator mOpeningInterpolator;
 
     public QuickstepTransitionManager(Context context) {
         mLauncher = Launcher.cast(Launcher.getLauncher(context));
@@ -311,8 +310,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         mOpeningXInterpolator = AnimationUtils.loadInterpolator(context, R.interpolator.app_open_x);
-        mOpeningInterpolator = AnimationUtils.loadInterpolator(context,
-                R.interpolator.emphasized_interpolator);
         mCoordinateTransfer = new RemoteAnimationCoordinateTransfer(mLauncher);
     }
 
@@ -552,7 +549,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             if (!skipAllAppsScale) {
                 SCALE_PROPERTY.set(appsView, scales[0]);
                 ObjectAnimator scale = ObjectAnimator.ofFloat(appsView, SCALE_PROPERTY, scales);
-                scale.setInterpolator(AGGRESSIVE_EASE);
+                scale.setInterpolator(OmniMotionProfile.getHomeRevealInterpolator());
                 scale.setDuration(CONTENT_SCALE_DURATION);
                 launcherAnimator.play(scale);
             }
@@ -647,7 +644,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         overview.setFreezeViewVisibility(true);
 
         ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(overview, SCALE_PROPERTY, scales);
-        scaleAnim.setInterpolator(AGGRESSIVE_EASE);
+        scaleAnim.setInterpolator(OmniMotionProfile.getHomeRevealInterpolator());
         scaleAnim.setDuration(CONTENT_SCALE_DURATION);
         anim.play(scaleAnim);
 
@@ -757,27 +754,27 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
             FloatProp mDx = new FloatProp(0, prop.dX, mOpeningXInterpolator);
-            FloatProp mDy = new FloatProp(0, prop.dY, mOpeningInterpolator);
+            FloatProp mDy = new FloatProp(0, prop.dY, OmniMotionProfile.getHomeRevealInterpolator());
 
             FloatProp mIconScaleToFitScreen = new FloatProp(prop.initialAppIconScale,
-                    prop.finalAppIconScale, mOpeningInterpolator);
+                    prop.finalAppIconScale, OmniMotionProfile.getHomeRevealInterpolator());
             FloatProp mIconAlpha = new FloatProp(prop.iconAlphaStart, 0f,
                     clampToDuration(LINEAR, APP_LAUNCH_ALPHA_START_DELAY, APP_LAUNCH_ALPHA_DURATION,
                             APP_LAUNCH_DURATION));
 
             FloatProp mWindowRadius = new FloatProp(initialWindowRadius, finalWindowRadius,
-                    mOpeningInterpolator);
+                    OmniMotionProfile.getHomeRevealInterpolator());
             FloatProp mShadowRadius = new FloatProp(0, finalShadowRadius,
-                    mOpeningInterpolator);
+                    OmniMotionProfile.getHomeRevealInterpolator());
 
             FloatProp mCropRectCenterX = new FloatProp(prop.cropCenterXStart, prop.cropCenterXEnd,
-                    mOpeningInterpolator);
+                    OmniMotionProfile.getHomeRevealInterpolator());
             FloatProp mCropRectCenterY = new FloatProp(prop.cropCenterYStart, prop.cropCenterYEnd,
-                    mOpeningInterpolator);
+                    OmniMotionProfile.getHomeRevealInterpolator());
             FloatProp mCropRectWidth = new FloatProp(prop.cropWidthStart, prop.cropWidthEnd,
-                    mOpeningInterpolator);
+                    OmniMotionProfile.getHomeRevealInterpolator());
             FloatProp mCropRectHeight = new FloatProp(prop.cropHeightStart, prop.cropHeightEnd,
-                    mOpeningInterpolator);
+                    OmniMotionProfile.getHomeRevealInterpolator());
 
             FloatProp mNavFadeOut = new FloatProp(1f, 0f, clampToDuration(
                     NAV_FADE_OUT_INTERPOLATOR, 0, ANIMATION_NAV_FADE_OUT_DURATION,
@@ -988,18 +985,18 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     WIDGET_CROSSFADE_DURATION_MILLIS / 2 /* duration */,
                     APP_LAUNCH_DURATION));
             final FloatProp mWindowRadius = new FloatProp(initialWindowRadius, finalWindowRadius,
-                    mOpeningInterpolator);
-            final FloatProp mCornerRadiusProgress = new FloatProp(0, 1, mOpeningInterpolator);
+                    OmniMotionProfile.getHomeRevealInterpolator());
+            final FloatProp mCornerRadiusProgress = new FloatProp(0, 1, OmniMotionProfile.getHomeRevealInterpolator());
 
             // Window & widget background positioning bounds
             final FloatProp mDx = new FloatProp(widgetBackgroundBounds.centerX(),
                     windowTargetBounds.centerX(), mOpeningXInterpolator);
             final FloatProp mDy = new FloatProp(widgetBackgroundBounds.centerY(),
-                    windowTargetBounds.centerY(), mOpeningInterpolator);
+                    windowTargetBounds.centerY(), OmniMotionProfile.getHomeRevealInterpolator());
             final FloatProp mWidth = new FloatProp(widgetBackgroundBounds.width(),
-                    windowTargetBounds.width(), mOpeningInterpolator);
+                    windowTargetBounds.width(), OmniMotionProfile.getHomeRevealInterpolator());
             final FloatProp mHeight = new FloatProp(widgetBackgroundBounds.height(),
-                    windowTargetBounds.height(), mOpeningInterpolator);
+                    windowTargetBounds.height(), OmniMotionProfile.getHomeRevealInterpolator());
 
             final FloatProp mNavFadeOut = new FloatProp(1f, 0f, clampToDuration(
                     NAV_FADE_OUT_INTERPOLATOR, 0, ANIMATION_NAV_FADE_OUT_DURATION,

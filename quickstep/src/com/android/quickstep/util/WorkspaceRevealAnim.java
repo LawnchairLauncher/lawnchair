@@ -32,6 +32,8 @@ import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.View;
 
+import app.lawnchair.animation.OmniMotionProfile;
+
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -95,18 +97,18 @@ public class WorkspaceRevealAnim {
                 .getSysUIMultiplier().animateToValue(0f, 1f));
 
         mAnimators.setDuration(DURATION_MS);
-        mAnimators.setInterpolator(OmniFusionMotion.INTERPOLATOR);
+        mAnimators.setInterpolator(OmniMotionProfile.getHomeRevealInterpolator());
     }
 
     private <T extends View>  void addRevealAnimatorsForView(T v, FloatProperty<T> scaleProperty) {
         ObjectAnimator scale = ObjectAnimator.ofFloat(v, scaleProperty, mScaleStart, 1f);
         scale.setDuration(DURATION_MS);
-        scale.setInterpolator(OmniFusionMotion.INTERPOLATOR);
+        scale.setInterpolator(OmniMotionProfile.getHomeRevealInterpolator());
         mAnimators.play(scale);
 
         ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 0, 1f);
         alpha.setDuration(DURATION_MS);
-        alpha.setInterpolator(OmniFusionMotion.INTERPOLATOR);
+        alpha.setInterpolator(OmniMotionProfile.getHomeRevealInterpolator());
         mAnimators.play(alpha);
 
         mAnimators.addListener(new AnimatorListenerAdapter() {

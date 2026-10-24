@@ -21,6 +21,7 @@ import android.graphics.Matrix
 import android.graphics.RectF
 import android.view.View
 import androidx.core.graphics.transform
+import app.lawnchair.animation.OmniMotionProfile
 import com.android.app.animation.Interpolators
 import com.android.app.animation.Interpolators.LINEAR
 import com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY
@@ -53,14 +54,14 @@ class ScalingWorkspaceRevealAnim(
         private const val MIN_ALPHA = 0f
         private const val MAX_SIZE = 1f
         private const val MIN_SIZE = 0.85f
-
-        /** Keep the established radial scale curve while sharing its definition. */
-        private val SCALE_INTERPOLATOR = OmniFusionMotion.RADIAL_SCALE_INTERPOLATOR
     }
 
     private val animation = PendingAnimation(SCALE_DURATION_MS)
 
     init {
+        // Resolve the selected profile once per transition, not per animation frame.
+        val scaleInterpolator = OmniMotionProfile.getRadialScaleInterpolator()
+
         // Make sure the starting state is right for the animation.
         val setupConfig = StateAnimationConfig()
         setupConfig.animFlags = SKIP_OVERVIEW.or(SKIP_DEPTH_CONTROLLER).or(SKIP_SCRIM)
@@ -87,14 +88,14 @@ class ScalingWorkspaceRevealAnim(
             WORKSPACE_SCALE_PROPERTY_FACTORY[SCALE_INDEX_WORKSPACE_STATE],
             MIN_SIZE,
             MAX_SIZE,
-            SCALE_INTERPOLATOR,
+            scaleInterpolator,
         )
         animation.addFloat(
             hotseat,
             HOTSEAT_SCALE_PROPERTY_FACTORY[SCALE_INDEX_WORKSPACE_STATE],
             MIN_SIZE,
             MAX_SIZE,
-            SCALE_INTERPOLATOR,
+            scaleInterpolator,
         )
 
         // Fade in quickly at the beginning of the animation, so the content doesn't look like it's
@@ -117,11 +118,11 @@ class ScalingWorkspaceRevealAnim(
 
         // Match the Wallpaper animation to the rest of the content.
         val depthController = (launcher as? QuickstepLauncher)?.depthController
-        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_DEPTH, SCALE_INTERPOLATOR)
+        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_DEPTH, scaleInterpolator)
         depthController?.setStateWithAnimation(LauncherState.NORMAL, transitionConfig, animation)
 
         // Make sure that the contrast scrim animates correctly if needed.
-        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_SCRIM_FADE, SCALE_INTERPOLATOR)
+        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_SCRIM_FADE, scaleInterpolator)
         launcher.workspace.stateTransitionAnimation.setScrim(
             animation,
             LauncherState.NORMAL,

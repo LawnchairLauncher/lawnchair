@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.app.animation.Interpolators.DECELERATE_1_7;
 import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
@@ -45,6 +44,8 @@ import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.Nullable;
+
+import app.lawnchair.animation.OmniMotionProfile;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.DeviceProfile;
@@ -402,7 +403,7 @@ public class AllAppsTransitionController
 
         // need to decide depending on the release velocity
         Interpolator verticalProgressInterpolator = config.getInterpolator(ANIM_VERTICAL_PROGRESS,
-                config.isUserControlled() ? LINEAR : DECELERATE_1_7);
+                config.isUserControlled() ? LINEAR : OmniMotionProfile.getHomeRevealInterpolator());
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setInterpolator(verticalProgressInterpolator);
         builder.add(anim);

@@ -37,8 +37,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import androidx.datastore.preferences.core.stringPreferencesKey
+import app.lawnchair.animation.OmniMotionProfile
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.destinations.openAppInfo
 import app.lawnchair.util.DeviceTierManager
@@ -54,8 +57,16 @@ import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 import com.android.systemui.shared.system.QuickStepContract
 import java.io.File
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class LawnchairApp : Application() {
+    private val motionProfileScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val compatible = Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
     private val isRecentsComponent: Boolean by unsafeLazy { checkRecentsComponent() }
     private val recentsEnabled: Boolean get() = compatible && isRecentsComponent
@@ -67,6 +78,17 @@ class LawnchairApp : Application() {
         super.onCreate()
         instance = this
         DeviceTierManager.getInstance(this)
+        motionProfileScope.launch {
+            // Pre-create immutable interpolators off the UI thread before reading stored settings.
+            OmniMotionProfile.setStyle(OmniMotionProfile.STYLE_FUSION)
+            PreferenceManager2.omniPreferencesDataStore(this@LawnchairApp).data
+                .map { preferences ->
+                    preferences[stringPreferencesKey("omni_motion_profile")]
+                        ?: OmniMotionProfile.STYLE_FUSION
+                }
+                .distinctUntilChanged()
+                .collect { style -> OmniMotionProfile.setStyle(style) }
+        }
         QuickStepContract.sRecentsDisabled = !recentsEnabled
         Log.i(TAG, "Quickstep enabled=$recentsEnabled sdk=${Build.VERSION.SDK_INT} compatible=$compatible")
         // Categorization assets load on first use, not during the Home cold-start path.

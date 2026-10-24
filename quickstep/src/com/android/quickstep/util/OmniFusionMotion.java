@@ -15,10 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import android.graphics.Path;
-import android.view.animation.Interpolator;
-import android.view.animation.PathInterpolator;
-
 /**
  * Shared motion tokens for Omni Fusion Motion.
  *
@@ -26,25 +22,6 @@ import android.view.animation.PathInterpolator;
  * or claiming control over SystemUI-owned notification transitions.
  */
 public final class OmniFusionMotion {
-    /** Short, emphasized ease for transitions that reveal the home workspace. */
-    public static final Interpolator INTERPOLATOR =
-            new PathInterpolator(0.20f, 0.0f, 0.0f, 1.0f);
-
-    /**
-     * Preserve the existing radial scaling curve, which was tuned specifically for
-     * workspace and wallpaper reveal motion.
-     */
-    public static final Interpolator RADIAL_SCALE_INTERPOLATOR =
-            createRadialScaleInterpolator();
-
-    private static Interpolator createRadialScaleInterpolator() {
-        Path path = new Path();
-        path.moveTo(0f, 0f);
-        path.cubicTo(0.045f, 0.0356f, 0.0975f, 0.2055f, 0.15f, 0.3952f);
-        path.cubicTo(0.235f, 0.6855f, 0.235f, 1f, 1f, 1f);
-        return new PathInterpolator(path);
-    }
-
     /** Duration for the standard swipe-to-home workspace reveal. */
     public static final int HOME_REVEAL_DURATION_MS = 320;
 

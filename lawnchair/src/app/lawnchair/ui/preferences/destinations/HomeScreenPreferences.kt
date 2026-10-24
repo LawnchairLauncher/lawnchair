@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.LawnchairApp
+import app.lawnchair.animation.OmniMotionProfile
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
@@ -38,6 +39,7 @@ import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.OverlayHandlerPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
@@ -123,6 +125,29 @@ fun HomeScreenPreferences(
         }
         PreferenceGroup(heading = stringResource(R.string.style)) {
             HomeScreenTextColorPreference()
+            ListPreference(
+                adapter = prefs2.omniMotionProfile.getAdapter(),
+                entries = listOf(
+                    ListPreferenceEntry(
+                        value = OmniMotionProfile.STYLE_FUSION,
+                        label = { stringResource(id = R.string.omni_motion_style_fusion) },
+                    ),
+                    ListPreferenceEntry(
+                        value = OmniMotionProfile.STYLE_PIXEL,
+                        label = { stringResource(id = R.string.omni_motion_style_pixel) },
+                    ),
+                    ListPreferenceEntry(
+                        value = OmniMotionProfile.STYLE_IOS,
+                        label = { stringResource(id = R.string.omni_motion_style_ios) },
+                    ),
+                    ListPreferenceEntry(
+                        value = OmniMotionProfile.STYLE_SAMSUNG,
+                        label = { stringResource(id = R.string.omni_motion_style_samsung) },
+                    ),
+                ),
+                label = stringResource(id = R.string.omni_motion_profile),
+                description = stringResource(id = R.string.omni_motion_profile_description),
+            )
             OverlayHandlerPreference(
                 adapter = prefs2.closingAppOverlay.getAdapter(),
                 label = stringResource(id = R.string.app_closing_animation),

@@ -54,6 +54,7 @@ import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.List;
 
+import app.lawnchair.animation.OmniMotionProfile;
 import app.lawnchair.theme.color.ColorOption;
 import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
@@ -114,10 +115,8 @@ public class FolderAnimationManager {
         mDuration = res.getInteger(R.integer.config_materialFolderExpandDuration);
         mDelay = res.getInteger(R.integer.config_folderDelay);
 
-        mFolderInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.standard_interpolator);
-        mLargeFolderPreviewItemOpenInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.large_folder_preview_item_open_interpolator);
+        mFolderInterpolator = OmniMotionProfile.getHomeRevealInterpolator();
+        mLargeFolderPreviewItemOpenInterpolator = OmniMotionProfile.getHomeRevealInterpolator();
         mLargeFolderPreviewItemCloseInterpolator = AnimationUtils.loadInterpolator(mContext,
                 R.interpolator.standard_accelerate_interpolator);
     }

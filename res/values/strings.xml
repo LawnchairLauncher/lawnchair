@@ -500,4 +500,11 @@
     <string name="ps_add_button_label">Install</string>
     <!-- Content description for install app icon -->
     <string name="ps_add_button_content_description">Install apps to Private Space</string>
+
+        <string name="omni_motion_profile">Motion profile</string>
+    <string name="omni_motion_profile_description">Choose the motion style for folders, app drawer, app launch, and home-return animations in Omni Launcher. This does not change XOS notifications or Quick Settings.</string>
+    <string name="omni_motion_style_fusion">Omni Fusion</string>
+    <string name="omni_motion_style_pixel">Pixel-inspired</string>
+    <string name="omni_motion_style_ios">iOS-inspired</string>
+    <string name="omni_motion_style_samsung">Samsung-inspired</string>
 </resources>
