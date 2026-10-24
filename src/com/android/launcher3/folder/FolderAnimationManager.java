@@ -34,7 +34,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.util.Property;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
@@ -112,13 +111,15 @@ public class FolderAnimationManager {
         mIsOpening = isOpening;
 
         Resources res = mContent.getResources();
-        mDuration = res.getInteger(R.integer.config_materialFolderExpandDuration);
+        mDuration = OmniMotionProfile.scaleFolderDuration(
+                res.getInteger(R.integer.config_materialFolderExpandDuration));
         mDelay = res.getInteger(R.integer.config_folderDelay);
 
-        mFolderInterpolator = OmniMotionProfile.getHomeRevealInterpolator();
+        mFolderInterpolator = mIsOpening
+                ? OmniMotionProfile.getHomeRevealInterpolator()
+                : OmniMotionProfile.getFolderCloseInterpolator();
         mLargeFolderPreviewItemOpenInterpolator = OmniMotionProfile.getHomeRevealInterpolator();
-        mLargeFolderPreviewItemCloseInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.standard_accelerate_interpolator);
+        mLargeFolderPreviewItemCloseInterpolator = OmniMotionProfile.getFolderCloseInterpolator();
     }
 
     /**

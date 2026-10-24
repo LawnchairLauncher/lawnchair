@@ -752,29 +752,32 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 ? 0 : getWindowCornerRadius(mLauncher);
         final float finalShadowRadius = appTargetsAreTranslucent ? 0 : mMaxShadowRadius;
 
+        // Keep all launch geometry tracks on one profile snapshot.
+        final Interpolator appLaunchInterpolator = OmniMotionProfile.getAppLaunchInterpolator();
+
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
             FloatProp mDx = new FloatProp(0, prop.dX, mOpeningXInterpolator);
-            FloatProp mDy = new FloatProp(0, prop.dY, OmniMotionProfile.getHomeRevealInterpolator());
+            FloatProp mDy = new FloatProp(0, prop.dY, appLaunchInterpolator);
 
             FloatProp mIconScaleToFitScreen = new FloatProp(prop.initialAppIconScale,
-                    prop.finalAppIconScale, OmniMotionProfile.getHomeRevealInterpolator());
+                    prop.finalAppIconScale, appLaunchInterpolator);
             FloatProp mIconAlpha = new FloatProp(prop.iconAlphaStart, 0f,
                     clampToDuration(LINEAR, APP_LAUNCH_ALPHA_START_DELAY, APP_LAUNCH_ALPHA_DURATION,
                             APP_LAUNCH_DURATION));
 
             FloatProp mWindowRadius = new FloatProp(initialWindowRadius, finalWindowRadius,
-                    OmniMotionProfile.getHomeRevealInterpolator());
+                    appLaunchInterpolator);
             FloatProp mShadowRadius = new FloatProp(0, finalShadowRadius,
-                    OmniMotionProfile.getHomeRevealInterpolator());
+                    appLaunchInterpolator);
 
             FloatProp mCropRectCenterX = new FloatProp(prop.cropCenterXStart, prop.cropCenterXEnd,
-                    OmniMotionProfile.getHomeRevealInterpolator());
+                    appLaunchInterpolator);
             FloatProp mCropRectCenterY = new FloatProp(prop.cropCenterYStart, prop.cropCenterYEnd,
-                    OmniMotionProfile.getHomeRevealInterpolator());
+                    appLaunchInterpolator);
             FloatProp mCropRectWidth = new FloatProp(prop.cropWidthStart, prop.cropWidthEnd,
-                    OmniMotionProfile.getHomeRevealInterpolator());
+                    appLaunchInterpolator);
             FloatProp mCropRectHeight = new FloatProp(prop.cropHeightStart, prop.cropHeightEnd,
-                    OmniMotionProfile.getHomeRevealInterpolator());
+                    appLaunchInterpolator);
 
             FloatProp mNavFadeOut = new FloatProp(1f, 0f, clampToDuration(
                     NAV_FADE_OUT_INTERPOLATOR, 0, ANIMATION_NAV_FADE_OUT_DURATION,

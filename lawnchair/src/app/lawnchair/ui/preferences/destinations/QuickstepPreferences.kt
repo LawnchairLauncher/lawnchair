@@ -11,12 +11,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairApp
+import app.lawnchair.animation.OmniMotionProfile
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.QuickActionsPreferences
 import app.lawnchair.ui.preferences.components.RecentsQuickAction
+import app.lawnchair.ui.preferences.components.controls.ListPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
@@ -88,6 +91,35 @@ fun QuickstepPreferences(
                     showAsPercentage = true,
                 )
             }
+        }
+
+        PreferenceGroup(
+            heading = stringResource(id = R.string.omni_motion_style_heading),
+            description = stringResource(id = R.string.omni_motion_style_description),
+        ) {
+            val motionStyleEntries = listOf(
+                ListPreferenceEntry(
+                    value = OmniMotionProfile.STYLE_FUSION,
+                    label = { stringResource(id = R.string.omni_motion_style_fusion) },
+                ),
+                ListPreferenceEntry(
+                    value = OmniMotionProfile.STYLE_PIXEL,
+                    label = { stringResource(id = R.string.omni_motion_style_pixel) },
+                ),
+                ListPreferenceEntry(
+                    value = OmniMotionProfile.STYLE_IOS,
+                    label = { stringResource(id = R.string.omni_motion_style_ios) },
+                ),
+                ListPreferenceEntry(
+                    value = OmniMotionProfile.STYLE_SAMSUNG,
+                    label = { stringResource(id = R.string.omni_motion_style_samsung) },
+                ),
+            )
+            ListPreference(
+                adapter = prefs.omniMotionStyle.getAdapter(),
+                entries = motionStyleEntries,
+                label = stringResource(id = R.string.omni_motion_style_label),
+            )
         }
 
         QuickActionsPreferences(

@@ -227,6 +227,13 @@
     <!--Overlay-->
     <string name="overlay_fade_in">Fade In</string>
     <string name="overlay_suck_in">Suck In</string>
+    <string name="omni_motion_style_heading">Motion</string>
+    <string name="omni_motion_style_label">Animation profile</string>
+    <string name="omni_motion_style_description">Choose the feel of launcher-owned transitions. The selected profile applies to upcoming animations.</string>
+    <string name="omni_motion_style_fusion">Omni Fusion</string>
+    <string name="omni_motion_style_pixel">Pixel-inspired</string>
+    <string name="omni_motion_style_ios">iOS-inspired</string>
+    <string name="omni_motion_style_samsung">One UI-inspired</string>
     <string name="app_closing_animation">App closing animation</string>
     <string name="overlay_label">Overlay</string>
     <string name="overlay_none">None</string>

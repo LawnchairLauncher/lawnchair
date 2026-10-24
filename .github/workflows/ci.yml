@@ -85,6 +85,8 @@ jobs:
           distribution: 'zulu'
           java-version: 21
       - uses: gradle/actions/setup-gradle@v5
+      - name: Validate Omni motion profile curves
+        run: python3 tools/validate_omni_motion_profiles.py
       - run: ./gradlew spotlessCheck
       - name: Verify actual APK Kotlin source inputs
         run: ./gradlew help --no-configuration-cache --init-script scripts/verify_apk_sources.gradle

@@ -403,7 +403,7 @@ public class AllAppsTransitionController
 
         // need to decide depending on the release velocity
         Interpolator verticalProgressInterpolator = config.getInterpolator(ANIM_VERTICAL_PROGRESS,
-                config.isUserControlled() ? LINEAR : OmniMotionProfile.getHomeRevealInterpolator());
+                config.isUserControlled() ? LINEAR : OmniMotionProfile.getAppDrawerSettleInterpolator());
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setInterpolator(verticalProgressInterpolator);
         builder.add(anim);
