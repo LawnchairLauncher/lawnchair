@@ -16,8 +16,9 @@
 
 package com.android.launcher3.folder;
 
-import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.DEFAULT_NUM_ITEMS_IN_PREVIEW;
 
+import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -28,6 +29,8 @@ import com.android.launcher3.model.data.ItemInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.lawnchair.folder.FolderPreviewConfig;
+
 /**
  * Utility class for managing item positions in a folder based on rank
  */
@@ -37,28 +40,48 @@ public class FolderGridOrganizer {
     private final int mMaxCountX;
     private final int mMaxCountY;
     private final int mMaxItemsPerPage;
+    private final int mPreviewMaxItems;
 
     private int mNumItemsInFolder;
     private int mCountX;
     private int mCountY;
-    private boolean mDisplayingUpperLeftQuadrant = false;
-    private static final int PREVIEW_MAX_ROWS = 2;
-    private static final int PREVIEW_MAX_COLUMNS = 2;
 
     /**
      * Note: must call {@link #setFolderInfo(FolderInfo)} manually for verifier to work.
      */
     public FolderGridOrganizer(int maxCountX, int maxCountY) {
-        mMaxCountX = maxCountX;
-        mMaxCountY = maxCountY;
-        mMaxItemsPerPage = mMaxCountX * mMaxCountY;
+        this(maxCountX, maxCountY, DEFAULT_NUM_ITEMS_IN_PREVIEW);
     }
 
     /**
-     * Creates a FolderGridOrganizer for the given DeviceProfile
+     * Creates an organizer with an explicit closed-folder preview item count.
+     */
+    public FolderGridOrganizer(int maxCountX, int maxCountY, int previewMaxItems) {
+        mMaxCountX = maxCountX;
+        mMaxCountY = maxCountY;
+        mMaxItemsPerPage = mMaxCountX * mMaxCountY;
+        mPreviewMaxItems = previewMaxItems;
+    }
+
+    /**
+     * Creates a FolderGridOrganizer for the given DeviceProfile using the default 2×2 preview.
      */
     public static FolderGridOrganizer createFolderGridOrganizer(DeviceProfile profile) {
         return new FolderGridOrganizer(profile.numFolderColumns, profile.numFolderRows);
+    }
+
+    /**
+     * Creates a FolderGridOrganizer using the user's folder preview grid preference.
+     */
+    public static FolderGridOrganizer createFolderGridOrganizer(Context context,
+            DeviceProfile profile) {
+        return new FolderGridOrganizer(profile.numFolderColumns, profile.numFolderRows,
+                FolderPreviewConfig.getActiveItemCount(context));
+    }
+
+    /** Active number of icons shown in the closed-folder preview. */
+    public int getPreviewMaxItems() {
+        return mPreviewMaxItems;
     }
 
     /**
@@ -74,8 +97,6 @@ public class FolderGridOrganizer {
     public FolderGridOrganizer setContentSize(int contentSize) {
         if (contentSize != mNumItemsInFolder) {
             calculateGridSize(contentSize);
-
-            mDisplayingUpperLeftQuadrant = contentSize > MAX_NUM_ITEMS_IN_PREVIEW;
             mNumItemsInFolder = contentSize;
         }
         return this;
@@ -164,22 +185,18 @@ public class FolderGridOrganizer {
     }
 
     /**
-     * Returns the preview items for the provided pageNo using the full list of contents
+     * Returns the preview items for the provided pageNo using the full list of contents.
+     * Contents are expected in reading order (rank / cellY / cellX); the first
+     * {@link #mPreviewMaxItems} items on the page are shown.
      */
     public <T, R extends T> ArrayList<R> previewItemsForPage(int page, List<T> contents) {
         ArrayList<R> result = new ArrayList<>();
-        int itemsPerPage = mCountX * mCountY;
+        int itemsPerPage = Math.max(mCountX * mCountY, 1);
         int start = itemsPerPage * page;
         int end = Math.min(start + itemsPerPage, contents.size());
 
-        for (int i = start, rank = 0; i < end; i++, rank++) {
-            if (isItemInPreview(page, rank)) {
-                result.add((R) contents.get(i));
-            }
-
-            if (result.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
-                break;
-            }
+        for (int i = start; i < end && result.size() < mPreviewMaxItems; i++) {
+            result.add((R) contents.get(i));
         }
 
         if (result.isEmpty()) {
@@ -200,19 +217,15 @@ public class FolderGridOrganizer {
     }
 
     /**
-     * @param page The page the item is on.
-     * @param rank The rank of the item.
-     * @return True iff the icon is in the 2x2 upper left quadrant of the Folder.
+     * @param page The page the item is on (unused; preview always follows reading order).
+     * @param rank The rank of the item within the page.
+     * @return True iff the icon is among the first {@link #mPreviewMaxItems} in reading order.
      */
     public boolean isItemInPreview(int page, int rank) {
-        // First page items are laid out such that the first 4 items are always in the upper
-        // left quadrant. For all other pages, we need to check the row and col.
-        if (page > 0 || mDisplayingUpperLeftQuadrant) {
-            int col = rank % mCountX;
-            int row = rank / mCountX;
-            return col < PREVIEW_MAX_COLUMNS && row < PREVIEW_MAX_ROWS;
-        }
-        // If we have less than 4 items do this
-        return rank < MAX_NUM_ITEMS_IN_PREVIEW;
+        // Match closed-folder preview to folder contents order (left-to-right, top-to-bottom
+        // by rank), not the upper-left corner of the opened folder grid. Otherwise a 4-column
+        // folder with a 3×3 preview would skip the 4th icon on each row (e.g. Gemini after
+        // YouTube).
+        return rank < mPreviewMaxItems;
     }
 }
