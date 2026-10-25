@@ -175,6 +175,20 @@ public class LauncherAnimUtils {
                         }
                     };
 
+    public static final FloatProperty<View> VIEW_TRANSLATE_Z =
+            View.TRANSLATION_Z instanceof FloatProperty ? (FloatProperty) View.TRANSLATION_Z
+                    : new FloatProperty<View>("translateZ") {
+                        @Override
+                        public void setValue(View view, float v) {
+                            view.setTranslationZ(v);
+                        }
+
+                        @Override
+                        public Float get(View view) {
+                            return view.getTranslationZ();
+                        }
+                    };
+
     public static final FloatProperty<View> VIEW_ALPHA =
             View.ALPHA instanceof FloatProperty ? (FloatProperty) View.ALPHA
                     : new FloatProperty<View>("alpha") {

@@ -84,7 +84,7 @@ class FolderAnimationSpringBuilderManager(
             scrim.setBackgroundColor(Color.TRANSPARENT)
             if (Utilities.ATLEAST_S && launcher.stateManager.state.getDepth(launcher) == 0f) {
                 for (target in launcher.depthBlurTargets) {
-                    target.renderEffect = null
+                    target.setRenderEffect(null)
                 }
             }
         }

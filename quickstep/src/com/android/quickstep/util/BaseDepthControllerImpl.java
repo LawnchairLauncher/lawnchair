@@ -183,7 +183,6 @@ public class BaseDepthControllerImpl implements BaseDepthController {
     public MultiProperty getFolderZoom() {
         return folderZoom;
     }
-    }
 
     /**
      * Returns if cross window blurs are enabled. In other words, whether launcher should use blurs
@@ -277,7 +276,6 @@ public class BaseDepthControllerImpl implements BaseDepthController {
         if (!skipUpdate) {
             mCurrentBlur = newBlur;
             blurWorkspaceDepthTargets();
-        }
         }
 
         if (!BlurUtils.supportsBlursOnWindows()) {
