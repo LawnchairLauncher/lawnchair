@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">por %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">Justo Ahora</string>
-    <string name="time_minutes_ago">%dmin</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%ds</string>
-    <string name="time_months_ago">%dmes</string>
-    <string name="time_years_ago">%daño</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dmin</item>
+        <item quantity="other">%dmin</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dh</item>
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dd</item>
+        <item quantity="other">%dd</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%ds</item>
+        <item quantity="other">%ds</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dmes</item>
+        <item quantity="other">%dmes</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%daño</item>
+        <item quantity="other">%daño</item>
+    </plurals>
     <string name="managed_by_lawnchair">Gestionado por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferencias</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Ocultar carpetas de apps</string>
     <string name="apps_in_folder_description">Las aplicaciones asignadas a carpetas están excluidas de la lista de aplicaciones</string>
     <string name="folders_filter_duplicates">Mostrar solo aplicaciones únicas</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Mi carpeta</string>
     <string name="sort_active_items_action">Ordenar elementos activos</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Ajustes</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">General</string>
     <string name="general_description">Colores, paquetes de iconos y burbujas de notificación</string>
     <string name="home_screen_label">Pantalla de inició</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Incrementar el tamaño máximo de la cuadrícula</string>
     <string name="workspace_increase_max_grid_size_description">Aumenta el tamaño máximo permitido de la cuadrícula de la pantalla de inicio de 10 &#xd7; 10 a 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Recargar siempre los iconos</string>
-    <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">Esto hará que los iconos se actualicen con regularidad y afectará el rendimiento. Desactívalo si el paquete de iconos no se actualiza con regularidad.</string>
     <string name="show_deck_layout">Diseño de colección</string>
     <string name="show_deck_layout_description">Mostrar una opción de diseño para ocultar el cajón de aplicaciones y agregar automáticamente nuevas aplicaciones a la pantalla de inicio</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Usar varias líneas</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Fondos de iconos transparentes</string>
-    <string name="transparent_background_icons_description">Para iconos temáticos e iconos auto-adaptativos</string>
     <string name="auto_adaptive_icons_label">Iconos adaptables</string>
-    <string name="auto_adaptive_icons_description">Para todos los iconos que no se adapten</string>
     <string name="shadow_bg_icons_label">Mostrar sombra tras los iconos</string>
     <string name="background_lightness_label">Luminosidad del fondo</string>
     <string name="adaptive_icon_background_description">Usar tono de fondo para sustituir el color blanco</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">El portapapeles no contiene ninguna forma de icono conocida</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Paquete de iconos</string>
-    <string name="themed_icon_pack">Fuente de iconos temáticos</string>
-    <string name="themed_icon_pack_tint">Tinte con color de acento</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="force_monochrome_label">Forzar monocromo</string>
     <string name="force_monochrome_description">Vuelve a colorear las apps no compatibles con el color de acento actual.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Iconos temáticos</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Desactivados</string>
     <string name="themed_icons_home_label">Pantalla principal</string>
     <string name="themed_icons_home_and_drawer_label">Pantalla de inicio y cajón de aplicaciones</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">No hay ningún paquete de iconos compatible</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Añadir tipografías</string>
     <string name="pref_fonts_add_fonts_summary">Solo se permiten tipografías OTF y TTF</string>
