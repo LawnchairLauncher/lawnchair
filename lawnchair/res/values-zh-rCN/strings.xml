@@ -55,12 +55,24 @@
     <string name="changes_dialog_commit_info">由 %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">现在</string>
-    <string name="time_minutes_ago">%d分钟</string>
-    <string name="time_hours_ago">%d小时</string>
-    <string name="time_days_ago">%d天</string>
-    <string name="time_weeks_ago">%d周</string>
-    <string name="time_months_ago">%d月</string>
-    <string name="time_years_ago">%d年</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="other">%d分钟</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="other">%d小时</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="other">%d天</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="other">%d周</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="other">%d月</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="other">%d年</item>
+    </plurals>
     <string name="managed_by_lawnchair">由 Lawnchair 管理</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">首选项</string>
@@ -114,6 +126,7 @@
     <string name="apps_in_folder_label">隐藏应用文件夹</string>
     <string name="apps_in_folder_description">分配给文件夹的应用程序被排除在应用程序列表之外</string>
     <string name="folders_filter_duplicates">仅显示唯一应用</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">我的文件夹</string>
     <string name="sort_active_items_action">排序活跃项目</string>
     <!-- A11y description -->
@@ -135,6 +148,8 @@
 
     -->
     <string name="settings">设置</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">通用</string>
     <string name="general_description">颜色、图标包与通知圆点</string>
     <string name="home_screen_label">主屏幕</string>
@@ -170,7 +185,7 @@
     <string name="workspace_increase_max_grid_size_label">增加最大网格大小限制</string>
     <string name="workspace_increase_max_grid_size_description">主屏幕网格最大尺寸从 10 &#xd7; 10 提升至 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">始终重载图标</string>
-    <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">开启后图标会定期刷新，可能影响性能。如果您的图标包更新不频繁，建议关闭此功能。</string>
     <string name="show_deck_layout">桌面模式</string>
     <string name="show_deck_layout_description">显示一个外观选项，开启时隐藏抽屉，并将 App 显示到桌面上</string>
@@ -239,9 +254,7 @@
     <string name="twoline_label">使用多行</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">透明图标背景</string>
-    <string name="transparent_background_icons_description">用于主题图标和自适应图标</string>
     <string name="auto_adaptive_icons_label">自适应图标</string>
-    <string name="auto_adaptive_icons_description">用于全部非自适应图标</string>
     <string name="shadow_bg_icons_label">在图标后显示阴影</string>
     <string name="background_lightness_label">背景亮度</string>
     <string name="adaptive_icon_background_description">使用 100% 背景亮度为白色</string>
@@ -306,16 +319,23 @@
     <string name="icon_shape_clipboard_import_error">剪贴板不包含有效的图标形状</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">图标包</string>
-    <string name="themed_icon_pack">主题图标来源</string>
-    <string name="themed_icon_pack_tint">用强调色进行着色</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">系统图标</string>
     <string name="force_monochrome_label">强制单色</string>
     <string name="force_monochrome_description">使用当前主题色给不支持的图标重新着色。</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">主题图标</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">关</string>
     <string name="themed_icons_home_label">主屏幕</string>
     <string name="themed_icons_home_and_drawer_label">主屏幕和应用抽屉</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">没有支持的图标包</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">添加字体</string>
     <string name="pref_fonts_add_fonts_summary">支持 OTF 和 TTF 格式字体</string>

@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">por %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">xusto agora</string>
-    <string name="time_minutes_ago">%d m</string>
-    <string name="time_hours_ago">%d h</string>
-    <string name="time_days_ago">%d días</string>
-    <string name="time_weeks_ago">%d semanas</string>
-    <string name="time_months_ago">%d meses</string>
-    <string name="time_years_ago">%d anos</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%d m</item>
+        <item quantity="other">%d m</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%d h</item>
+        <item quantity="other">%d h</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%d días</item>
+        <item quantity="other">%d días</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%d semanas</item>
+        <item quantity="other">%d semanas</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%d meses</item>
+        <item quantity="other">%d meses</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%d anos</item>
+        <item quantity="other">%d anos</item>
+    </plurals>
     <string name="managed_by_lawnchair">Xestionado por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferencias</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Ocultar aplicacións en cartafoles</string>
     <string name="apps_in_folder_description">As aplicacións asignadas a cartafoles están excluídas das listas de aplicacións</string>
     <string name="folders_filter_duplicates">Só amosar aplicacións únicas</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">O meu cartafol</string>
     <string name="sort_active_items_action">Ordenar os elementos activos</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Configuración</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Xeral</string>
     <string name="general_description">Cores, paquetes de iconas, puntos de notificación</string>
     <string name="home_screen_label">Pantalla de inicio</string>
@@ -170,10 +191,10 @@
     <string name="workspace_increase_max_grid_size_label">Aumentar o límite máximo do tamaño da grella</string>
     <string name="workspace_increase_max_grid_size_description">Aumentar o tamaño máximo permitido da grella da pantalla de inicio de 10 &#xd7; 10 a 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Recargar sempre as iconas</string>
-    <string name="always_reload_icons_description">Evita usar iconas en caché procedentes de paquetes de iconas</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">Isto fará que as iconas se actualicen con regularidade, o que afectará ao rendemento. Desactívao se o paquete de iconas non se actualiza con frecuencia.</string>
     <string name="show_deck_layout">Disposición da cuberta</string>
-    <string name="show_deck_layout_description">Mostra unha opción de deseño para ocultar o caixón de aplicacións e engadir automaticamente novas aplicacións á pantalla de inicio</string>
+    <string name="show_deck_layout_description">Amosa unha opción de deseño para ocultar o caixón de aplicacións e engadir automaticamente novas aplicacións á pantalla de inicio</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Activa os cambios de Material 3 Expressive na área de traballo</string>
     <string name="folder_shape_label">Forma do cartafol</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Usar varias liñas</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Fondos de icona transparentes</string>
-    <string name="transparent_background_icons_description">Para iconas temáticas e iconas autoadaptables</string>
     <string name="auto_adaptive_icons_label">Iconas autoadaptables</string>
-    <string name="auto_adaptive_icons_description">Para todas as iconas non adaptativas</string>
     <string name="shadow_bg_icons_label">Amosar sombra detrás das iconas</string>
     <string name="background_lightness_label">Luminosidade do fondo</string>
     <string name="adaptive_icon_background_description">Usa unha luminosidade de fondo do 100 % para o branco</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">O portapapeis non contén unha forma de icona válida</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Paquete de iconas</string>
-    <string name="themed_icon_pack">Fonte de iconas temáticas</string>
-    <string name="themed_icon_pack_tint">Tinguir coa cor de acento</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Iconas do sistema</string>
     <string name="force_monochrome_label">Forzar o monocromo</string>
     <string name="force_monochrome_description">Volve colorear as aplicacións non compatibles coa cor de acento actual.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Iconas temáticas</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Desactivados</string>
     <string name="themed_icons_home_label">Pantalla de inicio</string>
     <string name="themed_icons_home_and_drawer_label">Pantalla de inicio e caixón de aplicacións</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Non hai paquetes de iconas soportados</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Engadir fontes</string>
     <string name="pref_fonts_add_fonts_summary">As fontes OTF e TTF son compatibles</string>
@@ -556,7 +582,7 @@
     <string name="auto_updater_label">Comprobar automaticamente se hai actualizacións</string>
     <string name="auto_updater_description">Comproba se hai actualizacións Nightly ao abrir a pantalla Acerca de</string>
     <string name="live_information_label">Información en tempo real</string>
-    <string name="live_information_description">Mostra o anuncio e establece os indicadores de funcionalidade predeterminados.</string>
+    <string name="live_information_description">Amosa o anuncio e establece os indicadores de funcionalidade predeterminados.</string>
     <string name="wallpaper_blur">Fondo de pantalla difuminado (experimental)</string>
     <string name="wallpaper_background_blur">Intensidade do desenfoque</string>
     <string name="wallpaper_background_blur_factor">Limiar do factor</string>
@@ -668,10 +694,10 @@
     <!-- App drawer settings -->
     <string name="hidden_apps_label">Aplicacións agochadas</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Cargar aplicacións en lote</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Cargar e mostrar iconas en lote no lugar de individualmente</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Cargar e amosar iconas en lote no lugar de individualmente</string>
     <string name="pref_all_apps_remember_position_title">Lembrar a posición de desprazamento</string>
     <string name="pref_all_apps_remember_position_description">Garda a última posición de desprazamento ao pechar o caixón de aplicacións</string>
-    <string name="pref_all_apps_show_scrollbar_title">Mostrar a barra de desprazamento</string>
+    <string name="pref_all_apps_show_scrollbar_title">Amosar a barra de desprazamento</string>
     <string name="app_drawer_columns">Columnas do caixón de aplicacións</string>
     <string name="row_height_label">Altura da fila</string>
     <string name="app_drawer_haptic_feedback_label">Retroalimentación háptica</string>
