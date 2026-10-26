@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences.rememberTransformAdapter
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
@@ -54,6 +55,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 
+/** Dock settings: style, search bar, grid, icons and layout. */
 @Composable
 fun DockPreferences(modifier: Modifier = Modifier) {
     val prefs = preferenceManager()
@@ -190,6 +192,21 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
             step = 1,
             valueRange = 1..5,
         )
+        val dockPages = dockPagesAdapter.state.value
+        ExpandAndShrink(visible = dockPages > 1) {
+            key(dockPages) {
+                SliderPreference(
+                    label = stringResource(id = R.string.dock_default_page),
+                    adapter = rememberTransformAdapter(
+                        adapter = prefs.dockDefaultPage.getAdapter(),
+                        transformGet = { (it + 1).coerceIn(1, dockPages) },
+                        transformSet = { it - 1 },
+                    ),
+                    step = 1,
+                    valueRange = 1..maxOf(2, dockPages),
+                )
+            }
+        }
         SliderPreference(
             adapter = prefs2.hotseatBottomFactor.getAdapter(),
             label = stringResource(id = R.string.hotseat_bottom_space_label),

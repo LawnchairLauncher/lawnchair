@@ -10,13 +10,17 @@ import java.util.TimeZone
 data class City(val zone: String, val label: String, val region: String = "")
 
 /** A locked widget ignores taps; it is edited from the launcher's widget settings button. */
-data class WorldClockConfig(val cities: List<City>, val use24h: Boolean, val locked: Boolean = true)
+data class WorldClockConfig(val cities: List<City>, val use24h: Boolean, val locked: Boolean = false)
 
 /** Per-widget settings, keyed by appWidgetId. */
 class WorldClockStore(private val context: Context) {
 
     private val prefs = context.getSharedPreferences("world_clock_widgets", Context.MODE_PRIVATE)
 
+    /**
+     * Settings for [widgetId], adopting orphaned settings first; new widgets start from the last
+     * saved.
+     */
     fun load(widgetId: Int): WorldClockConfig {
         if (!prefs.contains(citiesKey(widgetId))) adoptOrphan(widgetId)
         // A new widget starts from the most recently saved settings
@@ -32,10 +36,11 @@ class WorldClockStore(private val context: Context) {
             ?.takeIf { it.isNotEmpty() }
             ?: listOf(TimeZone.getDefault().id.let { City(it, labelFor(it)) })
         val use24h = prefs.getBoolean(use24hKey(id), DateFormat.is24HourFormat(context))
-        val locked = prefs.getBoolean(lockedKey(id), true)
+        val locked = prefs.getBoolean(lockedKey(id), false)
         return WorldClockConfig(cities, use24h, locked)
     }
 
+    /** Saves [config] for [widgetId] and as the template for new widgets. */
     fun save(widgetId: Int, config: WorldClockConfig) {
         val cities = config.cities.joinToString("\n") {
             listOf(it.zone, it.label.clean(), it.region.clean()).joinToString("\t")
@@ -49,6 +54,7 @@ class WorldClockStore(private val context: Context) {
         editor.apply()
     }
 
+    /** Removes the settings of a deleted widget. */
     fun delete(widgetId: Int) {
         prefs.edit().remove(citiesKey(widgetId)).remove(use24hKey(widgetId)).remove(lockedKey(widgetId)).apply()
     }
@@ -71,7 +77,7 @@ class WorldClockStore(private val context: Context) {
         prefs.edit()
             .putString(citiesKey(widgetId), prefs.getString(citiesKey(orphan), null))
             .putBoolean(use24hKey(widgetId), prefs.getBoolean(use24hKey(orphan), DateFormat.is24HourFormat(context)))
-            .putBoolean(lockedKey(widgetId), prefs.getBoolean(lockedKey(orphan), true))
+            .putBoolean(lockedKey(widgetId), prefs.getBoolean(lockedKey(orphan), false))
             .remove(citiesKey(orphan)).remove(use24hKey(orphan)).remove(lockedKey(orphan))
             .apply()
     }
@@ -85,6 +91,7 @@ class WorldClockStore(private val context: Context) {
         /** Template for new widgets; real appWidgetIds are positive */
         private const val LAST_SAVED = 0
 
+        /** City part of a zone id, e.g. "New York" for America/New_York. */
         fun labelFor(zone: String): String = zone.substringAfterLast('/').replace('_', ' ')
 
         /** Region/City zones only; drops aliases like Etc/GMT+3 and legacy SystemV ids. */
@@ -94,6 +101,7 @@ class WorldClockStore(private val context: Context) {
                 .sortedBy { labelFor(it) }
         }
 
+        /** UTC offset of [zone] at [now], e.g. UTC+5:30. */
         fun offsetLabel(zone: String, now: Long = System.currentTimeMillis()): String {
             val minutes = TimeZone.getTimeZone(zone).getOffset(now) / 60_000
             val sign = if (minutes < 0) "-" else "+"

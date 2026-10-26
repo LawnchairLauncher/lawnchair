@@ -35,6 +35,10 @@ object DockSlotPicker {
         data class Folder(val folder: CuratedFolder, override val label: String) : Entry
     }
 
+    /**
+     * Opens a searchable list of apps, the drawer button and curated folders for dock slot
+     * [cellX], [cellY] on [page].
+     */
     fun show(launcher: Launcher, page: Int, cellX: Int, cellY: Int) {
         val folders = try {
             CuratedCatalog.load(launcher).folders.map {
@@ -67,6 +71,7 @@ object DockSlotPicker {
             override fun getItem(position: Int) = shown[position]
             override fun getItemId(position: Int) = position.toLong()
 
+            /** Row with the entry's icon and label. */
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val row = convertView as? TextView ?: TextView(parent.context).apply {
                     setPadding(pad, pad / 2, pad, pad / 2)
@@ -87,6 +92,7 @@ object DockSlotPicker {
                 return row
             }
 
+            /** Shows entries whose label contains [query], ignoring case. */
             fun filter(query: String) {
                 shown = if (query.isBlank()) all else all.filter { it.label.contains(query.trim(), ignoreCase = true) }
                 notifyDataSetChanged()
@@ -122,6 +128,7 @@ object DockSlotPicker {
         dialog.show()
     }
 
+    /** Puts [entry] into the slot if it is still empty, persisting and binding it immediately. */
     private fun place(launcher: Launcher, entry: Entry, page: Int, cellX: Int, cellY: Int) {
         val layout = launcher.hotseat.getPageAt(page) ?: return
         if (layout.isCellOccupied(cellX, cellY)) return

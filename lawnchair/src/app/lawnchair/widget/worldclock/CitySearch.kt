@@ -42,6 +42,7 @@ object CitySearch {
     private const val MAX_RESULTS = 25
     private val json = Json { ignoreUnknownKeys = true }
 
+    /** Places matching [query], with qualifier matches first and the rest by population. */
     suspend fun search(query: String): List<Place> = withContext(Dispatchers.IO) {
         val q = query.trim().replace(Regex("\\s+"), " ")
         if (q.length < 2) return@withContext emptyList()
@@ -64,6 +65,7 @@ object CitySearch {
 
     private val Place.key get() = "$name|$admin1|$countryCode|$zone"
 
+    /** Name/qualifier splits to try: as typed, then each split of the trailing words. */
     private fun attempts(q: String): List<Pair<String, String?>> = buildList {
         if (',' in q) {
             add(q.substringBefore(',').trim() to q.substringAfter(',').trim())
@@ -76,6 +78,7 @@ object CitySearch {
         }
     }
 
+    /** Whether [place] matches a country code, U.S. alias, region abbreviation or region prefix. */
     private fun matches(place: Place, rawQualifier: String): Boolean {
         val q = rawQualifier.lowercase(Locale.ROOT).replace(".", "").trim()
         val code = place.countryCode?.lowercase(Locale.ROOT)
@@ -90,6 +93,7 @@ object CitySearch {
         }
     }
 
+    /** Geocoder results for [name]; throws on HTTP errors. */
     private fun fetch(name: String): List<Place> {
         val url = URL(
             "$ENDPOINT?name=${URLEncoder.encode(name, "UTF-8")}&count=100&language=en&format=json",
@@ -110,6 +114,7 @@ object CitySearch {
         }
     }
 
+    /** Maps a geocoder result to a [Place]; skips zones unknown to this device. */
     private fun JsonObject.toPlace(): Place? {
         fun str(key: String) = this[key]?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
         val zone = str("timezone") ?: return null
@@ -147,6 +152,7 @@ object CitySearch {
     )
 }
 
+/** Country as shown under the city: U.S.A. and U.K. abbreviated, others by name. */
 internal fun countryLabel(code: String?, name: String?): String? = when (code?.uppercase(Locale.ROOT)) {
     "US" -> "U.S.A."
     "GB" -> "U.K."

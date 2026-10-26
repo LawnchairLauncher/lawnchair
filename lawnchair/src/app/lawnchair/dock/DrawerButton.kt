@@ -25,11 +25,14 @@ import com.android.launcher3.model.data.WorkspaceItemInfo
 object DrawerButton {
     const val ACTION = "app.lawnchair.action.OPEN_APP_DRAWER"
 
+    /** Whether [intent] is the drawer button's. */
     @JvmStatic
     fun isDrawerButton(intent: Intent?): Boolean = intent?.action == ACTION
 
+    /** Intent URI stored in the database for the drawer button. */
     fun intentUri(): String = Intent(ACTION).toUri(0)
 
+    /** Grid glyph on an adaptive background, shaped like the other icons. */
     fun icon(context: Context): BitmapInfo {
         val (bg, fg) = colors(context)
         val glyph = ContextCompat.getDrawable(context, R.drawable.ic_apps)!!.mutate().apply {
@@ -39,6 +42,7 @@ object DrawerButton {
         return LauncherIcons.obtain(context).use { it.createBadgedIconBitmap(adaptive) }
     }
 
+    /** New drawer button item, not yet placed. */
     fun makeItem(context: Context): WorkspaceItemInfo = WorkspaceItemInfo().apply {
         itemType = Favorites.ITEM_TYPE_SHORTCUT
         title = context.getString(R.string.dock_drawer_button)
@@ -47,6 +51,7 @@ object DrawerButton {
         bitmap = icon(context)
     }
 
+    /** Background and glyph colours, from Material You when available. */
     private fun colors(context: Context): Pair<Int, Int> =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             context.getColor(android.R.color.system_accent1_100) to

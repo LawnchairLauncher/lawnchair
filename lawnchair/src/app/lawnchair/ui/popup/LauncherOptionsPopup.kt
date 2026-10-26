@@ -17,7 +17,7 @@ import com.patrykmichalik.opto.core.setBlocking
 object LauncherOptionsPopup {
     val DEFAULT_ORDER = listOf(
         LauncherOptionPopupItem("carousel", true),
-        LauncherOptionPopupItem("lock", true),
+        LauncherOptionPopupItem("lock", false),
         LauncherOptionPopupItem("edit_mode", false),
         LauncherOptionPopupItem("wallpaper", true),
         LauncherOptionPopupItem("widgets", true),
@@ -28,6 +28,7 @@ object LauncherOptionsPopup {
         LauncherOptionPopupItem("default_page", false),
     )
 
+    /** Adds options missing from the saved menu order, using their default visibility. */
     fun restoreMissingPopupOptions(
         launcher: Launcher,
     ) {
@@ -46,18 +47,7 @@ object LauncherOptionsPopup {
                 (currentOptions + missingItems).toOptionOrderString(),
             )
         }
-
-        // Lock/unlock is a quick toggle in the long-press menu; switch it on once for existing setups
-        val sp = app.lawnchair.preferences.PreferenceManager.getInstance(launcher).sp
-        if (!sp.getBoolean(LOCK_OPTION_ENABLED_KEY, false)) {
-            val options = currentOptions + missingItems
-            options.filter { it.identifier == "lock" }.forEach { it.isEnabled = true }
-            prefs2.launcherPopupOrder.setBlocking(options.toOptionOrderString())
-            sp.edit().putBoolean(LOCK_OPTION_ENABLED_KEY, true).apply()
-        }
     }
-
-    private const val LOCK_OPTION_ENABLED_KEY = "pref_lockPopupOptionEnabledOnce"
 
     /**
      * Returns the list of supported actions
@@ -187,6 +177,7 @@ object LauncherOptionsPopup {
         return true
     }
 
+    /** Label and icon for [identifier] in the menu order settings. */
     fun getMetadataForOption(identifier: String): LauncherOptionMetadata {
         return when (identifier) {
             "carousel" -> LauncherOptionMetadata(

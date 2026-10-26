@@ -40,6 +40,7 @@ class DockConfigManager(private val context: Context) {
     private val modelDispatcher = MODEL_EXECUTOR.asCoroutineDispatcher()
     private val launcherApps = context.getSystemService(LauncherApps::class.java)
 
+    /** Reads the current dock, including folder contents and icons for every app. */
     suspend fun export(): DockConfig = withContext(modelDispatcher) {
         val columns = prefs.hotseatColumns.get()
         val rows = prefs.hotseatRows.get()
@@ -59,9 +60,10 @@ class DockConfigManager(private val context: Context) {
                 }
                 toSlot(row, items)?.copy(page = page, x = local % columns, y = local / columns)
             }
-        DockConfig(columns = columns, rows = rows, pages = pages, slots = slots)
+        DockConfig(columns = columns, rows = rows, pages = pages, defaultPage = prefs.dockDefaultPage.get(), slots = slots)
     }
 
+    /** Replaces the dock with [config], switching the dock grid first when its size differs. */
     suspend fun import(config: DockConfig): ImportResult {
         if (prefs.hotseatColumns.get() != config.columns || prefs.hotseatRows.get() != config.rows ||
             prefs.dockPages.get() != config.pages
@@ -74,7 +76,10 @@ class DockConfigManager(private val context: Context) {
             awaitGrid(config)
         }
         val result = withContext(modelDispatcher) { writeDock(config) }
-        withContext(Dispatchers.Main) { model.forceReload() }
+        withContext(Dispatchers.Main) {
+            model.forceReload()
+            config.defaultPage?.let { prefs.dockDefaultPage.set(it.coerceIn(0, config.pages - 1)) }
+        }
         return result
     }
 
@@ -92,6 +97,7 @@ class DockConfigManager(private val context: Context) {
         while (!model.isModelLoaded()) delay(POLL_MS)
     }
 
+    /** Deletes the current dock rows and inserts [config] in one transaction on the model thread. */
     private fun writeDock(config: DockConfig): ImportResult {
         val db = model.modelDbController
         val profileId = UserCache.INSTANCE.get(context).getSerialNumberForUser(Process.myUserHandle())
@@ -100,6 +106,7 @@ class DockConfigManager(private val context: Context) {
         val notInstalled = mutableListOf<String>()
         var placed = 0
 
+        /** Inserts one slot or folder child; returns the new id or -1 when the slot is unusable. */
         fun insert(slot: DockSlot, container: Int, screen: Int, x: Int, y: Int, rank: Int): Int {
             val values = ContentValues().apply {
                 put(Favorites.CONTAINER, container)
@@ -172,6 +179,7 @@ class DockConfigManager(private val context: Context) {
         return ImportResult(placed, notInstalled)
     }
 
+    /** Whether the app's package is installed and enabled for this user. */
     private fun isInstalled(cn: ComponentName): Boolean = try {
         launcherApps.isPackageEnabled(cn.packageName, Process.myUserHandle())
     } catch (e: Exception) {
@@ -187,6 +195,7 @@ class DockConfigManager(private val context: Context) {
         val icon: ByteArray?,
     )
 
+    /** Rows matching [selection], ordered by [order]. */
     private fun query(db: ModelDbController, selection: String, order: String): List<Row> =
         db.query(
             arrayOf(Favorites._ID, Favorites.TITLE, Favorites.INTENT, Favorites.SCREEN, Favorites.ITEM_TYPE, Favorites.ICON),
@@ -195,6 +204,7 @@ class DockConfigManager(private val context: Context) {
             order,
         ).use { c -> generateSequence { if (c.moveToNext()) c.toRow() else null }.toList() }
 
+    /** Maps the projection used by [query] to a [Row]. */
     private fun Cursor.toRow() = Row(
         id = getInt(0),
         title = getString(1),
@@ -204,6 +214,7 @@ class DockConfigManager(private val context: Context) {
         icon = getBlob(5),
     )
 
+    /** Converts a database row to a slot, or null for item types a dock config cannot hold. */
     private fun toSlot(row: Row, items: List<DockSlot>): DockSlot? {
         val intent = row.intent?.let {
             try {
@@ -224,6 +235,7 @@ class DockConfigManager(private val context: Context) {
         }
     }
 
+    /** Base64 PNG for [cn]: the stored icon when valid, otherwise the app's current icon. */
     private fun iconFor(cn: ComponentName, stored: ByteArray?): String? {
         val png = stored?.takeIf { BitmapFactory.decodeByteArray(it, 0, it.size) != null } ?: try {
             val bitmap = context.packageManager.getActivityIcon(cn).toBitmap(EXPORT_ICON_PX, EXPORT_ICON_PX)

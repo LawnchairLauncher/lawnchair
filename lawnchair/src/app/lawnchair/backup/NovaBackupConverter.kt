@@ -60,6 +60,7 @@ class NovaBackupConverter(
         private const val NOVA_SHORTCUT_HANDLER = "com.teslacoilsw.launcher/.NovaShortcutHandler"
         private const val NOVA_ACTION_APP_DRAWER = "LAUNCHER_ACTION=APP_DRAWER"
         private const val MAX_DOCK_PAGES = 5
+        private const val SQL_IN_CHUNK = 500
         private const val NOVA_ICON_PACK_MIN_PARTS = 3
         private const val NOVA_ICON_PACK_PACKAGE_INDEX = 2
         private const val NOVA_COL_ID = "_id"
@@ -114,6 +115,7 @@ class NovaBackupConverter(
         fun toLauncherIntentUri(): String = ShortcutKey.makeIntent(shortcutId, packageName).toUri(0)
     }
 
+    /** Reads grid, dock and item counts from the backup for the confirmation screen. */
     suspend fun parseInfo(): NovaBackupInfo = withContext(Dispatchers.IO) {
         val tempDir = File(context.cacheDir, "$NOVA_TEMP_DIR_PREFIX${UUID.randomUUID()}")
         tempDir.mkdirs()
@@ -147,6 +149,7 @@ class NovaBackupConverter(
         }
     }
 
+    /** Replaces the launcher layout with the Nova backup and applies its grid and dock settings. */
     suspend fun convertAndRestore(info: NovaBackupInfo) = withContext(Dispatchers.IO) {
         val tempDir = File(context.cacheDir, "$NOVA_TEMP_DIR_PREFIX${UUID.randomUUID()}")
         tempDir.mkdirs()
@@ -158,7 +161,7 @@ class NovaBackupConverter(
             require(novaDbFile.exists()) { "Missing $NOVA_DB" }
 
             val stagedDbFile = File(tempDir, NOVA_WORKSPACE_DB)
-            val importedDeepShortcuts = createRestoredDb(novaDbFile, stagedDbFile, info)
+            val staged = createRestoredDb(novaDbFile, stagedDbFile, info)
 
             val columns = info.columns
             val rows = info.rows
@@ -190,8 +193,9 @@ class NovaBackupConverter(
 
             val dbController = ModelDbController(context)
             RestoreDbTask.performRestore(context, dbController)
+            keepPlaceholders(dbController, staged.placeholderIds)
 
-            pinImportedDeepShortcuts(importedDeepShortcuts)
+            pinImportedDeepShortcuts(staged.importedDeepShortcuts)
         } finally {
             tempDir.deleteRecursively()
         }
@@ -204,6 +208,7 @@ class NovaBackupConverter(
         packageName
     }
 
+    /** Writes Nova's grid, dock columns, dock pages, main dock page and icon pack into Lawnchair's preferences. */
     private fun writeGridToLawnchairPrefs(info: NovaBackupInfo) {
         val prefs = PreferenceManager.getInstance(context)
         prefs.sp.edit().apply {
@@ -212,10 +217,13 @@ class NovaBackupConverter(
             info.hotseatCount?.let { putInt(prefs.hotseatColumns.key, it) }
             putInt(prefs.hotseatRows.key, 1)
             putInt(prefs.dockPages.key, info.dockPages)
+            // Nova opens the dock on its center page, with the other pages to the left and right
+            putInt(prefs.dockDefaultPage.key, info.dockPages / 2)
             info.iconPackPackage?.let { putString(prefs.iconPackPackage.key, it) }
         }.commit()
     }
 
+    /** Parses grid size, dock columns, dock pages and icon pack from nova.xml. */
     private fun parseNovaConfig(xmlFile: File): NovaConfig {
         val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile)
         val root = doc.documentElement
@@ -256,6 +264,7 @@ class NovaBackupConverter(
         return NovaConfig(columns, rows, dockCols, iconPackPackage, dockPages)
     }
 
+    /** Counts apps, widgets, folders and shortcuts that the restore would bring over. */
     private fun countItems(dbFile: File): ItemCounts {
         val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY or SQLiteDatabase.NO_LOCALIZED_COLLATORS)
         return db.use {
@@ -288,14 +297,37 @@ class NovaBackupConverter(
         }
     }
 
+    /** Result of staging: deep shortcuts to pin, and items kept as placeholders for missing apps. */
+    private data class StagedDb(
+        val importedDeepShortcuts: Map<String, Set<String>>,
+        val placeholderIds: List<Int>,
+    )
+
+    /**
+     * performRestore resets every item to FLAG_RESTORED_ICON, which the loader deletes for apps
+     * that are neither installed nor installing. Placeholders need FLAG_RESTORE_STARTED back.
+     */
+    private fun keepPlaceholders(dbController: ModelDbController, ids: List<Int>) {
+        if (ids.isEmpty()) return
+        val flags = WorkspaceItemInfo.FLAG_RESTORED_ICON or WorkspaceItemInfo.FLAG_RESTORE_STARTED
+        ids.chunked(SQL_IN_CHUNK).forEach { chunk ->
+            dbController.db.execSQL(
+                "UPDATE ${Favorites.TABLE_NAME} SET ${Favorites.RESTORED} = ${Favorites.RESTORED} | $flags " +
+                    "WHERE ${Favorites._ID} IN (${chunk.joinToString(",")})",
+            )
+        }
+    }
+
+    /** Converts nova.db into a Lawnchair favorites database at [targetDbFile]. */
     private fun createRestoredDb(
         novaDbFile: File,
         targetDbFile: File,
         info: NovaBackupInfo,
-    ): Map<String, Set<String>> {
+    ): StagedDb {
         val profileId = UserCache.INSTANCE.get(context)
             .getSerialNumberForUser(Process.myUserHandle())
         val importedDeepShortcuts = mutableMapOf<String, MutableSet<String>>()
+        val placeholderIds = mutableListOf<Int>()
 
         val targetDb = SQLiteDatabase.openOrCreateDatabase(targetDbFile, null)
         targetDb.use { db ->
@@ -310,25 +342,37 @@ class NovaBackupConverter(
             novaDb.use { src ->
                 db.beginTransaction()
                 try {
-                    insertNovaItems(src, db, profileId, importedDeepShortcuts, info)
+                    insertNovaItems(src, db, profileId, importedDeepShortcuts, placeholderIds, info)
                     db.setTransactionSuccessful()
                 } finally {
                     db.endTransaction()
                 }
             }
         }
-        return importedDeepShortcuts.mapValues { (_, shortcutIds) -> shortcutIds.toSet() }
+        return StagedDb(
+            importedDeepShortcuts.mapValues { (_, shortcutIds) -> shortcutIds.toSet() },
+            placeholderIds,
+        )
     }
 
+    /**
+     * Copies Nova's favorites into [db]. Dock items are re-ranked per page, Nova's drawer button
+     * becomes Lawnchair's, Nova-only actions are skipped, and ids of placeholders for apps that
+     * are not installed are collected in [placeholderIds].
+     */
     private fun insertNovaItems(
         src: SQLiteDatabase,
         db: SQLiteDatabase,
         profileId: Long,
         importedDeepShortcuts: MutableMap<String, MutableSet<String>>,
+        placeholderIds: MutableList<Int>,
         info: NovaBackupInfo,
     ) {
         val smartFolderMap = buildSmartFolderMap(src)
-        val dockCols = info.hotseatCount ?: Int.MAX_VALUE
+        // Backups without dock_grid_cols keep the current dock width; a missing value must not
+        // turn into a huge multiplier for the flat dock rank
+        val dockCols = info.hotseatCount?.takeIf { it > 0 }
+            ?: PreferenceManager.getInstance(context).hotseatColumns.get().coerceAtLeast(1)
         val launcherApps = context.getSystemService(LauncherApps::class.java)
         val drawerIcon by lazy { GraphicsUtils.flattenBitmap(DrawerButton.icon(context).icon) }
 
@@ -401,6 +445,7 @@ class NovaBackupConverter(
                 } else {
                     0
                 }
+                if (restored != 0) placeholderIds += novaId
                 val appWidgetProvider = getStringOrNull(cursor, NOVA_COL_APP_WIDGET_PROVIDER)
                 val rank = when {
                     isFolderChild || isSmartFolderChild -> calculateFolderRank(screen, cellX, cellY)
@@ -464,6 +509,7 @@ class NovaBackupConverter(
         }
     }
 
+    /** Whether the app an intent points to is installed; unknown targets count as installed. */
     private fun isPackageInstalled(launcherApps: LauncherApps?, intentUri: String?): Boolean {
         val pkg = try {
             intentUri?.let { Intent.parseUri(it, 0) }?.let { it.component?.packageName ?: it.`package` }
@@ -487,6 +533,7 @@ class NovaBackupConverter(
         return if (idx >= 0 && !cursor.isNull(idx)) cursor.getBlob(idx) else null
     }
 
+    /** Extracts [fileNames] from the backup zip into [destDir], rejecting entries outside it. */
     private fun extractFromZip(uri: Uri, destDir: File, fileNames: Set<String>) {
         // A stream works with every document provider; not all of them hand out file descriptors
         val input = context.contentResolver.openInputStream(uri)

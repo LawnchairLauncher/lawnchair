@@ -17,16 +17,19 @@ import com.android.launcher3.R
  */
 class WorldClockWidgetProvider : AppWidgetProvider() {
 
+    /** Renders every requested widget. */
     override fun onUpdate(context: Context, manager: AppWidgetManager, appWidgetIds: IntArray) {
         appWidgetIds.forEach { update(context, manager, it) }
     }
 
+    /** Drops the settings of deleted widgets. */
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         val store = WorldClockStore(context)
         appWidgetIds.forEach(store::delete)
     }
 
     companion object {
+        /** Renders [widgetId] from its settings; only unlocked widgets open the editor on tap. */
         fun update(context: Context, manager: AppWidgetManager, widgetId: Int) {
             val config = WorldClockStore(context).load(widgetId)
             val pattern = if (config.use24h) "HH:mm" else "h:mm"

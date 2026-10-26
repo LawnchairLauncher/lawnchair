@@ -27,6 +27,10 @@ object CuratedSource {
     private const val FDROID_SITE = "https://f-droid.org/"
     private const val OBTAINIUM_RELEASES = "https://github.com/ImranR98/Obtainium/releases/latest"
 
+    /**
+     * Launcher intent for an app that is not installed yet, carrying its source for the install
+     * prompt.
+     */
     fun promiseIntent(app: CuratedApp): Intent = Intent(Intent.ACTION_MAIN)
         .addCategory(Intent.CATEGORY_LAUNCHER)
         .setPackage(app.packageName)
@@ -46,6 +50,10 @@ object CuratedSource {
 
     private class Option(val label: String, val action: () -> Unit)
 
+    /**
+     * Offers the install routes available on this device, or a way to get F-Droid or Obtainium
+     * first.
+     */
     private fun showInstallPrompt(context: Context, pkg: String, name: String, source: String) {
         val launcherApps = context.getSystemService(LauncherApps::class.java)
         val fdroidClient = FDROID_CLIENTS.firstOrNull { isInstalled(launcherApps, it) }
@@ -108,6 +116,7 @@ object CuratedSource {
             .show()
     }
 
+    /** List of [options]; picking one dismisses the dialog via [onPicked] and runs the option. */
     private fun optionList(context: Context, options: List<Option>, onPicked: () -> Unit) =
         android.widget.ListView(context).apply {
             adapter = android.widget.ArrayAdapter(context, android.R.layout.simple_list_item_1, options.map { it.label })
@@ -117,11 +126,13 @@ object CuratedSource {
             }
         }
 
+    /** Asks Obtainium to add the app tracked at [url]. */
     private fun obtainiumIntent(url: String, obtainium: String) =
         Intent(Intent.ACTION_VIEW, Uri.parse("obtainium://add/$url")).setPackage(obtainium)
 
     private fun view(url: String) = Intent(Intent.ACTION_VIEW, Uri.parse(url))
 
+    /** Starts [intent], or tells the user when no app can handle it. */
     private fun open(context: Context, intent: Intent) {
         try {
             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -130,12 +141,14 @@ object CuratedSource {
         }
     }
 
+    /** Whether [pkg] is installed and enabled for this user. */
     private fun isInstalled(launcherApps: LauncherApps, pkg: String) = try {
         launcherApps.isPackageEnabled(pkg, Process.myUserHandle())
     } catch (e: Exception) {
         false
     }
 
+    /** Display name of an installed store app, for the install button. */
     private fun appLabel(context: Context, pkg: String): String = try {
         context.packageManager.run { getApplicationLabel(getApplicationInfo(pkg, 0)).toString() }
     } catch (e: Exception) {

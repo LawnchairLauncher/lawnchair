@@ -37,18 +37,6 @@
           "package": "me.zhanghai.android.files",
           "name": "Material Files",
           "source": "fdroid"
-        },
-        {
-          "package": "com.ghisler.android.TotalCommander",
-          "name": "Total Commander",
-          "source": "https://www.ghisler.com/android.htm",
-          "foss": false
-        },
-        {
-          "package": "com.android.vending",
-          "name": "Play Store",
-          "foss": false,
-          "ifInstalled": true
         }
       ]
     },

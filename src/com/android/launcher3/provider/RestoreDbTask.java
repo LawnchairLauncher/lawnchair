@@ -210,6 +210,7 @@ public class RestoreDbTask {
                 });
     }
 
+    /** Restores a database from another device or a system backup. */
     public static boolean performRestore(Context context, ModelDbController controller) {
         return performRestore(context, controller, false);
     }
@@ -308,7 +309,14 @@ public class RestoreDbTask {
         ContentValues values = new ContentValues();
         values.put(Favorites.RESTORED, WorkspaceItemInfo.FLAG_RESTORED_ICON
                 | (keepAllIcons ? WorkspaceItemInfo.FLAG_RESTORE_STARTED : 0));
-        db.update(Favorites.TABLE_NAME, values, null, null);
+        if (mKeepLayoutIds) {
+            // Keep flags such as FLAG_RESTORE_STARTED on placeholders for apps not installed yet;
+            // overwriting them makes the loader delete those items
+            db.execSQL("UPDATE " + Favorites.TABLE_NAME + " SET " + Favorites.RESTORED + " = "
+                    + Favorites.RESTORED + " | " + values.getAsInteger(Favorites.RESTORED));
+        } else {
+            db.update(Favorites.TABLE_NAME, values, null, null);
+        }
 
         // Mark widgets with appropriate restore flag.
         values.put(Favorites.RESTORED,  LauncherAppWidgetInfo.FLAG_ID_NOT_VALID

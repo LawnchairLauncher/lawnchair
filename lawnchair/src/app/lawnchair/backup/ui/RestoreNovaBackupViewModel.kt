@@ -43,6 +43,7 @@ internal class RestoreNovaBackupViewModel(
     private val _events = Channel<Event>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
+    /** Parses the backup once per screen; errors carry their message to the UI. */
     fun init(backupUri: Uri) {
         if (initialized) return
         initialized = true
@@ -59,6 +60,7 @@ internal class RestoreNovaBackupViewModel(
         }
     }
 
+    /** Runs the restore unless one is already in progress. */
     fun restore() {
         val state = _state.value as? State.Success ?: return
         if (state.isRestoring) return

@@ -15,6 +15,8 @@ data class DockConfig(
     val columns: Int,
     val rows: Int = 1,
     val pages: Int,
+    /** Main dock page; absent in older exports, which keep the current setting. */
+    val defaultPage: Int? = null,
     val slots: List<DockSlot>,
 ) {
     companion object {
@@ -26,6 +28,7 @@ data class DockConfig(
             explicitNulls = false
         }
 
+        /** Parses and validates a dock config; throws on a foreign format or unsupported size. */
         fun parse(text: String): DockConfig = json.decodeFromString(serializer(), text).also {
             require(it.format == FORMAT) { "Not a Lawnchair dock config" }
             require(it.columns in 3..10 && it.rows in 1..2 && it.pages in 1..5) {
@@ -34,6 +37,7 @@ data class DockConfig(
         }
     }
 
+    /** Serializes to pretty-printed JSON. */
     fun encode(): String = json.encodeToString(serializer(), this)
 }
 

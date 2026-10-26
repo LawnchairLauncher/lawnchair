@@ -21,6 +21,10 @@ object CuratedFolderPicker {
         data class Dock(val page: Int, val cellX: Int, val cellY: Int) : Target
     }
 
+    /**
+     * Lists the folders with how many of their apps are installed; picking one places it at
+     * [target].
+     */
     fun show(launcher: Launcher, target: Target) {
         val catalog = try {
             CuratedCatalog.load(launcher)
@@ -48,6 +52,7 @@ object CuratedFolderPicker {
             .show()
     }
 
+    /** Places [folder] at [target] if that cell is free, and reports how many apps are installed. */
     fun place(launcher: Launcher, folder: CuratedFolder, target: Target) {
         val (container, screen, cellX, cellY) = when (target) {
             is Target.Dock -> {

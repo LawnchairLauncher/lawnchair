@@ -59,6 +59,7 @@ object HomeScreenRoutes {
     const val POPUP_EDITOR = "popup_editor"
 }
 
+/** Home screen settings, including the fixed number of home screens. */
 @Composable
 fun HomeScreenPreferences(
     modifier: Modifier = Modifier,

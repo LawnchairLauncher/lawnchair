@@ -46,6 +46,7 @@ class DockPlaceholders(private val layout: CellLayout) {
 
     private val enabled get() = prefs.dockPlaceholders.get()
 
+    /** Draws placeholders; failures are logged so drawing can never crash the launcher. */
     fun draw(canvas: Canvas) {
         try {
             drawPlaceholders(canvas)
@@ -54,6 +55,7 @@ class DockPlaceholders(private val layout: CellLayout) {
         }
     }
 
+    /** Draws an icon-shaped fill and outline in every empty cell. */
     private fun drawPlaceholders(canvas: Canvas) {
         if (!enabled) return
         val shape = ThemeManager.INSTANCE.get(context).iconShape
@@ -69,6 +71,7 @@ class DockPlaceholders(private val layout: CellLayout) {
         }
     }
 
+    /** Handles a touch on an empty cell; failures are logged and the touch is released. */
     fun onTouchEvent(ev: MotionEvent): Boolean = try {
         handleTouch(ev)
     } catch (e: RuntimeException) {
@@ -77,6 +80,7 @@ class DockPlaceholders(private val layout: CellLayout) {
         false
     }
 
+    /** Tracks a tap that starts and ends on the same empty cell and opens the slot picker for it. */
     private fun handleTouch(ev: MotionEvent): Boolean {
         if (!enabled) return false
         when (ev.actionMasked) {
@@ -118,6 +122,7 @@ class DockPlaceholders(private val layout: CellLayout) {
         return null
     }
 
+    /** Sets [icon] to where an icon would sit in cell [x], [y]. */
     private fun iconRect(x: Int, y: Int, offset: Rect?) {
         layout.cellToRect(x, y, 1, 1, cell)
         if (offset != null) {

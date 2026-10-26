@@ -397,6 +397,7 @@ public class CellLayout extends ViewGroup {
                 || (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev));
     }
 
+    /** Lets dock pages turn taps on empty cells into the slot picker. */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (mDockPlaceholders != null && mDockPlaceholders.onTouchEvent(ev)) {
@@ -511,6 +512,7 @@ public class CellLayout extends ViewGroup {
         return mIsDragOverlapping;
     }
 
+    /** Draws the background, dock placeholders and drag outlines. */
     @Override
     protected void onDraw(Canvas canvas) {
         // When we're large, we are either drawn in a "hover" state (ie when dragging an item to
@@ -1891,6 +1893,7 @@ public class CellLayout extends ViewGroup {
         return 0;
     }
 
+    /** Marks the view's cells occupied; dock pages redraw their placeholders. */
     public void markCellsAsOccupiedForView(View view) {
         if (view instanceof LauncherAppWidgetHostView
                 && view.getTag() instanceof LauncherAppWidgetInfo info) {
@@ -1905,6 +1908,7 @@ public class CellLayout extends ViewGroup {
         if (mDockPlaceholders != null) invalidate();
     }
 
+    /** Marks the view's cells free; dock pages redraw their placeholders. */
     public void markCellsAsUnoccupiedForView(View view) {
         if (view instanceof LauncherAppWidgetHostView
                 && view.getTag() instanceof LauncherAppWidgetInfo info) {

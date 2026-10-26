@@ -47,6 +47,10 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
 
     /** Creates an array of valid workspace screens based on current items in the model. */
     // LC-Note: Add context to replace QSB_ON_FIRST_SCREEN config
+    /**
+     * Screen ids to bind: pages with items, the persisted order, padded to the fixed home screen
+     * count.
+     */
     fun collectWorkspaceScreens(context: Context): IntArray {
         val prefs2 = PreferenceManager2.INSTANCE.get(context)
         val smartspaceEnabled = prefs2.enableSmartspace.firstCached()

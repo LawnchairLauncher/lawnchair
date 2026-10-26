@@ -836,6 +836,7 @@
     <string name="dock_icons">Dock icons</string>
     <string name="dock_rows">Dock rows</string>
     <string name="dock_pages">Dock pages</string>
+    <string name="dock_default_page">Main dock page</string>
     <string name="home_screen_count">Home screens</string>
     <string name="curated_folders">Curated folders</string>
     <string name="curated_folder_entry">%1$s · %2$d of %3$d installed</string>

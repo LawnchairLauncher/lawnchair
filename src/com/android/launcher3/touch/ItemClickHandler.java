@@ -384,6 +384,7 @@ public class ItemClickHandler {
         startAppShortcutOrInfoActivity(v, shortcut, launcher);
     }
 
+    /** Starts the item's activity; the drawer button opens the app drawer instead. */
     private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher) {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "start: startAppShortcutOrInfoActivity");

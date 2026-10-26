@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/** Placeholder and suggestion switches, plus dock export and import. */
 @Composable
 fun DockLayoutSettings(prefs: PreferenceManager) {
     val context = LocalContext.current

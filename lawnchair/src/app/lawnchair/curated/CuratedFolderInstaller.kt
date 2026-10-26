@@ -36,6 +36,7 @@ class CuratedFolderInstaller(private val context: Context) {
     private val model get() = LauncherAppState.getInstance(context).model
     private val launcherApps = context.getSystemService(LauncherApps::class.java)
 
+    /** Writes [folder] at the given container position, then reloads the model to show it. */
     suspend fun add(folder: CuratedFolder, container: Int, screen: Int, cellX: Int, cellY: Int): Result {
         val result = withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
             write(folder, container, screen, cellX, cellY)
@@ -44,6 +45,7 @@ class CuratedFolderInstaller(private val context: Context) {
         return result
     }
 
+    /** Inserts the folder and its apps in one transaction on the model thread. */
     private fun write(folder: CuratedFolder, container: Int, screen: Int, cellX: Int, cellY: Int): Result {
         val db = model.modelDbController
         val user = Process.myUserHandle()
@@ -51,6 +53,7 @@ class CuratedFolderInstaller(private val context: Context) {
         var installed = 0
         var notInstalled = 0
 
+        /** Adds the columns every row needs and inserts it; returns the new id or -1. */
         fun insert(values: ContentValues): Int {
             val id = db.generateNewItemId()
             values.put(Favorites._ID, id)

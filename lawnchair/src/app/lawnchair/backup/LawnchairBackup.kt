@@ -57,6 +57,10 @@ class LawnchairBackup(
         wallpaper = tmpWallpaper?.scaleDownToDisplaySize(context)
     }
 
+    /**
+     * Restores the selected contents, keeping page ids and still-bound widgets (same-device
+     * restore).
+     */
     suspend fun restore(selectedContents: Int) {
         val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
         val contents = selectedContents and info.contents
@@ -87,6 +91,10 @@ class LawnchairBackup(
         RestoreDbTask.performRestore(context, dbController, true)
     }
 
+    /**
+     * Streams each zip entry to the handler registered under its name; unknown entries are
+     * skipped.
+     */
     private suspend fun readZip(handlers: Map<String, suspend (InputStream) -> Unit>) {
         withContext(Dispatchers.IO) {
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")!!
@@ -134,6 +142,7 @@ class LawnchairBackup(
             return "$fileName.lawnchairbackup"
         }
 
+        /** Files that make up layout and settings in a backup, keyed by their name inside the zip. */
         fun getFiles(context: Context, forRestore: Boolean): Map<String, File> {
             return mapOf(
                 LAUNCHER_DB_FILE_NAME to launcherDbFile(context, forRestore),

@@ -60,6 +60,7 @@ fun NavGraphBuilder.restoreNovaBackupGraph() {
     }
 }
 
+/** Shows what a Nova backup contains and restores it on confirmation. */
 @Composable
 internal fun RestoreNovaBackupScreen(
     viewModel: RestoreNovaBackupViewModel = viewModel(),
@@ -161,6 +162,7 @@ private fun RestoreNovaBackupLoading() {
     }
 }
 
+/** Reports why the backup could not be read, then leaves the screen. */
 @Composable
 private fun RestoreNovaBackupError(message: String) {
     val context = LocalContext.current
@@ -172,6 +174,7 @@ private fun RestoreNovaBackupError(message: String) {
     }
 }
 
+/** Shows the outcome of a restore and restarts the launcher after a success. */
 @Composable
 private fun CollectEvents(events: Flow<Event>) {
     val context = LocalContext.current

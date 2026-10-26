@@ -14,6 +14,7 @@ data class CuratedCatalog(val version: Int = 1, val folders: List<CuratedFolder>
         private const val ASSET = "curated_folders.json"
         private val json = Json { ignoreUnknownKeys = true }
 
+        /** Reads the bundled catalog from assets. */
         fun load(context: Context): CuratedCatalog =
             context.assets.open(ASSET).bufferedReader().use { json.decodeFromString(serializer(), it.readText()) }
     }

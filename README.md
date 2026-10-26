@@ -26,7 +26,7 @@ This branch houses the codebase of Lawnchair 16, which is currently in developme
 - QuickSwitch support for Android Recents integration on Android 15-16 (root required).
 - Global search for apps, contacts, and web results from the home screen.
 - Customization options for icon packs, fonts, and color settings.
-- Multi-page dock with fixed slots, empty-slot placeholders, an app drawer button, and JSON export/import.
+- Multi-page dock with optional fixed slots and empty-slot placeholders, an app drawer button, and JSON export/import.
 - World clock widget supporting multiple locations and the ability to select any city or town, 12/24-hour.
 - Curated folders of FOSS apps; missing apps install via F-Droid or Obtainium on tap.
 

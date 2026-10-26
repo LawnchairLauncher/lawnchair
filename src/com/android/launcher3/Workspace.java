@@ -841,6 +841,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * If two panel home is enabled we convert the last two screens that are visible at the same
      * time. In other cases we only convert the last page.
      */
+    /** Pages the user asked to keep even when empty (Settings › Home screen › Home screens). */
+    private int getFixedScreenCount() {
+        return app.lawnchair.preferences.PreferenceManager.getInstance(getContext())
+                .getHomeScreenCount().get();
+    }
+
+    /**
+     * Turns an empty final page into the extra empty page, unless that would undercut the fixed
+     * page count.
+     */
     private void convertFinalScreenToEmptyScreenIfNecessary() {
         if (mLauncher.isWorkspaceLoading()) {
             // Invalid and dangerous operation if workspace is loading
@@ -849,6 +859,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         int panelCount = getPanelCount();
         if (hasExtraEmptyScreens() || mScreenOrder.size() < panelCount) {
+            return;
+        }
+        // An empty final page counts towards the fixed home screen count; keep it a real page
+        if (mScreenOrder.size() <= getFixedScreenCount()) {
             return;
         }
 
@@ -1088,6 +1102,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return getScreenWithId(getScreenPair(screenId));
     }
 
+    /** Removes empty pages, keeping at least the configured number of home screens. */
     public void stripEmptyScreens() {
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading.
@@ -1143,8 +1158,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         // Fixed home screens: keep empty pages until the configured count remains
-        int fixedScreens = app.lawnchair.preferences.PreferenceManager.getInstance(getContext())
-                .getHomeScreenCount().get();
+        int fixedScreens = getFixedScreenCount();
         int kept = 0;
         for (int i = 0; i < total; i++) {
             int id = mWorkspaceScreens.keyAt(i);
@@ -3927,6 +3941,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         View child = getChildAt(page);
         if (child != null) {
             child.requestFocus();
+        }
+        Hotseat hotseat = mLauncher.getHotseat();
+        if (hotseat != null) {
+            hotseat.getPagedView().moveToDefaultPage();
         }
     }
 

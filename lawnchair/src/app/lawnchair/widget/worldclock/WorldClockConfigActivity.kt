@@ -60,6 +60,7 @@ class WorldClockConfigActivity : ComponentActivity() {
 
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
+    /** Edits the widget in the intent; backing out of the first setup cancels the widget. */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -90,6 +91,7 @@ class WorldClockConfigActivity : ComponentActivity() {
         }
     }
 
+    /** Result carrying the widget id, as the widget host expects. */
     private fun resultIntent() = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
 }
 
@@ -100,6 +102,7 @@ private sealed interface SearchState {
     data class Failed(val message: String) : SearchState
 }
 
+/** Time format, lock, city list, and search for places and time zones. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WorldClockConfigScreen(
@@ -142,6 +145,7 @@ private fun WorldClockConfigScreen(
         }
     }
 
+    /** Adds [city] unless it is already listed, and clears the search. */
     fun add(city: City) {
         if (cities.none { it.zone == city.zone && it.label == city.label }) cities.add(city)
         query = ""
@@ -281,6 +285,7 @@ private fun WorldClockConfigScreen(
     }
 }
 
+/** Clickable row with a title, optional description and switch. */
 @Composable
 private fun SwitchRow(title: String, description: String?, checked: Boolean, onChange: (Boolean) -> Unit) {
     Row(
@@ -297,6 +302,7 @@ private fun SwitchRow(title: String, description: String?, checked: Boolean, onC
     }
 }
 
+/** Section heading in the primary colour. */
 @Composable
 private fun SectionTitle(text: String) {
     Text(
@@ -307,6 +313,7 @@ private fun SectionTitle(text: String) {
     )
 }
 
+/** Secondary explanatory text. */
 @Composable
 private fun HintText(text: String) {
     Text(
@@ -317,6 +324,7 @@ private fun HintText(text: String) {
     )
 }
 
+/** Search result with a title and one-line subtitle. */
 @Composable
 private fun ResultRow(title: String, subtitle: String, onClick: () -> Unit) {
     Column(
