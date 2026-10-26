@@ -208,7 +208,7 @@ class NovaBackupConverter(
         packageName
     }
 
-    /** Writes Nova's grid, dock columns, dock pages, main dock page and icon pack into Lawnchair's preferences. */
+    /** Writes Nova's grid, static paged dock and icon pack into Lawnchair's preferences. */
     private fun writeGridToLawnchairPrefs(info: NovaBackupInfo) {
         val prefs = PreferenceManager.getInstance(context)
         prefs.sp.edit().apply {
@@ -219,6 +219,8 @@ class NovaBackupConverter(
             putInt(prefs.dockPages.key, info.dockPages)
             // Nova opens the dock on its center page, with the other pages to the left and right
             putInt(prefs.dockDefaultPage.key, info.dockPages / 2)
+            // Nova's dock is static; suggestions would fill and rearrange the restored slots
+            putBoolean(prefs.dockSuggestions.key, false)
             info.iconPackPackage?.let { putString(prefs.iconPackPackage.key, it) }
         }.commit()
     }

@@ -63,8 +63,10 @@ class DockConfigManager(private val context: Context) {
         DockConfig(columns = columns, rows = rows, pages = pages, defaultPage = prefs.dockDefaultPage.get(), slots = slots)
     }
 
-    /** Replaces the dock with [config], switching the dock grid first when its size differs. */
+    /** Replaces the dock with [config] as a static dock, switching the dock grid first when its size differs. */
     suspend fun import(config: DockConfig): ImportResult {
+        // An imported dock is a fixed layout; suggestions would fill and rearrange its slots
+        if (prefs.dockSuggestions.get()) withContext(Dispatchers.Main) { prefs.dockSuggestions.set(false) }
         if (prefs.hotseatColumns.get() != config.columns || prefs.hotseatRows.get() != config.rows ||
             prefs.dockPages.get() != config.pages
         ) {
