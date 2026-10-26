@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">di %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">adesso</string>
-    <string name="time_minutes_ago">%d minuti</string>
-    <string name="time_hours_ago">%d ore</string>
-    <string name="time_days_ago">%d giorni</string>
-    <string name="time_weeks_ago">%d settimane</string>
-    <string name="time_months_ago">%d mesi</string>
-    <string name="time_years_ago">%d anni</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%d minuti</item>
+        <item quantity="other">%d minuti</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%d ore</item>
+        <item quantity="other">%d ore</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%d giorni</item>
+        <item quantity="other">%d giorni</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%d settimane</item>
+        <item quantity="other">%d settimane</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%d mesi</item>
+        <item quantity="other">%d mesi</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%d anni</item>
+        <item quantity="other">%d anni</item>
+    </plurals>
     <string name="managed_by_lawnchair">Gestito da Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferenze</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Nascondi le app delle cartelle</string>
     <string name="apps_in_folder_description">Le app assegnate alle cartelle sono escluse dagli elenchi delle app</string>
     <string name="folders_filter_duplicates">Mostra solo app uniche</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">La mia cartella</string>
     <string name="sort_active_items_action">Ordina gli elementi attivi</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Impostazioni</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Generale</string>
     <string name="general_description">Colori, pacchetti icone, punti di notifica</string>
     <string name="home_screen_label">Schermata Home
@@ -172,7 +193,7 @@
     <string name="workspace_increase_max_grid_size_label">Aumenta il limite massimo della dimensione della griglia</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Ricarica sempre le icone</string>
-    <string name="always_reload_icons_description">Evita di utilizzare icone dalla cache del pacchetto d\'icone</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">Questo farà sì che le icone si aggiornino regolarmente, riducendo le performance. Disattiva se il pacchetto delle icone non si aggiorna regolarmente.</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Mostra un\'opzione di disposizione per nascondere il menu delle app e aggiungere automaticamente nuove app alla schermata Home</string>
@@ -241,9 +262,7 @@
     <string name="twoline_label">Permetti di andare a capo</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Icone di sfondo trasparenti</string>
-    <string name="transparent_background_icons_description">Per icone del tema e icone auto adattative</string>
     <string name="auto_adaptive_icons_label">Icone auto-adattabili</string>
-    <string name="auto_adaptive_icons_description">Per tutte le icone non auto-adattabili</string>
     <string name="shadow_bg_icons_label">Mostra ombra dietro le icone</string>
     <string name="background_lightness_label">Luminosità dello sfondo</string>
     <string name="adaptive_icon_background_description">Imposta la luminosità al 100% per uno sfondo bianco</string>
@@ -308,16 +327,23 @@
     <string name="icon_shape_clipboard_import_error">Gli appunti non contengono una forma valida per le icone</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Pacchetto icone</string>
-    <string name="themed_icon_pack">Fonte delle icone a tema</string>
-    <string name="themed_icon_pack_tint">Tinta con colore primario</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Icone di sistema</string>
     <string name="force_monochrome_label">Forza monocromatico</string>
     <string name="force_monochrome_description">Ricolora le app non supportate con il colore primario attuale.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Icone a tema</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Disattivate</string>
     <string name="themed_icons_home_label">Schermata Home</string>
     <string name="themed_icons_home_and_drawer_label">Schermata Home e menu delle app</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Nessun pacchetto icone supportato</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Aggiungi font</string>
     <string name="pref_fonts_add_fonts_summary">I font OTF e TTF sono supportati</string>

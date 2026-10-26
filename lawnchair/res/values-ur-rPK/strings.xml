@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">بذریعہ %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">ابھی ابھی</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dm</item>
+        <item quantity="other">%dm</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dh</item>
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dd</item>
+        <item quantity="other">%dd</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dw</item>
+        <item quantity="other">%dw</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dmo</item>
+        <item quantity="other">%dmo</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dy</item>
+        <item quantity="other">%dy</item>
+    </plurals>
     <string name="managed_by_lawnchair">لان چیئر کے زیر انتظام</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">ترجیحات</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">فولڈر ایپس کو چھپائیں۔</string>
     <string name="apps_in_folder_description">فولڈرز کو تفویض کردہ ایپس کو ایپ کی فہرستوں سے خارج کر دیا گیا ہے۔</string>
     <string name="folders_filter_duplicates">صرف منفرد ایپس دکھائیں۔</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">میرا فولڈر</string>
     <string name="sort_active_items_action">ایکٹو آئٹمز سارٹ کریں</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">ترتیبات</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">جنرل</string>
     <string name="general_description">رنگ، آئیکن پیک، نوٹیفکیشن ڈاٹس</string>
     <string name="home_screen_label">ہوم اسکرین</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">زیادہ سے زیادہ گرڈ سائز کی حد میں اضافہ کریں۔</string>
     <string name="workspace_increase_max_grid_size_description">ہوم اسکرین گرڈ سائز کی زیادہ سے زیادہ حد 10 &#xd7; 10 سے بڑھا کر 20 &#xd7; 20 کریں۔</string>
     <string name="always_reload_icons_label">ہمیشہ شبیہیں دوبارہ لوڈ کریں۔</string>
-    <string name="always_reload_icons_description">آئیکن پیک سے کیشڈ آئیکنز استعمال کرنے سے گریز کریں۔</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">اس سے آئیکنز باقاعدگی سے ریفریش ہوں گے، جس سے پرفارمنس متاثر ہوگی۔ اگر آئیکن پیک باقاعدگی سے اپ ڈیٹ نہیں ہوتا تو اسے آف کر دیں۔</string>
     <string name="show_deck_layout">ڈیک لے آؤٹ</string>
     <string name="show_deck_layout_description">ایپ ڈراور کو چھپانے اور نئی ایپس کو خودکار طور پر ہوم اسکرین پر ایڈ کرنے کے لیے لے آؤٹ کا آپشن دکھائیں۔</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">متعدد لائنوں کا استعمال کریں۔</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">خودکار انکولی شبیہیں</string>
-    <string name="auto_adaptive_icons_description">تمام غیر انکولی شبیہیں کے لیے</string>
     <string name="shadow_bg_icons_label">شبیہیں کے پیچھے سایہ دکھائیں۔</string>
     <string name="background_lightness_label">پس منظر کی ہلکی پن</string>
     <string name="adaptive_icon_background_description">سفید کے لیے 100% پس منظر کی ہلکی پن کا استعمال کریں۔</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">کلپ بورڈ میں آئیکن کی درست شکل نہیں ہے۔</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">آئیکن پیک</string>
-    <string name="themed_icon_pack">تھیم آئیکن ماخذ</string>
-    <string name="themed_icon_pack_tint">لہجے کے رنگ کے ساتھ ٹنٹ</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">سسٹم شبیہیں</string>
     <string name="force_monochrome_label">Force monochrome</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">تھیم والے شبیہیں</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">آف</string>
     <string name="themed_icons_home_label">ہوم اسکرین</string>
     <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">کوئی تعاون یافتہ آئیکن پیک نہیں ہے۔</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">فونٹس شامل کریں۔</string>
     <string name="pref_fonts_add_fonts_summary">OTF اور TTF فونٹس تعاون یافتہ ہیں۔</string>

@@ -55,12 +55,24 @@
     <string name="changes_dialog_commit_info">%1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">방금</string>
-    <string name="time_minutes_ago">%d분</string>
-    <string name="time_hours_ago">%d시간</string>
-    <string name="time_days_ago">%d일</string>
-    <string name="time_weeks_ago">%d주</string>
-    <string name="time_months_ago">%d달</string>
-    <string name="time_years_ago">%d년</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="other">%d분</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="other">%d시간</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="other">%d일</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="other">%d주</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="other">%d달</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="other">%d년</item>
+    </plurals>
     <string name="managed_by_lawnchair">Lawnchair에서 관리</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">설정</string>
@@ -114,6 +126,7 @@
     <string name="apps_in_folder_label">폴더 앱 숨기기</string>
     <string name="apps_in_folder_description">폴더에 지정한 앱을 앱 목록에서 제외</string>
     <string name="folders_filter_duplicates">중복 앱 숨기기</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">내 폴더</string>
     <string name="sort_active_items_action">활성 항목 정렬</string>
     <!-- A11y description -->
@@ -135,6 +148,8 @@
 
     -->
     <string name="settings">설정</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">일반</string>
     <string name="general_description">색상, 아이콘 팩, 알림 배지</string>
     <string name="home_screen_label">홈 화면</string>
@@ -170,7 +185,7 @@
     <string name="workspace_increase_max_grid_size_label">최대 그리드 크기 제한 늘리기</string>
     <string name="workspace_increase_max_grid_size_description">허용되는 최대 홈 화면 그리드 크기를 10 &#xd7; 10에서 20 &#xd7; 20으로 늘립니다</string>
     <string name="always_reload_icons_label">항상 아이콘 새로고침</string>
-    <string name="always_reload_icons_description">아이콘 팩에서 캐시된 아이콘 사용 안 함</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">아이콘을 정기적으로 갱신하여, 성능에 영향을 줍니다. 아이콘이 정기적으로 갱신되지 않는다면 끄세요.</string>
     <string name="show_deck_layout">독 레이아웃</string>
     <string name="show_deck_layout_description">앱 서랍을 가리고 홈 화면에 새 앱을 자동으로 추가하는 레이아웃 옵션을 표시합니다</string>
@@ -239,9 +254,7 @@
     <string name="twoline_label">여러 줄 사용</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">투명 아이콘 배경</string>
-    <string name="transparent_background_icons_description">테마 아이콘 및 적응형 아이콘용</string>
     <string name="auto_adaptive_icons_label">적응형 아이콘 자동 적용</string>
-    <string name="auto_adaptive_icons_description">적응형이 아닌 아이콘을 위한 기능입니다.</string>
     <string name="shadow_bg_icons_label">아이콘 뒤에 그림자 표시</string>
     <string name="background_lightness_label">아이콘 배경 밝기</string>
     <string name="adaptive_icon_background_description">배경 밝기를 100%로 설정하면 흰색이 됩니다.</string>
@@ -306,16 +319,23 @@
     <string name="icon_shape_clipboard_import_error">클립보드에 올바른 아이콘 모양이 없습니다.</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">아이콘 팩</string>
-    <string name="themed_icon_pack">테마 아이콘 소스</string>
-    <string name="themed_icon_pack_tint">강조 색상으로 칠하기</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="force_monochrome_label">Material You 단색 아이콘 강제 적용</string>
     <string name="force_monochrome_description">지원하지 않는 앱을 현재 강조 색으로 다시 칠합니다.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">테마 아이콘</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">사용 안함</string>
     <string name="themed_icons_home_label">홈 화면</string>
     <string name="themed_icons_home_and_drawer_label">홈 화면과 앱 서랍</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">지원되는 아이콘 팩이 없습니다.</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">글꼴 추가</string>
     <string name="pref_fonts_add_fonts_summary">OTF폰트와 TTF폰트를 지원합니다</string>

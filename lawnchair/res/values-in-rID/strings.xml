@@ -55,12 +55,24 @@
     <string name="changes_dialog_commit_info">oleh %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">baru saja</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dj</string>
-    <string name="time_days_ago">%dh</string>
-    <string name="time_weeks_ago">%dmg</string>
-    <string name="time_months_ago">%dbln</string>
-    <string name="time_years_ago">%dthn</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="other">%dm</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="other">%dj</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="other">%dmg</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="other">%dbln</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="other">%dthn</item>
+    </plurals>
     <string name="managed_by_lawnchair">Dikelola oleh Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferensi</string>
@@ -114,6 +126,7 @@
     <string name="apps_in_folder_label">Sembunyikan aplikasi folder</string>
     <string name="apps_in_folder_description">Aplikasi yang dimasukkan ke dalam folder tidak akan ditampilkan di daftar aplikasi</string>
     <string name="folders_filter_duplicates">Tunjukkan aplikasi yang unik saja</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Folder saya</string>
     <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
@@ -135,6 +148,8 @@
 
     -->
     <string name="settings">Pengaturan</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Umum</string>
     <string name="general_description">Warna, paket icon, titik notifikasi</string>
     <string name="home_screen_label">Layar beranda</string>
@@ -170,7 +185,7 @@
     <string name="workspace_increase_max_grid_size_label">Tingkatkan batas ukuran kisi</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Selalu muat ulang lambang</string>
-    <string name="always_reload_icons_description">Hindari menggunakan ikon yang telah di tembolok dari paket lambang</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">Tata letak dek</string>
     <string name="show_deck_layout_description">Tampilkan opsi tata letak untuk menyembunyikan laci aplikasi dan secara otomatis menambahkan aplikasi baru ke layar beranda</string>
@@ -239,9 +254,7 @@
     <string name="twoline_label">Gunakan beberapa baris</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Ikon adaptif otomatis</string>
-    <string name="auto_adaptive_icons_description">Untuk semua aplikasi non-adaptif</string>
     <string name="shadow_bg_icons_label">Tampilkan bayang di belakang ikon</string>
     <string name="background_lightness_label">Kecerahan latar belakang</string>
     <string name="adaptive_icon_background_description">Gunakan 100% kecerahan latar belakang untuk warna putih</string>
@@ -306,16 +319,23 @@
     <string name="icon_shape_clipboard_import_error">Papan klip tidak mengandung bentuk ikon yang valid</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Paket ikon</string>
-    <string name="themed_icon_pack">Sumber ikon bertema</string>
-    <string name="themed_icon_pack_tint">Rona dengan warna aksen</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Ikon sistem</string>
     <string name="force_monochrome_label">Paksa satu warna</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Ikon bertema</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Mati</string>
     <string name="themed_icons_home_label">Layar beranda</string>
     <string name="themed_icons_home_and_drawer_label">Layar beranda dan laci aplikasi</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Tidak ada paket ikon yang didukung</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Tambahkan font</string>
     <string name="pref_fonts_add_fonts_summary">Font OTF dan TTF didukung</string>

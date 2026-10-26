@@ -39,7 +39,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.quickstep.util.BaseDepthController;
+import com.android.quickstep.util.BaseDepthControllerImpl;
 
 import java.io.PrintWriter;
 import java.util.function.Consumer;
@@ -51,7 +51,7 @@ import app.lawnchair.preferences2.PreferenceManager2;
 /**
  * Controls blur and wallpaper zoom, for the Launcher surface only.
  */
-public class DepthController extends BaseDepthController implements StateHandler<LauncherState>,
+public class DepthController extends BaseDepthControllerImpl implements StateHandler<LauncherState>,
         BaseActivity.MultiWindowModeChangedListener {
     @VisibleForTesting
     final ViewTreeObserver.OnDrawListener mOnDrawListener = this::onLauncherDraw;

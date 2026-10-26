@@ -20,6 +20,7 @@ import androidx.graphics.shapes.toPath
 import androidx.graphics.shapes.transformed
 import com.android.launcher3.Flags
 import com.android.launcher3.anim.SpringAnimationBuilder
+import com.android.launcher3.graphics.PathWrapper
 import com.android.launcher3.graphics.ShapeDelegate
 import com.android.launcher3.graphics.ShapeDelegate.Companion.DEFAULT_PATH_SIZE
 import com.android.launcher3.graphics.ShapeDelegate.Companion.createRoundedRect
@@ -53,6 +54,12 @@ data class PathShapeDelegate(val iconShape: IconShape) : ShapeDelegate {
         addToPath(path, offsetX, offsetY, radius, Matrix())
     }
 
+    override fun addToPath(path: PathWrapper, offsetX: Float, offsetY: Float, radius: Float) {
+        addToPath(path.path, offsetX, offsetY, radius, Matrix())
+        path.setBounds(offsetX, offsetY, offsetX + radius * 2, offsetY + radius * 2)
+        path.setCornerRadius(radius)
+    }
+
     private fun addToPath(
         path: Path,
         offsetX: Float,
@@ -79,7 +86,7 @@ data class PathShapeDelegate(val iconShape: IconShape) : ShapeDelegate {
     ): ValueAnimator where T : View, T : ClipPathView {
         val shape = if (iconShape is IconShape.SystemBased) iconShape.findNearestShape() else iconShape
 
-        val pathProvider: (Float, Path) -> Unit = when (shape) {
+        val pathProvider: (Float, PathWrapper) -> Unit = when (shape) {
             is IconShape.PathBased ->
                 getPathBasedProvider(shape, startRect, endRect, endRadius)
 
@@ -104,7 +111,7 @@ data class PathShapeDelegate(val iconShape: IconShape) : ShapeDelegate {
         startRect: Rect,
         endRect: Rect,
         endRadius: Float,
-    ): (Float, Path) -> Unit = { progress: Float, path: Path ->
+    ): (Float, PathWrapper) -> Unit = { progress: Float, path: PathWrapper ->
         // Interpolate the bounds from start to end
         val left = (1 - progress) * startRect.left + progress * endRect.left
         val top = (1 - progress) * startRect.top + progress * endRect.top
@@ -133,7 +140,7 @@ data class PathShapeDelegate(val iconShape: IconShape) : ShapeDelegate {
         startRect: Rect,
         endRect: Rect,
         endRadius: Float,
-    ): (Float, Path) -> Unit {
+    ): (Float, PathWrapper) -> Unit {
         val polygon = RoundedPolygon(
             features = SvgPathParser.parseFeatures(iconShape.svgPathString),
             centerX = 50f,
@@ -159,15 +166,18 @@ data class PathShapeDelegate(val iconShape: IconShape) : ShapeDelegate {
                 cornerR = endRadius,
             ),
         )
-        return morph::toPath
+        return { progress: Float, path: PathWrapper ->
+            path.path.set(morph.toPath(progress, path.path))
+            path.estimateBoundsFromPath()
+        }
     }
 
-    private class ClipAnimBuilder<T>(val target: T, val pathProvider: (Float, Path) -> Unit) :
+    private class ClipAnimBuilder<T>(val target: T, val pathProvider: (Float, PathWrapper) -> Unit) :
         AnimatorListenerAdapter(),
         ValueAnimator.AnimatorUpdateListener where T : View, T : ClipPathView {
 
         private var oldOutlineProvider: ViewOutlineProvider? = null
-        val path = Path()
+        val path = PathWrapper()
 
         override fun onAnimationStart(animation: Animator) {
             target.apply {
@@ -198,10 +208,10 @@ data class PathShapeDelegate(val iconShape: IconShape) : ShapeDelegate {
             }
     }
 
-    private class ClipSpringAnimBuilder<T>(val target: T, val pathProvider: (Float, Path) -> Unit) : AnimatorListenerAdapter() where T : View, T : ClipPathView {
+    private class ClipSpringAnimBuilder<T>(val target: T, val pathProvider: (Float, PathWrapper) -> Unit) : AnimatorListenerAdapter() where T : View, T : ClipPathView {
 
         private var oldOutlineProvider: ViewOutlineProvider? = null
-        val path = Path()
+        val path = PathWrapper()
         private val animatorBuilder = SpringAnimationBuilder(target.context)
         private val progressProperty =
             object : FloatProperty<ClipSpringAnimBuilder<T>>("progress") {

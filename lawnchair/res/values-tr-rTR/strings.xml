@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">%1$s • %2$s • %3$s tarafından</string>
     <!-- Time ago strings -->
     <string name="time_just_now">şimdi</string>
-    <string name="time_minutes_ago">%ddk</string>
-    <string name="time_hours_ago">%dsa</string>
-    <string name="time_days_ago">%dg</string>
-    <string name="time_weeks_ago">%dh</string>
-    <string name="time_months_ago">%day</string>
-    <string name="time_years_ago">%dy</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%ddk</item>
+        <item quantity="other">%ddk</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dsa</item>
+        <item quantity="other">%dsa</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dg</item>
+        <item quantity="other">%dg</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dh</item>
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%day</item>
+        <item quantity="other">%day</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dy</item>
+        <item quantity="other">%dy</item>
+    </plurals>
     <string name="managed_by_lawnchair">Lawnchair tarafından yönetilmektedir</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Tercihler</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Klasör uygulamalarını gizle</string>
     <string name="apps_in_folder_description">Klasörlere koyulan uygulamalar uygulama listelerinden hariç tutulur</string>
     <string name="folders_filter_duplicates">Sadece farklı uygulamaları göster</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Benim klasörüm</string>
     <string name="sort_active_items_action">Etkin ögeleri sırala</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Ayarlar</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Genel</string>
     <string name="general_description">Renkler, simge paketleri, bildirim noktaları</string>
     <string name="home_screen_label">Ana ekran</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Maksimum ızgara boyutu sınırını artır</string>
     <string name="workspace_increase_max_grid_size_description">Ana ekrandaki izin verilen maksimum ızgara boyutunu 10 &#xd7; 10\'dan 20 &#xd7; 20\'ye yükseltin</string>
     <string name="always_reload_icons_label">Simgeleri her zaman yeniden yükle</string>
-    <string name="always_reload_icons_description">Ön belleklenmiş simgeleri kullanmaktan kaçın</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">Bu, simgelerin düzenli olarak yenilenmesine neden olarak performansı olumsuz etkileyecektir. Simge paketi düzenli olarak güncellenmiyorsa bu özelliği kapatın.</string>
     <string name="show_deck_layout">Deste düzeni</string>
     <string name="show_deck_layout_description">Uygulama çekmecesini gizle ve yeni uygulamaları ana ekrana ekle seçeneğini göster</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Birden fazla satır kullan</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Şeffaf simge arka planları</string>
-    <string name="transparent_background_icons_description">Temalı ve otomatik uyarlanabilir simgeler için</string>
     <string name="auto_adaptive_icons_label">Otomatik uyarlanabilir simgeler</string>
-    <string name="auto_adaptive_icons_description">Uyarlanabilir olmayan tüm simgeler için</string>
     <string name="shadow_bg_icons_label">Simgelerin arkasında gölge göster</string>
     <string name="background_lightness_label">Arka plan açıklığı</string>
     <string name="adaptive_icon_background_description">Beyaz için %100 arka plan açıklığı kullan</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">Pano geçerli bir simge şekli içermiyor</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Simge paketi</string>
-    <string name="themed_icon_pack">Temalı simge kaynağı</string>
-    <string name="themed_icon_pack_tint">Vurgulu renk tonu</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Sistem simgeleri</string>
     <string name="force_monochrome_label">Tek renkliliği zorla</string>
     <string name="force_monochrome_description">Desteklenmeyen uygulamaların renklerini mevcut vurgu rengiyle değiştir.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Temalı simgeler</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Kapat</string>
     <string name="themed_icons_home_label">Ana ekran</string>
     <string name="themed_icons_home_and_drawer_label">Ana ekran ve uygulama çekmecesi</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Desteklenen bir simge paketi bulunamadı</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Yazı tipleri ekle</string>
     <string name="pref_fonts_add_fonts_summary">OTF ve TTF yazı tipleri desteklenir</string>
