@@ -69,12 +69,14 @@ JAVA_ENV        = JAVA_HOME=$(JAVA_HOME) PATH=$(JAVA_HOME)/bin:$$PATH TMPDIR=$(T
 SDKM_RUN        = $(JAVA_ENV) SDKMANAGER_OPTS="$(JAVA_SANDBOX)" sh
 # The SDK and maven only ship glibc x86/arm binaries: Termux's aapt2, protoc and aidl replace them.
 # Gradle's native integration is glibc too, and file watching needs it.
+# Kotlin IC and the build cache can keep Compose stability fields out of sync (NoSuchFieldError $stable).
 # Shared storage (Downloads etc) cannot hold executables, so the wrapper is run through sh.
 GRADLE          = cd $(SRC) && $(JAVA_ENV) GRADLE_OPTS="$(JAVA_SANDBOX)" sh ./gradlew --no-daemon --no-parallel \
                   --max-workers=$(GRADLE_WORKERS) \
                   --project-cache-dir=$(OUT_DIR)/gradle-cache \
                   -Dorg.gradle.jvmargs="-Xmx$(GRADLE_HEAP) -Dfile.encoding=UTF-8 $(JAVA_SANDBOX)" \
                   -Pkotlin.compiler.execution.strategy=in-process \
+                  -Pkotlin.incremental=false --no-build-cache \
                   -Dorg.gradle.native=false --no-watch-fs \
                   -Pandroid.aapt2FromMavenOverride=$(PREFIX)/bin/aapt2 \
                   -I $(HERE)/termux.init.gradle -Ptermux.protoc=$(PREFIX)/bin/protoc
@@ -252,10 +254,10 @@ uninstall: ## Uninstall the app
 	else am start -a android.intent.action.DELETE -d package:$(APP_ID); fi
 
 .PHONY: clean
-clean: ## Delete build output, keeping the toolchain
+clean: ## Delete build output and compiler caches, keeping the toolchain
 	@$(SUBMAKE) _toolchain
 	$(GRADLE) clean
-	rm -rf $(OUT_DIR) $(TOOL_TMP)
+	rm -rf $(OUT_DIR) $(TOOL_TMP) $(SRC)/.kotlin $(GRADLE_USER_HOME)/caches/build-cache-1
 
 .PHONY: distclean
 distclean: ## Also delete .toolchain/ (SDK, gradle caches, debug signing key, step state)
