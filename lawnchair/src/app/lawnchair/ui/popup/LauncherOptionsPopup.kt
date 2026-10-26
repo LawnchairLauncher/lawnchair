@@ -17,10 +17,11 @@ import com.patrykmichalik.opto.core.setBlocking
 object LauncherOptionsPopup {
     val DEFAULT_ORDER = listOf(
         LauncherOptionPopupItem("carousel", true),
-        LauncherOptionPopupItem("lock", false),
+        LauncherOptionPopupItem("lock", true),
         LauncherOptionPopupItem("edit_mode", false),
         LauncherOptionPopupItem("wallpaper", true),
         LauncherOptionPopupItem("widgets", true),
+        LauncherOptionPopupItem("curated", true),
         LauncherOptionPopupItem("all_apps", true),
         LauncherOptionPopupItem("home_settings", true),
         LauncherOptionPopupItem("sys_settings", false),
@@ -45,7 +46,18 @@ object LauncherOptionsPopup {
                 (currentOptions + missingItems).toOptionOrderString(),
             )
         }
+
+        // Lock/unlock is a quick toggle in the long-press menu; switch it on once for existing setups
+        val sp = app.lawnchair.preferences.PreferenceManager.getInstance(launcher).sp
+        if (!sp.getBoolean(LOCK_OPTION_ENABLED_KEY, false)) {
+            val options = currentOptions + missingItems
+            options.filter { it.identifier == "lock" }.forEach { it.isEnabled = true }
+            prefs2.launcherPopupOrder.setBlocking(options.toOptionOrderString())
+            sp.edit().putBoolean(LOCK_OPTION_ENABLED_KEY, true).apply()
+        }
     }
+
+    private const val LOCK_OPTION_ENABLED_KEY = "pref_lockPopupOptionEnabledOnce"
 
     /**
      * Returns the list of supported actions
@@ -78,6 +90,18 @@ object LauncherOptionsPopup {
                 LauncherEvent.IGNORE,
                 onLockToggle,
             ),
+            "curated" to OptionItem(
+                launcher,
+                R.string.curated_folders,
+                R.drawable.ic_folder,
+                LauncherEvent.IGNORE,
+            ) { v ->
+                app.lawnchair.curated.CuratedFolderPicker.show(
+                    Launcher.getLauncher(v.context),
+                    app.lawnchair.curated.CuratedFolderPicker.Target.CurrentHomePage,
+                )
+                true
+            },
             "sys_settings" to OptionItem(
                 launcher,
                 R.string.system_settings,
@@ -143,7 +167,7 @@ object LauncherOptionsPopup {
             }
             .filter {
                 if (lockHomeScreen) {
-                    it.identifier != "edit_mode" && it.identifier != "widgets"
+                    it.identifier != "edit_mode" && it.identifier != "widgets" && it.identifier != "curated"
                 } else {
                     true
                 }
@@ -174,6 +198,11 @@ object LauncherOptionsPopup {
             "lock" -> LauncherOptionMetadata(
                 label = R.string.home_screen_lock,
                 icon = R.drawable.ic_lock,
+            )
+
+            "curated" -> LauncherOptionMetadata(
+                label = R.string.curated_folders,
+                icon = R.drawable.ic_folder,
             )
 
             "sys_settings" -> LauncherOptionMetadata(

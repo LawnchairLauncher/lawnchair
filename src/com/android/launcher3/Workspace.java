@@ -1142,6 +1142,23 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
 
+        // Fixed home screens: keep empty pages until the configured count remains
+        int fixedScreens = app.lawnchair.preferences.PreferenceManager.getInstance(getContext())
+                .getHomeScreenCount().get();
+        int kept = 0;
+        for (int i = 0; i < total; i++) {
+            int id = mWorkspaceScreens.keyAt(i);
+            if (!isExtraEmptyScreen(id) && !removeScreens.contains(id)) kept++;
+        }
+        for (int i = 0; i < removeScreens.size() && kept < fixedScreens; ) {
+            if (isExtraEmptyScreen(removeScreens.get(i))) {
+                i++;
+                continue;
+            }
+            removeScreens.removeIndex(i);
+            kept++;
+        }
+
         // We enforce at least one page (two pages on two panel home) to add new items to.
         // In the case that we remove the last such screen(s), we convert the last screen(s)
         // to the empty screen(s)

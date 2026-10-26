@@ -37,6 +37,7 @@ import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -93,6 +94,8 @@ import java.util.stream.Collectors;
  * This helps keep the model consistent if the launcher updates between restore and first startup.
  */
 public class RestoreDbTask {
+
+    private boolean mKeepLayoutIds;
 
     private static final String TAG = "RestoreDbTask";
     public static final String RESTORED_DEVICE_TYPE = "restored_task_pending";
@@ -208,16 +211,30 @@ public class RestoreDbTask {
     }
 
     public static boolean performRestore(Context context, ModelDbController controller) {
+        return performRestore(context, controller, false);
+    }
+
+    /**
+     * @param keepLayoutIds a restore of the launcher's own backup: page ids stay as they are,
+     *     since the backed up page order refers to them, and widgets whose id is still bound to
+     *     the same provider on this device stay live instead of being set up again.
+     */
+    public static boolean performRestore(Context context, ModelDbController controller,
+            boolean keepLayoutIds) {
         SQLiteDatabase db = controller.getDb();
         FileLog.d(TAG, "performRestore: starting restore from db");
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
+            task.mKeepLayoutIds = keepLayoutIds;
             BackupManager backupManager = new BackupManager(context);
             LauncherRestoreEventLogger restoreEventLogger =
                     LauncherRestoreEventLogger.Companion.newInstance(context);
             task.sanitizeDB(context, controller, db, backupManager, restoreEventLogger);
             task.restoreAppWidgetIdsIfExists(context, controller, restoreEventLogger,
                     () -> new AppWidgetHost(context, APPWIDGET_HOST_ID));
+            if (keepLayoutIds) {
+                task.keepBoundWidgets(context, db);
+            }
             t.commit();
             return true;
         } catch (Exception e) {
@@ -332,13 +349,39 @@ public class RestoreDbTask {
         }
 
         // If restored from a single display backup, remove gaps between screenIds
-        if (LauncherPrefs.get(context).get(RESTORE_DEVICE) != TYPE_MULTI_DISPLAY) {
+        if (!mKeepLayoutIds
+                && LauncherPrefs.get(context).get(RESTORE_DEVICE) != TYPE_MULTI_DISPLAY) {
             removeScreenIdGaps(db);
         }
 
         // Override shortcuts
         maybeOverrideShortcuts(context, controller, db, myProfileId);
         return itemsDeletedCount;
+    }
+
+    /** Clears the restore flags of widgets whose id is still bound to the same provider. */
+    private void keepBoundWidgets(Context context, SQLiteDatabase db) {
+        AppWidgetManager widgets = AppWidgetManager.getInstance(context);
+        try (Cursor c = db.query(Favorites.TABLE_NAME,
+                new String[]{Favorites._ID, Favorites.APPWIDGET_ID, Favorites.APPWIDGET_PROVIDER},
+                Favorites.ITEM_TYPE + " = " + Favorites.ITEM_TYPE_APPWIDGET,
+                null, null, null, null)) {
+            while (c.moveToNext()) {
+                int appWidgetId = c.getInt(1);
+                ComponentName provider = ComponentName.unflattenFromString(
+                        c.isNull(2) ? "" : c.getString(2));
+                AppWidgetProviderInfo bound = appWidgetId > 0 ? widgets.getAppWidgetInfo(appWidgetId)
+                        : null;
+                if (provider == null || bound == null || !provider.equals(bound.provider)) {
+                    continue;
+                }
+                ContentValues values = new ContentValues();
+                values.put(Favorites.RESTORED, 0);
+                db.update(Favorites.TABLE_NAME, values, Favorites._ID + " = ?",
+                        new String[]{Integer.toString(c.getInt(0))});
+                FileLog.d(TAG, "keepBoundWidgets: kept appWidgetId=" + appWidgetId);
+            }
+        }
     }
 
     /**

@@ -87,6 +87,7 @@ fun DockPreferences(modifier: Modifier = Modifier) {
                     label = stringResource(id = R.string.show_labels),
                 )
             }
+            DockLayoutSettings(prefs)
         }
     }
 }

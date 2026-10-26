@@ -356,6 +356,11 @@ public class ItemClickHandler {
      * @param v The view that was clicked. Must be a tagged with a {@link WorkspaceItemInfo}.
      */
     public static void onClickAppShortcut(View v, WorkspaceItemInfo shortcut, Launcher launcher) {
+        // Curated apps that are not installed yet ask how to get them instead of opening a store
+        if (shortcut.isPromise()
+                && app.lawnchair.curated.CuratedSource.onPromiseClicked(launcher, shortcut)) {
+            return;
+        }
         if (shortcut.isDisabled() && handleDisabledItemClicked(shortcut, launcher)) {
             return;
         }
@@ -383,6 +388,10 @@ public class ItemClickHandler {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "start: startAppShortcutOrInfoActivity");
         Intent intent = item.getIntent();
+        if (app.lawnchair.dock.DrawerButton.isDrawerButton(intent)) {
+            launcher.getStateManager().goToState(com.android.launcher3.LauncherState.ALL_APPS);
+            return;
+        }
         if (item instanceof ItemInfoWithIcon itemInfoWithIcon) {
             if ((itemInfoWithIcon.runtimeStatusFlags
                     & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {

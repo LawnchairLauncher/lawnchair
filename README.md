@@ -26,6 +26,9 @@ This branch houses the codebase of Lawnchair 16, which is currently in developme
 - QuickSwitch support for Android Recents integration on Android 15-16 (root required).
 - Global search for apps, contacts, and web results from the home screen.
 - Customization options for icon packs, fonts, and color settings.
+- Multi-page dock with fixed slots, empty-slot placeholders, an app drawer button, and JSON export/import.
+- World clock widget supporting multiple locations and the ability to select any city or town, 12/24-hour.
+- Curated folders of FOSS apps; missing apps install via F-Droid or Obtainium on tap.
 
 ## Download
 
@@ -68,6 +71,18 @@ Interested in keeping yourself up-to-date with every Lawnchair development? Try 
 These builds offer the latest features and bug fixes at a cost of performance and additional issues. Make backups before installing.
 
 Download: [Obtainium][Obtainium link] • [GitHub][GitHub link] • [nightly.link][Nightly link]
+
+### Building on Android
+
+Build natively in [Termux](https://termux.dev) (not proot):
+
+```sh
+pkg install git make
+git clone --recursive https://github.com/LawnchairLauncher/lawnchair.git
+cd lawnchair/termux && make build && make install
+```
+
+`make help` lists all targets.
 
 ## Sponsors
 

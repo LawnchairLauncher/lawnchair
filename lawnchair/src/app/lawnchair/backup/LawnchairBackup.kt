@@ -84,7 +84,7 @@ class LawnchairBackup(
         DeviceGridState(info.gridState).writeToPrefs(context, true)
 
         val dbController = ModelDbController(context)
-        RestoreDbTask.performRestore(context, dbController)
+        RestoreDbTask.performRestore(context, dbController, true)
     }
 
     private suspend fun readZip(handlers: Map<String, suspend (InputStream) -> Unit>) {
@@ -110,6 +110,7 @@ class LawnchairBackup(
         private const val PREFS_FILE_NAME = "${LauncherFiles.SHARED_PREFERENCES_KEY}.xml"
         private const val PREFS_DB_FILE_NAME = "preferences"
         private const val PREFS_DATASTORE_FILE_NAME = "preferences.preferences_pb"
+        private const val WORLD_CLOCK_PREFS_FILE_NAME = "world_clock_widgets.xml"
 
         const val INFO_FILE_NAME = "info.pb"
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
@@ -139,6 +140,7 @@ class LawnchairBackup(
                 PREFS_FILE_NAME to prefsFile(context),
                 PREFS_DB_FILE_NAME to prefsDbFile(context),
                 PREFS_DATASTORE_FILE_NAME to prefsDataStoreFile(context),
+                WORLD_CLOCK_PREFS_FILE_NAME to File(context.cacheDir.parent, "shared_prefs/$WORLD_CLOCK_PREFS_FILE_NAME"),
             )
         }
 

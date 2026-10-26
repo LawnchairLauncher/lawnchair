@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingVertical="6dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/world_clock_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/world_clock_region"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="#B3FFFFFF"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextClock
+                android:id="@+id/world_clock_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:includeFontPadding="false"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <TextClock
+                android:id="@+id/world_clock_ampm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:format12Hour="a"
+                android:format24Hour="a"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <TextClock
+            android:id="@+id/world_clock_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="EEE d MMM · z"
+            android:format24Hour="EEE d MMM · z"
+            android:singleLine="true"
+            android:textColor="#B3FFFFFF"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>

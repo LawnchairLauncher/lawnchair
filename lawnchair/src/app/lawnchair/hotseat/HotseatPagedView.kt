@@ -66,6 +66,8 @@ class HotseatPagedView @JvmOverloads constructor(
         removeAllViews()
         val pageCount = if (hasVerticalHotseat) 1 else maxOf(1, dp.numHotseatPages)
         isPagingEnabled = pageCount > 1
+        // Icons may be wider than their cell; without a gap the next page's first icon peeks in
+        setPageSpacing(if (isPagingEnabled) dp.iconSizePx + dp.hotseatBorderSpace else 0)
 
         val inflater = LayoutInflater.from(context)
         for (i in 0 until pageCount) {
@@ -126,7 +128,7 @@ class HotseatPagedView @JvmOverloads constructor(
         if (width <= 0 || childCount == 0) {
             return getCurrentCellLayout()
         }
-        var raw = (scrollX + x).toInt() / width
+        var raw = (scrollX + x).toInt() / (width + pageSpacing)
         if (mIsRtl) {
             raw = childCount - 1 - raw
         }

@@ -328,8 +328,11 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Sets or updates the predicted items
      */
     public void setPredictedItems(PredictedContainerInfo items) {
-        mPredictedItems = items.getContents();
-        if (mPredictedItems.isEmpty()) {
+        // A static dock keeps empty slots empty; an empty list also clears earlier predictions.
+        boolean suggestions = app.lawnchair.preferences.PreferenceManager.getInstance(mLauncher)
+                .getDockSuggestions().get();
+        mPredictedItems = suggestions ? items.getContents() : Collections.emptyList();
+        if (suggestions && mPredictedItems.isEmpty()) {
             HotseatRestoreHelper.restoreBackup(mLauncher);
         }
         fillGapsWithPrediction();

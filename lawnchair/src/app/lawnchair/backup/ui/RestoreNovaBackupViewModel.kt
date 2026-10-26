@@ -20,7 +20,7 @@ internal class RestoreNovaBackupViewModel(
 
     sealed interface Event {
         data object RestoreSuccess : Event
-        data object RestoreError : Event
+        data class RestoreError(val message: String) : Event
     }
 
     sealed interface State {
@@ -31,7 +31,7 @@ internal class RestoreNovaBackupViewModel(
 
         data object Loading : State
 
-        data object Error : State
+        data class Error(val message: String) : State
     }
 
     private var initialized = false
@@ -54,7 +54,7 @@ internal class RestoreNovaBackupViewModel(
                 _state.value = State.Success(info)
             } catch (t: Throwable) {
                 Log.e("RestoreNovaBackupViewModel", "failed to parse Nova backup", t)
-                _state.value = State.Error
+                _state.value = State.Error(t.message ?: t.javaClass.simpleName)
             }
         }
     }
@@ -71,7 +71,7 @@ internal class RestoreNovaBackupViewModel(
             } catch (t: Throwable) {
                 Log.e("RestoreNovaBackup", "failed to restore Nova backup", t)
                 _state.value = state.copy(isRestoring = false)
-                _events.send(Event.RestoreError)
+                _events.send(Event.RestoreError(t.message ?: t.javaClass.simpleName))
             }
         }
     }

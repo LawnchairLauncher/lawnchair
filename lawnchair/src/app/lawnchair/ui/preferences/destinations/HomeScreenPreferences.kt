@@ -158,6 +158,12 @@ fun HomeScreenPreferences(
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
             )
             SliderPreference(
+                label = stringResource(id = R.string.home_screen_count),
+                adapter = prefs.homeScreenCount.getAdapter(),
+                step = 1,
+                valueRange = 1..9,
+            )
+            SliderPreference(
                 label = stringResource(id = R.string.horizontal_padding_label),
                 adapter = prefs2.workspacePaddingHorizontalFactor.getAdapter(),
                 step = 0.05f,
