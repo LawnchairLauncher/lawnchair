@@ -84,7 +84,8 @@ class VerticalSwipeTouchController(
         }
         pointerCount = ev.pointerCount
         maxPointerCount = maxOf(maxPointerCount, pointerCount)
-        detector.setDetectableScrollConditions(getSwipeDirection(pointerCount), false)
+        val effectivePointerCount = if (maxPointerCount >= 2) 2 else pointerCount
+        detector.setDetectableScrollConditions(getSwipeDirection(effectivePointerCount), false)
         onControllerTouchEvent(ev)
         return detector.isDraggingOrSettling
     }
