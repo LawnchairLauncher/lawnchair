@@ -189,6 +189,7 @@ class NovaBackupConverter(
 
             val restoredDbFile = context.getDatabasePath(LawnchairBackup.RESTORED_DB_FILE_NAME)
             restoredDbFile.parentFile?.mkdirs()
+            deleteLauncherDatabases(restoredDbFile.parentFile)
             stagedDbFile.copyTo(restoredDbFile, overwrite = true)
 
             val dbController = ModelDbController(context)
@@ -199,6 +200,17 @@ class NovaBackupConverter(
         } finally {
             tempDir.deleteRecursively()
         }
+    }
+
+    /**
+     * Removes the launcher databases with their -wal, -shm and -journal files, as the Lawnchair
+     * backup restore does. The restored database takes the name of the one in use when the grid
+     * is unchanged, and a stale write-ahead log left next to it would bring the old layout back.
+     */
+    private fun deleteLauncherDatabases(dir: File?) {
+        dir?.listFiles()
+            ?.filter { it.name.startsWith("launcher") || it.name.startsWith(LawnchairBackup.RESTORED_DB_FILE_NAME) }
+            ?.forEach { it.delete() }
     }
 
     private fun resolveIconPackLabel(packageName: String): String = try {
