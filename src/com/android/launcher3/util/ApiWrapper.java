@@ -109,7 +109,16 @@ public class ApiWrapper {
                 // Simple check to check if the provided user is work profile
                 // TODO: Migrate to a better platform API
                 NoopDrawable d = new NoopDrawable();
-                boolean isWork = (d != mContext.getPackageManager().getUserBadgedIcon(d, user));
+                // OEM badging implementations may clone the probe drawable into a bitmap sized
+                // by its bounds and crash on the unset 0x0 bounds (vivo ImageUtil#getCloneBitmap).
+                // Give the probe non-empty bounds and fall back to "not a work profile" on failure.
+                d.setBounds(0, 0, 1, 1);
+                boolean isWork = false;
+                try {
+                    isWork = (d != mContext.getPackageManager().getUserBadgedIcon(d, user));
+                } catch (Throwable t) {
+                    // Ignore
+                }
 
                 var launcherApps = mContext.getSystemService(LauncherApps.class);
                 UserIconInfo info = new UserIconInfo(
