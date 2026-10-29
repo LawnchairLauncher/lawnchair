@@ -131,6 +131,9 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     private PreviewItemManager mPreviewItemManager;
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0);
     private List<ItemInfo> mCurrentPreviewItems = new ArrayList<>();
+    // LC: Drawn instead of the preview when the folder shows its first app's icon.
+    @Nullable
+    private Drawable mFirstAppIcon;
 
     boolean mAnimating = false;
 
@@ -608,6 +611,16 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
         mPreviewItemManager.recomputePreviewDrawingParams();
 
+        if (shouldDrawFirstAppIcon()) {
+            int iconSize = mActivity.getDeviceProfile().iconSizePx;
+            int left = (getWidth() - iconSize) / 2;
+            int top = getPaddingTop();
+            mFirstAppIcon.setBounds(left, top, left + iconSize, top + iconSize);
+            mFirstAppIcon.draw(canvas);
+            drawDot(canvas);
+            return;
+        }
+
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackground(canvas);
         }
@@ -621,6 +634,12 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         }
 
         drawDot(canvas);
+    }
+
+    // Drag-over and drop feedback is drawn by the preview, so it takes over while it runs.
+    private boolean shouldDrawFirstAppIcon() {
+        return mFirstAppIcon != null && !mAnimating && !mBackground.drawingDelegated()
+                && mBackground.mScale == 1f;
     }
 
     public void drawDot(Canvas canvas) {
@@ -686,6 +705,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         mPreviewItemManager.updatePreviewItems(animate);
         mCurrentPreviewItems.clear();
         mCurrentPreviewItems.addAll(getPreviewItemsOnPage(0));
+        mFirstAppIcon = FolderFirstApp.firstAppIcon(this);
     }
 
     /**
@@ -693,6 +713,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
      */
     public void updatePreviewItems(Predicate<ItemInfo> itemCheck) {
         mPreviewItemManager.updatePreviewItems(itemCheck);
+        mFirstAppIcon = FolderFirstApp.firstAppIcon(this);
     }
 
     public void onItemsChanged(boolean animate) {
