@@ -1,5 +1,6 @@
 package app.lawnchair.fold
 
+import android.graphics.Canvas
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
@@ -20,13 +21,10 @@ import kotlin.math.min
  * ([FoldDrawerLayouts.adjustAppsGridPadding]): the fixed half, or with the "Page order" option
  * [FoldPageOrder.READING] the language's start side ([FoldDrawerLayouts.Drawer]). One more
  * screenful of rows is laid out below the visible ones. Before every frame, every child that is
- * not fully visible on the first page (its bottom is past the first page's bottom edge) is moved
- * onto the other half, up by as many whole rows as fit on a page. So the first page only ever
- * shows full rows, the row it cuts is the first row of the second page, no app is hidden, and
- * the rows of both pages line up. Both pages scroll together, by rows: when a row becomes fully
- * visible at the bottom of the first page it leaves the top of the second page; until then the
- * part of it above the grid's top edge is clipped, since the second page has no header rows to
- * slide under. The RecyclerView,
+ * not fully on the first page (its bottom is past the seam, below) is moved onto the other half,
+ * up by as many whole rows as fit on a page. So no app is hidden and the rows of both pages line
+ * up. Both pages scroll together, by rows; on the second page the part of a row above the grid's
+ * top edge is clipped, since the second page has no header rows to slide under. The RecyclerView,
  * its fast scroller, focus and accessibility stay as they are; only view translations change, and
  * touch, drag and accessibility bounds follow them.
  *
@@ -35,10 +33,15 @@ import kotlin.math.min
  * ([scrollToEnd]), for drags, flings and the fast scroller alike, and its scroll range is shorter by
  * the second page's shift ([scrollRangeCut]) so the scroll bar ends there too.
  *
- * A row moves to the first page only once it is whole there, so while the list scrolls the row
- * at the first page's bottom shows on the second page. When a drag or fling stops, the list settles
- * on the nearest row ([settle]): a row starts at the top of both pages, the first page shows whole
- * rows and the second page starts with the next one, so no row is left cut between them.
+ * The first page ends at the seam, as many whole rows below its top as the second page is moved
+ * up ([FoldBookScroll.shift]). A row cut by the seam is drawn on both pages: its upper part at the
+ * first page's bottom, clipped there ([drawCutRows]), and its lower part at the top of the second
+ * page, where the row itself is moved. So while the list scrolls, the rows run like one strip from
+ * the top of the second page into the bottom of the first, and none jumps between the pages. Only
+ * the second page's part is the row itself, for touch, focus and accessibility. When a drag or
+ * fling stops, the list settles on the nearest row ([settle]): a row starts at the top of both
+ * pages, the first page shows whole rows and the second page starts with the next one, so no row is
+ * left cut between them.
  *
  * Keyboard and accessibility follow the visual order, first page rows then second page rows: in
  * layout order the second page's rows already come right after the first page's, so the default
@@ -86,6 +89,14 @@ class FoldDrawerBook private constructor(
 
     /** Whether the list was dragged since it was last idle: only then does it [settle]. */
     private var dragged = false
+
+    /** Draws the first page's part of the rows cut by the seam, while active. */
+    private val cutRows = object : RecyclerView.ItemDecoration() {
+        override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) = drawCutRows(c)
+    }
+
+    /** The rows cut by the seam when the list was last drawn, so that it redraws when they change. */
+    private var cutSignature = 0L
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -147,6 +158,7 @@ class FoldDrawerBook private constructor(
             if (isActive) deactivate()
             return
         }
+        if (!isActive) rv.addItemDecoration(cutRows)
         isActive = true
         val lm = rv.layoutManager ?: return
         val bottom = rv.height - rv.paddingBottom
@@ -163,19 +175,28 @@ class FoldDrawerBook private constructor(
                 break
             }
         }
-        shiftY = if (rowHeight > 0) (pageHeight / rowHeight).coerceAtLeast(1) * rowHeight else pageHeight
+        shiftY = FoldBookScroll.shift(pageHeight, rowHeight)
+        val seam = pageTop + shiftY
         val shiftX = FoldDrawerLayouts.bookShiftX(dp).toFloat()
         val rising = !transitionProgress.isNaN() && pageHeight > 0
+        var signature = 0L
         for (i in 0 until rv.childCount) {
             val child = rv.getChildAt(i)
-            // Not fully visible on the first page: it belongs to the second page.
-            val onSecondPage = lm.getDecoratedBottom(child) > bottom
+            // Not fully on the first page: it belongs to the second page.
+            val onSecondPage = FoldBookScroll.isOnSecondPage(lm.getDecoratedBottom(child), seam)
+            if (onSecondPage && child.top < seam) signature = signature * 31 + child.top + i
             val tx = if (onSecondPage) shiftX else 0f
             var ty = if (onSecondPage) -shiftY.toFloat() else 0f
             if (onSecondPage && rising) ty += riseOffset(child.top - shiftY)
             if (child.translationX != tx) child.translationX = tx
             if (child.translationY != ty) child.translationY = ty
             clipAbovePage(child, if (onSecondPage) pageTop - (child.top + ty) else 0f)
+        }
+        // The rows cut by the seam are drawn with the list (drawCutRows): draw it again when they
+        // change without a scroll, which redraws it anyway
+        if (signature != cutSignature) {
+            cutSignature = signature
+            rv.invalidate()
         }
         // Views that left the list (recycled) lose their clip
         for (i in clipped.size - 1 downTo 0) {
@@ -194,6 +215,29 @@ class FoldDrawerBook private constructor(
         return (1f - FoldTunables.DRAWER_EASE.getInterpolation(local)) * pageHeight
     }
 
+    /**
+     * Draws the upper part of each row cut by the seam where it is laid out, at the bottom of the
+     * first page, clipped at the seam; the row itself is drawn on the second page ([update]). It
+     * stays still with the first page while a transition raises the second page's rows.
+     */
+    private fun drawCutRows(c: Canvas) {
+        if (!isActive || pageHeight <= 0) return
+        val seam = pageTop + shiftY
+        for (i in 0 until rv.childCount) {
+            val child = rv.getChildAt(i)
+            if (child.translationX == 0f || child.top >= seam || child.visibility != View.VISIBLE || child.alpha <= 0f) continue
+            val save = if (child.alpha < 1f) {
+                c.saveLayerAlpha(child.left.toFloat(), child.top.toFloat(), child.right.toFloat(), seam.toFloat(), (child.alpha * 255).toInt())
+            } else {
+                c.save()
+            }
+            c.clipRect(child.left, maxOf(child.top, pageTop), child.right, seam)
+            c.translate(child.left.toFloat(), child.top.toFloat())
+            child.draw(c)
+            c.restoreToCount(save)
+        }
+    }
+
     /** Clips the top [hidden] pixels of [child] (none when [hidden] <= 0). */
     private fun clipAbovePage(child: View, hidden: Float) {
         if (hidden > 0f) {
@@ -207,6 +251,8 @@ class FoldDrawerBook private constructor(
 
     private fun deactivate() {
         isActive = false
+        rv.removeItemDecoration(cutRows)
+        cutSignature = 0L
         (rv.layoutManager as? ScrollableLayoutManager)?.setFoldExtraLayoutSpace(0)
         for (i in 0 until rv.childCount) {
             val child = rv.getChildAt(i)
@@ -261,10 +307,10 @@ class FoldDrawerBook private constructor(
         if (dy != 0) rv.smoothScrollBy(0, dy)
     }
 
-    /** Whether [child] is on the second page (not fully visible on the first page). */
+    /** Whether [child] is on the second page (not fully on the first page, see [update]). */
     private fun isOnSecondPage(child: View): Boolean {
         val lm = rv.layoutManager ?: return false
-        return lm.getDecoratedBottom(child) > rv.height - rv.paddingBottom
+        return FoldBookScroll.isOnSecondPage(lm.getDecoratedBottom(child), pageTop + shiftY)
     }
 
     /** Whether the drawn [child] shows on one of the pages, at least partly. */
@@ -341,6 +387,19 @@ class FoldDrawerBook private constructor(
 
 /** The scroll arithmetic of the book, in pixels of the list's layout coordinates. Pure. */
 internal object FoldBookScroll {
+
+    /**
+     * How far the second page's rows are moved up: as many whole rows of [rowHeight] as fit on a
+     * page of [pageHeight] (at least one), or the page when there are no rows. The first page ends
+     * that far below its top, at the seam.
+     */
+    fun shift(pageHeight: Int, rowHeight: Int): Int = if (rowHeight > 0) (pageHeight / rowHeight).coerceAtLeast(1) * rowHeight else pageHeight
+
+    /**
+     * Whether a row whose bottom is laid out at [bottom] belongs to the second page: it ends below
+     * the [seam]. A row also starting above the seam is cut by it, and drawn on both pages.
+     */
+    fun isOnSecondPage(bottom: Int, seam: Int): Boolean = bottom > seam
 
     /**
      * How far the list can scroll down until its last row, whose bottom is laid out at
