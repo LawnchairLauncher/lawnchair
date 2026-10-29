@@ -242,8 +242,6 @@ public class DeviceProfile {
     public int hotseatCellHeightPx;
     private int mHotseatColumnSpan;
     private int mHotseatWidthPx; // not used in vertical bar layout
-    // LC-Note: an unfolded foldable showing the cover's dock count (see FoldDockLayout)
-    private boolean mIsFoldDockSameAsCover;
     // LC-Note: FoldDock.SIDE, the dock is a column on the outer edge of the fixed half
     private boolean mIsSideDock;
     private boolean mIsSideDockOnLeft;
@@ -573,7 +571,6 @@ public class DeviceProfile {
         numShownHotseatIcons = FoldDockLayout.getShownHotseatIcons(context, inv,
                 mDeviceProperties.isTwoPanels(), numShownHotseatIcons, numHotseatRows,
                 numHotseatPages);
-        mIsFoldDockSameAsCover = numShownHotseatIcons != displayOptionSpec.numShownHotseatIcons;
         mHotseatColumnSpan = inv.numColumns;
 
         // LC-Note: the foldable drawer layouts "book" and "zoom" keep the cover's columns
@@ -1025,13 +1022,17 @@ public class DeviceProfile {
             hotseatBorderSpace = cellLayoutBorderSpacePx.y;
             return;
         }
-        if (!mIsScalableGrid) return;
+        // LC-Note: a foldable's large screen lays its dock out here with any grid. Foldables use
+        // the regular grids, not scalable ones, which left no space between the large screen's
+        // dock icons: packed in the middle, with a search bar as narrow.
+        if (!mIsScalableGrid && !mDeviceProperties.isTwoPanels()) return;
 
         updateHotseatWidthAndBorderSpace(inv.numColumns);
         int numWorkspaceColumns = getPanelCount() * inv.numColumns;
         if (mDeviceProperties.isTwoPanels()) {
-            updateHotseatWidthAndBorderSpace(mIsFoldDockSameAsCover
-                    ? numShownHotseatIcons : inv.numDatabaseHotseatIcons);
+            // LC-Note: a merged dock spans both pages, see FoldDockLayout#getHotseatColumnSpan
+            updateHotseatWidthAndBorderSpace(FoldDockLayout.getHotseatColumnSpan(
+                    numShownHotseatIcons, inv.numShownHotseatIcons, numWorkspaceColumns));
             // If hotseat doesn't fit with current width, increase column span to fit by multiple
             // of 2.
             while (hotseatBorderSpace < getHotseatProfile().getMinIconSpacePx()

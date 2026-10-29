@@ -5,6 +5,7 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InvariantDeviceProfile
+import kotlin.math.max
 
 /**
  * The dock of an unfolded foldable when the fold line is vertical ([FoldDock.MERGE]).
@@ -104,6 +105,17 @@ class FoldDockLayout(
             if (!prefs2.isHotseatEnabled.firstCached(prefs2)) return null
             return FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint)?.not()
         }
+
+        /**
+         * Returns how many workspace columns the large screen's dock spans, from its first icon to
+         * its last (`DeviceProfile.recalculateHotseatWidthAndBorderSpace`), the dock search bar
+         * above it too. A merged dock, with more [dockIcons] than the cover's [coverIcons], spans
+         * both pages, from the first of the [workspaceColumns] to the last, as the cover's dock
+         * spans its page. A dock with the cover's count ([FoldDock.SAME], or several rows or
+         * pages) keeps the workspace's column spacing, centered. Never fewer columns than icons.
+         */
+        @JvmStatic
+        fun getHotseatColumnSpan(dockIcons: Int, coverIcons: Int, workspaceColumns: Int): Int = if (dockIcons > coverIcons) max(workspaceColumns, dockIcons) else dockIcons
 
         /**
          * Returns how many icons a dock row shows, given the [shown] count of the display option.
