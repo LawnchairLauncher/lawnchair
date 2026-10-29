@@ -138,7 +138,9 @@ public class ModelDbController {
         try {
             if (!forMigration && dbName != null) {
                 LawnchairApp app = LawnchairAppKt.getLawnchairApp(mContext);
-                app.renameRestoredDb(dbName);
+                // LC-Note: Restore into the file opened below. A restore changes grid prefs, which
+                // can move the IDP to another grid's dbFile before this runs.
+                app.renameRestoredDb(dbFile);
                 app.migrateDbName(dbName);
             }
         } catch (Throwable t) {
