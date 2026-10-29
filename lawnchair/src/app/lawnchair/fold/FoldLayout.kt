@@ -33,19 +33,20 @@ object FoldLayout {
 
     /**
      * Whether a wide "Expand" page shows its even cover page on the end half (cells >= columns, the
-     * physical right half). With [FoldPageOrder.OPENING] the even page goes on the fixed half when
-     * the hinge side is known, like the page the user was on with "Two pages"; otherwise on the
-     * start half, as AOSP does. With [FoldPageOrder.READING] it comes first in the UI language.
+     * physical right half). With [FoldPageOrder.OPENING] the even page goes on the fixed half of the
+     * device held upright when the hinge side is known, like the page the user was on with "Two
+     * pages", and stays on that side when the device turns; otherwise on the start half, as AOSP
+     * does. With [FoldPageOrder.READING] it comes first in the UI language.
      */
     @JvmStatic
-    fun isEvenCoverPageOnEnd(context: Context, dp: DeviceProfile): Boolean {
+    fun isEvenCoverPageOnEnd(context: Context): Boolean {
         // CellLayout cells don't mirror in RTL (only folder pages invert), so the end half is
         // always the physical right half: the even page goes there when the moving half is left,
         // or when the language reads right to left.
         if (pageOrder(PreferenceManager2.getInstance(context)) == FoldPageOrder.READING) {
             return Utilities.isRtl(context.resources)
         }
-        return FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint) ?: false
+        return FoldPosture.isMovingHalfLeftUpright() ?: false
     }
 
     /**
@@ -58,16 +59,24 @@ object FoldLayout {
         else -> FoldPageOrder.OPENING
     }
 
-    /** Whether pages run right to left on [dp]'s two panels, see [FoldPagePairs.isPageOrderRtl]. */
+    /**
+     * Whether pages run right to left on the large screen's two panels, the same in every rotation,
+     * see [FoldPagePairs.isPageOrderRtl].
+     */
     @JvmStatic
-    fun isPageOrderRtl(dp: DeviceProfile, prefs2: PreferenceManager2, isRtlLanguage: Boolean): Boolean = FoldPagePairs.isPageOrderRtl(pageOrder(prefs2), isRtlLanguage, FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint))
+    fun isPageOrderRtl(prefs2: PreferenceManager2, isRtlLanguage: Boolean): Boolean = FoldPagePairs.isPageOrderRtl(pageOrder(prefs2), isRtlLanguage, FoldPosture.isMovingHalfLeftUpright())
 
     /**
      * Whether the fixed half of [dp]'s two panels shows the second page of each pair, see
      * [FoldPagePairs.isFixedHalfSecond].
      */
     @JvmStatic
-    fun isFixedHalfSecond(dp: DeviceProfile, prefs2: PreferenceManager2, isRtlLanguage: Boolean): Boolean = FoldPagePairs.isFixedHalfSecond(pageOrder(prefs2), isRtlLanguage, FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint))
+    fun isFixedHalfSecond(dp: DeviceProfile, prefs2: PreferenceManager2, isRtlLanguage: Boolean): Boolean = FoldPagePairs.isFixedHalfSecond(
+        pageOrder(prefs2),
+        isRtlLanguage,
+        FoldPosture.isMovingHalfLeftUpright(),
+        FoldPosture.isMovingHalfLeft(dp.deviceProperties.rotationHint),
+    )
 
     /** Whether the cover screen opens on the panel last touched on the large screen. */
     @JvmStatic

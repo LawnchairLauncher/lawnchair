@@ -46,9 +46,10 @@ object FoldDrawerLayouts {
 
     /**
      * The drawer layout a large-screen profile was built for, and the cover profile it copies. For
-     * PAGES, whether the first page is on the right half ([FoldPagePairs.isPageOrderRtl]) and
-     * whether it is on the moving half ([FoldPagePairs.isFixedHalfSecond]); never with
-     * [FoldPageOrder.OPENING], whose first page is on the fixed half as before the option.
+     * PAGES, whether the first page is on the right half ([FoldPagePairs.isPageOrderRtl], the
+     * same side in every rotation) and whether it is on the moving half
+     * ([FoldPagePairs.isFixedHalfSecond]); with [FoldPageOrder.OPENING] only upside down, its first
+     * page being on the fixed half as before the option otherwise.
      */
     class Drawer(
         val layout: FoldDrawerLayout,
@@ -105,12 +106,13 @@ object FoldDrawerLayouts {
         // The pages follow the "Page order" option, like the home pages
         val order = prefs2.foldPageOrder.firstCached(prefs2)
         val isRtl = Utilities.isRtl(context.resources)
+        val upright = FoldPosture.isMovingHalfLeftUpright()
         val movingHalfLeft = FoldPosture.isMovingHalfLeft(properties.rotationHint)
         return Drawer(
             layout,
             cover,
-            isFirstPageOnRight = FoldPagePairs.isPageOrderRtl(order, isRtl, movingHalfLeft),
-            isFirstPageOnMovingHalf = FoldPagePairs.isFixedHalfSecond(order, isRtl, movingHalfLeft),
+            isFirstPageOnRight = FoldPagePairs.isPageOrderRtl(order, isRtl, upright),
+            isFirstPageOnMovingHalf = FoldPagePairs.isFixedHalfSecond(order, isRtl, upright, movingHalfLeft),
         )
     }
 

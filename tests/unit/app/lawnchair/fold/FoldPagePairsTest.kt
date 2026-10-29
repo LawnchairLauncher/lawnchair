@@ -14,37 +14,63 @@ class FoldPagePairsTest {
     @Test
     fun openingRunsFromTheFixedHalfReadingFollowsTheLanguage() {
         for (rtl in listOf(false, true)) {
-            assertTrue(FoldPagePairs.isPageOrderRtl(FoldPageOrder.OPENING, rtl, movingHalfLeft = true))
-            assertFalse(FoldPagePairs.isPageOrderRtl(FoldPageOrder.OPENING, rtl, movingHalfLeft = false))
+            assertTrue(FoldPagePairs.isPageOrderRtl(FoldPageOrder.OPENING, rtl, uprightMovingHalfLeft = true))
+            assertFalse(FoldPagePairs.isPageOrderRtl(FoldPageOrder.OPENING, rtl, uprightMovingHalfLeft = false))
             for (movingHalfLeft in listOf(true, false, null)) {
                 assertEquals(rtl, FoldPagePairs.isPageOrderRtl(FoldPageOrder.READING, rtl, movingHalfLeft))
             }
             // Hinge side unknown: the language
-            assertEquals(rtl, FoldPagePairs.isPageOrderRtl(FoldPageOrder.OPENING, rtl, movingHalfLeft = null))
+            assertEquals(rtl, FoldPagePairs.isPageOrderRtl(FoldPageOrder.OPENING, rtl, uprightMovingHalfLeft = null))
         }
     }
 
     @Test
-    fun onlyReadingTowardsTheFixedHalfPutsItSecond() {
+    fun uprightOnlyReadingTowardsTheFixedHalfPutsItSecond() {
         for (rtl in listOf(false, true)) {
             for (movingHalfLeft in listOf(true, false, null)) {
-                assertFalse(FoldPagePairs.isFixedHalfSecond(FoldPageOrder.OPENING, rtl, movingHalfLeft))
+                assertFalse(upright(FoldPageOrder.OPENING, rtl, movingHalfLeft))
             }
-            assertFalse(FoldPagePairs.isFixedHalfSecond(FoldPageOrder.READING, rtl, movingHalfLeft = null))
+            assertFalse(upright(FoldPageOrder.READING, rtl, movingHalfLeft = null))
         }
         // Left to right with the fixed half on the right (end), or right to left with it on the left
-        assertTrue(FoldPagePairs.isFixedHalfSecond(FoldPageOrder.READING, isRtlLanguage = false, movingHalfLeft = true))
-        assertTrue(FoldPagePairs.isFixedHalfSecond(FoldPageOrder.READING, isRtlLanguage = true, movingHalfLeft = false))
+        assertTrue(upright(FoldPageOrder.READING, isRtlLanguage = false, movingHalfLeft = true))
+        assertTrue(upright(FoldPageOrder.READING, isRtlLanguage = true, movingHalfLeft = false))
         // The fixed half on the start side: the same as the opening direction
-        assertFalse(FoldPagePairs.isFixedHalfSecond(FoldPageOrder.READING, isRtlLanguage = false, movingHalfLeft = false))
-        assertFalse(FoldPagePairs.isFixedHalfSecond(FoldPageOrder.READING, isRtlLanguage = true, movingHalfLeft = true))
+        assertFalse(upright(FoldPageOrder.READING, isRtlLanguage = false, movingHalfLeft = false))
+        assertFalse(upright(FoldPageOrder.READING, isRtlLanguage = true, movingHalfLeft = true))
+    }
+
+    @Test
+    fun rotatingNeverReversesThePageOrder() {
+        // A book-style foldable: the moving half is the left one upright, none sideways, the right
+        // one upside down
+        for (order in FoldPageOrder.entries) {
+            for (rtl in listOf(false, true)) {
+                val rtlOrder = FoldPagePairs.isPageOrderRtl(order, rtl, uprightMovingHalfLeft = true)
+                assertEquals("$order, rtl=$rtl", order == FoldPageOrder.OPENING || rtl, rtlOrder)
+                val uprightSecond = FoldPagePairs.isFixedHalfSecond(order, rtl, uprightMovingHalfLeft = true, movingHalfLeft = true)
+                // Sideways: no fixed half, the pairs of the upright device
+                assertEquals(uprightSecond, FoldPagePairs.isFixedHalfSecond(order, rtl, uprightMovingHalfLeft = true, movingHalfLeft = null))
+                // Upside down: the same order, the fixed half on the other side, so the page the
+                // user was on is the other one of its pair
+                assertEquals(!uprightSecond, FoldPagePairs.isFixedHalfSecond(order, rtl, uprightMovingHalfLeft = true, movingHalfLeft = false))
+            }
+        }
+        // Opening direction in English upright: [3 | 2], page 2 on the fixed (right) half. Upside
+        // down the fixed half is on the left: [2 | 1], still right to left, page 2 kept there.
+        val upsideDown = FoldPagePairs.isFixedHalfSecond(FoldPageOrder.OPENING, false, uprightMovingHalfLeft = true, movingHalfLeft = false)
+        assertTrue(upsideDown)
+        assertEquals(1, FoldPagePairs.pairStart(2, FoldPagePairs.pairParity(2, upsideDown)))
+        assertEquals(1, FoldPagePairs.pairedPage(2, upsideDown))
+        // Flip phones (horizontal hinge upright): no side at all, the language
+        assertFalse(FoldPagePairs.isFixedHalfSecond(FoldPageOrder.OPENING, false, uprightMovingHalfLeft = null, movingHalfLeft = null))
     }
 
     @Test
     fun theAnchorStaysOnTheFixedHalf() {
         for (order in FoldPageOrder.entries) {
             for (movingHalfLeft in listOf(true, false)) {
-                val fixedHalfSecond = FoldPagePairs.isFixedHalfSecond(order, isRtlLanguage = false, movingHalfLeft)
+                val fixedHalfSecond = upright(order, isRtlLanguage = false, movingHalfLeft)
                 // First, middle (even and odd) and last page
                 for (anchor in listOf(0, 2, 3, pageCount - 1)) {
                     val parity = FoldPagePairs.pairParity(anchor, fixedHalfSecond)
@@ -66,7 +92,7 @@ class FoldPagePairsTest {
 
     @Test
     fun readingLeftToRightWithTheFixedHalfOnTheRight() {
-        val fixedHalfSecond = FoldPagePairs.isFixedHalfSecond(FoldPageOrder.READING, isRtlLanguage = false, movingHalfLeft = true)
+        val fixedHalfSecond = upright(FoldPageOrder.READING, isRtlLanguage = false, movingHalfLeft = true)
         // Unfolded on page 2: [1 | 2], the first page alone (shown with page 1), then [3 | 4]
         assertEquals(1, FoldPagePairs.pairParity(2, fixedHalfSecond))
         assertEquals(listOf(0, 1, 1, 3, 3), pairStarts(parity = 1))
@@ -110,4 +136,7 @@ class FoldPagePairsTest {
     }
 
     private fun pairStarts(parity: Int) = (0 until pageCount).map { FoldPagePairs.pairStart(it, parity) }
+
+    /** [FoldPagePairs.isFixedHalfSecond] with the device upright: its hinge side is the upright one. */
+    private fun upright(order: FoldPageOrder, isRtlLanguage: Boolean, movingHalfLeft: Boolean?) = FoldPagePairs.isFixedHalfSecond(order, isRtlLanguage, movingHalfLeft, movingHalfLeft)
 }

@@ -17,31 +17,42 @@ import kotlin.math.max
  *
  * Pairs are described by a parity: 0 for (0, 1), (2, 3)..., 1 for (1, 2), (3, 4)... where the
  * first page is alone and shown next to page 1.
+ *
+ * Rotating the unfolded device never reverses the order on screen: it is the one of the device
+ * held upright in every rotation ([FoldPosture.isMovingHalfLeftUpright]). Sideways the pairs stay
+ * those of the upright device too. Upside down the fixed half is on the other side, so with the
+ * same order the page the user was on ends its pair there, as with [FoldPageOrder.READING].
  */
 object FoldPagePairs {
 
     /**
-     * Whether pages run right to left on the two panels. [FoldPageOrder.OPENING] runs from the
-     * fixed half towards the moving one; [FoldPageOrder.READING], or a hinge side that isn't
-     * known, follows the UI language.
+     * Whether pages run right to left on the two panels, in every rotation. [FoldPageOrder.OPENING]
+     * runs from the fixed half towards the moving one as they are with the device held upright;
+     * [FoldPageOrder.READING], or a hinge side that isn't known, follows the UI language.
      *
      * @param isRtlLanguage whether the UI language is right to left.
-     * @param movingHalfLeft whether the moving half is the left one, null if unknown (see
-     * [FoldPosture.isMovingHalfLeft]).
+     * @param uprightMovingHalfLeft whether the moving half is the left one with the device held
+     * upright, null if unknown (see [FoldPosture.isMovingHalfLeftUpright]).
      */
     @JvmStatic
-    fun isPageOrderRtl(order: FoldPageOrder, isRtlLanguage: Boolean, movingHalfLeft: Boolean?): Boolean = if (order == FoldPageOrder.OPENING && movingHalfLeft != null) movingHalfLeft else isRtlLanguage
+    fun isPageOrderRtl(order: FoldPageOrder, isRtlLanguage: Boolean, uprightMovingHalfLeft: Boolean?): Boolean = if (order == FoldPageOrder.OPENING && uprightMovingHalfLeft != null) uprightMovingHalfLeft else isRtlLanguage
 
     /**
      * Whether the fixed half shows the second page of each pair, i.e. the page order runs towards
-     * it. Never with [FoldPageOrder.OPENING].
+     * it: with [FoldPageOrder.READING] when the fixed half is on the language's end side, and
+     * upside down, where the fixed half is on the side the order ends. Sideways ([movingHalfLeft]
+     * null: no left or right half) the pairs are those of the device held upright.
+     *
+     * @param uprightMovingHalfLeft see [isPageOrderRtl].
+     * @param movingHalfLeft whether the moving half is the left one in the current rotation, null
+     * sideways (see [FoldPosture.isMovingHalfLeft]).
      */
     @JvmStatic
-    fun isFixedHalfSecond(order: FoldPageOrder, isRtlLanguage: Boolean, movingHalfLeft: Boolean?): Boolean {
-        if (movingHalfLeft == null) return false
+    fun isFixedHalfSecond(order: FoldPageOrder, isRtlLanguage: Boolean, uprightMovingHalfLeft: Boolean?, movingHalfLeft: Boolean?): Boolean {
+        val movingLeft = movingHalfLeft ?: uprightMovingHalfLeft ?: return false
         // Pages run right to left: the first page of a pair is on the right half, which is the
         // fixed half when the moving half is the left one.
-        return isPageOrderRtl(order, isRtlLanguage, movingHalfLeft) != movingHalfLeft
+        return isPageOrderRtl(order, isRtlLanguage, uprightMovingHalfLeft) != movingLeft
     }
 
     /**

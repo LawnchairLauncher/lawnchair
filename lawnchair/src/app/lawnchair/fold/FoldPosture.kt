@@ -61,6 +61,15 @@ object FoldPosture {
         }
     }
 
+    /**
+     * [isMovingHalfLeft] with the device held upright, at its natural rotation. The large screen's
+     * pages are laid out from it in every rotation, so turning the unfolded device keeps their
+     * order on screen: sideways, where there is no left or right half, and upside down, where the
+     * halves swap sides. Null when the hinge is horizontal at the natural rotation.
+     */
+    @JvmStatic
+    fun isMovingHalfLeftUpright(): Boolean? = isMovingHalfLeft(Surface.ROTATION_0)
+
     /** Adds a listener called on the main thread when the hinge side may have changed. */
     @JvmStatic
     fun addListener(listener: Runnable) {

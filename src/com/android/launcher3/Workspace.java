@@ -4211,7 +4211,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     /**
      * LC-Note: whether, with the current device profile and page order, the fixed half shows the
      * second page of each pair (FoldPageOrder.READING with the fixed half on the language's end
-     * side). The pairs on screen follow the value taken by the last bind.
+     * side, or upside down, see FoldPagePairs). The pairs on screen follow the value taken by the
+     * last bind.
      */
     public boolean isFoldFixedHalfSecond() {
         return isTwoPanelEnabled() && FoldLayout.isFixedHalfSecond(mLauncher.getDeviceProfile(),
@@ -4346,14 +4347,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * LC-Note: on the large screen of a foldable, pages run from the fixed half to the moving
      * half (FoldPageOrder.OPENING), so the next page shows on the half that opens, whatever the UI
      * language. Otherwise (FoldPageOrder.READING), and when the hinge side is unknown, pages
-     * follow the UI language as usual.
+     * follow the UI language as usual. The direction is the one of the device held upright in
+     * every rotation, so turning the device never reverses the pages on screen.
      */
     private void updatePageDirection() {
         boolean isRtl = Utilities.isRtl(getResources());
         if (isTwoPanelEnabled()) {
             // Right to left when pages run towards the moving half and it is the left half.
-            isRtl = FoldLayout.isPageOrderRtl(mLauncher.getDeviceProfile(), mPreferenceManager2,
-                    isRtl);
+            isRtl = FoldLayout.isPageOrderRtl(mPreferenceManager2, isRtl);
         }
         if (isRtl == mIsRtl) {
             return;
