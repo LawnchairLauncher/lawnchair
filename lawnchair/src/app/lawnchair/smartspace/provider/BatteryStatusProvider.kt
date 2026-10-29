@@ -24,6 +24,12 @@ class BatteryStatusProvider(context: Context) :
         R.string.smartspace_battery_status,
         { smartspaceBatteryStatus },
     ) {
+    /** Feature Flag:
+     *
+     * Reports battery charging speed (slow/fast) in title.
+     *
+     * */
+    private val showBatteryChargingSpeedsFlag = false
     private val batteryManager = context.getSystemService<BatteryManager>()
 
     override val internalTargets = broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
@@ -36,15 +42,15 @@ class BatteryStatusProvider(context: Context) :
                     intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
                     intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
                 ).toInt()
-            val wattage = getChargingWattage(intent)
+            val wattage = if (showBatteryChargingSpeedsFlag && charging) getChargingWattage(intent) else 0f
             listOfNotNull(getSmartspaceTarget(charging, full, level, wattage))
         }
 
     private fun getSmartspaceTarget(charging: Boolean, full: Boolean, level: Int, wattage: Float): SmartspaceTarget? {
         val title = when {
             full || level == 100 -> return null
-            charging && (wattage >= ChargingPower.FAST) -> context.getString(R.string.smartspace_battery_fast_charging)
-            charging && (wattage <= ChargingPower.SLOW) -> context.getString(R.string.smartspace_battery_slow_charging)
+            showBatteryChargingSpeedsFlag && charging && (wattage >= ChargingPower.FAST) -> context.getString(R.string.smartspace_battery_fast_charging)
+            showBatteryChargingSpeedsFlag && charging && (wattage > 0f && wattage <= ChargingPower.SLOW) -> context.getString(R.string.smartspace_battery_slow_charging)
             charging -> context.getString(R.string.smartspace_battery_charging)
             level <= 15 -> context.getString(R.string.smartspace_battery_low)
             else -> return null

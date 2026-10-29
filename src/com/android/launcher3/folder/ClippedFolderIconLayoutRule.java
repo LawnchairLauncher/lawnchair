@@ -10,7 +10,6 @@ public class ClippedFolderIconLayoutRule {
     public static final float MIN_SCALE = 0.44f;
     public static final float MAX_SCALE = 0.51f;
 
-    // TODO: figure out exact radius for different icons
     private static final float MAX_RADIUS_DILATION = 0.25f;
     // The max amount of overlap the preview items can go outside of the background bounds.
     public static final float ICON_OVERLAP_FACTOR = 1 + (MAX_RADIUS_DILATION / 2f);

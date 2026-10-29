@@ -980,6 +980,12 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = GestureHandlerConfig.OpenAppDrawer,
     )
 
+    /** Swipe down gesture handler
+     *
+     * Important: It is imperative swipe down gesture handler only passed over to or handled by the native touch controller at [com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController]
+     *
+     * This is needed for ease of touch slop implementation and smooth notifications panel pulling for rooted device via SystemUI Proxy.
+     * */
     val swipeDownGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("swipe_down_gesture_handler"),
         defaultValue = GestureHandlerConfig.OpenNotifications,
