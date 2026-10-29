@@ -2,7 +2,7 @@ package app.lawnchair.ui.preferences.components.fold
 
 import android.animation.ValueAnimator
 import android.os.Build
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -36,9 +36,47 @@ import app.lawnchair.fold.FoldHomeLayout
 import app.lawnchair.fold.FoldOption
 import app.lawnchair.fold.FoldPageOrder
 import app.lawnchair.fold.FoldTransitionStyle
+import kotlin.math.roundToInt
 
-/** One loop of a preview: folded (0–0.2), unfolding (0.2–0.4), open (0.4–0.8), folded again. */
-private const val LOOP_MILLIS = 4000
+/**
+ * The painter's loop ([FoldPreviewPainter], times 0..1): folded (0–0.19), the unfold's motion
+ * (0.19–0.51), open (0.51–0.79), folded again. Its own length; the preview plays the motion
+ * [MOTION_SLOWDOWN] times slower ([previewTimeAt]), so a loop lasts [LOOP_MILLIS].
+ */
+private const val PAINTER_LOOP_MILLIS = 4000
+
+/** The painter's loop times where the unfold's motion starts and where its last part ends. */
+private const val MOTION_START = 0.19f
+private const val MOTION_END = 0.51f
+
+/**
+ * How many times slower than the painter's timing the motion plays, so each step of a transition
+ * can be followed; the folded and open frames keep their time and so stay shown between the
+ * transitions. The same for every option.
+ */
+private const val MOTION_SLOWDOWN = 2f
+
+/** The painter's loop with its motion slowed down, in painter times (1 + the added time). */
+private const val PACED_LOOP = 1f + (MOTION_SLOWDOWN - 1f) * (MOTION_END - MOTION_START)
+
+/** One loop of a preview: 5.28 s. */
+private val LOOP_MILLIS = (PAINTER_LOOP_MILLIS * PACED_LOOP).roundToInt()
+
+/**
+ * The painter's loop time at [fraction] (0..1) of a preview loop: as fast as the painter's own
+ * loop, except the unfold's motion, [MOTION_SLOWDOWN] times slower.
+ */
+internal fun previewTimeAt(fraction: Float): Float {
+    val time = fraction.coerceIn(0f, 1f) * PACED_LOOP
+    val slowEnd = MOTION_START + MOTION_SLOWDOWN * (MOTION_END - MOTION_START)
+    return when {
+        time <= MOTION_START -> time
+        time <= slowEnd -> MOTION_START + (time - MOTION_START) / MOTION_SLOWDOWN
+        else -> time - (slowEnd - MOTION_END)
+    }
+}
+
+private val PreviewPace = Easing { previewTimeAt(it) }
 
 /** The loop time shown, still, with animations off: open. */
 private const val STILL_TIME = 0.6f
@@ -52,9 +90,9 @@ fun hasFoldPreview(option: FoldOption): Boolean = option is FoldHomeLayout || op
     option is FoldDrawerLayout || option is FoldTransitionStyle || option is FoldDock
 
 /**
- * The loop time of a [FoldPreview], 0..1 over [LOOP_MILLIS]; a new [restartKey] starts it over.
- * With animations off (animator duration scale 0, which "Remove animations" sets) it stays on the
- * open frame.
+ * The loop time of a [FoldPreview], the painter's 0..1 over [LOOP_MILLIS] ([previewTimeAt]); a new
+ * [restartKey] starts it over. With animations off (animator duration scale 0, which "Remove
+ * animations" sets) it stays on the open frame.
  */
 @Composable
 fun rememberFoldPreviewTime(restartKey: Any? = null): State<Float> {
@@ -64,7 +102,7 @@ fun rememberFoldPreviewTime(restartKey: Any? = null): State<Float> {
         rememberInfiniteTransition(label = "FoldPreview").animateFloat(
             initialValue = 0f,
             targetValue = 1f,
-            animationSpec = infiniteRepeatable(tween(LOOP_MILLIS, easing = LinearEasing)),
+            animationSpec = infiniteRepeatable(tween(LOOP_MILLIS, easing = PreviewPace)),
             label = "FoldPreviewTime",
         )
     }
