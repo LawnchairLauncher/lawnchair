@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.os.Process
 import android.util.Log
-import app.lawnchair.DeviceProfileOverrides
 import app.lawnchair.preferences.PreferenceManager
-import com.android.launcher3.GridType
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.model.DatabaseHelper
 import com.android.launcher3.model.DeviceGridState
@@ -20,6 +20,7 @@ import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.RestoreDbTask
 import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.shortcuts.ShortcutRequest
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -27,7 +28,10 @@ import java.net.URISyntaxException
 import java.util.UUID
 import java.util.zip.ZipInputStream
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.io.path.createTempDirectory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 class NovaBackupConverter(
@@ -150,35 +154,56 @@ class NovaBackupConverter(
             val stagedDbFile = File(tempDir, NOVA_WORKSPACE_DB)
             val importedDeepShortcuts = createRestoredDb(novaDbFile, stagedDbFile)
 
-            val columns = info.columns
-            val rows = info.rows
-            val hotseatCount = info.hotseatCount
-            if (columns != null && rows != null && hotseatCount != null) {
-                val gridInfo = DeviceProfileOverrides.DBGridInfo(
-                    numHotseatColumns = hotseatCount,
-                    numRows = rows,
-                    numColumns = columns,
-                )
-                val gridState = DeviceGridState(
-                    columns,
-                    rows,
-                    hotseatCount,
-                    InvariantDeviceProfile.TYPE_PHONE,
-                    gridInfo.dbFile,
-                    GridType.GRID_TYPE_ANY,
-                )
-                gridState.writeToPrefs(context, true)
-                gridState.writeToPrefs(context)
-                InvariantDeviceProfile.INSTANCE.get(context).dbFile = gridInfo.dbFile
+            val prefs = withContext(Dispatchers.Main) { PreferenceManager.getInstance(context) }
+            val gridKeys = setOf(prefs.workspaceColumns.key, prefs.workspaceRows.key, prefs.hotseatColumns.key)
+            val selectionKeys = setOf(
+                DeviceGridState.KEY_DB_FILE,
+                DeviceGridState.KEY_WORKSPACE_SIZE,
+                DeviceGridState.KEY_HOTSEAT_COUNT,
+                DeviceGridState.KEY_DEVICE_TYPE,
+                DeviceGridState.KEY_GRID_TYPE,
+            )
+            // Finish already queued grid work before capturing the selection to recover on failure.
+            val previous = withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                prefs.sp.all.filterKeys { it in gridKeys || it in selectionKeys }
             }
-            writeGridToLawnchairPrefs(info)
+            try {
+                // Publish all grid preferences together before any layout reload can observe them.
+                writeGridToLawnchairPrefs(info)
 
-            val restoredDbFile = context.getDatabasePath(LawnchairBackup.RESTORED_DB_FILE_NAME)
-            restoredDbFile.parentFile?.mkdirs()
-            stagedDbFile.copyTo(restoredDbFile, overwrite = true)
+                // Let any grid migration finish against the old layout before installing the import.
+                withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                    // Missing Nova dimensions retain the current grid preference. Publish the
+                    // complete effective grid so the controller opens the imported database.
+                    val gridState = DeviceGridState(InvariantDeviceProfile.INSTANCE.get(context))
+                    gridState.writeToPrefs(context, true)
+                    gridState.writeToPrefs(context)
+                    installRestoredDatabase(stagedDbFile, gridState.dbFile)
+                }
+            } catch (failure: Throwable) {
+                try {
+                    withContext(NonCancellable) {
+                        withContext(Dispatchers.Main) {
+                            restorePreferences(prefs, gridKeys, previous)
+                            InvariantDeviceProfile.INSTANCE.get(context).onPreferencesChanged(context)
+                        }
+                        // Restoring the grid can queue migration work that writes selection keys.
+                        // Recover the exact old selection only after that work has finished.
+                        withContext(MODEL_EXECUTOR.asCoroutineDispatcher()) {
+                            restorePreferences(prefs, selectionKeys, previous)
+                        }
+                    }
+                } catch (rollbackFailure: Throwable) {
+                    failure.addSuppressed(rollbackFailure)
+                }
+                throw failure
+            }
 
-            val dbController = ModelDbController(context)
-            RestoreDbTask.performRestore(context, dbController)
+            withContext(Dispatchers.Main) {
+                info.iconPackPackage?.let { prefs.iconPackPackage.set(it) }
+                // An imported desktop owns its top row; don't put onboarding behind its widgets.
+                PreferenceManager2.getInstance(context).enableSmartspace.set(false)
+            }
 
             pinImportedDeepShortcuts(importedDeepShortcuts)
         } finally {
@@ -193,14 +218,94 @@ class NovaBackupConverter(
         packageName
     }
 
-    private fun writeGridToLawnchairPrefs(info: NovaBackupInfo) {
+    private suspend fun writeGridToLawnchairPrefs(info: NovaBackupInfo) = withContext(Dispatchers.Main) {
         val prefs = PreferenceManager.getInstance(context)
-        prefs.sp.edit().apply {
-            info.columns?.let { putInt(prefs.workspaceColumns.key, it) }
-            info.rows?.let { putInt(prefs.workspaceRows.key, it) }
-            info.hotseatCount?.let { putInt(prefs.hotseatColumns.key, it) }
-            info.iconPackPackage?.let { putString(prefs.iconPackPackage.key, it) }
-        }.commit()
+        prefs.batchEdit {
+            info.columns?.let { prefs.workspaceColumns.set(it) }
+            info.rows?.let { prefs.workspaceRows.set(it) }
+            info.hotseatCount?.let { prefs.hotseatColumns.set(it) }
+        }
+        InvariantDeviceProfile.INSTANCE.get(context).onPreferencesChanged(context)
+    }
+
+    private fun restorePreferences(prefs: PreferenceManager, keys: Set<String>, previous: Map<String, *>) {
+        val editor = prefs.sp.edit()
+        keys.forEach { key ->
+            when (val value = previous[key]) {
+                null -> editor.remove(key)
+                is Int -> editor.putInt(key, value)
+                is String -> editor.putString(key, value)
+                else -> error("Unexpected grid preference type: $key")
+            }
+            prefs.prefsMap[key]?.invalidate()
+        }
+        check(editor.commit()) { "Unable to restore pre-import preferences" }
+    }
+
+    /** Runs on the model executor and retains the previous files until restore processing succeeds. */
+    private fun installRestoredDatabase(source: File, databaseName: String) {
+        val target = context.getDatabasePath(databaseName)
+        val directory = requireNotNull(target.parentFile).apply { mkdirs() }
+        val recovery = createTempDirectory(directory.toPath(), ".nova-install-").toFile()
+        val incoming = File(recovery, "incoming.db")
+        val preserved = mutableListOf<Pair<File, File>>()
+        var installed = false
+        var canCleanUp = true
+        try {
+            // A failed source copy must not disturb the live database or its open connection.
+            source.copyTo(incoming)
+            LauncherAppState.getInstance(context).model.modelDbController.closeDb()
+            // Hide any older pending restore too, so opening the target cannot consume it.
+            listOf(databaseName, LawnchairBackup.RESTORED_DB_FILE_NAME).distinct().forEach { name ->
+                val database = context.getDatabasePath(name)
+                listOf("", "-wal", "-shm", "-journal").forEach { suffix ->
+                    val original = File(database.path + suffix)
+                    if (original.exists()) {
+                        val saved = File(recovery, "previous-${preserved.size}")
+                        check(original.renameTo(saved)) { "Unable to preserve launcher database: $original" }
+                        preserved += original to saved
+                    }
+                }
+            }
+            check(incoming.renameTo(target)) { "Unable to install imported launcher database" }
+            installed = true
+            val controller = ModelDbController(context)
+            try {
+                check(RestoreDbTask.performRestore(context, controller)) { "Unable to restore imported layout" }
+                controller.clearEmptyDbFlag()
+            } finally {
+                controller.closeDb()
+            }
+        } catch (failure: Throwable) {
+            fun rollback(action: () -> Unit) {
+                try {
+                    action()
+                } catch (rollbackFailure: Throwable) {
+                    canCleanUp = false
+                    failure.addSuppressed(rollbackFailure)
+                }
+            }
+            if (installed) {
+                listOf("", "-wal", "-shm", "-journal").forEach { suffix ->
+                    rollback {
+                        val file = File(target.path + suffix)
+                        check(!file.exists() || file.delete()) { "Unable to remove failed launcher installation: $file" }
+                    }
+                }
+            }
+            preserved.asReversed().forEach { (original, saved) ->
+                rollback {
+                    check(saved.renameTo(original)) { "Unable to recover launcher database: $original" }
+                }
+            }
+            if (!canCleanUp) {
+                Log.e(TAG, "Launcher database rollback failed; recovery files kept at ${recovery.path}", failure)
+            }
+            throw failure
+        } finally {
+            // Never discard the only previous copy if rollback itself fails.
+            if (canCleanUp) recovery.deleteRecursively()
+        }
     }
 
     private fun parseNovaConfig(xmlFile: File): NovaConfig {
@@ -346,6 +451,12 @@ class NovaBackupConverter(
                  *           X being category ID that are defined in drawer_group table
                  */
                 val rawIntent = getStringOrNull(cursor, NOVA_COL_INTENT)
+                val component = rawIntent?.let { runCatching { Intent.parseUri(it, 0).component }.getOrNull() }
+                if (component?.packageName == "com.teslacoilsw.launcher" &&
+                    component.className == "com.teslacoilsw.launcher.preferences.SettingsActivity"
+                ) {
+                    continue
+                }
                 val importedDeepShortcut = if (itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     parseNovaDeepShortcut(rawIntent)?.also { shortcut ->
                         importedDeepShortcuts.getOrPut(shortcut.packageName) { mutableSetOf() }
