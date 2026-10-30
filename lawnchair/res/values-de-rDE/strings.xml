@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">von %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">gerade eben</string>
-    <string name="time_minutes_ago">%dMin</string>
-    <string name="time_hours_ago">%dStd.</string>
-    <string name="time_days_ago">%dT.</string>
-    <string name="time_weeks_ago">%dW.</string>
-    <string name="time_months_ago">%dMon.</string>
-    <string name="time_years_ago">%dJ.</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dMin</item>
+        <item quantity="other">%dMin</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dStd.</item>
+        <item quantity="other">%dStd.</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dT.</item>
+        <item quantity="other">%dT.</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dW.</item>
+        <item quantity="other">%dW.</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dMon.</item>
+        <item quantity="other">%dMon.</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dJ.</item>
+        <item quantity="other">%dJ.</item>
+    </plurals>
     <string name="managed_by_lawnchair">Von Lawnchair verwaltet</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Voreinstellungen</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Ordner-Apps ausblenden</string>
     <string name="apps_in_folder_description">Ordnern zugewiesene Apps sind von der App-Liste ausgeschlossen</string>
     <string name="folders_filter_duplicates">Nur Apps, die keine Duplikate sind, zeigen</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Mein Ordner</string>
     <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Einstellungen</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Allgemein</string>
     <string name="general_description">Farben, Symbolpakete, Benachrichtigungspunkte</string>
     <string name="home_screen_label">Startbildschirm</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Maximale Rastergröße erhöhen</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Symbole immer neu laden</string>
-    <string name="always_reload_icons_description">Die Verwendung zwischengespeicherter Symbole aus Symbol-Paketen vermeiden</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">Deck-Layout</string>
     <string name="show_deck_layout_description">Eine Layout-Option anzeigen, um die App-Übersicht auszublenden und neue Apps automatisch zum Startbildschirm hinzuzufügen</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Mehrere Zeilen verwenden</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">Automatische adaptive Symbole</string>
-    <string name="auto_adaptive_icons_description">Für alle nicht adaptiven Symbole</string>
     <string name="shadow_bg_icons_label">Schatten hinter Symbolen anzeigen</string>
     <string name="background_lightness_label">Hintergrundhelligkeit</string>
     <string name="adaptive_icon_background_description">Verwende 100% Hintergrundhelligkeit für Weiß</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">Zwischenablage enthält keine gültige Symbolform</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Symbol-Paket</string>
-    <string name="themed_icon_pack">Symboldesign-Quelle</string>
-    <string name="themed_icon_pack_tint">In Akzentfarbe einfärben</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">System-Symbole</string>
     <string name="force_monochrome_label">Einfarbigkeit erzwingen</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Symboldesigns</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Aus</string>
     <string name="themed_icons_home_label">Startbildschirm</string>
     <string name="themed_icons_home_and_drawer_label">Startbildschirm und App-Übersicht</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Keine unterstützten Symbolpakete</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Schriftarten hinzufügen</string>
     <string name="pref_fonts_add_fonts_summary">OTF und TTF Schriftarten werden unterstützt</string>

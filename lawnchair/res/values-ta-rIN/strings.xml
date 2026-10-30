@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dm</item>
+        <item quantity="other">%dm</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dh</item>
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dd</item>
+        <item quantity="other">%dd</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dw</item>
+        <item quantity="other">%dw</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dmo</item>
+        <item quantity="other">%dmo</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dy</item>
+        <item quantity="other">%dy</item>
+    </plurals>
     <string name="managed_by_lawnchair">லான்ச்சர் மூலம் நிர்வகிக்கப்படுகிறது</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">சுமார்ட் இடம் விருப்பங்கள்</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">My folder</string>
     <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">அமைப்புகள்</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">பொது</string>
     <string name="general_description">நிறங்கள், சின்னச்சிப்பம், அறிவிப்புப் புள்ளிகள்</string>
     <string name="home_screen_label">முகப்புத் திரை</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">அதிகபட்ச கட்ட அளவு வரம்பை அதிகரிக்க</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">எப்போதும் சின்னங்களை மீண்டும் ஏற்று</string>
-    <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">பல வரிகளைப் பயன்படுத்தவும்</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">தகவமைப்பு சின்னங்கள்</string>
-    <string name="auto_adaptive_icons_description">எல்லா தகவமையா சின்னங்களுக்கும்</string>
     <string name="shadow_bg_icons_label">Show shadow behind icons</string>
     <string name="background_lightness_label">பின்புல இலேசுத்தன்மை</string>
     <string name="adaptive_icon_background_description">வெள்ளைக்கு 100% பின்புல இலேசுத்தன்மை பயன்படுத்து</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">நகலகம் செல்லத் தக்க படவுரு வடிவத்தைக் கொண்டிருக்கவில்லை</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">சின்ன பேக்</string>
-    <string name="themed_icon_pack">கருப்பொருள் ஐகான் மூல</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">இயங்குதளச் சின்னங்கள்</string>
     <string name="force_monochrome_label">Force monochrome</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">தோற்றக்கருமிகுச் சின்னங்கள்</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">அணை</string>
     <string name="themed_icons_home_label">முகப்புத் திரை</string>
     <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">ஆதரிக்கப்படும் ஐகான் பேக் இல்லை</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">எழுத்துருக்களை சேர்க்கவும்</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF எழுத்துருக்கள் ஏற்றுக்கொள்ளப்படுகிறது</string>

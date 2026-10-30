@@ -46,7 +46,7 @@
     <string name="download_update">Baixar atualização</string>
     <string name="install_update">Instalar atualização</string>
     <string name="view_changes">Exibir alterações</string>
-    <string name="pro_updated">\"Você Atualizou para a versão Pro\"</string>
+    <string name="pro_updated">Você está atualizado</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Atualizações</string>
     <string name="changes_dialog_error">Não possível carregar atualizações</string>
@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">por %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">agora há pouco</string>
-    <string name="time_minutes_ago">%dmin</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dsem</string>
-    <string name="time_months_ago">%dm</string>
-    <string name="time_years_ago">%da</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dmin</item>
+        <item quantity="other">%dmin</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dh</item>
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dd</item>
+        <item quantity="other">%dd</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dsem</item>
+        <item quantity="other">%dsem</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dm</item>
+        <item quantity="other">%dm</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%da</item>
+        <item quantity="other">%da</item>
+    </plurals>
     <string name="managed_by_lawnchair">Gerenciado por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferências</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Ocultar aplicativos da pasta</string>
     <string name="apps_in_folder_description">Os aplicativos atribuídos a pastas são excluídos das listas de aplicativos</string>
     <string name="folders_filter_duplicates">Mostrar apenas apps únicos</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Minha pasta</string>
     <string name="sort_active_items_action">Organizar itens ativos</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Configurações</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Geral</string>
     <string name="general_description">Cores, pacotes de ícones, pontos de notificação</string>
     <string name="home_screen_label">Tela inicial</string>
@@ -162,7 +183,7 @@
     <string name="workspace_label">Espaço de trabalho</string>
     <string name="smartspace_label">Espaço inteligente</string>
     <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
+    <string name="internal_description">Interno pode ser menos estável que outros grupos experimentais</string>
     <string name="font_picker_label">Customização de fonte</string>
     <string name="font_picker_description">Algum texto continua inalterado</string>
     <string name="smartspace_calendar_label">Personalização do calendário do Resumo</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Aumentar o limite de tamanho máximo da grade</string>
     <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grade da tela inicial de 10 &#xd7; 10 para 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Sempre recarregar ícones</string>
-    <string name="always_reload_icons_description">Evite usar ícones guardados no cache dos pacotes de ícones</string>
+    <string name="always_reload_icons_description">Evita caching para recarregar ícones imediatamente quando a cor de destaque ou temas forem alterados</string>
     <string name="always_reload_icons_warning">Isso fará com que os ícones atualizem regularmente, impactando na performance. Desligue se o pacote de ícones não atualiza regularmente.</string>
     <string name="show_deck_layout">Layout do deck</string>
     <string name="show_deck_layout_description">Mostrar uma opção de layout para ocultar a gaveta de aplicativos e adicionar automaticamente novos aplicativos à tela inicial</string>
@@ -182,9 +203,9 @@
     <string name="gesturenavcontract_label">Usar a API da Navegação por Gestos</string>
     <string name="gesturenavcontract_description">Suporta as animações melhoradas do Android quando se usa a navegação por gestos</string>
     <string name="gesturenavcontract_warning_incompatibility">O seu dispositivo não possui todo o suporte. Isso pode causar problemas visuais em algumas animações.</string>
-    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_level_label">Nível da vibração de retorno tátil</string>
     <string name="vibration_feedback_no_feedback_choice">Nenhuma</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_minimal_choice">Mínimo</string>
     <string name="vibration_feedback_default_choice">Padrão</string>
     <string name="vibration_feedback_expressive_choice">Expressivo</string>
     <string name="recents_lock_unlock">Bloqueio de aplicativos</string>
@@ -206,12 +227,12 @@
     <string name="prediction_mode_system">Padrão (sistema)</string>
     <string name="prediction_mode_none">Desligado</string>
     <string name="prediction_weighted_usage_stats_label">Utilizar dados de uso do dispositivo</string>
-    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="prediction_weighted_usage_stats_description">Use suas estatísticas de uso do dispositivo para criar sugestões mais precisas</string>
     <string name="dismissed_prediction_apps_label">Aplicativos bloqueados</string>
     <string name="dismissed_prediction_apps_label_with_count">Aplicativos bloqueados (%1$d)</string>
     <string name="prediction_system_settings">Gerenciar sugestões do sistema</string>
-    <string name="missing_usage_access_label">Usage access needed</string>
-    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <string name="missing_usage_access_label">Requer acesso ao uso</string>
+    <string name="missing_usage_access_desc">Para aprimorar as sugestões de aplicativo, ative o acesso ao uso para <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
@@ -239,9 +260,7 @@
     <string name="twoline_label">Usar múltiplas linhas</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Fundo dos ícones transparentes</string>
-    <string name="transparent_background_icons_description">Ícone tematizados e ícones auto-adaptativos</string>
     <string name="auto_adaptive_icons_label">Ícones adaptativos automáticos</string>
-    <string name="auto_adaptive_icons_description">Para todos os ícones não-adaptativos</string>
     <string name="shadow_bg_icons_label">Mostrar sombra atrás dos ícones</string>
     <string name="background_lightness_label">Luminosidade do fundo</string>
     <string name="adaptive_icon_background_description">Use 100% de luz de fundo para fundo branco</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">Área de transferência não contém uma forma de ícone válida</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Pacotes de ícones</string>
-    <string name="themed_icon_pack">Fonte de Ícones Temáticos</string>
-    <string name="themed_icon_pack_tint">Colorir com a cor de destaque</string>
+    <string name="get_more_icon_packs">Obter mais ícones</string>
+    <string name="fallback_icon_source_title">Fonte de ícones alternativos</string>
     <string name="system_icons">Ícones do Sistema</string>
     <string name="force_monochrome_label">Forçar monocromia</string>
     <string name="force_monochrome_description">\"Recolorir aplicativos sem suporte com a cor de destaque\".</string>
+    <string name="enforce_themed_icons_title">Aplicar ícones temáticos</string>
+    <string name="enforce_themed_icons_description">Até para aplicativos não suportados (não recomendado)</string>
     <string name="themed_icon_title">Ícones Temáticos</string>
+    <string name="themed_icons_description">Adapta ícones de aplicativos suportados para corresponder ao tema e esquema de cores do seu dispositivo. Esses ícones são aplicados no topo dos seus pacotes de ícone existentes.</string>
     <string name="themed_icons_off_label">Desligado</string>
     <string name="themed_icons_home_label">Tela inicial</string>
     <string name="themed_icons_home_and_drawer_label">Tela inicial e gaveta de aplicativos</string>
+    <string name="themed_icons_no_fallback">Sem fonte alternativa</string>
     <string name="lawnicons_not_installed_description">Não há pacotes de ícones suportados</string>
+    <string name="advanced_icon_settings_title">Configurações avançadas de ícone</string>
+    <string name="reshape_unthemed_icons_title">Remodelar ícones não tematizados</string>
+    <string name="reshape_unthemed_icons_description">Adicionando um fundo</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Adicionar Fontes</string>
     <string name="pref_fonts_add_fonts_summary">Fontes OTF e TTF são suportadas</string>
@@ -479,7 +505,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="backup_restore_error">Falha ao restaurar o backup</string>
     <string name="invalid_backup_file">Arquivo de backup inválido</string>
     <string name="restore_nova_backup">Restaure o backup Nova</string>
-    <string name="invalid_nova_backup_file">Arquivo do backup Nova inválido</string>
+    <string name="invalid_nova_backup_file">Arquivo de backup Nova inválido</string>
     <string name="nova_grid_label">Grade</string>
     <string name="nova_grid_value">%1$d x %2$d</string>
     <string name="nova_dock_label">Ancorar</string>
@@ -556,14 +582,14 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="home_screen_rotation_description">Permitir a rotação da tela inicial quando o dispositivo for girado</string>
     <string name="auto_updater_label">Automaticamente procurar por atualizações</string>
     <string name="auto_updater_description">Procura por atualizações Nightly quando abrir a tela de sobre</string>
-    <string name="live_information_label">Live information</string>
-    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
+    <string name="live_information_label">Informação ao vivo</string>
+    <string name="live_information_description">Mostra anúncio, e define os sinais de recurso padrão</string>
     <string name="wallpaper_blur">Desfoque no papel de parede (experimental)</string>
     <string name="wallpaper_background_blur">Intensidade do desfoque</string>
     <string name="wallpaper_background_blur_factor">Limite de fator</string>
     <string name="home_lawn_deck_label">Deck</string>
     <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_description">Acesse seus aplicativos sem esforço com o Deck, uma experiência sem gaveta de aplicativos, oferecendo simplicidade e organização fluída</string>
     <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à tela inicial</string>
     <string name="minus_one_enable">Mostrar o feed</string>
     <string name="minus_one_unavailable">Nenhum aplicativo de feed instalado</string>
@@ -632,7 +658,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="hotseat_bg_vertical_inset_top">Margem superior</string>
     <string name="hotseat_bg_vertical_inset_bottom">Margem inferior</string>
     <string name="hotseat_bg_color_label">Cor de fundo</string>
-    <string name="hotseat_bg_corner_radius">Background corner radius</string>
+    <string name="hotseat_bg_corner_radius">Rádio dos cantos do fundo</string>
     <string name="hotseat_bg_alpha">Opacidade do fundo</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pausar</string>
@@ -644,7 +670,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="open_in_store_drop_target_label">Abrir na loja</string>
     <string name="dock_icons">Ícones da dock</string>
     <string name="dock_rows">Linhas da Dock</string>
-    <string name="dock_pages">Dock pages</string>
+    <string name="dock_pages">Páginas do Dock</string>
     <string name="state_folded">%1$s (dentro da pasta)</string>
     <string name="state_unfolded">%1$s (Fora da pasta)</string>
     <string name="folded_label">Dentro da pasta</string>
@@ -678,9 +704,9 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="app_drawer_haptic_feedback_label">Feedback Tático/Vibração</string>
     <string name="app_drawer_indent_label">Preenchimento horizontal</string>
     <string name="app_drawer_bg_color_label">Cor de fundo</string>
-    <string name="work_profile_tab_background_label">Tab background color</string>
-    <string name="pref_all_apps_search_bar_background">Show background behind search bar</string>
-    <string name="work_profile_tab_container_background_label">Show background behind tabs</string>
+    <string name="work_profile_tab_background_label">Cor de fundo da aba</string>
+    <string name="pref_all_apps_search_bar_background">Mostrar plano de fundo atrás da barra de busca</string>
+    <string name="work_profile_tab_container_background_label">Mostrar plano de fundo atrás das abas</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Esconder da gaveta de aplicativos</string>
     <string name="hidden_apps_label_with_count">Aplicativos ocultos (%1$d)</string>
@@ -695,9 +721,9 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="max_folder_columns">Máximo de colunas nas pastas</string>
     <string name="max_folder_rows">Máximo de linhas nas pastas</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">Estas opções serão ignoradas porque Lawnchair não está configurado como o provedor da tela de aplicativos recentes</string>
     <string name="quickstep_incompatible">Integração de sistema incompatível</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
+    <string name="quickstep_incompatible_description">Seu dispositivo está configurado para usar gestos do sistema, conhecido como Quickstep, concedido por %1$s, mas esta versão de %1$s não é compatível com sua versão Android. Para continuar usando seu dispositivo, desinstale as atualizações de %1$s ou desative %1$s como provedor de gestos do sistema.</string>
     <string name="translucent_background">Fundo translúcido</string>
     <string name="translucent_background_alpha">Opacidade do fundo</string>
     <string name="recents_actions_label">Ações rápidas</string>
@@ -741,7 +767,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="show_hidden_apps_in_search_results">Mostrar aplicativos ocultos nos resultados da pesquisa</string>
     <string name="hidden_apps_show_name_typed">Se o nome completo for digitado</string>
     <string name="allapps_web_suggestion_provider_label">Provedor de sugestões da web</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show the web suggestion provider icon in the search bar</string>
+    <string name="allapps_use_web_suggestion_icon_label">Mostrar o ícone do provedor de sugestão da web na barra de pesquisa</string>
     <string name="allapps_match_qsb_style_label">Combinar ações da dock search bar</string>
     <string name="allapps_match_qsb_style_description">Tocar na dock faz com que a pesquisa da gaveta de apps seja aberta</string>
     <string name="app_search_algorithm">Algoritmo de pesquisa</string>

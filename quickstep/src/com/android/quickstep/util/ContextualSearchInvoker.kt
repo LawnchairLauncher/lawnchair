@@ -24,6 +24,7 @@ import android.util.Log
 import android.view.Display.DEFAULT_DISPLAY
 import androidx.annotation.VisibleForTesting
 import com.android.internal.app.AssistUtils
+import com.android.launcher3.Utilities
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_LAUNCH_ASSISTANT_FAILED_SERVICE_ERROR
@@ -62,7 +63,11 @@ internal constructor(
         SystemUiProxy.INSTANCE[context],
         StatsLogManager.newInstance(context),
         ContextualSearchHapticManager.INSTANCE[context],
-        context.getSystemService(ContextualSearchManager::class.java),
+        if (Utilities.ATLEAST_V) {
+            context.getSystemService(ContextualSearchManager::class.java)
+        } else { // LC-Note: QuickSwitch compatibility!
+            null
+        },
     )
 
     @Inject
@@ -80,13 +85,20 @@ internal constructor(
         systemUiProxy,
         logManagerFactory.create(context),
         hapticManager,
-        context.getSystemService(ContextualSearchManager::class.java),
+        if (Utilities.ATLEAST_V) { // LC-Note: QuickSwitch compatibility!
+            context.getSystemService(ContextualSearchManager::class.java)
+        } else {
+            null
+        },
     )
 
     /** @return Array of AssistUtils.INVOCATION_TYPE_* that we want to handle instead of SysUI. */
     fun getSysUiAssistOverrideInvocationTypes(): IntArray {
         val overrideInvocationTypes = com.android.launcher3.util.IntArray()
-        if (context.packageManager.hasSystemFeature(FEATURE_CONTEXTUAL_SEARCH)) {
+        // LC-Note: QuickSwitch compatibility!
+        if (Utilities.ATLEAST_V &&
+            context.packageManager.hasSystemFeature(FEATURE_CONTEXTUAL_SEARCH)
+        ) {
             overrideInvocationTypes.add(AssistUtils.INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS)
         }
         return overrideInvocationTypes.toArray()
@@ -98,7 +110,11 @@ internal constructor(
      */
     fun tryStartAssistOverride(invocationType: Int): Boolean {
         if (invocationType == AssistUtils.INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS) {
-            if (!context.packageManager.hasSystemFeature(FEATURE_CONTEXTUAL_SEARCH)) {
+            // LC-Note: QuickSwitch compatibility!
+            if (
+                !Utilities.ATLEAST_V ||
+                    !context.packageManager.hasSystemFeature(FEATURE_CONTEXTUAL_SEARCH)
+            ) {
                 // When Contextual Search is disabled, fall back to Assistant.
                 return false
             }
@@ -142,7 +158,8 @@ internal constructor(
      */
     fun runContextualSearchInvocationChecksAndLogFailures(): Boolean {
         if (
-            contextualSearchManager == null ||
+            !Utilities.ATLEAST_V || // LC-Note: QuickSwitch compatibility!
+                contextualSearchManager == null ||
                 !context.packageManager.hasSystemFeature(FEATURE_CONTEXTUAL_SEARCH)
         ) {
             Log.i(TAG, "Contextual Search invocation failed: no ContextualSearchManager")

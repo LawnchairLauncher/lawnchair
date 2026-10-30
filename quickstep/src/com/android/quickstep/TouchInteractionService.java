@@ -731,6 +731,7 @@ public class TouchInteractionService extends Service {
 
     private DisplayRepository mDisplayRepository;
 
+    @Nullable // LC-Note: QuickSwitch compatibility!
     private QuickstepKeyGestureEventsManager mQuickstepKeyGestureEventsHandler;
     private DisplaysWithDecorationsRepositoryCompat mDisplaysWithDecorationsRepositoryCompat;
     private CoroutineDispatcher mCoroutineDispatcher;
@@ -749,7 +750,9 @@ public class TouchInteractionService extends Service {
         mRotationTouchHelperRepository = RotationTouchHelper.REPOSITORY_INSTANCE.get(this);
         mRecentsWindowManagerRepository = RecentsWindowManager.REPOSITORY_INSTANCE.get(this);
         mSystemDecorationChangeObserver = SystemDecorationChangeObserver.getINSTANCE().get(this);
-        mQuickstepKeyGestureEventsHandler = new QuickstepKeyGestureEventsManager(this);
+        if (Utilities.ATLEAST_V) { // LC-Note: QuickSwitch compatibility!
+            mQuickstepKeyGestureEventsHandler = new QuickstepKeyGestureEventsManager(this);
+        }
         mCoroutineDispatcher = ProductionDispatchers.INSTANCE.getMain();
         mDisplaysWithDecorationsRepositoryCompat =
                 LauncherDisplaysWithDecorationsRepositoryCompat.getINSTANCE().get(this);
@@ -884,8 +887,10 @@ public class TouchInteractionService extends Service {
         onOverviewTargetChanged(mOverviewComponentObserver.isHomeAndOverviewSame());
 
         mTaskbarManager.onUserUnlocked();
-        mQuickstepKeyGestureEventsHandler.registerOverviewKeyGestureEvent(
-                createOverviewGestureHandler());
+        if (mQuickstepKeyGestureEventsHandler != null) { // LC-Note: QuickSwitch compatibility!
+            mQuickstepKeyGestureEventsHandler.registerOverviewKeyGestureEvent(
+                    createOverviewGestureHandler());
+        }
     }
 
     public OverviewCommandHelper getOverviewCommandHelper() {
@@ -971,7 +976,9 @@ public class TouchInteractionService extends Service {
                 + " instance=" + System.identityHashCode(this));
         if (LockedUserState.get(this).isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();
-            mQuickstepKeyGestureEventsHandler.onDestroy();
+            if (mQuickstepKeyGestureEventsHandler != null) { // LC-Note: QuickSwitch compatibility!
+                mQuickstepKeyGestureEventsHandler.onDestroy();
+            }
             mOverviewComponentObserver.setHomeDisabled(false);
             mOverviewComponentObserver.removeOverviewChangeListener(mOverviewChangeListener);
         }

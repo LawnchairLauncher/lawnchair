@@ -43,6 +43,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatedFloat;
+import com.android.launcher3.statehandlers.BaseDepthController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.MultiPropertyFactory;
@@ -52,20 +54,21 @@ import com.android.systemui.shared.system.BlurUtils;
 /**
  * Utility class for applying depth effect
  */
-public class BaseDepthController {
+public class BaseDepthControllerImpl implements BaseDepthController {
     public static final float DEPTH_0_PERCENT = 0f;
     public static final float DEPTH_60_PERCENT = 0.6f;
     public static final float DEPTH_70_PERCENT = 0.7f;
 
-    private static final FloatProperty<BaseDepthController> DEPTH =
-            new FloatProperty<BaseDepthController>("depth") {
+    // Includes both Wallpaper Zoom and Blur
+    private static final FloatProperty<BaseDepthControllerImpl> DEPTH =
+            new FloatProperty<BaseDepthControllerImpl>("depth") {
                 @Override
-                public void setValue(BaseDepthController depthController, float depth) {
+                public void setValue(BaseDepthControllerImpl depthController, float depth) {
                     depthController.setDepth(depth);
                 }
 
                 @Override
-                public Float get(BaseDepthController depthController) {
+                public Float get(BaseDepthControllerImpl depthController) {
                     return depthController.mDepth;
                 }
             };
@@ -73,6 +76,9 @@ public class BaseDepthController {
     private static final int DEPTH_INDEX_STATE_TRANSITION = 0;
     private static final int DEPTH_INDEX_WIDGET = 1;
     private static final int DEPTH_INDEX_COUNT = 2;
+
+    private static final int ZOOM_INDEX_FOLDER = 0;
+    private static final int ZOOM_INDEX_COUNT = 1;
 
     // b/291401432
     private static final String TAG = "BaseDepthController";
@@ -82,6 +88,8 @@ public class BaseDepthController {
     public final MultiProperty stateDepth;
     /** Property to set the depth for widget picker. */
     public final MultiProperty widgetDepth;
+    /** Property to set just the wallpaper zoom for folder expansion. */
+    public final MultiProperty folderZoom;
 
     /**
      * Blur radius when completely zoomed out, in pixels.
@@ -96,6 +104,8 @@ public class BaseDepthController {
      * @see android.service.wallpaper.WallpaperService.Engine#onZoomChanged(float)
      */
     private float mDepth;
+    // Used just for animating wallpaper zoom without affecting blur.
+    private final AnimatedFloat mWallpaperZoomOnly = new AnimatedFloat(this::applyDepthAndBlur);
 
     protected SurfaceControl mBaseSurface;
 
@@ -125,7 +135,7 @@ public class BaseDepthController {
      */
 //    private EarlyWakeupInfo mEarlyWakeupInfo = new EarlyWakeupInfo();
 
-    public BaseDepthController(QuickstepLauncher activity) {
+    public BaseDepthControllerImpl(QuickstepLauncher activity) {
         mLauncher = activity;
         if (Flags.allAppsBlur() || enableOverviewBackgroundWallpaperBlur()) {
             if (Utilities.ATLEAST_S) {
@@ -141,12 +151,37 @@ public class BaseDepthController {
         }
         mWallpaperManager = activity.getSystemService(WallpaperManager.class);
 
-        MultiPropertyFactory<BaseDepthController> depthProperty =
+        MultiPropertyFactory<BaseDepthControllerImpl> depthProperty =
                 new MultiPropertyFactory<>(this, DEPTH, DEPTH_INDEX_COUNT, Float::max);
         stateDepth = depthProperty.get(DEPTH_INDEX_STATE_TRANSITION);
         widgetDepth = depthProperty.get(DEPTH_INDEX_WIDGET);
+
+        if (Flags.enableExpressiveFolderExpansion()) {
+            MultiPropertyFactory<AnimatedFloat> folderZoomFactory =
+                    new MultiPropertyFactory<>(mWallpaperZoomOnly, AnimatedFloat.VALUE,
+                            ZOOM_INDEX_COUNT, Float::max);
+            folderZoom = folderZoomFactory.get(ZOOM_INDEX_FOLDER);
+        } else {
+            folderZoom = null;
+        }
+
 //        mEarlyWakeupInfo.token = new Binder();
-//        mEarlyWakeupInfo.trace = BaseDepthController.class.getName();
+//        mEarlyWakeupInfo.trace = BaseDepthControllerImpl.class.getName();
+    }
+
+    @Override
+    public MultiProperty getStateDepth() {
+        return stateDepth;
+    }
+
+    @Override
+    public MultiProperty getWidgetDepth() {
+        return widgetDepth;
+    }
+
+    @Override
+    public MultiProperty getFolderZoom() {
+        return folderZoom;
     }
 
     /**
@@ -200,16 +235,20 @@ public class BaseDepthController {
     private void applyDepthAndBlurInternal(SurfaceControl.Transaction transaction,
             boolean applyImmediately, boolean skipSimilarBlur) {
         float depth = mDepth;
+        float wallpaperZoom = depth;
+        if (Flags.enableExpressiveFolderExpansion()) {
+            wallpaperZoom = Math.max(wallpaperZoom, mWallpaperZoomOnly.value);
+        }
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null && Utilities.ATLEAST_R) {
             if (enableScalingRevealHomeAnimation()) {
-                mWallpaperManager.setWallpaperZoomOut(windowToken, depth);
+                mWallpaperManager.setWallpaperZoomOut(windowToken, wallpaperZoom);
             } else {
                 // The API's full zoom-out is three times larger than the zoom-out we apply
                 // to the
                 // icons. To keep the two consistent throughout the animation while keeping
                 // Launcher's concept of full depth unchanged, we divide the depth by 3 here.
-                mWallpaperManager.setWallpaperZoomOut(windowToken, depth / 3);
+                mWallpaperManager.setWallpaperZoomOut(windowToken, wallpaperZoom / 3);
             }
         }
 
@@ -253,7 +292,6 @@ public class BaseDepthController {
             return;
         }
         mWaitingOnSurfaceValidity = false;
-
         SurfaceControl blurSurface =
                 enableOverviewBackgroundWallpaperBlur() && mBlurSurface != null ? mBlurSurface
                         : mBaseSurface;
@@ -477,7 +515,6 @@ public class BaseDepthController {
     private static float mapDepthToBlur(float depth) {
         return Interpolators.clampToProgress(depth, 0, 0.3f);
     }
-
     private SurfaceControl.Transaction createTransaction() {
         return new SurfaceControl.Transaction();
     }

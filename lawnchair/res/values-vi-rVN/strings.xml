@@ -55,12 +55,24 @@
     <string name="changes_dialog_commit_info">từ %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">chỉ bây giờ</string>
-    <string name="time_minutes_ago">%dph</string>
-    <string name="time_hours_ago">%dg</string>
-    <string name="time_days_ago">%dng</string>
-    <string name="time_weeks_ago">%dt</string>
-    <string name="time_months_ago">%dth</string>
-    <string name="time_years_ago">%dn</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="other">%dph</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="other">%dg</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="other">%dng</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="other">%dt</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="other">%dth</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="other">%dn</item>
+    </plurals>
     <string name="managed_by_lawnchair">Quản lí bởi Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Tùy chỉnh</string>
@@ -114,6 +126,7 @@
     <string name="apps_in_folder_label">Ẩn ứng dụng trong thư mục</string>
     <string name="apps_in_folder_description">Các ứng dụng được gán vào thư mục sẽ bị loại khỏi danh sách ứng dụng</string>
     <string name="folders_filter_duplicates">Chỉ hiển thị các ứng dụng duy nhất</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Thư mục của tôi</string>
     <string name="sort_active_items_action">Sắp xếp các mục đang hoạt động</string>
     <!-- A11y description -->
@@ -135,6 +148,8 @@
 
     -->
     <string name="settings">Cài đặt</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Chung</string>
     <string name="general_description">Màu sắc, gói biểu tượng, chấm thông báo</string>
     <string name="home_screen_label">Trang chủ</string>
@@ -170,7 +185,7 @@
     <string name="workspace_increase_max_grid_size_label">Tăng độ lớn tối đa của lưới</string>
     <string name="workspace_increase_max_grid_size_description">Tăng kích thước lưới màn hình chính tối đa cho phép từ 10 &#xd7; 10 lên 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
-    <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">Việc này sẽ khiến các biểu tượng được làm mới thường xuyên, ảnh hưởng đến hiệu năng. Hãy tắt chức năng này nếu gói biểu tượng không được cập nhật thường xuyên.</string>
     <string name="show_deck_layout">Bố cục Cổ điển</string>
     <string name="show_deck_layout_description">Hiện một tùy chọn tắt ngăn chứa ứng dụng và tự động thêm ứng dụng mới vào màn hình chính</string>
@@ -239,9 +254,7 @@
     <string name="twoline_label">Dùng nhiều dòng</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Nền biểu tượng trong suốt</string>
-    <string name="transparent_background_icons_description">Dành cho các biểu tượng theo chủ đề và biểu tượng tự thích ứng</string>
     <string name="auto_adaptive_icons_label">Biểu tượng tự động thích ứng</string>
-    <string name="auto_adaptive_icons_description">Đối với tất cả các biểu tượng không thích ứng</string>
     <string name="shadow_bg_icons_label">Hiển thị bóng đổ phía sau biểu tượng</string>
     <string name="background_lightness_label">Độ sáng của nền</string>
     <string name="adaptive_icon_background_description">Sử dụng màu trắng với độ sáng 100%</string>
@@ -306,16 +319,23 @@
     <string name="icon_shape_clipboard_import_error">Bảng nhớ tạm không chứa hình dạng biểu tượng hợp lệ</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Gói biểu tượng</string>
-    <string name="themed_icon_pack">Nguồn biểu tượng theo chủ đề</string>
-    <string name="themed_icon_pack_tint">Pha màu với màu nhấn</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Biểu tượng từ hệ thống</string>
     <string name="force_monochrome_label">Buộc đơn sắc</string>
     <string name="force_monochrome_description">Tô màu lại các ứng dụng không được hỗ trợ bằng màu nhấn hiện tại.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Biểu tượng theo chủ đề</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Tắt</string>
     <string name="themed_icons_home_label">Trang chủ</string>
     <string name="themed_icons_home_and_drawer_label">Màn hình chính và ngăn chứa ứng dụng</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Gói biểu tượng không tương thích hoặc không được hỗ trợ</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Thêm phông chữ</string>
     <string name="pref_fonts_add_fonts_summary">Hỗ trợ font dạng OTF và TTF</string>

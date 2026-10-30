@@ -39,6 +39,7 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.util.Property;
+import android.util.TypedValue;
 
 import androidx.core.graphics.ColorUtils;
 
@@ -68,7 +69,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
 
     private static final float RING_SCALE_START_VALUE = 0.75f;
     private static final int RING_SHADOW_COLOR = 0x99000000;
-    private static final float RING_EFFECT_RATIO = Flags.enableLauncherIconShapes() ? 0.1f : 0.095f;
+    public static final float RING_EFFECT_RATIO = Flags.enableLauncherIconShapes() ? 0.1f : 0.095f;
     private static final long ICON_CHANGE_ANIM_DURATION = 360;
     private static final long ICON_CHANGE_ANIM_STAGGER = 50;
 
@@ -142,6 +143,23 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
                 R.dimen.blur_size_thin_outline);
         mShadowFilter = new BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.OUTER);
         mShapePath = ThemeManager.INSTANCE.get(context).getIconShape().getPath(mNormalizedIconSize);
+        compensateTextStyle();
+    }
+
+    /** LC-Note: Compensate text size for predicted app container
+     * <p> 
+     * Because the text size and padding are exactly compensated for app icon and not the predicted 
+     * container, the text will be small and sitting too close to the container. 
+     * <p> 
+     * This function will update the text size and padding to compensate for the container. */
+    private void compensateTextStyle() {
+        if (mDisplay == DISPLAY_WORKSPACE) {
+            float scale = !mIsPinned ? (1 - 2f * RING_EFFECT_RATIO) : 1f;
+            float ringCompensation = !mIsPinned ? (getIconSize() * RING_EFFECT_RATIO) : 0f;
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mDeviceProfile.iconTextSizePx / scale);
+            setCompoundDrawablePadding(
+                    Math.round((mDeviceProfile.iconDrawablePaddingPx + ringCompensation) / scale));
+        }
     }
 
     @Override
@@ -272,6 +290,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     public void pin(WorkspaceItemInfo info) {
         if (mIsPinned) return;
         mIsPinned = true;
+        compensateTextStyle();
         applyFromWorkspaceItem(info);
         setOnLongClickListener(ItemLongClickListener.INSTANCE_WORKSPACE);
         ((CellLayoutLayoutParams) getLayoutParams()).canReorder = true;

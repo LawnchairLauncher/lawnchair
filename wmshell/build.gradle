@@ -32,6 +32,7 @@ dependencies {
     compileOnly projects.msdllib
     compileOnly projects.flags
     compileOnly projects.utils
+    compileOnly libs.chickenhook.restrictionbypass
 }
 
 ksp {

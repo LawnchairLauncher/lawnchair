@@ -44,12 +44,15 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.WindowConfiguration;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.ArrayMap;
 import android.util.SparseBooleanArray;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.WindowManager;
 import android.window.TransitionInfo;
+
+import org.chickenhook.restrictionbypass.RestrictionBypass;
 
 import java.util.function.Predicate;
 
@@ -408,7 +411,7 @@ public class TransitionUtil {
                 null,
                 new Rect(change.getStartAbsBounds()),
                 taskInfo,
-                change.isAllowEnterPip(),
+                getAllowEnterPip(change), // LC-Note: QuickSwitch compatibility!
                 INVALID_WINDOW_TYPE
         );
         target.setWillShowImeOnTarget(
@@ -416,6 +419,28 @@ public class TransitionUtil {
         target.setRotationChange(change.getEndRotation() - change.getStartRotation());
         target.backgroundColor = change.getBackgroundColor();
         return target;
+    }
+
+    /** Can you enter picture-in-picture mode?
+     * <p> 
+     * SDK 35 or above: isAllowEnterPip()
+     * <p> 
+     * SDK 34 or below: getAllowEnterPip() 
+     * <p> 
+     * LC-Note: QuickSwitch compatibility!
+     * 
+     * @return true if the change allows entering picture-in-picture mode, false otherwise
+     * */
+    private static boolean getAllowEnterPip(TransitionInfo.Change change) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            return change.isAllowEnterPip();
+        }
+        try {
+            return (Boolean) RestrictionBypass.getMethod(
+                    TransitionInfo.Change.class, "getAllowEnterPip").invoke(change);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Unable to read allowEnterPip from transition change", e);
+        }
     }
 
     /**

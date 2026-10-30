@@ -42,7 +42,7 @@ private val USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(USER_SETUP_COMPL
 class AllAppsActionManager(
     private val context: Context,
     private val bgExecutor: Executor,
-    private val quickstepKeyGestureEventsManager: QuickstepKeyGestureEventsManager,
+    private val quickstepKeyGestureEventsManager: QuickstepKeyGestureEventsManager?, // LC-Note: Nullable because this isn't available for U and lower
     private val createAllAppsPendingIntent: () -> PendingIntent,
 ) {
 
@@ -104,12 +104,12 @@ class AllAppsActionManager(
                     ),
                     GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS,
                 )
-                quickstepKeyGestureEventsManager.registerAllAppsKeyGestureEvent(
+                quickstepKeyGestureEventsManager?.registerAllAppsKeyGestureEvent( // LC-Note: QuickSwitch compatibility!
                     allAppsPendingIntent
                 )
             } else {
                 accessibilityManager.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS)
-                quickstepKeyGestureEventsManager.unregisterAllAppsKeyGestureEvent()
+                quickstepKeyGestureEventsManager?.unregisterAllAppsKeyGestureEvent() // LC-Note: QuickSwitch compatibility!
             }
         }
     }
@@ -119,7 +119,7 @@ class AllAppsActionManager(
         context
             .getSystemService(AccessibilityManager::class.java)
             ?.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS)
-        quickstepKeyGestureEventsManager.unregisterAllAppsKeyGestureEvent()
+        quickstepKeyGestureEventsManager?.unregisterAllAppsKeyGestureEvent() // LC-Note: QuickSwitch compatibility!
         SettingsCache.INSTANCE[context].unregister(
             USER_SETUP_COMPLETE_URI,
             onSettingsChangeListener,
