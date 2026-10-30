@@ -73,8 +73,26 @@ constructor(
             .launchIn(scope)
 
         val colorSchemeChangeListener = object : ThemeProvider.ColorSchemeChangeListener {
+            @Volatile
+            private var isDestroyed = false
+
             override fun onColorSchemeChanged() {
-                uiExecutor.execute { verifyIconState() }
+                synchronized(this) {
+                    if (isDestroyed) return
+                    uiExecutor.execute {
+                        synchronized(this) {
+                            if (isDestroyed) return@execute
+                            verifyIconState()
+                        }
+                    }
+                }
+            }
+
+            fun destroy() {
+                synchronized(this) {
+                    isDestroyed = true
+                    themeProvider.removeListener(this)
+                }
             }
         }
         themeProvider.addListener(colorSchemeChangeListener)
@@ -90,8 +108,8 @@ constructor(
         statePrefs1.forEach { it.addListener(prefListener) }
 
         lifecycle.addCloseable {
+            colorSchemeChangeListener.destroy()
             scope.cancel()
-            themeProvider.removeListener(colorSchemeChangeListener)
             displayController.removeChangeListener(displayInfoChangeListener)
             statePrefs1.forEach { it.removeListener(prefListener) }
         }

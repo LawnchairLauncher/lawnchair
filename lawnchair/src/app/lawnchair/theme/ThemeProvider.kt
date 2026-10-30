@@ -133,11 +133,16 @@ class ThemeProvider @Inject constructor(
         listeners.remove(listener)
     }
 
+    @Volatile
+    private var isClosed = false
+
     private fun notifyColorSchemeChanged() {
+        if (isClosed) return
         listeners.forEach(ColorSchemeChangeListener::onColorSchemeChanged)
     }
 
     override fun close() {
+        isClosed = true
         coroutineScope.cancel()
         wallpaperManager.removeOnChangeListener(wallpaperColorsChangedListener)
         overlayChangedReceiver?.let {
