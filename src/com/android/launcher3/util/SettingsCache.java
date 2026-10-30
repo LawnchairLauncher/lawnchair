@@ -111,7 +111,15 @@ public class SettingsCache extends ContentObserver {
     public void onChange(boolean selfChange, Uri uri) {
         // We use default of 1, but if we're getting an onChange call, can assume a non-default
         // value will exist
-        boolean newVal = updateValue(uri, 1 /* Effectively Unused */);
+        boolean newVal;
+        try {
+            newVal = updateValue(uri, 1 /* Effectively Unused */);
+        } catch (SecurityException e) {
+            // Hidden settings keys (e.g. hide_privatespace_entry_point) are not readable by
+            // non-system apps on S+, skip the cache update instead of crashing.
+            Log.d("LC_SettingsCache", "Key not readable, skip update for " + uri);
+            return;
+        }
         List<OnChangeListener> listeners = mListenerMap.get(uri);
         if (listeners == null) {
             return;
