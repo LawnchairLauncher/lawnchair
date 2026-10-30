@@ -110,7 +110,7 @@ public class FolderAnimationManager implements FolderAnimationCreator {
         mIsOpening = true;
 
         Resources res = mContent.getResources();
-        mDuration = res.getInteger(R.integer.config_materialFolderExpandDuration);
+        mDuration = LawnchairUtilsKt.getFolderAnimDuration(mContext);
         mDelay = res.getInteger(R.integer.config_folderDelay);
 
         mFolderOpenInterpolator = AnimationUtils.loadInterpolator(mContext,

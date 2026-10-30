@@ -24,6 +24,8 @@ import com.android.launcher3.folder.FolderAnimationSpringBuilderManager.Companio
 import com.android.launcher3.folder.FolderAnimationSpringBuilderManager.Companion.getPreviewIconsOnPage
 import com.android.launcher3.views.BaseDragLayer
 
+import app.lawnchair.util.getFolderAnimDuration
+
 /** Position and Scale values for animating opened/closed [Folder] */
 data class FolderAnimationData(
     /** is folder opening or closing */
@@ -123,7 +125,7 @@ data class FolderAnimationData(
                         folderRadiusDifference,
                 contentOffsetY = contentOffsetY,
                 defaultDuration =
-                    content.resources.getInteger(R.integer.config_materialFolderExpandDuration),
+                    getFolderAnimDuration(context),
             )
         }
     }
