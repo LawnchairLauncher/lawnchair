@@ -34,7 +34,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimColors;
-import com.android.quickstep.util.BaseDepthController;
+import com.android.quickstep.util.BaseDepthControllerImpl;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -217,8 +217,8 @@ public class OverviewState extends LauncherState {
         // TODO(178661709): revert to always scaled
         if (enableScalingRevealHomeAnimation()) {
             return SystemProperties.getBoolean("ro.launcher.depth.overview", true)
-                    ? BaseDepthController.DEPTH_70_PERCENT
-                    : BaseDepthController.DEPTH_0_PERCENT;
+                    ? BaseDepthControllerImpl.DEPTH_70_PERCENT
+                    : BaseDepthControllerImpl.DEPTH_0_PERCENT;
         } else {
             return SystemProperties.getBoolean("ro.launcher.depth.overview", true) ? 1 : 0;
         }

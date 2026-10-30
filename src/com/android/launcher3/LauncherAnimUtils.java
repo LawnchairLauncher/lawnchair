@@ -88,6 +88,7 @@ public class LauncherAnimUtils {
     public static final int SCALE_INDEX_WORKSPACE_STATE = 2;
     public static final int SCALE_INDEX_REVEAL_ANIM = 3;
     public static final int SCALE_INDEX_WIDGET_TRANSITION = 4;
+    public static final int SCALE_INDEX_FOLDER_ANIM = 5;
 
     /** Increase the duration if we prevented the fling, as we are going against a high velocity. */
     public static int blockedFlingDurationFactor(float velocity) {
@@ -171,6 +172,20 @@ public class LauncherAnimUtils {
                         @Override
                         public Float get(View view) {
                             return view.getTranslationY();
+                        }
+                    };
+
+    public static final FloatProperty<View> VIEW_TRANSLATE_Z =
+            View.TRANSLATION_Z instanceof FloatProperty ? (FloatProperty) View.TRANSLATION_Z
+                    : new FloatProperty<View>("translateZ") {
+                        @Override
+                        public void setValue(View view, float v) {
+                            view.setTranslationZ(v);
+                        }
+
+                        @Override
+                        public Float get(View view) {
+                            return view.getTranslationZ();
                         }
                     };
 

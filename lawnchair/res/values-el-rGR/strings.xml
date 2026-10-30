@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">από %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">μόλις τώρα</string>
-    <string name="time_minutes_ago">%dλεπτά</string>
-    <string name="time_hours_ago">%dώρες</string>
-    <string name="time_days_ago">%dημέρες</string>
-    <string name="time_weeks_ago">%dεβδομάδες</string>
-    <string name="time_months_ago">%dμήνες</string>
-    <string name="time_years_ago">%dχρόνια</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dλεπτά</item>
+        <item quantity="other">%dλεπτά</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dώρες</item>
+        <item quantity="other">%dώρες</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dημέρες</item>
+        <item quantity="other">%dημέρες</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dεβδομάδες</item>
+        <item quantity="other">%dεβδομάδες</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dμήνες</item>
+        <item quantity="other">%dμήνες</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dχρόνια</item>
+        <item quantity="other">%dχρόνια</item>
+    </plurals>
     <string name="managed_by_lawnchair">Διαχειριζόμενο από τον εκκινητή Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Προτιμήσεις</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Απόκρυψη εφαρμογών φακέλων</string>
     <string name="apps_in_folder_description">Οι εφαρμογές που έχουν εκχωρηθεί σε φακέλους εξαιρούνται από τις λίστες εφαρμογών</string>
     <string name="folders_filter_duplicates">Εμφάνιση μόνο ιδιαίτερων εφαρμογών</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Ο φάκελός μου</string>
     <string name="sort_active_items_action">Ταξινόμηση ενεργών στοιχείων</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Ρυθμίσεις</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Γενικά</string>
     <string name="general_description">Χρώματα, πακέτα εικονιδίων, κουκκίδες ειδοποίησης</string>
     <string name="home_screen_label">Αρχική οθόνη</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Αύξηση μέγιστου ορίου μεγέθους πλέγματος</string>
     <string name="workspace_increase_max_grid_size_description">Αύξηση του μέγιστου επιτρεπόμενου μεγέθους πλέγματος αρχικής οθόνης από 10×10 έως 20×20</string>
     <string name="always_reload_icons_label">Επαναφόρτωση εικονιδίων πάντοτε</string>
-    <string name="always_reload_icons_description">Αποφυγή χρήσης αποθηκευμένων εικονιδίων από πακέτα εικονιδίων</string>
+    <string name="always_reload_icons_description">Αποφύγετε την προσωρινή αποθήκευση για την άμεση επαναφόρτωση εικονιδίων όταν αλλάζει το χρώμα του θέματος ή της έμφασης</string>
     <string name="always_reload_icons_warning">Αυτό θα κάνει τα εικονίδια να ανανεώνονται τακτικά, επηρεάζοντας την απόδοση. Απενεργοποιήστε εάν το πακέτο εικονιδίων δεν ενημερώνεται τακτικά.</string>
     <string name="show_deck_layout">Διάταξη τράπουλας</string>
     <string name="show_deck_layout_description">Εμφάνιση μιας επιλογής διάταξης για την απόκρυψη του συρταριού εφαρμογών και την αυτόματη προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Χρήση δύο γραμμών ετικέτας</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Διαφανή φόντα εικονιδίων</string>
-    <string name="transparent_background_icons_description">Για θεματοποιημένα εικονίδια και αυτόματα προσαρμοζόμενα εικονίδια</string>
     <string name="auto_adaptive_icons_label">Αυτόματα προσαρμοζόμενα εικονίδια</string>
-    <string name="auto_adaptive_icons_description">Για όλα τα μη προσαρμοζόμενα εικονίδια</string>
     <string name="shadow_bg_icons_label">Εμφάνιση σκιάς πίσω από τα εικονίδια</string>
     <string name="background_lightness_label">Φωτεινότητα φόντου</string>
     <string name="adaptive_icon_background_description">Χρήση 100% φωτεινότητας για λευκό φόντο</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">Το πρόχειρο δεν περιέχει ένα έγκυρο σχήμα εικονιδίων</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Πακέτα εικονιδίων</string>
-    <string name="themed_icon_pack">Πηγή εικονιδίων</string>
-    <string name="themed_icon_pack_tint">Απόχρωση με χρώμα έμφασης</string>
+    <string name="get_more_icon_packs">Πάρτε περισσότερα εικονίδια</string>
+    <string name="fallback_icon_source_title">Πηγή εικονιδίου εναλλακτικής λύσης</string>
     <string name="system_icons">Εικονίδια συστήματος</string>
     <string name="force_monochrome_label">Εξαναγκασμός μονόχρωμου</string>
     <string name="force_monochrome_description">Αλλάξτε το χρώμα στις μη υποστηριζόμενες εφαρμογές με το τρέχον χρώμα έμφασης.</string>
+    <string name="enforce_themed_icons_title">Επιβολή θεματικών εικονιδίων</string>
+    <string name="enforce_themed_icons_description">Ακόμη και σε μη υποστηριζόμενες εφαρμογές (δεν συνιστάται)</string>
     <string name="themed_icon_title">Θεματοποιημένα εικονίδια</string>
+    <string name="themed_icons_description">Προσαρμόστε τα εικονίδια των υποστηριζόμενων εφαρμογών ώστε να ταιριάζουν με το θέμα και τον χρωματικό συνδυασμό της συσκευής σας. Τα εικονίδια αυτά εφαρμόζονται πάνω από τα πακέτα εικονιδίων που ήδη χρησιμοποιείτε.</string>
     <string name="themed_icons_off_label">Ανενεργό</string>
     <string name="themed_icons_home_label">Αρχική οθόνη</string>
     <string name="themed_icons_home_and_drawer_label">Αρχική οθόνη &amp; συρτάρι εφαρμογών</string>
+    <string name="themed_icons_no_fallback">Καμία εναλλακτική λύση</string>
     <string name="lawnicons_not_installed_description">Χωρίς υποστηριζόμενα πακέτα εικονιδίων</string>
+    <string name="advanced_icon_settings_title">Προηγμένες ρυθμίσεις εικονιδίων</string>
+    <string name="reshape_unthemed_icons_title">Αλλαγή σχήματος μη θεματικών εικονιδίων</string>
+    <string name="reshape_unthemed_icons_description">Προσθέτοντας ένα φόντο</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Προσθήκη γραμματοσειρών</string>
     <string name="pref_fonts_add_fonts_summary">Υποστήριξη γραμματοσειρών OTF και TTF</string>
