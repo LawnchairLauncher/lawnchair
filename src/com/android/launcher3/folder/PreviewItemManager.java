@@ -395,6 +395,14 @@ public class PreviewItemManager {
         return mIconSize;
     }
 
+    /**
+     * Updates a folder preview entry with the item's drawable, bounds, and folder callback.
+     * Item icons follow the containing folder's workspace or drawer themed-icon preference;
+     * pending installs and app pairs use their dedicated drawables.
+     *
+     * @param p the preview entry to update
+     * @param item the item to display in the preview
+     */
     @VisibleForTesting
     public void setDrawable(PreviewItemDrawingParams p, ItemInfo item) {
         // Lawnchair: Find the correct folder size depending on which parent owned them
@@ -411,8 +419,13 @@ public class PreviewItemManager {
             p.drawable = AppPairIconGraphic.composeDrawable(api, appPairParams);
             p.drawable.setBounds(0, 0, iconSize, iconSize);
         } else if (item instanceof ItemInfoWithIcon withIcon){
-            var isThemed = PreferenceManager.getInstance(mContext).getDrawerThemedIcons().get() ? FLAG_THEMED : 0;
-            p.drawable = withIcon.newIcon(mContext, isThemed);
+            // LC-Note: a folder on the workspace must follow the workspace themed-icon
+            // preference; only folders inside the app drawer follow the drawer preference.
+            PreferenceManager prefs = PreferenceManager.getInstance(mContext);
+            boolean themed = mIcon.isInAppDrawer()
+                    ? prefs.getDrawerThemedIcons().get()
+                    : prefs.getThemedIcons().get();
+            p.drawable = withIcon.newIcon(mContext, themed ? FLAG_THEMED : 0, themed);
             p.drawable.setBounds(0, 0, iconSize, iconSize);
         }
 
