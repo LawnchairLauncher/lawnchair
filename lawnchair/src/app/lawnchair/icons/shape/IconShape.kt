@@ -26,6 +26,7 @@ import android.graphics.Region
 import android.util.Log
 import android.util.PathParser
 import com.android.launcher3.Utilities
+import com.android.launcher3.graphics.PathWrapper
 import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.icons.GraphicsUtils
 import com.android.launcher3.shapes.ShapesProvider
@@ -587,6 +588,23 @@ sealed class IconShape {
 }
 
 object CornerShapeCompat {
+    @JvmOverloads
+    fun addToPath(
+        shape: IconShape.CornerBased,
+        path: PathWrapper,
+        left: Float,
+        top: Float,
+        right: Float,
+        bottom: Float,
+        size: Float = 50f,
+        endSize: Float = size,
+        progress: Float = 0f,
+    ) {
+        addToPath(shape, path.path, left, top, right, bottom, size, endSize, progress)
+        path.setBounds(left, top, right, bottom)
+        path.setCornerRadius(Utilities.mapRange(progress, size, endSize))
+    }
+
     @JvmOverloads
     fun addToPath(
         shape: IconShape.CornerBased,

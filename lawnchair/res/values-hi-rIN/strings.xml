@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">%1$s • %2$s • %3$s द्वारा</string>
     <!-- Time ago strings -->
     <string name="time_just_now">अभी</string>
-    <string name="time_minutes_ago">%dमिनट पहले</string>
-    <string name="time_hours_ago">%dघंटे पहले</string>
-    <string name="time_days_ago">%dदिन पहले</string>
-    <string name="time_weeks_ago">%dहफ्ते पहले</string>
-    <string name="time_months_ago">%dमाह पहले</string>
-    <string name="time_years_ago">%dवर्ष पहले</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dमिनट पहले</item>
+        <item quantity="other">%dमिनट पहले</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dघंटे पहले</item>
+        <item quantity="other">%dघंटे पहले</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dदिन पहले</item>
+        <item quantity="other">%dदिन पहले</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dहफ्ते पहले</item>
+        <item quantity="other">%dहफ्ते पहले</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dमाह पहले</item>
+        <item quantity="other">%dमाह पहले</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dवर्ष पहले</item>
+        <item quantity="other">%dवर्ष पहले</item>
+    </plurals>
     <string name="managed_by_lawnchair">Lawnchair द्वारा प्रबंधित</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">पसंद</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">फ़ोल्डर ऐप छिपाएँ</string>
     <string name="apps_in_folder_description">फ़ोल्डर में जोड़े गए ऐप, ऐप सूची से हट जाते हैं</string>
     <string name="folders_filter_duplicates">केवल अद्वितीय ऐप दिखाएँ</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">फ़ोल्डर</string>
     <string name="sort_active_items_action">सक्रिय चीज़ों को क्रमबद्ध करें</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">सेटिंग्स</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">सामान्य</string>
     <string name="general_description">रंग, आइकन पैक, अधिसूचना बिंदु</string>
     <string name="home_screen_label">होम स्क्रीन</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">अधिकतम ग्रिड आकार की सीमा बढ़ाएँ</string>
     <string name="workspace_increase_max_grid_size_description">अधिकतम होम स्क्रीन ग्रिड आकार को 10 &#xd7; 10 से 20 &#xd7; 20 तक बढ़ाएँ</string>
     <string name="always_reload_icons_label">हमेशा चिह्न पुनः लोड करें</string>
-    <string name="always_reload_icons_description">आइकन पैक से कैश्ड आइकन का उपयोग करने से बचें</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">इससे चिह्न नियमित रूप से पुनः लोड होंगे, प्रदर्शन पर प्रभाव पड़ेगा। अगर चिह्न पैक बार-बार अपडेट नहीं होते हैं, तो इसे बंद रखें।</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">एक से अधिक पंक्तियाँ</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">पारदर्शी चिह्न पार्श्वभूमि</string>
-    <string name="transparent_background_icons_description">थीम वाले व स्वतः समायोजी चिह्नों के लिए</string>
     <string name="auto_adaptive_icons_label">स्वतः समायोजी चिह्न</string>
-    <string name="auto_adaptive_icons_description">सभी असमायोजी चिह्नों के लिए</string>
     <string name="shadow_bg_icons_label">चिह्नों के पीछे छाया</string>
     <string name="background_lightness_label">पार्श्वभूमि उज्ज्वलता</string>
     <string name="adaptive_icon_background_description">सफ़ेद के लिए 100% पार्श्वभूमि उज्ज्वलता का उपयोग करें</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">क्लिपबोर्ड में मान्य चिह्न आकृति नहीं है</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">चिह्न पैक</string>
-    <string name="themed_icon_pack">Themed icon source</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">तंत्र के चिह्न</string>
     <string name="force_monochrome_label">श्वेत-श्याम लागू करें</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Themed icons</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">बंद</string>
     <string name="themed_icons_home_label">मुख्य स्क्रीन</string>
     <string name="themed_icons_home_and_drawer_label">मुख्य स्क्रीन और ऐप सूची</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">कोई समर्थित चिह्न पैक नहीं</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Add fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>

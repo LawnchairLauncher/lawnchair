@@ -25,7 +25,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.views.ScrimColors;
-import com.android.quickstep.util.BaseDepthController;
+import com.android.quickstep.util.BaseDepthControllerImpl;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 
@@ -101,9 +101,9 @@ public class BackgroundAppState extends OverviewState {
     protected float getDepthUnchecked(Context context) {
         if (Launcher.getLauncher(context).areDesktopTasksVisible()) {
             // Don't blur the background while desktop tasks are visible
-            return BaseDepthController.DEPTH_0_PERCENT;
+            return BaseDepthControllerImpl.DEPTH_0_PERCENT;
         } else if (enableScalingRevealHomeAnimation()) {
-            return BaseDepthController.DEPTH_70_PERCENT;
+            return BaseDepthControllerImpl.DEPTH_70_PERCENT;
         } else {
             return 1f;
         }

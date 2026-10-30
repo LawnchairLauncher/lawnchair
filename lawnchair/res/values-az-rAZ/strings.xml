@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">%1$s tərəfindən • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">indicə</string>
-    <string name="time_minutes_ago">%ddəq</string>
-    <string name="time_hours_ago">%dsa</string>
-    <string name="time_days_ago">%dg</string>
-    <string name="time_weeks_ago">%dhəf</string>
-    <string name="time_months_ago">%day</string>
-    <string name="time_years_ago">%dil</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%ddəq</item>
+        <item quantity="other">%ddəq</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dsa</item>
+        <item quantity="other">%dsa</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dg</item>
+        <item quantity="other">%dg</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dhəf</item>
+        <item quantity="other">%dhəf</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%day</item>
+        <item quantity="other">%day</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dil</item>
+        <item quantity="other">%dil</item>
+    </plurals>
     <string name="managed_by_lawnchair">Lawnchair tərəfindən idarə olunur</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Tənzimləmələr</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Qovluqdakı tətbiqləri gizlət</string>
     <string name="apps_in_folder_description">Qovluqlara təyin edilmiş tətbiqlər tətbiq siyahılarında göstərilmir</string>
     <string name="folders_filter_duplicates">Yalnız unikal tətbiqləri göstər</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Mənim qovluğum</string>
     <string name="sort_active_items_action">Aktiv elementləri sırala</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Parametrlər</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Ümumi</string>
     <string name="general_description">Rənglər, ikon paketləri, bildiriş nöqtələri</string>
     <string name="home_screen_label">Əsas ekran</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Maksimum tor ölçüsü limitini artır</string>
     <string name="workspace_increase_max_grid_size_description">Əsas ekran üçün icazə verilən maksimum tor ölçüsünü 10 &#xd7; 10-dan 20 &#xd7; 20-yə artır</string>
     <string name="always_reload_icons_label">İkonları həmişə yenidən yüklə</string>
-    <string name="always_reload_icons_description">İkon paketlərindən keşlənmiş ikonlardan istifadə etmə</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">Bu, ikonların müntəzəm olaraq yenilənməsinə səbəb olacaq və performansa təsir göstərə bilər. İkon paketi müntəzəm yenilənmirsə, bu seçimi söndürün.</string>
     <string name="show_deck_layout">Deck düzəni</string>
     <string name="show_deck_layout_description">Tətbiq siyirməsini gizlədən və yeni tətbiqləri avtomatik olaraq əsas ekrana əlavə edən düzən seçimini göstər</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Bir neçə sətirdən istifadə et</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Şəffaf ikon fonları</string>
-    <string name="transparent_background_icons_description">Tematik ikonlar və avtomatik adaptiv ikonlar üçün</string>
     <string name="auto_adaptive_icons_label">Avtomatik adaptiv ikonlar</string>
-    <string name="auto_adaptive_icons_description">Bütün adaptiv olmayan ikonlar üçün</string>
     <string name="shadow_bg_icons_label">İkonların arxasında kölgə göstər</string>
     <string name="background_lightness_label">Fonun parlaqlığı</string>
     <string name="adaptive_icon_background_description">Ağ rəng üçün fon parlaqlığını 100% istifadə et</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">Müvəqqəti yaddaşda etibarlı ikon forması yoxdur</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">İkon paketi</string>
-    <string name="themed_icon_pack">Tematik ikon mənbəyi</string>
-    <string name="themed_icon_pack_tint">Vurğu rəngi ilə rəngləndir</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Sistem ikonları</string>
     <string name="force_monochrome_label">Monoxrom rejimini məcburi tətbiq et</string>
     <string name="force_monochrome_description">Dəstəklənməyən tətbiqləri cari vurğu rəngi ilə yenidən rəngləndir.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Tematik ikonlar</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Söndürülüb</string>
     <string name="themed_icons_home_label">Əsas ekran</string>
     <string name="themed_icons_home_and_drawer_label">Əsas ekran və tətbiq siyirməsi</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Dəstəklənən ikon paketi tapılmadı</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Şriftlər əlavə et</string>
     <string name="pref_fonts_add_fonts_summary">OTF və TTF şriftləri dəstəklənir</string>
