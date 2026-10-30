@@ -113,6 +113,13 @@ class ShapeDelegateTest {
     }
 
     @Test
+    fun `pickBestShape falls back to the default mask for an unparsable mask`() {
+        // Some ROM overlays ship a config_icon_mask with a line break inside a coordinate.
+        val malformed = "M81.2\n909756,99.995088 L0,99.995088 L0,0 Z"
+        assertThat(pickBestShape(malformed)).isEqualTo(pickBestShape(""))
+    }
+
+    @Test
     fun `generic shape creates smooth animation`() {
         val shape = GenericPathShape(FOUR_SIDED_COOKIE)
         val target = TestClipView()
