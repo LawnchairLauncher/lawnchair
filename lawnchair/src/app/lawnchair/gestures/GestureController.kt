@@ -91,7 +91,7 @@ class GestureController(private val launcher: LawnchairLauncher) {
             }
             handler.onTrigger(launcher)
             if (withHaptic) {
-                mMSDLPlayerWrapper.playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR);
+                mMSDLPlayerWrapper.playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR)
             }
         }
     }

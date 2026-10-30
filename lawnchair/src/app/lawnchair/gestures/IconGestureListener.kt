@@ -129,7 +129,7 @@ class IconGestureListener(
 
         context.launcher.lifecycleScope.launch {
             Log.d("GESTURE_HANDLER", "Triggering gesture: ${gestureType.name}")
-            mMSDLPlayerWrapper.playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR);
+            mMSDLPlayerWrapper.playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR)
             gesture.createHandler(context).onTrigger(context.launcher)
         }
 
