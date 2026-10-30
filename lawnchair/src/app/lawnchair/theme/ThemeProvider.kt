@@ -64,8 +64,10 @@ class ThemeProvider @Inject constructor(
             }
         }
 
+    @Volatile
+    private var isClosed = false
+
     init {
-        tracker.addCloseable(this)
         if (Utilities.ATLEAST_S) {
             colorSchemeMap[Pair(0, Style.TONAL_SPOT)] = SystemColorScheme(context)
             registerOverlayChangedListener()
@@ -79,6 +81,7 @@ class ThemeProvider @Inject constructor(
             colorStyle = it
             notifyColorSchemeChanged()
         }
+        tracker.addCloseable(this)
     }
 
     private fun registerOverlayChangedListener() {
@@ -132,9 +135,6 @@ class ThemeProvider @Inject constructor(
     fun removeListener(listener: ColorSchemeChangeListener) {
         listeners.remove(listener)
     }
-
-    @Volatile
-    private var isClosed = false
 
     private fun notifyColorSchemeChanged() {
         if (isClosed) return
