@@ -34,6 +34,17 @@ interface FolderDao {
     @Query("DELETE FROM FolderItems WHERE folderId = :folderId")
     suspend fun deleteFolderItemsByFolderId(folderId: Int)
 
+    @Query("DELETE FROM FolderItems WHERE item_info IN (:componentKeys)")
+    suspend fun deleteFolderItemsByComponentKeys(componentKeys: List<String>)
+
+    @Query(
+        """
+        DELETE FROM FolderItems
+        WHERE substr(item_info, 1, length(:packageName) + 1) = :packageName || '/'
+        """,
+    )
+    suspend fun deleteFolderItemsByPackageName(packageName: String)
+
     @Query("UPDATE Folders SET title = :title, timestamp = :timestamp WHERE id = :id")
     suspend fun updateFolderTitle(id: Int, title: String, timestamp: Long = System.currentTimeMillis())
 
