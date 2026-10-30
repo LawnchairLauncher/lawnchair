@@ -42,7 +42,6 @@ import app.lawnchair.ui.preferences.destinations.GesturePreferences
 import app.lawnchair.ui.preferences.destinations.HiddenAppsPreferences
 import app.lawnchair.ui.preferences.destinations.HomeScreenGridPreferences
 import app.lawnchair.ui.preferences.destinations.HomeScreenPreferences
-import app.lawnchair.ui.preferences.destinations.IconPackPreferences
 import app.lawnchair.ui.preferences.destinations.IconPickerPreference
 import app.lawnchair.ui.preferences.destinations.LauncherPopupPreference
 import app.lawnchair.ui.preferences.destinations.PickAppForGesture
@@ -55,6 +54,9 @@ import app.lawnchair.ui.preferences.destinations.SelectAppsForDrawerFolder
 import app.lawnchair.ui.preferences.destinations.SelectIconPreference
 import app.lawnchair.ui.preferences.destinations.ShapePreference
 import app.lawnchair.ui.preferences.destinations.SmartspacePreferences
+import app.lawnchair.ui.preferences.destinations.icons.AdvancedIconPreferences
+import app.lawnchair.ui.preferences.destinations.icons.IconPackPreferences
+import app.lawnchair.ui.preferences.destinations.icons.ThemedIconsPreferences
 import com.android.launcher3.util.ComponentKey
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
@@ -83,6 +85,8 @@ fun PreferenceNavigation(
         exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
         popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
         popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
+        predictivePopEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
+        predictivePopExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
     ) {
         composable<Root> {
             val isExpandedScreen = LocalIsExpandedScreen.current
@@ -119,6 +123,12 @@ fun PreferenceNavigation(
         composable<GeneralIconPack>(
             deepLinks = getDeepLink(GeneralIconPack),
         ) { IconPackPreferences() }
+        composable<GeneralThemedIcons>(
+            deepLinks = getDeepLink(GeneralThemedIcons),
+        ) { ThemedIconsPreferences() }
+        composable<GeneralAdvancedIcons>(
+            deepLinks = getDeepLink(GeneralAdvancedIcons),
+        ) { AdvancedIconPreferences() }
         composable<GeneralIconShape> { backStackEntry ->
             val route: GeneralIconShape = backStackEntry.toRoute()
             ShapePreference(currentTab = route.selectedId)

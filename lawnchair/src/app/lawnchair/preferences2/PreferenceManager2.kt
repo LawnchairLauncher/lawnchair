@@ -85,6 +85,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @LauncherAppSingleton
@@ -117,6 +118,21 @@ class PreferenceManager2 @Inject constructor(
     }
 
     fun getCachedPreferences(): Preferences = cachedPreferences
+
+    /**
+     * Runs [block] on the main thread once the cache has every value written so far. A preference's
+     * onSet runs right after its DataStore write, but the cache is updated by its own collector,
+     * which may not have run yet: refresh it from the DataStore, which already has the new value.
+     * If the collector stores a newer value while the read is suspended, that value is kept.
+     */
+    internal fun withFreshCache(block: () -> Unit) {
+        scope.launch {
+            val cacheBeforeRead = cachedPreferences
+            val freshPreferences = preferencesDataStore.data.first()
+            if (cachedPreferences === cacheBeforeRead) cachedPreferences = freshPreferences
+            block()
+        }
+    }
 
     private val reloadHelper = ReloadHelper(context)
 
@@ -827,6 +843,12 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = GestureHandlerConfig.OpenAppDrawer,
     )
 
+    /** Swipe down gesture handler
+     *
+     * Important: It is imperative swipe down gesture handler only passed over to or handled by the native touch controller at [com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController]
+     *
+     * This is needed for ease of touch slop implementation and smooth notifications panel pulling for rooted device via SystemUI Proxy.
+     * */
     val swipeDownGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("swipe_down_gesture_handler"),
         defaultValue = GestureHandlerConfig.OpenNotifications,

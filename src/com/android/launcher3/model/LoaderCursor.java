@@ -563,7 +563,8 @@ public class LoaderCursor extends CursorWrapper {
 
     /**
      * Adds the {@param info} to {@param dataModel} if it does not overlap with any other item,
-     * otherwise marks it for deletion.
+     * otherwise marks it for deletion. Hotseat items past the current hotseat size are skipped
+     * but kept.
      */
     public void checkAndAddItem(
             ItemInfo info, IntSparseArrayMap<ItemInfo> loadedItems, LoaderMemoryLogger logger) {
@@ -592,9 +593,24 @@ public class LoaderCursor extends CursorWrapper {
             if (mRestoreEventLogger != null) {
                 mRestoreEventLogger.logSingleFavoritesItemRestored(itemType);
             }
+        } else if (isHotseatItemOutOfBounds(info)) {
+            // LC-Note: The hotseat can be smaller for a while (e.g. while a foldable is folded, or
+            // after a transient DeviceProfile change), and deleting the item would lose it for
+            // good. Don't bind it, but keep it in the database so it shows up again once the
+            // hotseat is large enough.
+            FileLog.d(TAG, "Keeping hotseat item out of bounds in the database: " + info);
         } else {
             markDeleted("Item position overlap", RestoreError.OVERLAPPING_ITEM);
         }
+    }
+
+    /**
+     * Returns whether {@param item} is in the hotseat, at a position past the hotseat size of the
+     * current grid.
+     */
+    private boolean isHotseatItemOutOfBounds(ItemInfo item) {
+        return item.container == Favorites.CONTAINER_HOTSEAT
+                && item.screenId >= mIDP.numDatabaseHotseatIcons;
     }
 
     /**

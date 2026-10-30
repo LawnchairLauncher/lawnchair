@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -136,6 +137,18 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                 }
             }
         }
+
+        // Stop Compose QSB from disappearing
+        // https://stackoverflow.com/questions/72781705/jetpack-compose-view-not-drawing-when-coming-back-to-fragment/77496737#77496737
+        composeView.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) {
+                requestLayout()
+                composeView.disposeComposition()
+            }
+            override fun onViewDetachedFromWindow(v: View) {
+                composeView.disposeComposition()
+            }
+        })
 
         addView(
             composeView,

@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">autorilt %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">just nüüd</string>
-    <string name="time_minutes_ago">%dmin.</string>
-    <string name="time_hours_ago">%dtundi</string>
-    <string name="time_days_ago">%dpäeva</string>
-    <string name="time_weeks_ago">%dnäd.</string>
-    <string name="time_months_ago">%dkuud</string>
-    <string name="time_years_ago">%daastat</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dmin.</item>
+        <item quantity="other">%dmin.</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dtundi</item>
+        <item quantity="other">%dtundi</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dpäeva</item>
+        <item quantity="other">%dpäeva</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dnäd.</item>
+        <item quantity="other">%dnäd.</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dkuud</item>
+        <item quantity="other">%dkuud</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%daastat</item>
+        <item quantity="other">%daastat</item>
+    </plurals>
     <string name="managed_by_lawnchair">Haldab Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Eelistused</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Peida kaustade rakendused</string>
     <string name="apps_in_folder_description">Kaustadesse määratud rakendusi rakenduste loendis ei kuvata</string>
     <string name="folders_filter_duplicates">Kuva ainult unikaalsed rakendused</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Minu kaust</string>
     <string name="sort_active_items_action">Järjesta aktiivsed üksused</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Seaded</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Üldseaded</string>
     <string name="general_description">Värvid, ikoonipaketid, märguandetäpid</string>
     <string name="home_screen_label">Avakuva</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Suurenda ruudustiku maksimaalse suuruse limiiti</string>
     <string name="workspace_increase_max_grid_size_description">Suurenda avakuva maksimaalset lubatud ruudustiku suurust 10 &#xd7; 10 > 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Laadi ikoonid alati uuesti</string>
-    <string name="always_reload_icons_description">Väldi ikoonipakettidest vahemällu salvestatud ikoonide kasutamist</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">See põhjustab ikoonide regulaarse värskendamise, mis võib mõjutada jõudlust. Lülita see välja, kui ikoonipakki ei värskendata regulaarselt.</string>
     <string name="show_deck_layout">Doki paigutus</string>
     <string name="show_deck_layout_description">Rakenduste sahtli peitmiseks ja uute rakenduste automaatseks lisamiseks avakuvale kuva paigutuse valik</string>
@@ -182,9 +203,9 @@
     <string name="gesturenavcontract_label">Kasuta GestureNavContract API-t</string>
     <string name="gesturenavcontract_description">Toeta viibete kasutamisel Androidi täiustatud animatsioone</string>
     <string name="gesturenavcontract_warning_incompatibility">Sinu seade pole täielikult toetatud. See võib põhjustada mõne animatsiooni visuaalseid tõrkeid.</string>
-    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_level_label">Vibratsiooni tagasiside tase</string>
     <string name="vibration_feedback_no_feedback_choice">Pole</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_minimal_choice">Minimaalne</string>
     <string name="vibration_feedback_default_choice">Vaikimisi</string>
     <string name="vibration_feedback_expressive_choice">Ekspressiivne</string>
     <string name="recents_lock_unlock">Rakenduste lukustamine</string>
@@ -199,16 +220,16 @@
     App suggestions
     -->
     <string name="suggestion_pref_screen_title">Soovitused</string>
-    <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
-    <string name="prediction_mode_label">Suggestions provider</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="global_predictions_label">Näita soovituste funktsioone</string>
+    <string name="app_predictions_label">Rakenduste soovitused</string>
+    <string name="prediction_mode_label">Soovituste pakkuja</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Selle funktsiooni jaoks on vaja Android 10 või uuemat</string>
     <string name="prediction_mode_system">Süsteem</string>
     <string name="prediction_mode_none">Väljas</string>
     <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
     <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
-    <string name="dismissed_prediction_apps_label">Blocked apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="dismissed_prediction_apps_label">Blokeeritud rakendused</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blokeeritud rakendused (%1$d)</string>
     <string name="prediction_system_settings">Manage system suggestions</string>
     <string name="missing_usage_access_label">Usage access needed</string>
     <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Kasuta mitut rida</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Ikoonide läbipaistvad taustad</string>
-    <string name="transparent_background_icons_description">Teemakohaste ja automaatselt kohanduvate ikoonide puhul</string>
     <string name="auto_adaptive_icons_label">Automaatselt kohanduvad ikoonid</string>
-    <string name="auto_adaptive_icons_description">Kõigile mittekohanduvatele ikoonidele</string>
     <string name="shadow_bg_icons_label">Kuva ikoonide taga vari</string>
     <string name="background_lightness_label">Tausta heledus</string>
     <string name="adaptive_icon_background_description">Kasuta valge jaoks 100% tausta heledust</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">Lõikelaud ei sisalda kasutuskõlblikku ikooni kuju</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Ikoonipakett</string>
-    <string name="themed_icon_pack">Temaatiliste ikoonide allikas</string>
-    <string name="themed_icon_pack_tint">Tooni aktsentvärviga</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Süsteemi ikoonid</string>
     <string name="force_monochrome_label">Sunni ühevärvilisus</string>
     <string name="force_monochrome_description">Värvi mittetoetatud rakendused üle praeguse aktsentvärviga.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Temaatilised ikoonid</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Väljas</string>
     <string name="themed_icons_home_label">Avakuva</string>
     <string name="themed_icons_home_and_drawer_label">Avakuva ja rakendusesahtel</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Toetatud ikoonipakette pole</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Lisa fonte</string>
     <string name="pref_fonts_add_fonts_summary">Toetatakse OTF ja TTF fonte</string>
@@ -631,7 +657,7 @@
     <string name="hotseat_bg_vertical_inset_top">Ülemine serv</string>
     <string name="hotseat_bg_vertical_inset_bottom">Alumine serv</string>
     <string name="hotseat_bg_color_label">Tausta värv</string>
-    <string name="hotseat_bg_corner_radius">Background corner radius</string>
+    <string name="hotseat_bg_corner_radius">Tausta nurgaraadius</string>
     <string name="hotseat_bg_alpha">Tausta läbipaistmatus</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Paus</string>

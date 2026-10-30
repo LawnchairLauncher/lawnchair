@@ -55,12 +55,24 @@
     <string name="changes_dialog_commit_info">โดย %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">เมื่อกี้นี้</string>
-    <string name="time_minutes_ago">%dน.</string>
-    <string name="time_hours_ago">%dชม.</string>
-    <string name="time_days_ago">%d วัน</string>
-    <string name="time_weeks_ago">%d สัปดาห์</string>
-    <string name="time_months_ago">%d เดือน</string>
-    <string name="time_years_ago">%d ปี</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="other">%dน.</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="other">%dชม.</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="other">%d วัน</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="other">%d สัปดาห์</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="other">%d เดือน</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="other">%d ปี</item>
+    </plurals>
     <string name="managed_by_lawnchair">จัดการโดย Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">ปรับแต่ง</string>
@@ -98,7 +110,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">สิ่งที่อยากให้แสดง</string>
     <string name="wallpapers">พื้นหลัง</string>
-    <string name="caddy_beta">Caddy (beta)</string>
+    <string name="caddy_beta">แคดดี้ (เบต้า)</string>
     <string name="caddy">แคดดี้</string>
     <string name="app_drawer_folder">โฟลเดอร์ในรายการแอป</string>
     <string name="selected_apps">เลือกแอพ</string>
@@ -114,6 +126,7 @@
     <string name="apps_in_folder_label">ซ่อนแอปโฟลเดอร์</string>
     <string name="apps_in_folder_description">แอปที่ถูกกำหนดไว้ในโฟลเดอร์จะไม่ปรากฏในรายการแอป</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">โฟลเดอร์ของฉัน</string>
     <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
@@ -135,6 +148,8 @@
 
     -->
     <string name="settings">การตั้งค่า</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">ทั่วไป</string>
     <string name="general_description">สี, ชุดไอคอน, จุดแจ้งเตือน</string>
     <string name="home_screen_label">หน้าโฮม</string>
@@ -170,7 +185,7 @@
     <string name="workspace_increase_max_grid_size_label">เพิ่มขนาดกริดหน้าจอสูงสุด</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">โหลดไอคอนใหม่เสมอ</string>
-    <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">เค้าโครงแบบ Deck</string>
     <string name="show_deck_layout_description">แสดงตัวเลือกเค้าโครงเพื่อซ่อนหน้ารวมแอปและเพิ่มแอปใหม่ไปยังหน้าจอหลักโดยอัตโนมัติ</string>
@@ -200,8 +215,8 @@
     -->
     <string name="suggestion_pref_screen_title">คำแนะนำ</string>
     <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
-    <string name="prediction_mode_label">Suggestions provider</string>
+    <string name="app_predictions_label">การแนะนำแอป</string>
+    <string name="prediction_mode_label">ผู้ให้บริการคำแนะนำ</string>
     <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
     <string name="prediction_mode_system">ระบบ</string>
     <string name="prediction_mode_none">ปิด</string>
@@ -239,9 +254,7 @@
     <string name="twoline_label">ใช้หลายบรรทัด</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">ไอคอนปรับใช้อัตโนมัติ</string>
-    <string name="auto_adaptive_icons_description">สำหรับไอคอนธรรมดา</string>
     <string name="shadow_bg_icons_label">แสดงเงาหลังไอคอน</string>
     <string name="background_lightness_label">ความสว่างของพื้นหลัง</string>
     <string name="adaptive_icon_background_description">ใช้ความสว่าง 100% สำหรับสีขาว</string>
@@ -306,16 +319,23 @@
     <string name="icon_shape_clipboard_import_error">คลิปบอร์ดไม่มีรูปร่างไอคอนที่ถูกต้อง</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">ชุดไอคอน</string>
-    <string name="themed_icon_pack">แหล่งที่มาของธีมไอคอน</string>
-    <string name="themed_icon_pack_tint">ย้อมด้วยสีเน้น</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">ไอคอนระบบ</string>
     <string name="force_monochrome_label">Force monochrome</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">ธีมไอคอน</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">ปิด</string>
     <string name="themed_icons_home_label">หน้าแรก</string>
     <string name="themed_icons_home_and_drawer_label">หน้าจอหลักและรายการแอป</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">ไม่รองรับไอคอนแพ็ค</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">เพิ่มแบบอักษร</string>
     <string name="pref_fonts_add_fonts_summary">รองรับไฟล์อักษรแบบ OTF และ TTF</string>
@@ -411,9 +431,9 @@
     <string name="torch_action_off">แตะเพื่อปิด</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Set up Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
+    <string name="onboarding_open_settings_subtitle">กดค้างที่หน้าจอหลักเพื่อเปิดการตั้งค่า</string>
     <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
+    <string name="onboarding_major_upgrade_subtitle">มาดูกันว่ามีอะไรใหม่บ้าง</string>
     <string name="onboarding_welcome">ยินดีต้อนรับเข้าสู่ Lawnchair!</string>
     <string name="onboarding_swipe_up">ปัดขึ้นเพื่อเปิดรายการแอป</string>
     <!-- Smartspacer strings -->
@@ -422,10 +442,10 @@
     <string name="smartspacer_settings">การตั้งค่าของ Smartspacer</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">แตะเพื่อตั้งค่า</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
+    <string name="event_provider_missing_notification_dots">หากต้องการใช้ <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> ให้เปิดจุดแสดงการแจ้งเตือน</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">แสดงบนหน้าจอหลัก</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">สามารถเพิ่มข้อมูลโดยย่อในหน้าหลักได้ด้วยตนเองด้วยวิดเจ็ต Lawnchair</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">ผู้ให้บริการข้อมูลโดยย่อ</string>
     <string name="smartspace_mode_google">Google</string>

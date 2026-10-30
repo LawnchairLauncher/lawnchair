@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.TipsAndUpdates
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -56,7 +55,6 @@ import app.lawnchair.ui.theme.isSelectedThemeDark
 import app.lawnchair.ui.theme.preferenceGroupColor
 import com.android.launcher3.R
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun DockSearchPreference(
     modifier: Modifier = Modifier,

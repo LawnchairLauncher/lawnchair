@@ -30,7 +30,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
-import com.android.launcher3.graphics.ThemeManager
+import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.DaggerSingletonObject
@@ -50,11 +50,15 @@ class PreferenceManager @Inject constructor(
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
     private val dc get() = DisplayController.INSTANCE.get(context)
     private val mRecentsModel get() = RecentsModel.INSTANCE.get(context)
+    private val las get() = LauncherAppState.INSTANCE.get(context)
     private val reloadIcons: () -> Unit = {
         mRecentsModel.onThemeChanged()
         Executors.MODEL_EXECUTOR.execute {
-            LauncherAppState.INSTANCE.get(context).iconCache.clearMemoryCache()
-            LauncherAppState.INSTANCE.get(context).model.reloadIfActive()
+            // All of this is like refreshAndReloadLauncher in ModelInitializer
+            LauncherIcons.clearPool(context)
+            las.iconCache.clearMemoryCache()
+            las.iconCache.updateIconParams(idp.fillResIconDpi, idp.iconBitmapSize)
+            las.model.forceReload()
         }
     }
     private val reloadGrid: () -> Unit = { idp.onPreferencesChanged(context) }
@@ -161,7 +165,6 @@ class PreferenceManager @Inject constructor(
 
     val themedIcons = BoolPref("themed_icons", false, reloadIcons)
     val drawerThemedIcons = BoolPref("drawer_themed_icons", false, reloadIcons)
-    val tintIconPackBackgrounds = BoolPref("tint_icon_pack_backgrounds", false, reloadIcons)
 
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
     val hotseatQsbAlpha = IntPref("pref_searchHotseatTranparency", 100, recreate)

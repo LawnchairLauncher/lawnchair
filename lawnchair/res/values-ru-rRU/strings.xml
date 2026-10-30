@@ -55,12 +55,42 @@
     <string name="changes_dialog_commit_info">от %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">только что</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dm</item>
+        <item quantity="few">%dm</item>
+        <item quantity="many">%dm</item>
+        <item quantity="other">%dm</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dh</item>
+        <item quantity="few">%dh</item>
+        <item quantity="many">%dh</item>
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dd</item>
+        <item quantity="few">%dd</item>
+        <item quantity="many">%dd</item>
+        <item quantity="other">%dd</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dw</item>
+        <item quantity="few">%dw</item>
+        <item quantity="many">%dw</item>
+        <item quantity="other">%dw</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dmo</item>
+        <item quantity="few">%dmo</item>
+        <item quantity="many">%dmo</item>
+        <item quantity="other">%dmo</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dy</item>
+        <item quantity="few">%dy</item>
+        <item quantity="many">%dy</item>
+        <item quantity="other">%dy</item>
+    </plurals>
     <string name="managed_by_lawnchair">Управляется Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Настройки</string>
@@ -114,6 +144,7 @@
     <string name="apps_in_folder_label">Скрыть приложения в папках</string>
     <string name="apps_in_folder_description">Скрывать приложения в папках из общего списка приложений</string>
     <string name="folders_filter_duplicates">Показывать только неповторяющиеся приложения</string>
+    <string name="folder_manage_apps">Управлять приложениями</string>
     <string name="my_folder_label">Моя папка</string>
     <string name="sort_active_items_action">Сортировать активные элементы</string>
     <!-- A11y description -->
@@ -135,6 +166,8 @@
 
     -->
     <string name="settings">Настройки</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Выбрать настройку из меню</string>
     <string name="general_label">Общие</string>
     <string name="general_description">Цвета, Наборы иконок, Точки уведомлений</string>
     <string name="home_screen_label">Главный экран</string>
@@ -170,7 +203,7 @@
     <string name="workspace_increase_max_grid_size_label">Увеличить макс. размер сетки</string>
     <string name="workspace_increase_max_grid_size_description">Увеличить макс. допустимый размер сетки глав. экрана с 10 &#xd7; 10 на 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
-    <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
+    <string name="always_reload_icons_description">Обновлять иконки после того, как акцентные цвета обновятся</string>
     <string name="always_reload_icons_warning">Это приведет к регулярному обновлению значков и может повлиять на производительность. Отключите, если набор значков не обновляется регулярно.</string>
     <string name="show_deck_layout">Стиль колоды</string>
     <string name="show_deck_layout_description">Показывать опцию для скрытия Меню приложений и автоматического добавления новых приложений на главный экран</string>
@@ -182,9 +215,9 @@
     <string name="gesturenavcontract_label">Использовать API GestureNavContract</string>
     <string name="gesturenavcontract_description">Поддержка расширенной анимации Android при использовании жестов навигации</string>
     <string name="gesturenavcontract_warning_incompatibility">Поддержка Вашего устройства - неполная. Это может привести к визуальным проблемам с анимацией.</string>
-    <string name="vibration_feedback_level_label">Vibration feedback level</string>
+    <string name="vibration_feedback_level_label">Вибрация</string>
     <string name="vibration_feedback_no_feedback_choice">Отключено</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_minimal_choice">Слабая</string>
     <string name="vibration_feedback_default_choice">По умолчанию</string>
     <string name="vibration_feedback_expressive_choice">Выразительно</string>
     <string name="recents_lock_unlock">Блокировка приложений</string>
@@ -199,18 +232,18 @@
     App suggestions
     -->
     <string name="suggestion_pref_screen_title">Рекомендации</string>
-    <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
-    <string name="prediction_mode_label">Suggestions provider</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="global_predictions_label">Посмотреть предложенные фишки</string>
+    <string name="app_predictions_label">Предложенные приложения</string>
+    <string name="prediction_mode_label">Предложенный провайдер</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Эта фишка требует Android 10 и больше</string>
     <string name="prediction_mode_system">На основе системы</string>
     <string name="prediction_mode_none">Выкл</string>
-    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
-    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
-    <string name="dismissed_prediction_apps_label">Blocked apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
-    <string name="prediction_system_settings">Manage system suggestions</string>
-    <string name="missing_usage_access_label">Usage access needed</string>
+    <string name="prediction_weighted_usage_stats_label">Использовать данные устройства</string>
+    <string name="prediction_weighted_usage_stats_description">Используя статистику данных устройства, мы сможем сделать предложения намного больше аккуратными</string>
+    <string name="dismissed_prediction_apps_label">Заблокированные приложения</string>
+    <string name="dismissed_prediction_apps_label_with_count">Заблокированные приложения (%1$d)</string>
+    <string name="prediction_system_settings">Использовать системные предложения</string>
+    <string name="missing_usage_access_label">Требуются разрешение на чтение использования устройства</string>
     <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
@@ -239,9 +272,7 @@
     <string name="twoline_label">Отображать несколько строк</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Прозрачный фон иконок</string>
-    <string name="transparent_background_icons_description">Для тематических иконок и авто-адаптивных иконок</string>
     <string name="auto_adaptive_icons_label">Авто-адаптивные иконки</string>
-    <string name="auto_adaptive_icons_description">Для всех неадаптивных иконок</string>
     <string name="shadow_bg_icons_label">Показывать тень позади иконок</string>
     <string name="background_lightness_label">Яркость подложки</string>
     <string name="adaptive_icon_background_description">Для белой подложки установите 100% значение яркости</string>
@@ -306,16 +337,23 @@
     <string name="icon_shape_clipboard_import_error">Буфер обмена не содержит допустимую форму иконки</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Набор иконок</string>
-    <string name="themed_icon_pack">Источник тематических иконок</string>
-    <string name="themed_icon_pack_tint">Тонировка в цвет акцента</string>
+    <string name="get_more_icon_packs">Получить больше иконок</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Системные иконки</string>
     <string name="force_monochrome_label">Включить монохром</string>
     <string name="force_monochrome_description">Использовать текущий цветовой акцент для перекраски неподдерживаемых приложений.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Тематические иконки</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Главный экран</string>
     <string name="themed_icons_home_and_drawer_label">Главный экран и Меню приложений</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Нет поддерживаемых наборов значков</string>
+    <string name="advanced_icon_settings_title">Расширенные настройки иконок</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
     <string name="pref_fonts_add_fonts_summary">Поддерживаются OTF и TTF шрифты</string>
@@ -643,7 +681,7 @@
     <string name="open_in_store_drop_target_label">Открыть в магазине приложений</string>
     <string name="dock_icons">Иконки док-панели</string>
     <string name="dock_rows">Строки док-панели</string>
-    <string name="dock_pages">Dock pages</string>
+    <string name="dock_pages">Страницы для дока с иконками</string>
     <string name="state_folded">%1$s (сложено)</string>
     <string name="state_unfolded">%1$s (разложено)</string>
     <string name="folded_label">Сложено</string>
