@@ -22,6 +22,7 @@ import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
+import com.android.launcher3.util.DaggerSingletonTracker
 import com.android.launcher3.util.SafeCloseable
 import com.android.systemui.monet.Style
 import com.patrykmichalik.opto.core.onEach
@@ -39,12 +40,16 @@ import kotlinx.coroutines.cancel
 @LauncherAppSingleton
 class ThemeProvider @Inject constructor(
     @ApplicationContext private val context: Context,
+    tracker: DaggerSingletonTracker,
 ) : SafeCloseable {
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
     private val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
+    @Volatile
     private var accentColor: ColorOption = preferenceManager2.accentColor.firstCached()
+
+    @Volatile
     private var colorStyle: ColorStyle = preferenceManager2.colorStyle.firstCached()
 
     private val colorSchemeMap = ConcurrentHashMap<Pair<Int, Style>, ColorScheme>()
@@ -60,6 +65,7 @@ class ThemeProvider @Inject constructor(
         }
 
     init {
+        tracker.addCloseable(this)
         if (Utilities.ATLEAST_S) {
             colorSchemeMap[Pair(0, Style.TONAL_SPOT)] = SystemColorScheme(context)
             registerOverlayChangedListener()
