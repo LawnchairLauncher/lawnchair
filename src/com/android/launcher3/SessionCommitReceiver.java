@@ -107,16 +107,18 @@ public class SessionCommitReceiver extends BroadcastReceiver {
      * Returns whether adding Installed App Icons to home screen is allowed or not.
      * Not allowed when:
      * - User belongs to {@link com.android.launcher3.util.UserIconInfo.TYPE_PRIVATE} or
+     * - The home-screen layout is locked, or
      * - Home Settings preference to add App Icons on Home Screen is set as disabled
      */
     public static boolean isEnabled(Context context, UserHandle user) {
-        if (Flags.privateSpaceRestrictItemDrag() 
-            && user != null) {
-            PreferenceManager2 prefs2 = PreferenceManager2.getInstance(context);
-            if (PreferenceCacheExtensionsKt.firstCached(prefs2.getLockHomeScreen())
+        PreferenceManager2 prefs2 = PreferenceManager2.getInstance(context);
+        // LC-Note: A locked layout also blocks icons from newly installed apps.
+        if (PreferenceCacheExtensionsKt.firstCached(prefs2.getLockHomeScreen())) {
+            return false;
+        }
+        if (Flags.privateSpaceRestrictItemDrag() && user != null
                 && UserCache.getInstance(context).getUserInfo(user).isPrivate()) {
-                return false;
-            }
+            return false;
         }
         return LauncherPrefs.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY, true);
     }
