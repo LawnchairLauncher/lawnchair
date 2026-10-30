@@ -29,6 +29,7 @@ import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.colorkt.conversion.ConversionGraph.convert
 import dev.kdrag0n.colorkt.rgb.Srgb
 import dev.kdrag0n.monet.theme.ColorScheme
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -46,7 +47,7 @@ class ThemeProvider @Inject constructor(
     private var accentColor: ColorOption = preferenceManager2.accentColor.firstCached()
     private var colorStyle: ColorStyle = preferenceManager2.colorStyle.firstCached()
 
-    private val colorSchemeMap = HashMap<Pair<Int, Style>, ColorScheme>()
+    private val colorSchemeMap = ConcurrentHashMap<Pair<Int, Style>, ColorScheme>()
     private val listeners = CopyOnWriteArrayList<ColorSchemeChangeListener>()
     private var overlayChangedReceiver: BroadcastReceiver? = null
     private val wallpaperColorsChangedListener =
@@ -113,12 +114,9 @@ class ThemeProvider @Inject constructor(
         colorStyle: Style,
     ): ColorScheme {
         val key = Pair(colorInt, colorStyle)
-        var colorScheme = colorSchemeMap[key]
-        if (colorScheme == null) {
-            colorScheme = MonetColorSchemeCompat(colorInt, colorStyle)
-            colorSchemeMap[key] = colorScheme
+        return colorSchemeMap.computeIfAbsent(key) {
+            MonetColorSchemeCompat(colorInt, colorStyle)
         }
-        return colorScheme
     }
 
     fun addListener(listener: ColorSchemeChangeListener) {
