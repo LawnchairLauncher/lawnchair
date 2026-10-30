@@ -20,7 +20,6 @@ import android.R as AndroidR
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
@@ -65,7 +64,6 @@ fun <T> ListPreference(
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun <T> ListPreference(
     entries: List<ListPreferenceEntry<T>>,

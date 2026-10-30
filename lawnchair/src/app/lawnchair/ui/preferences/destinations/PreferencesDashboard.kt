@@ -37,7 +37,6 @@ import androidx.compose.material.icons.rounded.Science
 import androidx.compose.material.icons.rounded.TipsAndUpdates
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -232,7 +231,6 @@ fun PreferencesDashboard(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RowScope.PreferencesOverflowMenu(
     currentRoute: PreferenceRootRoute,
@@ -324,7 +322,6 @@ fun RowScope.PreferencesOverflowMenu(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferencesDebugWarning(
     modifier: Modifier = Modifier,
@@ -340,7 +337,6 @@ fun PreferencesDebugWarning(
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferencesSetDefaultLauncherWarning(
     modifier: Modifier = Modifier,

@@ -146,6 +146,15 @@ class WorkspaceItemProcessor(
         }
 
         val info = c.loadSimpleWorkspaceItem()
+
+        // LC-Note: Show badge for legacy shortcut when possible
+        val launchPackage = intent.component?.packageName ?: intent.`package`
+        if (!launchPackage.isNullOrEmpty()) {
+            info.bitmap = info.bitmap.withBadgeInfo(
+                iconCache.getShortcutInfoBadge(launchPackage, c.user)
+            )
+        }
+
         info.options = c.options
         if (
             intent.action != null &&

@@ -18,7 +18,6 @@ import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LocalContentColor
@@ -65,7 +64,6 @@ import com.google.android.msdl.data.model.MSDLToken
 import kotlin.math.roundToInt
 import kotlin.toString
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CustomIconShapePreference(
     modifier: Modifier = Modifier,
@@ -240,7 +238,6 @@ private fun IconShapeClipboardPreferenceGroup(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ClipboardButton(
     label: String,
@@ -290,7 +287,6 @@ private fun IconShapeCornerPreference(
     )
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun CornerSlider(
     label: String,

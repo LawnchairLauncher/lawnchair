@@ -132,7 +132,6 @@ fun ExperimentalFeaturesPreferences(
             )
         }
 
-        val alwaysReloadIconsAdapter = prefs2.alwaysReloadIcons.getAdapter()
         val enableGncAdapter = prefs.enableGnc.getAdapter()
         val vibrationFeedbackLevelAdapter = prefs.vibrationFeedbackLevel.getAdapter()
 
@@ -141,15 +140,6 @@ fun ExperimentalFeaturesPreferences(
             heading = stringResource(R.string.internal_label),
             description = stringResource(R.string.internal_description),
         ) {
-            SwitchPreference(
-                adapter = alwaysReloadIconsAdapter,
-                label = stringResource(id = R.string.always_reload_icons_label),
-                description = stringResource(id = R.string.always_reload_icons_description),
-            )
-            ExpandAndShrink(visible = alwaysReloadIconsAdapter.state.value) {
-                WarningPreference(stringResource(R.string.always_reload_icons_warning))
-            }
-
             SwitchPreference(
                 adapter = enableGncAdapter,
                 label = stringResource(id = R.string.gesturenavcontract_label),

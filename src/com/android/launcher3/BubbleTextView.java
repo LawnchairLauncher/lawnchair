@@ -62,6 +62,7 @@ import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.util.Log;
 import android.util.Property;
 import android.util.TypedValue;
@@ -169,15 +170,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
     };
 
-    public static final Property<BubbleTextView, Float> TEXT_ALPHA_PROPERTY
-            = new Property<BubbleTextView, Float>(Float.class, "textAlpha") {
+    public static final FloatProperty<BubbleTextView> TEXT_ALPHA_PROPERTY
+            = new FloatProperty<BubbleTextView>("textAlpha") {
         @Override
         public Float get(BubbleTextView bubbleTextView) {
             return bubbleTextView.mTextAlpha;
         }
 
         @Override
-        public void set(BubbleTextView bubbleTextView, Float alpha) {
+        public void setValue(BubbleTextView bubbleTextView, float alpha) {
             bubbleTextView.setTextAlpha(alpha);
         }
     };

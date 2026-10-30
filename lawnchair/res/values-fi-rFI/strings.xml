@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">näiltä: %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">juuri nyt</string>
-    <string name="time_minutes_ago">%d min</string>
-    <string name="time_hours_ago">%d h</string>
-    <string name="time_days_ago">%d vrk</string>
-    <string name="time_weeks_ago">%d vk</string>
-    <string name="time_months_ago">%d kk</string>
-    <string name="time_years_ago">%d v</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d min</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%d h</item>
+        <item quantity="other">%d h</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%d vrk</item>
+        <item quantity="other">%d vrk</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%d vk</item>
+        <item quantity="other">%d vk</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%d kk</item>
+        <item quantity="other">%d kk</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%d v</item>
+        <item quantity="other">%d v</item>
+    </plurals>
     <string name="managed_by_lawnchair">Lawnchairin hallinnoima</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Asetukset</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Piilota kansion sovelluksia</string>
     <string name="apps_in_folder_description">Sovelluksia kansoissa ei näy sovelluslistoissa</string>
     <string name="folders_filter_duplicates">Näytä vain yksi kappale jokaista sovellusta</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Minun kansioni</string>
     <string name="sort_active_items_action">Lajittele aktiiviset kohteet</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Asetukset</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Yleiset</string>
     <string name="general_description">Värit, kuvakepaketit, ilmoituspisteet</string>
     <string name="home_screen_label">Aloitusnäyttö</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Kasvata suurimman mahdollisen ruudukon rajaa.</string>
     <string name="workspace_increase_max_grid_size_description">Suurenna aloitusnäytön ruudukon enimmäiskokoa koosta 10 x 10 kokoon 20 x 20</string>
     <string name="always_reload_icons_label">Lataa kuvakkeet aina uudelleen</string>
-    <string name="always_reload_icons_description">Vältä välimuistissa olevien kuvakkeiden käyttöä kuvakepakkauksissa</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">Tämä aiheuttaa kuvakkeiden päivittämisen säännöllisesti, vaikuttaen suorituskykyyn. Poista käytöstä, jos kuvakepakettia ei päivitetä säännöllisesti.</string>
     <string name="show_deck_layout">Telakan asettelu</string>
     <string name="show_deck_layout_description">Näytä asetus sovellusvalikon piilottamiseksi ja sovellusten automaattisen aloitusnäyttöön lisäämiseksi</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Käytä useampia rivejä</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Läpinäkyvät kuvakkeiden taustat</string>
-    <string name="transparent_background_icons_description">Teemakuvakkeille ja automaattisesti adoptoituville kuvakkeille</string>
     <string name="auto_adaptive_icons_label">Automaattisesti sopeutuvat kuvakkeet</string>
-    <string name="auto_adaptive_icons_description">Kaikille ei mukautuville kuvakkeille</string>
     <string name="shadow_bg_icons_label">Näytä varjot kuvakkeiden takana</string>
     <string name="background_lightness_label">Taustan valkoisuus</string>
     <string name="adaptive_icon_background_description">Käytä 100% kirkkautta saadaksesi valkoisen taustan</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">Leikepöytä ei sisällä kunnollista kuvakkeen muotoa</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Kuvakepaketti</string>
-    <string name="themed_icon_pack">Mukautettujen kuvakkeiden lähde</string>
-    <string name="themed_icon_pack_tint">Sävyjä korostusvärillä</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Järjestelmän kuvakkeet</string>
     <string name="force_monochrome_label">Pakota mustavalkoiseksi</string>
     <string name="force_monochrome_description">Korjaa ei-tuetut sovellukset, nykyisellä aksenttivärillä.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Mukautetut kuvakkeet</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Pois</string>
     <string name="themed_icons_home_label">Aloitusnäyttö</string>
     <string name="themed_icons_home_and_drawer_label">Aloitusnäyttö ja sovellusvalikko</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Ei tuetut kuvakepaketit</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Lisää fontteja</string>
     <string name="pref_fonts_add_fonts_summary">OTF- ja TTF-fontit ovat tuettuja</string>

@@ -55,12 +55,42 @@
     <string name="changes_dialog_commit_info">od %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">právě teď</string>
-    <string name="time_minutes_ago">%d min</string>
-    <string name="time_hours_ago">%d h</string>
-    <string name="time_days_ago">%d d</string>
-    <string name="time_weeks_ago">%d týd.</string>
-    <string name="time_months_ago">%d měs.</string>
-    <string name="time_years_ago">%d let</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%d min</item>
+        <item quantity="few">%d min</item>
+        <item quantity="many">%d min</item>
+        <item quantity="other">%d min</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%d h</item>
+        <item quantity="few">%d h</item>
+        <item quantity="many">%d h</item>
+        <item quantity="other">%d h</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%d d</item>
+        <item quantity="few">%d d</item>
+        <item quantity="many">%d d</item>
+        <item quantity="other">%d d</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%d týd.</item>
+        <item quantity="few">%d týd.</item>
+        <item quantity="many">%d týd.</item>
+        <item quantity="other">%d týd.</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%d měs.</item>
+        <item quantity="few">%d měs.</item>
+        <item quantity="many">%d měs.</item>
+        <item quantity="other">%d měs.</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%d let</item>
+        <item quantity="few">%d let</item>
+        <item quantity="many">%d let</item>
+        <item quantity="other">%d let</item>
+    </plurals>
     <string name="managed_by_lawnchair">Spravováno aplikací Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Předvolby</string>
@@ -114,6 +144,7 @@
     <string name="apps_in_folder_label">Skrýt aplikace ve složkách</string>
     <string name="apps_in_folder_description">Aplikace zařazené do složek jsou vyloučeny ze seznamů aplikací</string>
     <string name="folders_filter_duplicates">Zobrazit pouze unikátní aplikace</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">Moje složka</string>
     <string name="sort_active_items_action">Seřadit aktivní položky</string>
     <!-- A11y description -->
@@ -135,6 +166,8 @@
 
     -->
     <string name="settings">Nastavení</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Obecné</string>
     <string name="general_description">Barvy, balíčky ikon, puntíky oznámení</string>
     <string name="home_screen_label">Domovská obrazovka</string>
@@ -170,7 +203,7 @@
     <string name="workspace_increase_max_grid_size_label">Zvýšit maximální limit velikosti mřížky</string>
     <string name="workspace_increase_max_grid_size_description">Zvýšit maximální povolenou velikost mřížky na domovské obrazovce z 10 &#xd7; 10 na 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Vždy znovu načíst ikony</string>
-    <string name="always_reload_icons_description">Vyhnout se používání uložených ikon z balíčků ikon</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">Toto způsobí pravidelné obnovování ikon, což ovlivňuje výkon. Vypněte pokud se balíček ikon neaktualizuje pravidelně.</string>
     <string name="show_deck_layout">Rozvržení Decku</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
@@ -239,9 +272,7 @@
     <string name="twoline_label">Dvouřádkový popisek</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Průhledné pozadí ikon</string>
-    <string name="transparent_background_icons_description">Pro tématické a automaticky adaptivní ikony</string>
     <string name="auto_adaptive_icons_label">Automaticky adaptivní ikony</string>
-    <string name="auto_adaptive_icons_description">Pro všechny neadaptivní ikony</string>
     <string name="shadow_bg_icons_label">Zobrazit stín za ikonami</string>
     <string name="background_lightness_label">Jas pozadí</string>
     <string name="adaptive_icon_background_description">Pro bílý režim použít 100% osvětlení pozadí</string>
@@ -306,16 +337,23 @@
     <string name="icon_shape_clipboard_import_error">Schránka neobsahuje platný tvar ikony</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Balíček ikon</string>
-    <string name="themed_icon_pack">Zdroj tematických ikon</string>
-    <string name="themed_icon_pack_tint">Obarvit doplňkovou barvou</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Systémové ikony</string>
     <string name="force_monochrome_label">Vynutit černobílý</string>
     <string name="force_monochrome_description">Přebarvit nepodporované aplikace aktuální barvou zvýraznění.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Ikony s motivy</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Vyp.</string>
     <string name="themed_icons_home_label">Domovská obrazovka</string>
     <string name="themed_icons_home_and_drawer_label">Domovská obrazovka a seznam aplikací</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Žádné podporované balíčky ikon</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Přidat písma</string>
     <string name="pref_fonts_add_fonts_summary">Jsou podporovány formáty OTF a TTF</string>
