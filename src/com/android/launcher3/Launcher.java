@@ -1332,6 +1332,9 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         DragView.removeAllViews(this);
         TraceHelper.INSTANCE.endSection();
+
+        // Show the JARVIS OS welcome flow after the first launcher frame is ready.
+        getWindow().getDecorView().post(() -> JarvisOnboarding.maybeShowWelcome(this));
     }
 
     @Override
