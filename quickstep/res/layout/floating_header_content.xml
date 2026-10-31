@@ -7,6 +7,10 @@
         android:importantForAccessibility="yes"
         android:layout_height="wrap_content" />
 
+    <!-- LC-Note: Lawnchair's suggestion tabs, which take the prediction row's place while the
+         search box has focus. -->
+    <include layout="@layout/drawer_suggestion_tabs" />
+
     <com.android.launcher3.appprediction.AppsDividerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

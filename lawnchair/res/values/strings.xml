@@ -994,6 +994,14 @@
     <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
     <string name="allapps_match_qsb_style_description">Tapping the dock search bar opens the app drawer search view</string>
 
+    <!-- App drawer suggestion tabs, shown above the app list while the search bar is in use -->
+    <string name="drawer_suggestion_tabs_label">Suggestion tabs</string>
+    <string name="drawer_suggestion_tabs_description">Frequent, recent and new or updated apps when you tap the search bar</string>
+    <string name="drawer_suggestion_tab_frequent">Frequent</string>
+    <string name="drawer_suggestion_tab_recent">Recent</string>
+    <string name="drawer_suggestion_tab_new">New/Updated</string>
+    <string name="drawer_suggestion_tab_empty">No apps here yet</string>
+
     <string name="app_search_algorithm">Search algorithm</string>
     <string name="search_algorithm_app_search">App search</string>
     <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
