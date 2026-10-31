@@ -18,7 +18,9 @@ import android.view.WindowManager
 import android.view.WindowMetrics
 import androidx.annotation.Keep
 import androidx.annotation.VisibleForTesting
+import app.lawnchair.LawnchairApp
 import com.android.launcher3.Utilities
+import com.android.launcher3.Utilities.dpiFromPx
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.RotationUtils.deltaRotation
@@ -37,6 +39,15 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
 
     @Suppress("PropertyName")
     val TAG = "LC-WindowManagerProxy"
+
+    // LC-Note: mTaskbarDrawnInProcess stays true on Android 13+ for the inset overrides below, but
+    // Lawnchair only draws a taskbar when it is the recents provider (quickstep runs). Otherwise the
+    // system draws its taskbar (or navigation bar) on large screens, over our layout.
+    private val taskbarDrawnInProcess by lazy {
+        mTaskbarDrawnInProcess && LawnchairApp.isRecentsEnabled
+    }
+
+    override fun isTaskbarDrawnInProcess() = taskbarDrawnInProcess
 
     override fun estimateInternalDisplayBounds(displayInfoContext: Context): ArrayMap<CachedDisplayInfo, List<WindowBounds>> {
         val result = ArrayMap<CachedDisplayInfo, List<WindowBounds>>()
@@ -188,7 +199,8 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
         val isPortrait = config.screenHeightDp > config.screenWidthDp
 
         val bottomNav = if (isLargeScreen) {
-            0
+            // Leave room for the system taskbar unless ours is drawn there
+            if (isTaskbarDrawnInProcess()) 0 else navInsets.bottom
         } else if (isPortrait) {
             getDimenByName(systemRes, ResourceUtils.NAVBAR_HEIGHT)
         } else if (isGesture) {
@@ -239,6 +251,40 @@ class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Uti
         val systemWindowInsets = result.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
         outInsets.set(systemWindowInsets.left, systemWindowInsets.top, systemWindowInsets.right, systemWindowInsets.bottom)
         return result
+    }
+
+    override fun estimateWindowBounds(context: Context, displayInfo: CachedDisplayInfo): List<WindowBounds> {
+        val windowBounds = super.estimateWindowBounds(context, displayInfo)
+        if (!mTaskbarDrawnInProcess || isTaskbarDrawnInProcess()) return windowBounds
+
+        // LC-Note: super leaves no room at the bottom of large screens for a taskbar drawn in
+        // process. Like normalizeWindowInsets, leave room for the one the system draws instead.
+        val densityDpi = context.resources.configuration.densityDpi
+        val swDp = dpiFromPx(min(displayInfo.size.x, displayInfo.size.y).toFloat(), densityDpi).toInt()
+        if (swDp < MIN_TABLET_WIDTH) return windowBounds
+
+        val taskbarHeight = getSystemTaskbarHeight(context)
+        return windowBounds.map { bounds ->
+            if (bounds.insets.bottom >= taskbarHeight) {
+                bounds
+            } else {
+                WindowBounds(bounds.bounds, Rect(bounds.insets).apply { bottom = taskbarHeight }, bounds.rotationHint)
+            }
+        }
+    }
+
+    /**
+     * Returns the bottom inset of the taskbar the system draws on large screens: the current one
+     * when on a large screen (it stays at the bottom in every rotation), or else its usual height.
+     */
+    private fun getSystemTaskbarHeight(context: Context): Int {
+        if (context.resources.configuration.smallestScreenWidthDp > MIN_TABLET_WIDTH) {
+            val windowMetrics = context.getSystemService(WindowManager::class.java)?.maximumWindowMetrics
+            if (windowMetrics != null) {
+                return windowMetrics.windowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom
+            }
+        }
+        return getDimenByName(context.resources, "taskbar_frame_height")
     }
 
     override fun rotateCutout(

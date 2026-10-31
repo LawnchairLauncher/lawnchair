@@ -27,6 +27,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
@@ -46,6 +47,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.launcher3.util.MultiPropertyFactory;
@@ -58,7 +60,10 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import app.lawnchair.fold.FoldDockLayout;
+import app.lawnchair.fold.FoldScreen;
 import app.lawnchair.hotseat.DisabledHotseat;
+import app.lawnchair.hotseat.HotseatFoldController;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.hotseat.HotseatPagedView;
 import app.lawnchair.hotseat.LawnchairHotseat;
@@ -76,11 +81,13 @@ public class Hotseat extends FrameLayout implements Insettable {
     public static final int ALPHA_CHANNEL_PREVIEW_RENDERER = 1;
     public static final int ALPHA_CHANNEL_TASKBAR_STASH = 2;
     public static final int ALPHA_CHANNEL_ASSISTANT_VISIBILITY = 3;
-    public static final int ALPHA_CHANNEL_CHANNELS_COUNT = 4;
+    public static final int ALPHA_CHANNEL_FOLD_DOCK = 4;
+    public static final int ALPHA_CHANNEL_CHANNELS_COUNT = 5;
 
     @Retention(RetentionPolicy.RUNTIME)
     @IntDef({ALPHA_CHANNEL_TASKBAR_ALIGNMENT, ALPHA_CHANNEL_PREVIEW_RENDERER,
-            ALPHA_CHANNEL_TASKBAR_STASH, ALPHA_CHANNEL_ASSISTANT_VISIBILITY})
+            ALPHA_CHANNEL_TASKBAR_STASH, ALPHA_CHANNEL_ASSISTANT_VISIBILITY,
+            ALPHA_CHANNEL_FOLD_DOCK})
     public @interface HotseatQsbAlphaId {
     }
 
@@ -116,6 +123,18 @@ public class Hotseat extends FrameLayout implements Insettable {
     private final int mPageIndicatorHeight;
 
     private final ActivityContext mActivity;
+    // LC-Note: only on a foldable's launcher, null on phones, tablets and previews
+    @Nullable
+    private final HotseatFoldController mFoldController;
+
+    // LC-Note: foldable side dock (FoldDock.SIDE): the hotseat fills the screen, its padding box is
+    // the column and the dock search bar stays at the bottom
+    private boolean mIsSideDock;
+    @Nullable
+    private InsetDrawable mDockBackground;
+    @Nullable
+    private GradientDrawable mDockBackgroundShape;
+    private final Rect mSideDockBackgroundBounds = new Rect();
 
     PreferenceManager2 preferenceManager2;
     PreferenceManager preferenceManager;
@@ -196,6 +215,9 @@ public class Hotseat extends FrameLayout implements Insettable {
         mQsbAlphaChannels = new MultiValueAlpha(mQsb, ALPHA_CHANNEL_CHANNELS_COUNT);
         mQsbAlphaChannels.setUpdateVisibility(true);
 
+        mFoldController = mActivity instanceof Launcher && mActivity.getDeviceProfile()
+                .getDeviceProperties().getFoldScreen() != FoldScreen.NONE
+                ? new HotseatFoldController(this, mActivity) : null;
         setUpBackground();
         setClipChildren(false);
         setClipToPadding(false);
@@ -225,6 +247,88 @@ public class Hotseat extends FrameLayout implements Insettable {
         InsetDrawable bg = new InsetDrawable(background,
                 insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
         setBackground(bg);
+        mDockBackground = bg;
+        mDockBackgroundShape = background;
+        if (mFoldController != null) {
+            mFoldController.setBackgroundStyle(finalColor, cornerRadius, insetHorizontalLeft,
+                    insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mFoldController != null) {
+            mActivity.addOnDeviceProfileChangeListener(mFoldController);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mFoldController != null) {
+            mActivity.removeOnDeviceProfileChangeListener(mFoldController);
+            mFoldController.onDetached();
+        }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        // LC-Note: the dock background while it merges or splits on a foldable, under the icons
+        if ((mFoldController == null || !mFoldController.drawBackground(canvas)) && mIsSideDock
+                && mDockBackgroundShape != null) {
+            getSideDockBackgroundBounds(mSideDockBackgroundBounds);
+            mDockBackgroundShape.setBounds(mSideDockBackgroundBounds);
+            mDockBackgroundShape.draw(canvas);
+        }
+        super.dispatchDraw(canvas);
+    }
+
+    /** LC-Note: whether the dock is a column on the outer edge of a foldable's fixed half. */
+    public boolean isSideDock() {
+        return mIsSideDock;
+    }
+
+    /** LC-Note: returns the side dock's background bounds, the column plus an edge margin. */
+    public void getSideDockBackgroundBounds(Rect out) {
+        int margin = mActivity.getDeviceProfile().edgeMarginPx / 2;
+        out.set(getPaddingLeft() - margin, getPaddingTop() - margin,
+                getWidth() - getPaddingRight() + margin,
+                getHeight() - getPaddingBottom() + margin);
+    }
+
+    private boolean isTouchInSideDock(MotionEvent ev) {
+        float x = ev.getX();
+        float y = ev.getY();
+        return x >= getPaddingLeft() && x < getWidth() - getPaddingRight()
+                && y >= getPaddingTop() && y < getHeight() - getPaddingBottom();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        // LC-Note: the side dock's hotseat fills the screen; a touch outside the column and the
+        // search bar belongs to the views below (the workspace)
+        if (mIsSideDock && ev.getActionMasked() == MotionEvent.ACTION_DOWN
+                && !isTouchInSideDock(ev) && !isTouchOnQsb(ev)) {
+            return false;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * LC-Note: returns the controller that merges the dock while a foldable opens or closes, or
+     * null when the device doesn't fold.
+     */
+    @Nullable
+    public HotseatFoldController getFoldController() {
+        return mFoldController;
+    }
+
+    /** LC-Note: returns the dock layout of an unfolded foldable, or null. */
+    @Nullable
+    public FoldDockLayout getFoldDockLayout() {
+        CellPosMapper mapper = mActivity.getCellPosMapper();
+        return mapper != null ? mapper.getFoldDockLayout() : null;
     }
 
     /** Provides translation X for hotseat icons for the channel. */
@@ -282,6 +386,11 @@ public class Hotseat extends FrameLayout implements Insettable {
         DeviceProfile dp = mActivity.getDeviceProfile();
         int numColumns = dp.numShownHotseatIcons;
         int localRank = getLocalRank(rank, dp);
+        FoldDockLayout foldDock = getFoldDockLayout();
+        if (foldDock != null && rank < numColumns) {
+            // LC-Note: unfolded foldable, first row of the first page, see FoldDockLayout
+            return foldDock.rankToCellX(rank);
+        }
         return localRank % numColumns;
     }
 
@@ -290,6 +399,11 @@ public class Hotseat extends FrameLayout implements Insettable {
      */
     public int getCellYFromOrder(int rank) {
         if (mHasVerticalHotseat) {
+            FoldDockLayout foldDock = getFoldDockLayout();
+            if (foldDock != null && foldDock.isSide()) {
+                // LC-Note: foldable side dock, see FoldDockLayout#rankToCellY
+                return foldDock.rankToCellY(rank);
+            }
             CellLayout page = getCurrentPageLayout();
             int countY = page != null ? page.getCountY() : mActivity.getDeviceProfile().numShownHotseatIcons;
             return countY - (rank + 1);
@@ -310,6 +424,21 @@ public class Hotseat extends FrameLayout implements Insettable {
         return rank / slotsPerPage;
     }
 
+    /**
+     * LC-Note: whether the hotseat item at {@code rank} has a cell in the current layout. A
+     * foldable's cover dock has fewer cells than the database keeps, so the other items stay
+     * hidden there instead of landing on another item's cell. Always true on other devices.
+     */
+    public boolean isRankShown(int rank) {
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        if (dp.getDeviceProperties().getFoldScreen() == FoldScreen.NONE) {
+            return true;
+        }
+        int slots = dp.hasVerticalHotseat() ? dp.numShownHotseatIcons
+                : dp.numShownHotseatIcons * dp.numHotseatRows * Math.max(1, dp.numHotseatPages);
+        return rank >= 0 && rank < slots;
+    }
+
     private static int getLocalRank(int rank, DeviceProfile dp) {
         int slotsPerPage = Math.max(1, dp.numShownHotseatIcons * dp.numHotseatRows);
         return rank % slotsPerPage;
@@ -323,10 +452,11 @@ public class Hotseat extends FrameLayout implements Insettable {
         ActivityContext activityContext = ActivityContext.lookupContext(getContext());
         boolean bubbleBarEnabled = activityContext.isBubbleBarEnabled();
         boolean hasBubbles = activityContext.hasBubbles();
-        mHasVerticalHotseat = hasVerticalHotseat;
         DeviceProfile dp = mActivity.getDeviceProfile();
+        // LC-Note: a foldable's side dock is a single column too
+        mHasVerticalHotseat = hasVerticalHotseat || dp.isSideDock();
 
-        mPagedView.resetPages(hasVerticalHotseat, mWorkspace, dp);
+        mPagedView.resetPages(mHasVerticalHotseat, mWorkspace, dp);
 
         if (bubbleBarEnabled) {
             for (CellLayout page : getPageLayouts()) {
@@ -415,11 +545,24 @@ public class Hotseat extends FrameLayout implements Insettable {
                 lp.gravity = Gravity.RIGHT;
                 lp.width = grid.hotseatBarSizePx + insets.right;
             }
+        } else if (grid.isSideDock()) {
+            // LC-Note: foldable side dock, the padding box is the column (see DeviceProfile)
+            mQsb.setVisibility(View.VISIBLE);
+            lp.gravity = Gravity.BOTTOM;
+            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
         } else {
             mQsb.setVisibility(View.VISIBLE);
             lp.gravity = Gravity.BOTTOM;
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
             lp.height = grid.hotseatBarSizePx;
+        }
+
+        // LC-Note: the view's background would fill the whole screen with the side dock: it is
+        // drawn around the column in dispatchDraw instead
+        mIsSideDock = grid.isSideDock();
+        if (mDockBackground != null && (getBackground() == null) != mIsSideDock) {
+            setBackground(mIsSideDock ? null : mDockBackground);
         }
 
         Rect padding = grid.getHotseatLayoutPadding(getContext());
@@ -535,7 +678,10 @@ public class Hotseat extends FrameLayout implements Insettable {
         }
 
         int width;
-        if (dp.isQsbInline) {
+        if (mIsSideDock) {
+            // LC-Note: the side dock's search bar spans the workspace
+            width = widthSize - 2 * (dp.workspacePadding.left + dp.cellLayoutPaddingPx.left);
+        } else if (dp.isQsbInline) {
             width = dp.hotseatQsbWidth;
         } else {
             width = mPagedView.getMeasuredWidth();
@@ -576,7 +722,7 @@ public class Hotseat extends FrameLayout implements Insettable {
 
         int qsbMeasuredWidth = mQsb.getMeasuredWidth();
         int left;
-        if (dp.isQsbInline) {
+        if (dp.isQsbInline && !mIsSideDock) {
             int qsbSpace = dp.hotseatBorderSpace;
             left = Utilities.isRtl(getResources()) ? r - getPaddingRight() + qsbSpace
                     : l + getPaddingLeft() - qsbMeasuredWidth - qsbSpace;

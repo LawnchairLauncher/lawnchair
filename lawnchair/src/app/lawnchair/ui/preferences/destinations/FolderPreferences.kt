@@ -17,6 +17,7 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -24,14 +25,17 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.FoldMirrorNote
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.isFoldHomeMirrored
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.GeneralIconShape
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 
 @Composable
@@ -44,6 +48,7 @@ fun FolderPreferences(
         modifier = modifier,
     ) {
         val context = LocalContext.current
+        val isFoldable = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
         val folderIconShapeAdapter = prefs2.folderShape.getAdapter()
@@ -77,18 +82,51 @@ fun FolderPreferences(
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
+            val columnsLabel = stringResource(id = R.string.max_folder_columns)
+            val rowsLabel = stringResource(id = R.string.max_folder_rows)
+            // "Same as cover" uses the folded folder grid on the large screen too
+            val homeMirrored = isFoldable && isFoldHomeMirrored()
+            val folderColumnsAdapter = prefs2.folderColumns.getAdapter()
             SliderPreference(
-                label = stringResource(id = R.string.max_folder_columns),
-                adapter = prefs2.folderColumns.getAdapter(),
+                label = if (isFoldable) stringResource(id = R.string.state_folded, columnsLabel) else columnsLabel,
+                adapter = folderColumnsAdapter,
                 step = 1,
                 valueRange = 2..5,
             )
+            // The unfolded columns and rows follow the folded ones until set, but their sliders don't
+            // see a folded change by themselves: read them again when the folded value changes.
+            if (isFoldable) {
+                key(folderColumnsAdapter.state.value) {
+                    SliderPreference(
+                        label = stringResource(id = R.string.state_unfolded, columnsLabel),
+                        adapter = prefs2.folderColumnsUnfolded.getAdapter(),
+                        step = 1,
+                        valueRange = 2..6,
+                        enabled = !homeMirrored,
+                    )
+                }
+            }
+            val folderRowsAdapter = prefs.folderRows.getAdapter()
             SliderPreference(
-                label = stringResource(id = R.string.max_folder_rows),
-                adapter = prefs.folderRows.getAdapter(),
+                label = if (isFoldable) stringResource(id = R.string.state_folded, rowsLabel) else rowsLabel,
+                adapter = folderRowsAdapter,
                 step = 1,
                 valueRange = 2..5,
             )
+            if (isFoldable) {
+                key(folderRowsAdapter.state.value) {
+                    SliderPreference(
+                        label = stringResource(id = R.string.state_unfolded, rowsLabel),
+                        adapter = prefs2.folderRowsUnfolded.getAdapter(),
+                        step = 1,
+                        valueRange = 2..5,
+                        enabled = !homeMirrored,
+                    )
+                }
+            }
+            if (homeMirrored) {
+                FoldMirrorNote()
+            }
         }
 
         val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreenFolder.getAdapter()

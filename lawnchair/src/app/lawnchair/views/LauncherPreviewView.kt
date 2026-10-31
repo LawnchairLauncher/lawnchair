@@ -38,6 +38,7 @@ class LauncherPreviewView(
     private var destroyed = false
 
     private var rendererView: View? = null
+    private var renderer: LauncherPreviewRenderer? = null
 
     private val spinner = CircularProgressIndicator(context).apply {
         val themedContext = ContextThemeWrapper(context, Themes.getActivityThemeRes(context))
@@ -68,8 +69,10 @@ class LauncherPreviewView(
         destroyed = true
         onDestroyCallbacks.executeAllAndDestroy()
         removeAllViews()
-        // Note: The new LauncherPreviewRenderer manages its own lifecycle observer via the Context.
-        // If the Renderer exposes a close/destroy method in the future, call it here to prevent Model callback leaks.
+        // Ends the renderer's lifecycle: it stops listening to the model and releases its widgets,
+        // instead of binding every later model change into a preview no longer shown.
+        renderer?.onViewDestroyed()
+        renderer = null
     }
 
     private fun loadAsync() {
@@ -94,6 +97,7 @@ class LauncherPreviewView(
         if (dummySmartspace) {
             renderer.setWorkspaceSearchContainer(R.layout.smartspace_widget_placeholder)
         }
+        this.renderer = renderer
 
         // The renderer exposes a CompletableFuture that completes when the model is bound and view is measured
         renderer.initialRender.thenAcceptAsync({ view ->

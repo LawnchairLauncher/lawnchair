@@ -59,6 +59,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceLayoutManager;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
@@ -87,6 +88,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+
+import app.lawnchair.fold.FoldItemSets;
+import app.lawnchair.fold.FoldLayout;
 
 /**
  * Utility class for generating the preview of Launcher for a given InvariantDeviceProfile.
@@ -174,8 +178,17 @@ public class LauncherPreviewRenderer extends BaseContext
             );
 
             int closestEvenPageId = workspaceScreenId - (workspaceScreenId % 2);
-            mWorkspaceScreens.put(closestEvenPageId, firstScreen);
-            mWorkspaceScreens.put(closestEvenPageId + 1, rightPanel);
+            // LC-Note: the pages in a foldable's page order, as its workspace lays them out
+            // (FoldLayout#isPageOrderRtl). The panels keep their physical sides, which their
+            // paddings are for, in any layout direction; their content follows the language.
+            ((View) firstScreen.getParent()).setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            firstScreen.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+            rightPanel.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
+            boolean firstPageOnRight = FoldLayout.isPageOrderRtl(mPreferenceManager2,
+                    Utilities.isRtl(getResources()));
+            mWorkspaceScreens.put(closestEvenPageId, firstPageOnRight ? rightPanel : firstScreen);
+            mWorkspaceScreens.put(closestEvenPageId + 1,
+                    firstPageOnRight ? firstScreen : rightPanel);
         } else {
             mWorkspaceScreens.put(workspaceScreenId, firstScreen);
         }
@@ -345,6 +358,8 @@ public class LauncherPreviewRenderer extends BaseContext
         // Separate the items that are on the current screen, and the other remaining items.
         itemIdMap.stream()
                 .filter(currentScreenContentFilter(IntSet.wrap(mWorkspaceScreens.keySet())))
+                // LC-Note: previews show the cover item set ("Independent", see FoldItemSets).
+                .filter(item -> !FoldItemSets.isInnerItem(item))
                 .forEach(this::inflateAndAdd);
         populateHotseatPredictions(itemIdMap);
 

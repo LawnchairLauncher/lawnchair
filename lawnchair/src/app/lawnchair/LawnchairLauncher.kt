@@ -35,6 +35,11 @@ import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
 import app.lawnchair.data.wallpaper.service.WallpaperService
+import app.lawnchair.fold.FoldDrawerState
+import app.lawnchair.fold.FoldDualWallpaper
+import app.lawnchair.fold.FoldPosture
+import app.lawnchair.fold.FoldReplay
+import app.lawnchair.fold.FoldTransitionController
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -55,6 +60,7 @@ import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.GestureNavContract
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS_PREDICTION
 import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION
@@ -157,9 +163,15 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     val gestureController by unsafeLazy { GestureController(this) }
 
+    /** Fold/unfold transition engine; it drives the dock merge (`HotseatFoldController`) too. */
+    val foldTransitionController by unsafeLazy { FoldTransitionController(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         super.onCreate(savedInstanceState)
+        FoldPosture.attach(this)
+        foldTransitionController.attach()
+        FoldDualWallpaper.updateServiceEnabled(this, InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
@@ -253,6 +265,8 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
 
     override fun onNewIntent(intent: Intent?) {
+        if (intent != null) FoldReplay.onNewIntent(this, intent)
+        if (intent?.action == FoldTransitionController.ACTION_PREVIEW) foldTransitionController.requestPreview()
         if (intent != null && intent.action == LawnchairShortcutActivity.START_ACTION) {
             val handlerString = intent.getStringExtra(LawnchairShortcutActivity.EXTRA_HANDLER)
             val config = handlerString?.let { GestureHandlerConfig.fromString(it) }
@@ -490,6 +504,12 @@ class LawnchairLauncher : QuickstepLauncher() {
                 }
             },
         )
+    }
+
+    override fun dispatchDeviceProfileChanged() {
+        // Before any listener hears of the change: the drawer still shows the old layout
+        foldTransitionController.drawerCapture = FoldDrawerState.capture(this)
+        super.dispatchDeviceProfileChanged()
     }
 
     override fun onStateSetEnd(state: LauncherState) {

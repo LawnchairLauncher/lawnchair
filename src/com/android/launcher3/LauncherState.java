@@ -433,7 +433,10 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             @Override
             public float getPageTranslation(int pageIndex) {
                 boolean isRtl = launcher.getWorkspace().mIsRtl;
-                boolean isFirstPage = pageIndex % 2 == 0;
+                // LC-Note: pairs may start on an odd page on foldables.
+                boolean isFirstPage =
+                        launcher.getWorkspace().getLeftmostVisiblePageForIndex(pageIndex)
+                                == pageIndex;
                 return ((isFirstPage && !isRtl) || (!isFirstPage && isRtl)) ? -quarterPageSpacing
                         : quarterPageSpacing;
             }

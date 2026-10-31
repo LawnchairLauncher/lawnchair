@@ -64,9 +64,14 @@ class LawnchairApp : LauncherApplication() {
     internal var accessibilityService: LawnchairAccessibilityService? = null
     val isVibrateOnIconAnimation: Boolean by unsafeLazy { getSystemUiBoolean("config_vibrateOnIconAnimation", false) }
 
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        // Before the content providers start: the singletons they create can read isRecentsEnabled
+        instance = this
+    }
+
     override fun onCreate() {
         super.onCreate()
-        instance = this
         QuickStepContract.sRecentsDisabled = !recentsEnabled
         Flowerpot.Manager.getInstance(this)
         registerActivityLifecycleCallbacks(activityHandler)

@@ -58,6 +58,13 @@ public interface PageIndicator {
     }
 
     /**
+     * Sets whether the pages are ordered right to left, when it differs from the UI language.
+     */
+    default void setIsRtl(boolean isRtl) {
+        // No-op by default
+    }
+
+    /**
      * Sets the paint color.
      */
     default void setPaintColor(int color) {

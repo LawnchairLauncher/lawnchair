@@ -42,6 +42,7 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 import com.android.systemui.plugins.AllAppsRow;
 import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
 import com.android.systemui.plugins.PluginListener;
+import app.lawnchair.fold.FoldDrawerLayouts;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 import java.util.ArrayList;
@@ -483,7 +484,10 @@ public class FloatingHeaderView extends LinearLayout implements
     public void setInsets(Rect insets) {
         var dp =  ActivityContext.lookupContext(getContext()).getDeviceProfile();
         int leftRightPadding = dp.allAppsPadding.left + dp.allAppsPadding.right;
-        setPadding(leftRightPadding, getPaddingTop(), leftRightPadding, getPaddingBottom());
+        // LC-Note: the foldable "book" drawer keeps the header rows on the fixed half
+        Rect padding = new Rect(leftRightPadding, 0, leftRightPadding, 0);
+        FoldDrawerLayouts.adjustAppsGridPadding(dp, padding);
+        setPadding(padding.left, getPaddingTop(), padding.right, getPaddingBottom());
     }
 
     public <T extends FloatingHeaderRow> T findFixedRowByType(Class<T> type) {
