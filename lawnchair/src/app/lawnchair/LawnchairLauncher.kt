@@ -17,6 +17,8 @@
 package app.lawnchair
 
 import android.animation.AnimatorSet
+import android.app.AlertDialog
+import android.widget.TextView
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
@@ -162,6 +164,8 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         super.onCreate(savedInstanceState)
+
+        showJarvisWelcomeIfNeeded()
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
@@ -520,4 +524,51 @@ val Context.launcherNullable: LawnchairLauncher? get() = try {
     launcher
 } catch (_: IllegalArgumentException) {
     null
+
+    /** Shows the JARVIS OS first-run welcome and setup guide once. */
+    private fun showJarvisWelcomeIfNeeded() {
+        val onboardingPrefs = getSharedPreferences("jarvis_os_onboarding", MODE_PRIVATE)
+        if (onboardingPrefs.getBoolean("welcome_completed", false)) return
+
+        window.decorView.post {
+            if (isFinishing || isDestroyed) return@post
+            AlertDialog.Builder(this)
+                .setTitle("Welcome to JARVIS OS")
+                .setMessage("A smarter home for your Android device. Your apps, your space, and your JARVIS assistant — together.")
+                .setCancelable(false)
+                .setNeutralButton("Explore guide") { _, _ -> showJarvisGuide(onboardingPrefs) }
+                .setPositiveButton("Get started") { _, _ ->
+                    onboardingPrefs.edit().putBoolean("welcome_completed", true).apply()
+                }
+                .show()
+        }
+    }
+
+    private fun showJarvisGuide(onboardingPrefs: android.content.SharedPreferences) {
+        val guide = """
+            HOME SCREEN
+            Your home screen holds your apps, widgets, and shortcuts. Long-press an empty area to customize your layout.
+
+            APPLICATIONS
+            Swipe up or open the app drawer to browse installed apps. Use search to find an app quickly.
+
+            JARVIS ASSISTANT
+            JARVIS AI integration is being built separately. This launcher welcome guide does not claim that an AI service or phone-control features are active yet.
+
+            PERSONALIZATION
+            Change wallpaper and supported appearance settings to let Android's dynamic colors adapt the interface.
+
+            PRIVACY & PERMISSIONS
+            Only grant permissions when a feature needs them. App visibility and OEM-hidden apps may be controlled by Android or your phone manufacturer.
+        """.trimIndent()
+        AlertDialog.Builder(this)
+            .setTitle("JARVIS OS Guide")
+            .setMessage(guide)
+            .setCancelable(false)
+            .setPositiveButton("Continue") { _, _ ->
+                onboardingPrefs.edit().putBoolean("welcome_completed", true).apply()
+            }
+            .setNegativeButton("Back") { _, _ -> showJarvisWelcomeIfNeeded() }
+            .show()
+    }
 }
