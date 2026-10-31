@@ -507,23 +507,6 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
     }
 
-    companion object {
-        private const val FLAG_RECREATE = 1 shl 0
-        private const val FLAG_RESTART = 1 shl 1
-
-        var sRestartFlags = 0
-
-        val instance get() = LauncherAppState.getInstanceNoCreate()?.launcher as? LawnchairLauncher
-    }
-}
-
-val Context.launcher: LawnchairLauncher
-    get() = BaseActivity.fromContext(this)
-
-val Context.launcherNullable: LawnchairLauncher? get() = try {
-    launcher
-} catch (_: IllegalArgumentException) {
-    null
 
     /** Shows the JARVIS OS first-run welcome and setup guide once. */
     private fun showJarvisWelcomeIfNeeded() {
@@ -571,4 +554,23 @@ val Context.launcherNullable: LawnchairLauncher? get() = try {
             .setNegativeButton("Back") { _, _ -> showJarvisWelcomeIfNeeded() }
             .show()
     }
+
+    companion object {
+        private const val FLAG_RECREATE = 1 shl 0
+        private const val FLAG_RESTART = 1 shl 1
+
+        var sRestartFlags = 0
+
+        val instance get() = LauncherAppState.getInstanceNoCreate()?.launcher as? LawnchairLauncher
+    }
+}
+
+val Context.launcher: LawnchairLauncher
+    get() = BaseActivity.fromContext(this)
+
+val Context.launcherNullable: LawnchairLauncher? get() = try {
+    launcher
+} catch (_: IllegalArgumentException) {
+    null
+
 }
