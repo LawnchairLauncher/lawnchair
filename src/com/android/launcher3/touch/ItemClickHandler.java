@@ -81,6 +81,8 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import app.lawnchair.folder.FolderFirstApp;
+
 /**
  * Class for handling clicks on workspace and all-apps items
  */
@@ -138,7 +140,17 @@ public class ItemClickHandler {
      * @param v The view that was clicked. Must be an instance of {@link FolderIcon}.
      */
     private static void onClickFolderIcon(View v) {
-        Folder folder = ((FolderIcon) v).getFolder();
+        FolderIcon icon = (FolderIcon) v;
+        WorkspaceItemInfo firstApp = FolderFirstApp.appLaunchedByTap(icon);
+        if (firstApp != null) {
+            onClickAppShortcut(v, firstApp, Launcher.getLauncher(v.getContext()));
+        } else {
+            openFolder(icon);
+        }
+    }
+
+    public static void openFolder(FolderIcon v) {
+        Folder folder = v.getFolder();
         if (!folder.isOpen() && !folder.isDestroyed()) {
             // Open the requested folder
             folder.animateOpen();

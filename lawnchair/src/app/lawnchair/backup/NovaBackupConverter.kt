@@ -10,6 +10,7 @@ import android.os.Process
 import android.util.Log
 import app.lawnchair.DeviceProfileOverrides
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.GridType
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherSettings.Favorites
@@ -20,6 +21,7 @@ import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.RestoreDbTask
 import com.android.launcher3.shortcuts.ShortcutKey
 import com.android.launcher3.shortcuts.ShortcutRequest
+import com.patrykmichalik.opto.core.setBlocking
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -67,6 +69,8 @@ class NovaBackupConverter(
         private const val NOVA_COL_SPAN_Y = "spanY"
         private const val NOVA_COL_ICON = "icon"
         private const val NOVA_COL_APP_WIDGET_PROVIDER = "appWidgetProvider"
+        private const val NOVA_COL_FLING_UP_INTENT = "flingUpIntent"
+        private const val NOVA_FIRST_ITEM_IN_FOLDER = "LAUNCHER_ACTION=FIRST_ITEM_IN_FOLDER"
         private const val NOVA_SMART_FOLDER_MARKER = "FOLDER%3A-"
     }
 
@@ -149,6 +153,7 @@ class NovaBackupConverter(
 
             val stagedDbFile = File(tempDir, NOVA_WORKSPACE_DB)
             val importedDeepShortcuts = createRestoredDb(novaDbFile, stagedDbFile)
+            val folderTapOpensFirstApp = hasFirstItemSwipeFolders(novaDbFile)
 
             val columns = info.columns
             val rows = info.rows
@@ -181,6 +186,9 @@ class NovaBackupConverter(
             RestoreDbTask.performRestore(context, dbController)
 
             pinImportedDeepShortcuts(importedDeepShortcuts)
+            if (folderTapOpensFirstApp) {
+                PreferenceManager2.getInstance(context).folderTapOpensFirstApp.setBlocking(true)
+            }
         } finally {
             tempDir.deleteRecursively()
         }
@@ -459,6 +467,23 @@ class NovaBackupConverter(
 
     private fun calculateFolderRank(screen: Int, cellX: Int, cellY: Int): Int {
         return (screen * FOLDER_PAGE_RANK_OFFSET) + (cellY * FOLDER_ROW_RANK_OFFSET) + cellX
+    }
+
+    /** Whether any folder opens its first item on swipe, which Nova pairs with tap-to-open-first. */
+    private fun hasFirstItemSwipeFolders(dbFile: File): Boolean {
+        val db = SQLiteDatabase.openDatabase(dbFile.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
+        return db.use {
+            it.rawQuery("SELECT * FROM $NOVA_TABLE_FAVORITES LIMIT 0", null).use { cursor ->
+                if (cursor.getColumnIndex(NOVA_COL_FLING_UP_INTENT) < 0) return false
+            }
+            it.rawQuery(
+                """SELECT 1 FROM $NOVA_TABLE_FAVORITES
+                    WHERE $NOVA_COL_ITEM_TYPE = ${Favorites.ITEM_TYPE_FOLDER}
+                    AND $NOVA_COL_FLING_UP_INTENT LIKE '%$NOVA_FIRST_ITEM_IN_FOLDER%'
+                    LIMIT 1""",
+                null,
+            ).use { cursor -> cursor.moveToFirst() }
+        }
     }
 
     /**
