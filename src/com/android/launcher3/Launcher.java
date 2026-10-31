@@ -894,9 +894,15 @@ public class Launcher extends StatefulActivity<LauncherState>
                     // When the screen id represents an actual screen (as opposed to a rank)
                     // we make sure that the drop page actually exists.
                     int newScreenId = ensurePendingDropLayoutExists(presenterPos.screenId);
+                    if (newScreenId < 0) {
+                        // The drop page could not be committed, cancel this widget addition.
+                        completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId, requestArgs);
+                        return;
+                    }
                     requestArgs.screenId = getCellPosMapper().mapPresenterToModel(
                             presenterPos.cellX, presenterPos.cellY, newScreenId, CONTAINER_DESKTOP)
                                     .screenId;
+                    presenterPos = getCellPosMapper().mapModelToPresenter(requestArgs);
                 }
                 final CellLayout dropLayout =
                         mWorkspace.getScreenWithId(presenterPos.screenId);
@@ -950,17 +956,37 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     /**
      * Check to see if a given screen id exists. If not, create it at the end, return the new id.
+     * If the screen id refers to a transient extra empty screen, commit it to a persistent
+     * screen and return the new id.
      *
      * @param screenId the screen id to check
-     * @return the new screen, or screenId if it exists
+     * @return the new screen, or screenId if it exists, or -1 if no screen could be committed
      */
     private int ensurePendingDropLayoutExists(int screenId) {
-        CellLayout dropLayout = mWorkspace.getScreenWithId(screenId);
+        return ensureDropLayoutExists(mWorkspace, screenId);
+    }
+
+    static int ensureDropLayoutExists(Workspace<?> workspace, int screenId) {
+        if (Workspace.EXTRA_EMPTY_SCREEN_IDS.contains(screenId)) {
+            // The drop page is still a transient extra empty screen; commit it so that the
+            // item is persisted on a real workspace screen instead of the transient screen id.
+            IntSet emptyPagesAdded = workspace.commitExtraEmptyScreens();
+            if (emptyPagesAdded.isEmpty()) {
+                return -1;
+            }
+            // The pages are committed in the order they are reported by
+            // Workspace#forEachExtraEmptyPageId, with EXTRA_EMPTY_SCREEN_ID first.
+            return screenId == Workspace.EXTRA_EMPTY_SCREEN_SECOND_ID
+                    && emptyPagesAdded.size() > 1
+                            ? emptyPagesAdded.getArray().get(1)
+                            : emptyPagesAdded.getArray().get(0);
+        }
+        CellLayout dropLayout = workspace.getScreenWithId(screenId);
         if (dropLayout == null) {
             // it's possible that the add screen was removed because it was
             // empty and a re-bind occurred
-            mWorkspace.addExtraEmptyScreens();
-            IntSet emptyPagesAdded = mWorkspace.commitExtraEmptyScreens();
+            workspace.addExtraEmptyScreens();
+            IntSet emptyPagesAdded = workspace.commitExtraEmptyScreens();
             return emptyPagesAdded.isEmpty() ? -1 : emptyPagesAdded.getArray().get(0);
         }
         return screenId;
