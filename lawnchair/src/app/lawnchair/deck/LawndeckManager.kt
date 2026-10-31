@@ -1,6 +1,8 @@
 package app.lawnchair.deck
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.flowerpot.Flowerpot
@@ -8,45 +10,56 @@ import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
 import app.lawnchair.util.categorizeAppsWithSystemAndGoogle
 import com.android.launcher3.InvariantDeviceProfile
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherSettings
+import com.android.launcher3.Launcher
+import com.android.launcher3.R
+import com.android.launcher3.model.AddWorkspaceItemsTask
 import com.android.launcher3.model.ItemInstallQueue
 import com.android.launcher3.model.ModelDbController
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.FolderInfo
-import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.provider.RestoreDbTask
 import com.android.launcher3.util.ApplicationInfoWrapper
-import com.android.launcher3.util.ComponentKey
-import com.android.launcher3.util.PackageManagerHelper
 import java.io.File
-import java.util.Locale
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LawndeckManager(private val context: Context) {
 
-    // TODO
-
     private val launcher = context.launcherNullable ?: LawnchairLauncher.instance?.launcher
+    private var allowDeckSorting = false
+    private var isEnabled = false
+
+    @Suppress("ktlint:standard:property-naming")
+    private val TAG = "LawndeckManager"
+
+    private fun getDeckLayoutName() = if (allowDeckSorting) "lawndeck_organized" else "lawndeck"
 
     suspend fun enableLawndeck(
+        sortByCategory: Boolean = false,
         onProgress: ((String) -> Unit)? = null,
     ) = withContext(Dispatchers.IO) {
         val completionDeferred = CompletableDeferred<Unit>()
+        allowDeckSorting = sortByCategory
 
         if (!backupExists("bk")) createBackup("bk")
-        if (backupExists("lawndeck")) {
-            onProgress?.invoke("Restoring previous layout...")
-            restoreBackup("lawndeck")
+
+        val layoutName = getDeckLayoutName()
+
+        if (backupExists(layoutName)) {
+            onProgress?.invoke(context.getString(R.string.restore_previous_layout))
+            restoreBackup(layoutName)
             completionDeferred.complete(Unit)
+            isEnabled = true
         } else {
-            onProgress?.invoke("Categorizing apps...")
+            onProgress?.invoke(context.getString(R.string.adding_apps_to_workspace))
             addAllAppsToWorkspace(onProgress) {
                 completionDeferred.complete(Unit)
+                isEnabled = true
             }
         }
 
@@ -55,9 +68,14 @@ class LawndeckManager(private val context: Context) {
 
     suspend fun disableLawndeck() = withContext(Dispatchers.IO) {
         if (backupExists("bk")) {
-            createBackup("lawndeck")
+            createBackup(getDeckLayoutName())
             restoreBackup("bk")
+            isEnabled = false
         }
+    }
+
+    suspend fun backupLawndeck() = withContext(Dispatchers.IO) {
+        if (isEnabled) createBackup(getDeckLayoutName())
     }
 
     private fun createBackup(suffix: String) = runCatching {
@@ -65,7 +83,7 @@ class LawndeckManager(private val context: Context) {
             db.copyTo(backupDb, overwrite = true)
             if (journal.exists()) journal.copyTo(backupJournal, overwrite = true)
         }
-    }.onFailure { Log.e("LawndeckManager", "Failed to create backup: $suffix", it) }
+    }.onFailure { Log.e(TAG, "Failed to create backup: $suffix", it) }
 
     private fun restoreBackup(suffix: String) = runCatching {
         getDatabaseFiles(suffix).apply {
@@ -73,7 +91,7 @@ class LawndeckManager(private val context: Context) {
             if (backupJournal.exists()) backupJournal.copyTo(journal, overwrite = true)
         }
         postRestoreActions()
-    }.onFailure { Log.e("LawndeckManager", "Failed to restore backup: $suffix", it) }
+    }.onFailure { Log.e(TAG, "Failed to restore backup: $suffix", it) }
 
     private fun getDatabaseFiles(suffix: String): DatabaseFiles {
         val idp = InvariantDeviceProfile.INSTANCE.get(context)
@@ -91,7 +109,7 @@ class LawndeckManager(private val context: Context) {
     private fun postRestoreActions() {
         ModelDbController(context).let { RestoreDbTask.performRestore(context, it) }
         MainScope().launch(Dispatchers.Main) {
-            LauncherAppState.getInstance(context).model.forceReload()
+            launcher?.model?.forceReload()
         }
     }
 
@@ -100,45 +118,60 @@ class LawndeckManager(private val context: Context) {
         onComplete: (() -> Unit)?,
     ) {
         val apps = launcher?.mAppsView?.appsStore?.apps ?: return
+
         if (apps.isEmpty()) {
             onComplete?.invoke()
             return
         }
 
-        onProgress?.invoke("Categorizing apps...")
-
-        val validApps = apps.mapNotNull { it as? AppInfo }
-        val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
-
-        onProgress?.invoke("Adding apps to workspace...")
-
-        val launcher = this.launcher ?: return
-        val model = launcher.model
-
         // Collect folders to add and count single apps
         val foldersToAdd = mutableListOf<FolderInfo>()
         var singleAppCount = 0
+        val launcher = this.launcher ?: return
+        val model = launcher.model
 
         // Process each category
-        finalCategorizedApps.forEach { (category, categoryApps) ->
-            if (categoryApps.isEmpty()) return@forEach
-
-            if (categoryApps.size == 1) {
-                // Single app - add directly to workspace
-                val app = categoryApps.first()
+        val validApps = apps.mapNotNull { it as? AppInfo }
+        if (allowDeckSorting) {
+            val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
+            finalCategorizedApps.forEach { (category, categoryApps) ->
+                if (categoryApps.isEmpty()) {
+                    return@forEach
+                } else if (categoryApps.size == 1) {
+                    // Single app - add directly to workspace
+                    val app = categoryApps.first()
+                    ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
+                    Log.d(TAG, "Adding ${app.targetPackage} to the workspace")
+                    singleAppCount++
+                } else {
+                    // Multiple apps - create folder
+                    onProgress?.invoke(context.getString(R.string.creating_workspace_folder, category))
+                    val folderInfo = createFolderInfo(category, categoryApps)
+                    if (folderInfo != null) {
+                        foldersToAdd.add(folderInfo)
+                    }
+                }
+            }
+        } else {
+            validApps.forEach { app ->
+                Log.d(TAG, "Adding ${app.targetPackage} to the workspace")
                 ItemInstallQueue.INSTANCE.get(context).queueItem(app.targetPackage, app.user)
                 singleAppCount++
-            } else {
-                // Multiple apps - create folder
-                onProgress?.invoke("Creating folder: $category...")
-                val folderInfo = createFolderInfo(category, categoryApps)
-                if (folderInfo != null) {
-                    foldersToAdd.add(folderInfo)
-                }
             }
         }
 
         // Add all folders with their items to workspace using custom task
+        val invokeOnCompletion = {
+            if (singleAppCount > 0) {
+                // Post to handler to give ItemInstallQueue time to process
+                Handler(Looper.getMainLooper()).postDelayed({
+                    onComplete?.invoke()
+                }, 800)
+            } else {
+                onComplete?.invoke()
+            }
+        }
+
         if (foldersToAdd.isNotEmpty()) {
             // Wait for folder task to complete
             model.enqueueModelUpdateTask(
@@ -146,26 +179,12 @@ class LawndeckManager(private val context: Context) {
                     // Callback runs on UI thread from model task
                     // Also wait for ItemInstallQueue to finish for single apps
                     // ItemInstallQueue processes asynchronously, so we need to wait a bit
-                    if (singleAppCount > 0) {
-                        // Post to handler to give ItemInstallQueue time to process
-                        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                            onComplete?.invoke()
-                        }, 800) // Wait for queue to process
-                    } else {
-                        onComplete?.invoke()
-                    }
+                    invokeOnCompletion()
                 },
             )
         } else {
             // No folders, but may have single apps
-            if (singleAppCount > 0) {
-                // Give ItemInstallQueue time to process
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    onComplete?.invoke()
-                }, 800) // Wait for queue to process
-            } else {
-                onComplete?.invoke()
-            }
+            invokeOnCompletion()
         }
     }
 
@@ -195,51 +214,54 @@ class LawndeckManager(private val context: Context) {
 
         val intent = appInfo.intent
 
-        // Determine category: Google Apps > System Apps > Flowerpot categories
-        val category = when {
-            packageName.startsWith("com.google.") -> "Google Apps"
+        if (allowDeckSorting) {
+            // Determine category: Google Apps > System Apps > Flowerpot categories
+            val category = when {
+                packageName.startsWith("com.google.") -> "Google Apps"
 
-            intent != null && ApplicationInfoWrapper(context, intent).isSystem() -> "System Apps"
+                intent != null && ApplicationInfoWrapper(context, intent).isSystem() -> "System Apps"
 
-            else -> {
-                // Use flowerpot to categorize the app
-                val potsManager = Flowerpot.Manager.getInstance(context)
-                val categorizedApps = potsManager.categorizeApps(listOf(appInfo))
+                else -> {
+                    // Use flowerpot to categorize the app
+                    val potsManager = Flowerpot.Manager.getInstance(context)
+                    val categorizedApps = potsManager.categorizeApps(listOf(appInfo))
 
-                if (categorizedApps.isEmpty()) {
-                    // No category found, add directly to workspace
-                    ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
-                    return
+                    if (categorizedApps.isEmpty()) {
+                        // No category found, add directly to workspace
+                        ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
+                        return
+                    }
+
+                    // Get the category from flowerpot
+                    categorizedApps.entries.firstOrNull()?.key ?: run {
+                        ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
+                        return
+                    }
                 }
+            }
 
-                // Get the category from flowerpot
-                categorizedApps.entries.firstOrNull()?.key ?: run {
-                    ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
-                    return
-                }
+            // Check if there's already a folder for this category on workspace
+            val existingFolder = findFolderByCategory(category, dataModel)
+
+            if (existingFolder != null) {
+                // Add app to existing folder
+                val workspaceItem = appInfo.makeWorkspaceItem(context) ?: return
+                existingFolder.add(workspaceItem)
+                // Update folder in database
+                modelWriter.addOrMoveItemInDatabase(
+                    workspaceItem,
+                    existingFolder.id,
+                    0,
+                    existingFolder.getContents().size % 4,
+                    existingFolder.getContents().size / 4,
+                )
+                return
             }
         }
 
-        // Check if there's already a folder for this category on workspace
-        val existingFolder = findFolderByCategory(category, dataModel)
-
-        if (existingFolder != null) {
-            // Add app to existing folder
-            val workspaceItem = appInfo.makeWorkspaceItem(context) ?: return
-            existingFolder.add(workspaceItem)
-            // Update folder in database
-            modelWriter.addOrMoveItemInDatabase(
-                workspaceItem,
-                existingFolder.id,
-                0,
-                existingFolder.getContents().size % 4,
-                existingFolder.getContents().size / 4,
-            )
-        } else {
-            // Single app in category, add directly to workspace
-            // The app will be categorized properly when added
-            ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
-        }
+        // Single app in category, add directly to workspace
+        // The app will be categorized properly when added
+        ItemInstallQueue.INSTANCE.get(context).queueItem(packageName, user)
     }
 
     private fun findFolderByCategory(category: String, dataModel: com.android.launcher3.model.BgDataModel): FolderInfo? {

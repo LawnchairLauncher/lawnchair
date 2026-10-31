@@ -114,8 +114,8 @@ fun HomeLayoutSettings(
         onCheckedChange = { newValue ->
             isLoading = true
             loadingMessage = ""
-            if (newValue) {
-                coroutineScope.launch {
+            coroutineScope.launch {
+                if (newValue) {
                     prefs2.swipeUpGestureHandler.set(GestureHandlerConfig.NoOp)
                     prefs2.deckLayout.set(true)
                     addNewAppToHome.onChange(true)
@@ -127,19 +127,15 @@ fun HomeLayoutSettings(
                             }
                         }
                     }
-                    isLoading = false
-                    loadingMessage = ""
-                }
-            } else {
-                coroutineScope.launch {
+                } else {
                     prefs2.swipeUpGestureHandler.set(GestureHandlerConfig.OpenAppDrawer)
                     prefs2.deckLayout.set(false)
                     withContext(Dispatchers.IO) {
                         deckManager.disableLawndeck()
                     }
-                    isLoading = false
-                    loadingMessage = ""
                 }
+                isLoading = false
+                loadingMessage = ""
             }
         },
         disabledLabel = stringResource(R.string.feed_default),
