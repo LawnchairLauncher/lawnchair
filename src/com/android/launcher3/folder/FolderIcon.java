@@ -92,6 +92,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import app.lawnchair.folder.FolderFirstApp;
+import app.lawnchair.folder.FolderSwipeUpListener;
+
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
@@ -104,6 +107,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     public FolderInfo mInfo;
 
     private CheckLongPressHelper mLongPressHelper;
+
+    // LC: Created on first touch because inflation can run off the main thread.
+    @Nullable
+    private FolderSwipeUpListener mSwipeUpListener;
+    private boolean mShouldHandleSwipeUp;
 
     static final int DROP_IN_ANIMATION_DURATION = 400;
 
@@ -123,6 +131,9 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     private PreviewItemManager mPreviewItemManager;
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0);
     private List<ItemInfo> mCurrentPreviewItems = new ArrayList<>();
+    // LC: Drawn instead of the preview when the folder shows its first app's icon.
+    @Nullable
+    private Drawable mFirstAppIcon;
 
     boolean mAnimating = false;
 
@@ -600,6 +611,16 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
         mPreviewItemManager.recomputePreviewDrawingParams();
 
+        if (shouldDrawFirstAppIcon()) {
+            int iconSize = mActivity.getDeviceProfile().iconSizePx;
+            int left = (getWidth() - iconSize) / 2;
+            int top = getPaddingTop();
+            mFirstAppIcon.setBounds(left, top, left + iconSize, top + iconSize);
+            mFirstAppIcon.draw(canvas);
+            drawDot(canvas);
+            return;
+        }
+
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackground(canvas);
         }
@@ -613,6 +634,12 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         }
 
         drawDot(canvas);
+    }
+
+    // Drag-over and drop feedback is drawn by the preview, so it takes over while it runs.
+    private boolean shouldDrawFirstAppIcon() {
+        return mFirstAppIcon != null && !mAnimating && !mBackground.drawingDelegated()
+                && mBackground.mScale == 1f;
     }
 
     public void drawDot(Canvas canvas) {
@@ -678,6 +705,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         mPreviewItemManager.updatePreviewItems(animate);
         mCurrentPreviewItems.clear();
         mCurrentPreviewItems.addAll(getPreviewItemsOnPage(0));
+        mFirstAppIcon = FolderFirstApp.firstAppIcon(this);
     }
 
     /**
@@ -685,6 +713,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
      */
     public void updatePreviewItems(Predicate<ItemInfo> itemCheck) {
         mPreviewItemManager.updatePreviewItems(itemCheck);
+        mFirstAppIcon = FolderFirstApp.firstAppIcon(this);
     }
 
     public void onItemsChanged(boolean animate) {
@@ -707,12 +736,37 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                 && shouldIgnoreTouchDown(event.getX(), event.getY())) {
             return false;
         }
+        if (handleSwipeUpTouchEvent(event)) {
+            return true;
+        }
 
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         super.onTouchEvent(event);
         mLongPressHelper.onTouchEvent(event);
         // Keep receiving the rest of the events
+        return true;
+    }
+
+    private boolean handleSwipeUpTouchEvent(MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            mShouldHandleSwipeUp = FolderFirstApp.swipeUpOpensFolder(this);
+        }
+        if (!mShouldHandleSwipeUp) {
+            return false;
+        }
+        if (mSwipeUpListener == null) {
+            mSwipeUpListener = new FolderSwipeUpListener(this);
+        }
+        if (!mSwipeUpListener.onTouchEvent(event)) {
+            return false;
+        }
+        mShouldHandleSwipeUp = false;
+        cancelLongPress();
+        MotionEvent cancelEvent = MotionEvent.obtain(event);
+        cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
+        super.onTouchEvent(cancelEvent);
+        cancelEvent.recycle();
         return true;
     }
 
