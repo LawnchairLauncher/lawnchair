@@ -2,11 +2,13 @@ name: Build release APK
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - jarvis-os-lawnchair-15
 
 jobs:
   build-release-apk:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
         with:
@@ -35,4 +37,3 @@ jobs:
         with:
           name: Release APK
           path: build/outputs/*
-          
