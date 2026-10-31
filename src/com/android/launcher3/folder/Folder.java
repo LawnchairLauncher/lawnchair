@@ -33,6 +33,7 @@ import static com.android.launcher3.pageindicators.PaginationArrow.DISABLED_ARRO
 import static com.android.launcher3.pageindicators.PaginationArrow.FULLY_OPAQUE;
 import static com.android.launcher3.testing.shared.TestProtocol.FOLDER_OPENED_MESSAGE;
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
+import app.lawnchair.util.FolderUtils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -391,6 +392,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         mContent.getCurrentPage() - 1));
             }
         }
+        mFolderName.setOnLongClickListener(v -> {
+            sortAlphabetically();
+            return true;
+        });
     }
 
     /**
@@ -839,9 +844,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * is played.
      */
     private void animateOpen(List<ItemInfo> items, int pageNo) {
+        
+        
+        
         if (!shouldAnimateOpen(items)) {
             return;
         }
+        
         Folder openFolder = getOpen(mActivityContext);
         closeOpenFolder(openFolder);
 
@@ -2254,5 +2263,22 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public interface OnFolderStateChangedListener {
         /** See {@link Folder.FolderState} */
         void onFolderStateChanged(@FolderState int newState);
+    }
+    /**
+     * Sorts the folder contents alphabetically (A-Z) and refreshes both UI and database.
+     */
+    public void sortAlphabetically() {
+        if (mInfo != null) {
+            // Call Kotlin extension helper
+            FolderUtils.sortAlphabetically(mInfo, getModelWriter());
+
+            if (mContent.areViewsBound()) {
+                mContent.bindItems(mInfo.getContents());
+            }
+
+            // Mark items as invalidated to force reload
+            mItemsInvalidated = true;
+            
+        }
     }
 }
