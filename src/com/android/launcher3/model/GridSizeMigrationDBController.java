@@ -49,6 +49,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
@@ -609,8 +610,9 @@ public class GridSizeMigrationDBController {
                 mLastScreenId = Math.max(mLastScreenId, entry.screenId);
                 entry.cellX = c.getInt(indexCellX);
                 entry.cellY = c.getInt(indexCellY);
-                entry.spanX = c.getInt(indexSpanX);
-                entry.spanY = c.getInt(indexSpanY);
+                // LC-Note: Subgrid positioning, a 0.5 span must read as 1, not 0.
+                entry.spanX = ItemInfo.decodeSubgridSpanBase(c.getFloat(indexSpanX));
+                entry.spanY = ItemInfo.decodeSubgridSpanBase(c.getFloat(indexSpanY));
 
                 try {
                     // calculate weight

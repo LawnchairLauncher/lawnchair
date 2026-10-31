@@ -74,6 +74,8 @@ import java.util.List;
 import java.util.Optional;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Represents an item in the launcher.
@@ -148,6 +150,24 @@ public class ItemInfo {
     public int spanY = 1;
 
     /**
+     * LC-Note: Subgrid positioning. 1 if the item sits half a cell after {@link #cellX}, else 0.
+     * Only honored on the workspace while subgrid positioning is on.
+     */
+    public int subX = 0;
+
+    /** LC-Note: Subgrid positioning. See {@link #subX}. */
+    public int subY = 0;
+
+    /**
+     * LC-Note: Subgrid positioning. 1 if the item is half a cell wider than {@link #spanX}, -1 for
+     * a span of half a cell (with a span of 1), else 0. Honored like {@link #subX}.
+     */
+    public int subSpanX = 0;
+
+    /** LC-Note: Subgrid positioning. See {@link #subSpanX}. */
+    public int subSpanY = 0;
+
+    /**
      * Indicates the minimum X cell span.
      */
     public int minSpanX = 1;
@@ -212,6 +232,11 @@ public class ItemInfo {
         cellY = info.cellY;
         spanX = info.spanX;
         spanY = info.spanY;
+        // LC-Note: Subgrid positioning
+        subX = info.subX;
+        subY = info.subY;
+        subSpanX = info.subSpanX;
+        subSpanY = info.subSpanY;
         minSpanX = info.minSpanX;
         minSpanY = info.minSpanY;
         rank = info.rank;
@@ -262,11 +287,12 @@ public class ItemInfo {
         writer.put(LauncherSettings.Favorites.ITEM_TYPE, itemType)
                 .put(LauncherSettings.Favorites.CONTAINER, container)
                 .put(LauncherSettings.Favorites.SCREEN, screenId)
-                .put(LauncherSettings.Favorites.CELLX, cellX)
-                .put(LauncherSettings.Favorites.CELLY, cellY)
-                .put(LauncherSettings.Favorites.SPANX, spanX)
-                .put(LauncherSettings.Favorites.SPANY, spanY)
                 .put(LauncherSettings.Favorites.RANK, rank);
+        // LC-Note: Subgrid positioning
+        writer.putSubgrid(LauncherSettings.Favorites.CELLX, cellX, subX)
+                .putSubgrid(LauncherSettings.Favorites.CELLY, cellY, subY)
+                .putSubgrid(LauncherSettings.Favorites.SPANX, spanX, subSpanX)
+                .putSubgrid(LauncherSettings.Favorites.SPANY, spanY, subSpanY);
     }
 
     public void readFromValues(@NonNull final ContentValues values) {
@@ -275,9 +301,48 @@ public class ItemInfo {
         screenId = values.getAsInteger(LauncherSettings.Favorites.SCREEN);
         cellX = values.getAsInteger(LauncherSettings.Favorites.CELLX);
         cellY = values.getAsInteger(LauncherSettings.Favorites.CELLY);
-        spanX = values.getAsInteger(LauncherSettings.Favorites.SPANX);
-        spanY = values.getAsInteger(LauncherSettings.Favorites.SPANY);
+        // LC-Note: Subgrid positioning, the columns can hold a half-cell REAL.
+        spanX = decodeSubgridSpanBase(values.getAsFloat(LauncherSettings.Favorites.SPANX));
+        spanY = decodeSubgridSpanBase(values.getAsFloat(LauncherSettings.Favorites.SPANY));
         rank = values.getAsInteger(LauncherSettings.Favorites.RANK);
+        subX = decodeSubgridStep(values.getAsFloat(LauncherSettings.Favorites.CELLX));
+        subY = decodeSubgridStep(values.getAsFloat(LauncherSettings.Favorites.CELLY));
+        subSpanX = decodeSubgridSpanStep(values.getAsFloat(LauncherSettings.Favorites.SPANX));
+        subSpanY = decodeSubgridSpanStep(values.getAsFloat(LauncherSettings.Favorites.SPANY));
+    }
+
+    /** LC-Note: Subgrid positioning. The base span, 1 for a span of half a cell. */
+    public static int decodeSubgridSpanBase(float value) {
+        return value == 0.5f ? 1 : (int) value;
+    }
+
+    /** LC-Note: Subgrid positioning. The half step of a span, see {@link #subSpanX}. */
+    public static int decodeSubgridSpanStep(float value) {
+        return value == 0.5f ? -1 : decodeSubgridStep(value);
+    }
+
+    /** LC-Note: Subgrid positioning. 1 if the value is a whole number plus 0.5, else 0. */
+    public static int decodeSubgridStep(float value) {
+        return value - Math.floor(value) == 0.5 ? 1 : 0;
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Whether the half steps are honored, as in
+     * {@code WorkspaceLayoutManager#addInScreen}.
+     */
+    public boolean isSubgridHonored(@NonNull Context context) {
+        return container == CONTAINER_DESKTOP && PreferenceCacheExtensionsKt.firstCached(
+                PreferenceManager2.getInstance(context).getEnableSubgridPositioning());
+    }
+
+    /** LC-Note: Subgrid positioning. The horizontal span as rendered, see {@link #isSubgridHonored}. */
+    public float getRenderedSpanX(@NonNull Context context) {
+        return isSubgridHonored(context) ? spanX + subSpanX * 0.5f : spanX;
+    }
+
+    /** LC-Note: Subgrid positioning. See {@link #getRenderedSpanX}. */
+    public float getRenderedSpanY(@NonNull Context context) {
+        return isSubgridHonored(context) ? spanY + subSpanY * 0.5f : spanY;
     }
 
     /**

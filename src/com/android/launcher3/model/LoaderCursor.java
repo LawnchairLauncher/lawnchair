@@ -103,6 +103,8 @@ public class LoaderCursor extends CursorWrapper {
     private final IntArray mItemsToRemove = new IntArray();
     private final IntArray mRestoredRows = new IntArray();
     private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
+    // LC-Note: Subgrid positioning, base cells of the half-stepped items loaded so far.
+    private final IntSparseArrayMap<GridOccupancy> mSubgridOccupied = new IntSparseArrayMap<>();
 
     // CollectionInfo objects, which have not yet been loaded from the DB, but are expected to
     // found eventually as the loading progresses
@@ -285,14 +287,16 @@ public class LoaderCursor extends CursorWrapper {
      * Returns the x position for the item in the cell layout's grid
      */
     public int getSpanX() {
-        return getInt(mSpanXIndex);
+        // LC-Note: Subgrid positioning, the column can hold a half-cell REAL.
+        return ItemInfo.decodeSubgridSpanBase(getFloat(mSpanXIndex));
     }
 
     /**
      * Returns the y position for the item in the cell layout's grid
      */
     public int getSpanY() {
-        return getInt(mSpanYIndex);
+        // LC-Note: See getSpanX.
+        return ItemInfo.decodeSubgridSpanBase(getFloat(mSpanYIndex));
     }
 
     /**
@@ -537,6 +541,14 @@ public class LoaderCursor extends CursorWrapper {
         info.screenId = getInt(mScreenIndex);
         info.cellX = getInt(mCellXIndex);
         info.cellY = getInt(mCellYIndex);
+        // LC-Note: Subgrid positioning, the half steps of REAL columns. getInt above truncates.
+        // Only workspace items have them; older versions also wrote them for folders and the dock.
+        if (container == Favorites.CONTAINER_DESKTOP) {
+            info.subX = ItemInfo.decodeSubgridStep(getFloat(mCellXIndex));
+            info.subY = ItemInfo.decodeSubgridStep(getFloat(mCellYIndex));
+            info.subSpanX = ItemInfo.decodeSubgridSpanStep(getFloat(mSpanXIndex));
+            info.subSpanY = ItemInfo.decodeSubgridSpanStep(getFloat(mSpanYIndex));
+        }
     }
 
     /**
@@ -661,6 +673,20 @@ public class LoaderCursor extends CursorWrapper {
                     + ") out of screen bounds ( " + countX + "x" + countY + ")");
             return false;
         }
+        // LC-Note: Subgrid positioning, an item can stick out half a cell past the page. Move it
+        // back on to the page instead of deleting it.
+        boolean subgrid = PreferenceCacheExtensionsKt.firstCached(
+                preferenceManager2.getEnableSubgridPositioning());
+        if (subgrid && clampSubgridToGrid(item, countX, countY)) {
+            FileLog.w("LC-LoaderCursor", "Clamped half-cell overflow of " + item + " to the "
+                    + countX + "x" + countY + " grid");
+            updater()
+                    .putSubgrid(Favorites.CELLX, item.cellX, item.subX)
+                    .putSubgrid(Favorites.CELLY, item.cellY, item.subY)
+                    .putSubgrid(Favorites.SPANX, item.spanX, item.subSpanX)
+                    .putSubgrid(Favorites.SPANY, item.spanY, item.subSpanY)
+                    .commit();
+        }
 
         if (!mOccupied.containsKey(item.screenId)) {
             GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
@@ -673,8 +699,12 @@ public class LoaderCursor extends CursorWrapper {
                 screen.markCells(0, 0, spanX, spanY, true);
             }
             mOccupied.put(item.screenId, screen);
+            // LC-Note: Subgrid positioning, see trackSubgridOverlap.
+            mSubgridOccupied.put(item.screenId, new GridOccupancy(countX + 1, countY + 1));
         }
         final GridOccupancy occupancy = mOccupied.get(item.screenId);
+        // LC-Note: Subgrid positioning, see trackSubgridOverlap.
+        boolean subgridOverlap = trackSubgridOverlap(item, mSubgridOccupied.get(item.screenId));
 
         // Check if any workspace icons overlap with each other
         if (occupancy.isRegionVacant(item.cellX, item.cellY, item.spanX, item.spanY)) {
@@ -685,8 +715,61 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            return PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getAllowWidgetOverlap());
+            // LC-Note: Subgrid placement lets any item, folders included, overlap another. Once
+            // the setting has been changed, keep overlaps with it off too, or turning it off
+            // deletes them. Half-stepped overlaps are kept in any case.
+            return PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getAllowWidgetOverlap())
+                    || subgrid || subgridOverlap || preferenceManager2.getCachedPreferences()
+                    .contains(preferenceManager2.getEnableSubgridPositioning().getKey());
         }
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Records the base cells of {@code item} in {@code halfStepped}
+     * if it has a half-cell offset or size, whatever the current setting is.
+     *
+     * @return whether {@code item} may share base cells with an item loaded before it: it has a
+     * half step itself, or one of its base cells holds a half-stepped item
+     */
+    private static boolean trackSubgridOverlap(ItemInfo item, GridOccupancy halfStepped) {
+        if (item.subX != 0 || item.subY != 0 || item.subSpanX != 0 || item.subSpanY != 0) {
+            halfStepped.markCells(item, true);
+            return true;
+        }
+        return !halfStepped.isRegionVacant(item.cellX, item.cellY, item.spanX, item.spanY);
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Moves an item whose base cells are on the page back from the
+     * edge, and shrinks it to the page if it is larger.
+     *
+     * @return whether the item was changed
+     */
+    private static boolean clampSubgridToGrid(ItemInfo item, int countX, int countY) {
+        int posX = item.cellX * 2 + item.subX;
+        int posY = item.cellY * 2 + item.subY;
+        int sizeX = item.spanX * 2 + item.subSpanX;
+        int sizeY = item.spanY * 2 + item.subSpanY;
+        int newSizeX = Math.min(sizeX, countX * 2);
+        int newSizeY = Math.min(sizeY, countY * 2);
+        int newPosX = Math.max(0, Math.min(posX, countX * 2 - newSizeX));
+        int newPosY = Math.max(0, Math.min(posY, countY * 2 - newSizeY));
+        if (newPosX == posX && newPosY == posY && newSizeX == sizeX && newSizeY == sizeY) {
+            return false;
+        }
+        item.cellX = newPosX / 2;
+        item.subX = newPosX % 2;
+        item.cellY = newPosY / 2;
+        item.subY = newPosY % 2;
+        if (newSizeX != sizeX) {
+            item.spanX = countX;
+            item.subSpanX = 0;
+        }
+        if (newSizeY != sizeY) {
+            item.spanY = countY;
+            item.subSpanY = 0;
+        }
+        return true;
     }
 
     @AssistedFactory
