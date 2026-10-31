@@ -2398,8 +2398,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     CellLayoutLayoutParams lp = (CellLayoutLayoutParams) cell.getLayoutParams();
                     mTargetCell[0] = lp.getCellX();
                     mTargetCell[1] = lp.getCellY();
-                    CellLayout layout = (CellLayout) cell.getParent().getParent();
-                    layout.markCellsAsOccupiedForView(cell);
+                    // The cell can be detached from the workspace while the drag is in
+                    // progress (e.g. if the workspace rebound mid-drag); there is no
+                    // parent layout left to mark as occupied in that case.
+                    CellLayout layout = getParentCellLayoutForView(cell);
+                    if (layout != null) {
+                        layout.markCellsAsOccupiedForView(cell);
+                    }
                 }
             } else {
                 // When drag is cancelled, reattach content view back to its original parent.
@@ -2416,7 +2421,19 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 }
             }
 
-            final CellLayout parent = (CellLayout) cell.getParent().getParent();
+            // The dropped cell can be detached from the workspace at this point, e.g. a
+            // widget whose host view failed to re-attach in addInScreen after being
+            // detached from the drag view, or a view removed by a mid-drag rebind.
+            // Skip the drop animations and clean up the drag view instead of crashing.
+            final CellLayout parent = getParentCellLayoutForView(cell);
+            if (parent == null) {
+                d.deferDragViewCleanupPostAnimation = false;
+                cell.setVisibility(VISIBLE);
+                if (!mLauncher.isInState(EDIT_MODE)) {
+                    mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+                }
+                return;
+            }
             if (d.dragView.hasDrawn()) {
                 if (droppedOnOriginalCellDuringTransition) {
                     // Animate the item to its original position, while simultaneously exiting
