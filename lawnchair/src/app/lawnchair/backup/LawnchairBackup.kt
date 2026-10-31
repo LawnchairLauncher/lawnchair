@@ -57,6 +57,10 @@ class LawnchairBackup(
         wallpaper = tmpWallpaper?.scaleDownToDisplaySize(context)
     }
 
+    /**
+     * Restores the selected contents, keeping page ids and still-bound widgets (same-device
+     * restore).
+     */
     suspend fun restore(selectedContents: Int) {
         val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
         val contents = selectedContents and info.contents
@@ -84,9 +88,13 @@ class LawnchairBackup(
         DeviceGridState(info.gridState).writeToPrefs(context, true)
 
         val dbController = ModelDbController(context)
-        RestoreDbTask.performRestore(context, dbController)
+        RestoreDbTask.performRestore(context, dbController, true)
     }
 
+    /**
+     * Streams each zip entry to the handler registered under its name; unknown entries are
+     * skipped.
+     */
     private suspend fun readZip(handlers: Map<String, suspend (InputStream) -> Unit>) {
         withContext(Dispatchers.IO) {
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")!!
@@ -110,6 +118,7 @@ class LawnchairBackup(
         private const val PREFS_FILE_NAME = "${LauncherFiles.SHARED_PREFERENCES_KEY}.xml"
         private const val PREFS_DB_FILE_NAME = "preferences"
         private const val PREFS_DATASTORE_FILE_NAME = "preferences.preferences_pb"
+        private const val WORLD_CLOCK_PREFS_FILE_NAME = "world_clock_widgets.xml"
 
         const val INFO_FILE_NAME = "info.pb"
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
@@ -133,12 +142,14 @@ class LawnchairBackup(
             return "$fileName.lawnchairbackup"
         }
 
+        /** Files that make up layout and settings in a backup, keyed by their name inside the zip. */
         fun getFiles(context: Context, forRestore: Boolean): Map<String, File> {
             return mapOf(
                 LAUNCHER_DB_FILE_NAME to launcherDbFile(context, forRestore),
                 PREFS_FILE_NAME to prefsFile(context),
                 PREFS_DB_FILE_NAME to prefsDbFile(context),
                 PREFS_DATASTORE_FILE_NAME to prefsDataStoreFile(context),
+                WORLD_CLOCK_PREFS_FILE_NAME to File(context.cacheDir.parent, "shared_prefs/$WORLD_CLOCK_PREFS_FILE_NAME"),
             )
         }
 

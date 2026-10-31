@@ -60,6 +60,7 @@ fun NavGraphBuilder.restoreNovaBackupGraph() {
     }
 }
 
+/** Shows what a Nova backup contains and restores it on confirmation. */
 @Composable
 internal fun RestoreNovaBackupScreen(
     viewModel: RestoreNovaBackupViewModel = viewModel(),
@@ -82,7 +83,7 @@ internal fun RestoreNovaBackupScreen(
 
             is State.Loading -> RestoreNovaBackupLoading()
 
-            is State.Error -> RestoreNovaBackupError()
+            is State.Error -> RestoreNovaBackupError(stateValue.message)
         }
     }
 }
@@ -161,17 +162,19 @@ private fun RestoreNovaBackupLoading() {
     }
 }
 
+/** Reports why the backup could not be read, then leaves the screen. */
 @Composable
-private fun RestoreNovaBackupError() {
+private fun RestoreNovaBackupError(message: String) {
     val context = LocalContext.current
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     LaunchedEffect(Unit) {
-        Toast.makeText(context, R.string.invalid_nova_backup_file, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, context.getString(R.string.invalid_nova_backup_file) + ": " + message, Toast.LENGTH_LONG).show()
         backDispatcher?.onBackPressed()
     }
 }
 
+/** Shows the outcome of a restore and restarts the launcher after a success. */
 @Composable
 private fun CollectEvents(events: Flow<Event>) {
     val context = LocalContext.current
@@ -186,7 +189,7 @@ private fun CollectEvents(events: Flow<Event>) {
                 }
 
                 is Event.RestoreError -> {
-                    Toast.makeText(context, R.string.backup_restore_error, Toast.LENGTH_SHORT)
+                    Toast.makeText(context, context.getString(R.string.backup_restore_error) + ": " + event.message, Toast.LENGTH_LONG)
                         .show()
                 }
             }

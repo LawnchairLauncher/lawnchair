@@ -59,6 +59,7 @@ object HomeScreenRoutes {
     const val POPUP_EDITOR = "popup_editor"
 }
 
+/** Home screen settings, including the fixed number of home screens. */
 @Composable
 fun HomeScreenPreferences(
     modifier: Modifier = Modifier,
@@ -156,6 +157,12 @@ fun HomeScreenPreferences(
                 label = stringResource(id = R.string.home_screen_grid),
                 destination = HomeScreenGrid,
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.home_screen_count),
+                adapter = prefs.homeScreenCount.getAdapter(),
+                step = 1,
+                valueRange = 1..9,
             )
             SliderPreference(
                 label = stringResource(id = R.string.horizontal_padding_label),

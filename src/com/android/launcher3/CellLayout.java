@@ -193,6 +193,7 @@ public class CellLayout extends ViewGroup {
     @ContainerType private final int mContainerType;
     /** Page index within a multi-page hotseat; unused for non-hotseat layouts. */
     private int mHotseatPageIndex = 0;
+    @Nullable private final app.lawnchair.dock.DockPlaceholders mDockPlaceholders;
 
     public static final float DEFAULT_SCALE = 1f;
 
@@ -252,6 +253,8 @@ public class CellLayout extends ViewGroup {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
         mContainerType = a.getInteger(R.styleable.CellLayout_containerType, WORKSPACE);
         a.recycle();
+        mDockPlaceholders = mContainerType == HOTSEAT
+                ? new app.lawnchair.dock.DockPlaceholders(this) : null;
 
         mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context);
 
@@ -394,6 +397,15 @@ public class CellLayout extends ViewGroup {
                 || (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev));
     }
 
+    /** Lets dock pages turn taps on empty cells into the slot picker. */
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mDockPlaceholders != null && mDockPlaceholders.onTouchEvent(ev)) {
+            return true;
+        }
+        return super.onTouchEvent(ev);
+    }
+
     public void enableHardwareLayer(boolean hasLayer) {
         mShortcutsAndWidgets.setLayerType(hasLayer ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE, sPaint);
     }
@@ -500,6 +512,7 @@ public class CellLayout extends ViewGroup {
         return mIsDragOverlapping;
     }
 
+    /** Draws the background, dock placeholders and drag outlines. */
     @Override
     protected void onDraw(Canvas canvas) {
         // When we're large, we are either drawn in a "hover" state (ie when dragging an item to
@@ -509,6 +522,9 @@ public class CellLayout extends ViewGroup {
         // backgrounds
         if (mBackground.getAlpha() > 0) {
             mBackground.draw(canvas);
+        }
+        if (mDockPlaceholders != null) {
+            mDockPlaceholders.draw(canvas);
         }
 
         if (DEBUG_VISUALIZE_OCCUPIED) {
@@ -1877,6 +1893,7 @@ public class CellLayout extends ViewGroup {
         return 0;
     }
 
+    /** Marks the view's cells occupied; dock pages redraw their placeholders. */
     public void markCellsAsOccupiedForView(View view) {
         if (view instanceof LauncherAppWidgetHostView
                 && view.getTag() instanceof LauncherAppWidgetInfo info) {
@@ -1888,8 +1905,10 @@ public class CellLayout extends ViewGroup {
         CellLayoutLayoutParams
                 lp = (CellLayoutLayoutParams) view.getLayoutParams();
         mOccupied.markCells(lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan, true);
+        if (mDockPlaceholders != null) invalidate();
     }
 
+    /** Marks the view's cells free; dock pages redraw their placeholders. */
     public void markCellsAsUnoccupiedForView(View view) {
         if (view instanceof LauncherAppWidgetHostView
                 && view.getTag() instanceof LauncherAppWidgetInfo info) {
@@ -1901,6 +1920,7 @@ public class CellLayout extends ViewGroup {
         CellLayoutLayoutParams
                 lp = (CellLayoutLayoutParams) view.getLayoutParams();
         mOccupied.markCells(lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan, false);
+        if (mDockPlaceholders != null) invalidate();
     }
 
     public int getDesiredWidth() {
@@ -1938,6 +1958,11 @@ public class CellLayout extends ViewGroup {
         }
         return getPaddingTop() + getPaddingBottom() + (rowCount * mCellHeight)
                 + ((rowCount - 1) * mBorderSpace.y);
+    }
+
+    /** Raw occupancy for the cell, without the widget-overlap preference. */
+    public boolean isCellOccupied(int x, int y) {
+        return x < 0 || y < 0 || x >= mCountX || y >= mCountY || mOccupied.cells[x][y];
     }
 
     public boolean isOccupied(int x, int y) {
