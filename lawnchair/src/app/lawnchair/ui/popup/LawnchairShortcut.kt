@@ -18,8 +18,8 @@ import android.os.UserHandle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.ui.unit.dp
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
@@ -168,6 +168,7 @@ class LawnchairShortcut {
         originalView: View,
     ) : SystemShortcut<LawnchairLauncher>(R.drawable.ic_edit, R.string.action_customize, launcher, itemInfo, originalView) {
 
+        @OptIn(ExperimentalMaterial3Api::class)
         override fun onClick(v: View) {
             val outObj = Array<Any?>(1) { null }
             var icon = Utilities.loadFullDrawableWithoutTheme(launcher, appInfo, 0, 0, outObj)
@@ -192,13 +193,18 @@ class LawnchairShortcut {
                 AbstractFloatingView.closeAllOpenViews(launcher)
                 ComposeBottomSheet.show(
                     context = launcher,
-                    contentPaddings = PaddingValues(bottom = 64.dp),
+                    enabledValues = setOf(
+                        SheetValue.Hidden,
+                        SheetValue.PartiallyExpanded,
+                        SheetValue.Expanded,
+                    ),
                 ) {
                     CustomizeAppDialog(
                         icon = icon,
                         defaultTitle = defaultTitle,
                         componentKey = appInfo.toComponentKey(),
-                    ) { close(true) }
+                        onClose = { close(true) },
+                    )
                 }
             } else {
                 Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show()

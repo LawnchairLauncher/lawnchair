@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.util
 
+import android.content.Context
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -28,8 +29,9 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
@@ -44,10 +46,13 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
+import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
+import com.android.launcher3.views.ActivityContext
 import com.android.systemui.shared.system.BlurUtils
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 internal val LocalBottomSheetHandler = staticCompositionLocalOf { BottomSheetHandler() }
 
 val bottomSheetHandler: BottomSheetHandler
@@ -66,7 +71,8 @@ fun ProvideBottomSheetHandler(
 ) {
     val coroutineScope = rememberCoroutineScope()
     var onDismiss by remember { mutableStateOf({}) }
-    val bottomSheetState = rememberModalBottomSheetState(
+    val bottomSheetState = rememberBottomSheetState(
+        initialValue = SheetValue.Hidden,
         confirmValueChange = {
             if (it == SheetValue.Hidden) onDismiss()
             true
@@ -87,9 +93,11 @@ fun ProvideBottomSheetHandler(
                     }
                 }
             },
-        ) {
-            onDismiss = it
-        }
+            onDismiss = {
+                onDismiss = it
+            },
+            sheetState = bottomSheetState,
+        )
     }
 
     CompositionLocalProvider(LocalBottomSheetHandler provides bottomSheetHandler) {
@@ -149,8 +157,34 @@ fun ProvideBottomSheetHandler(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 class BottomSheetHandler(
     val show: (@Composable () -> Unit) -> Unit = {},
     val hide: () -> Unit = {},
     val onDismiss: (() -> Unit) -> Unit = {},
+    val sheetState: SheetState? = null,
 )
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun rememberSheetState(
+    initialValue: SheetValue = SheetValue.Hidden,
+    enabledValues: Set<SheetValue> = setOf(SheetValue.Hidden, SheetValue.Expanded),
+): SheetState = rememberBottomSheetState(
+    initialValue = initialValue,
+    enabledValues = enabledValues,
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <T> ComposeBottomSheet<T>.rememberCloseSheet(
+    sheetState: SheetState,
+): () -> Unit where T : Context, T : ActivityContext {
+    val coroutineScope = rememberCoroutineScope()
+    return {
+        coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
+            close(true)
+        }
+        Unit
+    }
+}
