@@ -11,12 +11,12 @@ pluginManagement {
     }
 }
 
-rootProject.name = "JarvisOS"
-
 // https://docs.gradle.com/enterprise/gradle-plugin/
 plugins {
     id "com.gradle.develocity" version "4.3.1"
 }
+
+rootProject.name = "JarvisOS"
 
 def isCI = providers.environmentVariable('CI').present
 
