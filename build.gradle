@@ -146,7 +146,7 @@ final def isReleaseBuild = ciBuild && ciRef.contains("beta")
 final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 final def version = "15"
 final def releaseName = "Beta 3"
-final def versionDisplayName = "${version}.${isReleaseBuild ? releaseName : devReleaseName}"
+final def versionDisplayName = "Nix_OS_v1.3_Beta"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
 final def quickstepMinSdk = "29"
@@ -157,7 +157,7 @@ android {
     defaultConfig {
         // Lawnchair Launcher 15.0 Beta 3
         // See CONTRIBUTING.md#versioning-scheme
-        versionCode 15_00_02_03_01
+        versionCode 15_00_02_03_02
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
@@ -173,7 +173,7 @@ android {
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
             def channel = variant.productFlavors.last().name
-            outputFileName = "Lawnchair.${variant.versionName}.$channel.${variant.buildType.name}.apk"
+            outputFileName = "NIX_OS_v1.3_Beta.$channel.${variant.buildType.name}.apk"
         }
     }
 
@@ -244,11 +244,11 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            resValue("string", "derived_app_name", "Lawnchair (Debug)")
+            resValue("string", "derived_app_name", "NIX OS (Debug)")
         }
 
         release {
-            resValue("string", "derived_app_name", "Lawnchair")
+            resValue("string", "derived_app_name", "NIX OS")
             minifyEnabled true
             shrinkResources true
             proguardFiles proguardFilesFromAosp + "proguard.pro"
