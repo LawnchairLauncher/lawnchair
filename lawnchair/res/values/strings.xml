@@ -194,8 +194,9 @@
     <string name="quickstep_description">Clear All button, corner radius</string>
 
     <string name="about_label">About</string>
-    <string name="nix_os_project_credit">NIX OS project</string>
-    <string name="nix_os_github_credit">Official NIX OS GitHub repository</string>
+    <string name="nix_os_project_credit">Project and open-source credits</string>
+    <string name="nix_os_github_credit">NIX OS — Official GitHub repository</string>
+    <string name="lawnchair_open_source_credit">Lawnchair — Open-source base</string>
 
     <string name="app_info_drop_target_label">App info</string>
     <string name="debug_restart_launcher">Restart NIX OS</string>
