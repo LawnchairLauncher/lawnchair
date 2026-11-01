@@ -50,8 +50,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
-import app.lawnchair.ui.preferences.components.controls.ClickablePreference
-import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupItem
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
@@ -109,7 +107,7 @@ fun About(
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_home_comp),
+                    painter = painterResource(id = R.drawable.nix_os_icon_foreground),
                     contentDescription = null,
                     modifier = Modifier
                         .size(72.dp)
@@ -144,7 +142,7 @@ fun About(
                             onClick = {},
                             onLongClick = {
                                 val commitUrl =
-                                    "https://github.com/LawnchairLauncher/lawnchair/commit/${BuildConfig.COMMIT_HASH}"
+                                    "https://github.com/ITS1NEXO/J.A.R.V.I.S-OS/commit/${BuildConfig.COMMIT_HASH}"
                                 context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
                             },
                         ),
@@ -191,7 +189,7 @@ fun About(
             items = uiState.coreTeam,
             key = { _, it -> it.name },
             isFirstChild = false,
-            heading = { stringResource(id = R.string.product) },
+            heading = { stringResource(id = R.string.nix_os_upstream_contributors) },
         ) { _, it ->
             ContributorRow(
                 member = it,
@@ -201,7 +199,7 @@ fun About(
             items = uiState.supportAndPr,
             key = { _, it -> it.name },
             isFirstChild = false,
-            heading = { stringResource(id = R.string.support_and_pr) },
+            heading = { stringResource(id = R.string.nix_os_upstream_support) },
         ) { _, it ->
             ContributorRow(
                 member = it,
@@ -235,25 +233,6 @@ fun About(
                 )
             }
         }
-        item {
-            PreferenceGroupItem(
-                cutTop = true,
-                cutBottom = true,
-            ) {
-                PreferenceDivider()
-                ClickablePreference(
-                    label = stringResource(id = R.string.privacy_policy),
-                    onClick = {
-                        val webpage = PRIVACY_POLICY.toUri()
-                        val intent = Intent(Intent.ACTION_VIEW, webpage)
-                        if (intent.resolveActivity(context.packageManager) != null) {
-                            context.startActivity(intent)
-                        }
-                    },
-                )
-            }
-        }
     }
 }
 
-private const val PRIVACY_POLICY = "https://lawnchair.app/privacy_policy"
