@@ -165,7 +165,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         super.onCreate(savedInstanceState)
 
-        showJarvisWelcomeIfNeeded()
+        showNixOsWelcomeIfNeeded()
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
@@ -508,18 +508,22 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
 
 
-    /** Shows the JARVIS OS first-run welcome and setup guide once. */
-    private fun showJarvisWelcomeIfNeeded() {
-        val onboardingPrefs = getSharedPreferences("jarvis_os_onboarding", MODE_PRIVATE)
+    /** Shows the NIX OS first-run welcome and setup guide once. */
+    private fun showNixOsWelcomeIfNeeded() {
+        val onboardingPrefs = getSharedPreferences("nix_os_onboarding", MODE_PRIVATE)
+        val legacyPrefs = getSharedPreferences("jarvis_os_onboarding", MODE_PRIVATE)
+        if (legacyPrefs.getBoolean("welcome_completed", false) && !onboardingPrefs.getBoolean("welcome_completed", false)) {
+            onboardingPrefs.edit().putBoolean("welcome_completed", true).apply()
+        }
         if (onboardingPrefs.getBoolean("welcome_completed", false)) return
 
         window.decorView.post {
             if (isFinishing || isDestroyed) return@post
             AlertDialog.Builder(this)
-                .setTitle("Welcome to JARVIS OS")
-                .setMessage("A smarter home for your Android device. Your apps, your space, and your JARVIS assistant — together.")
+                .setTitle("Welcome to NIX OS")
+                .setMessage("A cleaner, more personal home for your Android device. Your apps, widgets, and shortcuts — together.")
                 .setCancelable(false)
-                .setNeutralButton("Explore guide") { _, _ -> showJarvisGuide(onboardingPrefs) }
+                .setNeutralButton("Explore guide") { _, _ -> showNixOsGuide(onboardingPrefs) }
                 .setPositiveButton("Get started") { _, _ ->
                     onboardingPrefs.edit().putBoolean("welcome_completed", true).apply()
                 }
@@ -527,7 +531,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
     }
 
-    private fun showJarvisGuide(onboardingPrefs: android.content.SharedPreferences) {
+    private fun showNixOsGuide(onboardingPrefs: android.content.SharedPreferences) {
         val guide = """
             HOME SCREEN
             Your home screen holds your apps, widgets, and shortcuts. Long-press an empty area to customize your layout.
@@ -535,8 +539,8 @@ class LawnchairLauncher : QuickstepLauncher() {
             APPLICATIONS
             Swipe up or open the app drawer to browse installed apps. Use search to find an app quickly.
 
-            JARVIS ASSISTANT
-            JARVIS AI integration is being built separately. This launcher welcome guide does not claim that an AI service or phone-control features are active yet.
+            NIX OS
+            Your home screen, apps, widgets, gestures, and personalization tools are ready to use. No AI assistant or advanced phone-control service is included in this launcher build.
 
             PERSONALIZATION
             Change wallpaper and supported appearance settings to let Android's dynamic colors adapt the interface.
@@ -545,13 +549,13 @@ class LawnchairLauncher : QuickstepLauncher() {
             Only grant permissions when a feature needs them. App visibility and OEM-hidden apps may be controlled by Android or your phone manufacturer.
         """.trimIndent()
         AlertDialog.Builder(this)
-            .setTitle("JARVIS OS Guide")
+            .setTitle("NIX OS Guide")
             .setMessage(guide)
             .setCancelable(false)
             .setPositiveButton("Continue") { _, _ ->
                 onboardingPrefs.edit().putBoolean("welcome_completed", true).apply()
             }
-            .setNegativeButton("Back") { _, _ -> showJarvisWelcomeIfNeeded() }
+            .setNegativeButton("Back") { _, _ -> showNixOsWelcomeIfNeeded() }
             .show()
     }
 
