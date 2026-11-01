@@ -40,6 +40,25 @@ data object ContactsSectionBuilder : SectionBuilder {
     }
 }
 
+data object CalendarSectionBuilder : SectionBuilder {
+    override fun build(
+        context: Context,
+        factory: SearchTargetFactory,
+        results: List<SearchResult>,
+    ): List<SearchTargetCompat> {
+        val calendarEvents = results.filterIsInstance<SearchResult.Calendar>()
+        if (calendarEvents.isEmpty()) {
+            return emptyList()
+        }
+
+        val targets = mutableListOf<SearchTargetCompat>()
+        targets.add(factory.createHeaderTarget(context.getString(R.string.search_pref_result_calendar_title)))
+        targets.addAll(calendarEvents.map { factory.createCalendarTarget(it.data) })
+        targets.add(factory.createHeaderTarget(SPACE))
+        return targets
+    }
+}
+
 data object FilesSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,

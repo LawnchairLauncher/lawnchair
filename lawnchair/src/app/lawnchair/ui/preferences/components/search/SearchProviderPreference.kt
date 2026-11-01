@@ -4,12 +4,6 @@ import android.Manifest
 import android.provider.SearchRecentSuggestions
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.annotation.Keep
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,7 +13,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -32,7 +25,6 @@ import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.util.openAppPermissionSettings
 import com.android.launcher3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -45,6 +37,7 @@ import kotlinx.serialization.Serializable
 @Keep
 enum class SearchProviderId(val id: String) {
     APPS("apps"),
+    CALENDAR("calendar"),
     CALCULATOR("calculator"),
     CONTACTS("contacts"),
     FILES("files"),
@@ -56,6 +49,7 @@ enum class SearchProviderId(val id: String) {
 fun getProviderName(provider: SearchProviderId): Int {
     return when (provider) {
         SearchProviderId.APPS -> R.string.search_pref_result_apps_and_shortcuts_title
+        SearchProviderId.CALENDAR -> R.string.search_pref_result_calendar_title
         SearchProviderId.CALCULATOR -> R.string.all_apps_search_result_calculator
         SearchProviderId.CONTACTS -> R.string.search_pref_result_people_title
         SearchProviderId.FILES -> R.string.search_pref_result_files_title
@@ -75,6 +69,7 @@ fun SearchProviderPreferenceScreen(
         modifier = modifier,
     ) {
         when (provider) {
+            SearchProviderId.CALENDAR -> CalendarSearchProvider()
             SearchProviderId.CONTACTS -> ContactsSearchProvider()
             SearchProviderId.FILES -> FileSearchProvider()
             else -> GenericSearchProviderPreference(provider)
@@ -82,7 +77,34 @@ fun SearchProviderPreferenceScreen(
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun CalendarSearchProvider(
+    modifier: Modifier = Modifier,
+) {
+    val prefs = preferenceManager()
+    val prefs2 = preferenceManager2()
+
+    PermissionGatedSearchProviderPreference(
+        permission = Manifest.permission.READ_CALENDAR,
+        enabledAdapter = prefs.searchResultCalendar.getAdapter(),
+        label = stringResource(R.string.search_pref_result_calendar_title),
+        maxResultCountLabel = stringResource(R.string.max_calendar_result_count_title),
+        maxResultCountAdapter = prefs2.maxCalendarResultCount.getAdapter(),
+        permissionTitle = stringResource(R.string.warn_calendar_permission_title),
+        permissionContent = stringResource(
+            id = R.string.warn_calendar_permission_content,
+            stringResource(id = R.string.derived_app_name),
+        ),
+        modifier = modifier,
+    ) {
+        SwitchPreference(
+            adapter = prefs2.showCalendarCanceledEvents.getAdapter(),
+            label = stringResource(R.string.calendar_search_show_canceled_title),
+            description = stringResource(R.string.calendar_search_show_canceled_description),
+        )
+    }
+}
+
 @Composable
 fun ContactsSearchProvider(
     modifier: Modifier = Modifier,
@@ -90,32 +112,62 @@ fun ContactsSearchProvider(
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
 
-    val context = LocalContext.current
-    val contactsPermissionState = rememberPermissionState(Manifest.permission.READ_CONTACTS)
+    PermissionGatedSearchProviderPreference(
+        permission = Manifest.permission.READ_CONTACTS,
+        enabledAdapter = prefs.searchResultPeople.getAdapter(),
+        label = stringResource(R.string.search_pref_result_people_title),
+        maxResultCountLabel = stringResource(R.string.max_people_result_count_title),
+        maxResultCountAdapter = prefs2.maxPeopleResultCount.getAdapter(),
+        permissionTitle = stringResource(R.string.warn_contact_permission_title),
+        permissionContent = stringResource(
+            id = R.string.warn_contact_permission_content,
+            stringResource(id = R.string.derived_app_name),
+        ),
+        modifier = modifier,
+    )
+}
 
+/**
+ * Use when a search provider needs additional runtime [permission].
+ */
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+private fun PermissionGatedSearchProviderPreference(
+    permission: String,
+    enabledAdapter: PreferenceAdapter<Boolean>,
+    label: String,
+    maxResultCountLabel: String,
+    maxResultCountAdapter: PreferenceAdapter<Int>,
+    permissionTitle: String,
+    permissionContent: String,
+    modifier: Modifier = Modifier,
+    extraContent: @Composable () -> Unit = {},
+) {
+    val context = LocalContext.current
+    val permissionState = rememberPermissionState(permission)
     var showPermissionDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(contactsPermissionState.status) {
-        if (!contactsPermissionState.status.isGranted) {
+    LaunchedEffect(permissionState.status) {
+        if (!permissionState.status.isGranted) {
             showPermissionDialog = true
         }
     }
 
-    val adapter = prefs.searchResultPeople.getAdapter()
     MainSwitchPreference(
-        checked = adapter.state.value && contactsPermissionState.status.isGranted,
-        onCheckedChange = adapter::onChange,
-        label = stringResource(R.string.search_pref_result_people_title),
+        checked = enabledAdapter.state.value && permissionState.status.isGranted,
+        onCheckedChange = enabledAdapter::onChange,
+        label = label,
         modifier = modifier,
-        enabled = contactsPermissionState.status.isGranted,
+        enabled = permissionState.status.isGranted,
     ) {
         PreferenceGroup {
             SliderPreference(
-                label = stringResource(R.string.max_people_result_count_title),
-                adapter = prefs2.maxPeopleResultCount.getAdapter(),
+                label = maxResultCountLabel,
+                adapter = maxResultCountAdapter,
                 valueRange = 2..10,
                 step = 1,
             )
+            extraContent()
         }
     }
 
@@ -123,10 +175,10 @@ fun ContactsSearchProvider(
         val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
         PermissionDialog(
-            title = stringResource(R.string.warn_contact_permission_title),
-            text = stringResource(id = R.string.warn_contact_permission_content, stringResource(id = R.string.derived_app_name)),
-            isPermanentlyDenied = contactsPermissionState.status.shouldShowRationale,
-            onConfirm = { contactsPermissionState.launchPermissionRequest() },
+            title = permissionTitle,
+            text = permissionContent,
+            isPermanentlyDenied = permissionState.status.shouldShowRationale,
+            onConfirm = { permissionState.launchPermissionRequest() },
             onDismiss = {
                 backDispatcher?.onBackPressed()
                 showPermissionDialog = false

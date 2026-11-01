@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import app.lawnchair.allapps.views.SearchResultView.Companion.FLAG_HIDE_SUBTITLE
 import app.lawnchair.font.FontManager
 import app.lawnchair.search.adapter.CALCULATOR
+import app.lawnchair.search.adapter.CALENDAR
 import app.lawnchair.search.adapter.HISTORY
 import app.lawnchair.search.adapter.SETTINGS
 import app.lawnchair.search.adapter.SearchTargetCompat
@@ -95,6 +96,10 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             target.resultType == SearchTargetCompat.RESULT_TYPE_CALCULATOR &&
             target.packageName == CALCULATOR
 
+        val isCalendar = target.layoutType == LayoutType.HORIZONTAL_MEDIUM_TEXT &&
+            target.resultType == SearchTargetCompat.RESULT_TYPE_CALENDAR &&
+            target.packageName == CALENDAR
+
         bindShortcuts(shortcuts)
         var showDelimiter = true
         if (isSmall) {
@@ -117,8 +122,12 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
                 target.searchAction?.intent?.let { intent -> handleSearchTargetClick(context, intent) }
             }
         }
-        if (isSuggestion || isSetting) {
-            layoutParams.height = resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
+        if (isSuggestion || isSetting || isCalendar) {
+            // Calendar rows show a title and a subtitle stacked,
+            // so they keep the medium height set above.
+            if (!isCalendar) {
+                layoutParams.height = resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
+            }
             setOnClickListener {
                 target.searchAction?.intent?.let { intent -> handleSearchTargetClick(context, intent) }
             }

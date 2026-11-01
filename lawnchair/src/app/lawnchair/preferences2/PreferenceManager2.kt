@@ -684,6 +684,16 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = resourceProvider.getInt(R.dimen.config_default_recent_max_result_count),
     )
 
+    val maxCalendarResultCount = preference(
+        key = intPreferencesKey(name = "max_calendar_result_count"),
+        defaultValue = resourceProvider.getInt(R.dimen.config_default_calendar_max_result_count),
+    )
+
+    val showCalendarCanceledEvents = preference(
+        key = booleanPreferencesKey(name = "show_calendar_canceled_events"),
+        defaultValue = false,
+    )
+
     val enableSmartspace = preference(
         key = booleanPreferencesKey(name = "enable_smartspace"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace),

@@ -1,26 +1,32 @@
 package app.lawnchair.search.adapter
 
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Bundle
 import android.os.Process
+import android.provider.CalendarContract
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.exifinterface.media.ExifInterface
 import app.lawnchair.allapps.views.SearchResultView
 import app.lawnchair.search.algorithms.data.Calculation
+import app.lawnchair.search.algorithms.data.CalendarEvent
 import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.FileInfo
 import app.lawnchair.search.algorithms.data.FileInfo.Companion.isImageType
@@ -29,6 +35,8 @@ import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
 import app.lawnchair.search.algorithms.data.SettingInfo
 import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
+import app.lawnchair.theme.UiColorMode
+import app.lawnchair.theme.color.MonetColorSchemeCompat
 import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.util.calculateInSampleSize
 import app.lawnchair.util.createFilePreviewFallbackBitmap
@@ -41,17 +49,23 @@ import com.android.launcher3.R
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
+import com.android.launcher3.util.Themes
+import com.androidinternal.graphics.cam.Cam
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.security.MessageDigest
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import okio.ByteString
 
 class SearchTargetFactory(
     private val context: Context,
 ) {
+    /** Colour schemes seeded from calendar colours, built once per colour since building one is costly. */
+    private val calendarColorSchemes = ConcurrentHashMap<Int, MonetColorSchemeCompat>()
+
     fun createAppSearchTarget(appInfo: AppInfo, asRow: Boolean = false): SearchTargetCompat {
         val componentName = appInfo.componentName
         val user = appInfo.user
@@ -123,6 +137,74 @@ class SearchTargetFactory(
             CALCULATOR,
             extras,
         )
+    }
+
+    internal fun createCalendarTarget(
+        event: CalendarEvent,
+    ): SearchTargetCompat {
+        val id = "calendar:${event.eventId}:${event.startTime}"
+        val calendarDay = java.util.Calendar.getInstance().apply {
+            timeInMillis = event.localStartTime
+        }.get(java.util.Calendar.DAY_OF_MONTH)
+        val iconColors = event.calendarColor?.let(::calendarIconColors)
+        val bitmap = createSmallSearchResultBitmap(
+            context = context,
+            drawable = CALENDAR_ICONS[calendarDay - 1],
+            backgroundColor = iconColors?.first,
+            foregroundColor = iconColors?.second,
+        )
+        val eventUri = ContentUris.withAppendedId(
+            CalendarContract.Events.CONTENT_URI,
+            event.eventId,
+        )
+        val eventIntent = Intent(Intent.ACTION_VIEW, eventUri)
+            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.startTime)
+            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.endTime)
+            .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, event.allDay)
+        val action = SearchActionCompat.Builder(id, event.title)
+            .setIcon(Icon.createWithAdaptiveBitmap(bitmap))
+            .setSubtitle(event.description)
+            .setContentDescription(event.description)
+            .setIntent(eventIntent)
+            .build()
+        return createSearchTarget(
+            id,
+            action,
+            LayoutType.HORIZONTAL_MEDIUM_TEXT,
+            SearchTargetCompat.RESULT_TYPE_CALENDAR,
+            CALENDAR,
+        )
+    }
+
+    /**
+     * Returns the background and glyph colours for a calendar icon
+     *
+     * @return PrimaryContainer and OnPrimaryContainer (of Material 3 colour scheme)
+     * of a scheme seeded from [calendarColor].
+     */
+    private fun calendarIconColors(@ColorInt calendarColor: Int): Pair<Int, Int> {
+        // Some calendar providers store colours without an alpha channel, so force them opaque.
+        val seed = calendarColor or 0xFF000000.toInt()
+
+        // Monet replaces seeds with almost no chroma (black, grey, white) with Google blue, so
+        // those keep their own colour, with a white or black glyph for contrast. A black calendar
+        // gets a black icon with a white glyph.
+        if (Cam.fromInt(seed).chroma < MIN_CALENDAR_SEED_CHROMA) {
+            return seed to contrastingGlyphColor(seed)
+        }
+
+        val scheme = calendarColorSchemes.getOrPut(seed) { MonetColorSchemeCompat(seed) }
+        val uiColorMode = UiColorMode(Themes.getAttrInteger(context, R.attr.uiColorMode))
+        return ColorTokens.SearchResultCalendarIcon.resolveColor(context, scheme, uiColorMode) to
+            ColorTokens.SearchResultCalendarIconForeground.resolveColor(context, scheme, uiColorMode)
+    }
+
+    /** Returns white or black, whichever has more contrast against the opaque [background]. */
+    @ColorInt
+    private fun contrastingGlyphColor(@ColorInt background: Int): Int {
+        val whiteContrast = ColorUtils.calculateContrast(Color.WHITE, background)
+        val blackContrast = ColorUtils.calculateContrast(Color.BLACK, background)
+        return if (whiteContrast >= blackContrast) Color.WHITE else Color.BLACK
     }
 
     fun createHeaderTarget(header: String, pkg: String = HEADER): SearchTargetCompat {
@@ -369,6 +451,42 @@ class SearchTargetFactory(
     companion object {
         private const val HASH_ALGORITHM = "SHA-256"
 
+        // Matches the threshold below which Monet's ColorScheme ignores the seed colour.
+        private const val MIN_CALENDAR_SEED_CHROMA = 5f
+        private val CALENDAR_ICONS = intArrayOf(
+            R.drawable.themed_icon_calendar_1,
+            R.drawable.themed_icon_calendar_2,
+            R.drawable.themed_icon_calendar_3,
+            R.drawable.themed_icon_calendar_4,
+            R.drawable.themed_icon_calendar_5,
+            R.drawable.themed_icon_calendar_6,
+            R.drawable.themed_icon_calendar_7,
+            R.drawable.themed_icon_calendar_8,
+            R.drawable.themed_icon_calendar_9,
+            R.drawable.themed_icon_calendar_10,
+            R.drawable.themed_icon_calendar_11,
+            R.drawable.themed_icon_calendar_12,
+            R.drawable.themed_icon_calendar_13,
+            R.drawable.themed_icon_calendar_14,
+            R.drawable.themed_icon_calendar_15,
+            R.drawable.themed_icon_calendar_16,
+            R.drawable.themed_icon_calendar_17,
+            R.drawable.themed_icon_calendar_18,
+            R.drawable.themed_icon_calendar_19,
+            R.drawable.themed_icon_calendar_20,
+            R.drawable.themed_icon_calendar_21,
+            R.drawable.themed_icon_calendar_22,
+            R.drawable.themed_icon_calendar_23,
+            R.drawable.themed_icon_calendar_24,
+            R.drawable.themed_icon_calendar_25,
+            R.drawable.themed_icon_calendar_26,
+            R.drawable.themed_icon_calendar_27,
+            R.drawable.themed_icon_calendar_28,
+            R.drawable.themed_icon_calendar_29,
+            R.drawable.themed_icon_calendar_30,
+            R.drawable.themed_icon_calendar_31,
+        )
+
         // TODO find a way to properly provide tag/provide ids to search target
         private val messageDigest by lazy { MessageDigest.getInstance(HASH_ALGORITHM) }
 
@@ -552,6 +670,7 @@ const val MARKET_STORE = "marketstore"
 const val WEB_SUGGESTION = "suggestion"
 const val HEADER = "header"
 const val CONTACT = "contact"
+const val CALENDAR = "calendar"
 const val FILES = "files"
 const val SPACE = "space"
 const val SPACE_MINI = "space_mini"

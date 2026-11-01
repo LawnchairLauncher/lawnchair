@@ -3,6 +3,7 @@ package app.lawnchair.search.algorithms.engine
 import android.content.pm.ShortcutInfo
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import app.lawnchair.search.algorithms.data.CalendarEvent
 import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
@@ -15,6 +16,7 @@ import com.android.launcher3.model.data.AppInfo
  */
 sealed interface SearchResult {
     data class App(val data: AppInfo) : SearchResult
+    data class Calendar(val data: CalendarEvent) : SearchResult
     data class Contact(val data: ContactInfo) : SearchResult
     data class File(val data: IFileInfo) : SearchResult
     data class Setting(val data: SettingInfo) : SearchResult

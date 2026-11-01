@@ -6,6 +6,8 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
+import app.lawnchair.search.algorithms.engine.CalendarSectionBuilder
+import app.lawnchair.search.algorithms.engine.provider.CalendarSearchProvider
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.allapps.BaseAllAppsAdapter
@@ -16,7 +18,9 @@ import com.patrykmichalik.opto.core.onEach
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
@@ -61,8 +65,15 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             // late-arriving result from being delivered after reset. See issue #7325.
             currentJob?.cancel()
             currentJob = coroutineScope.launch(Dispatchers.Main) {
-                val results = getResult(apps.data, query)
-                callback.onSearchResult(query, results)
+                val appTargets = getAppTargets(apps.data, query)
+                callback.onSearchResult(query, buildAdapterItems(query, appTargets, emptyList()))
+                val calendarTargets = withContext(Dispatchers.Default) {
+                    val events = CalendarSearchProvider.search(context, query).first()
+                    CalendarSectionBuilder.build(context, searchTargetFactory, events)
+                }
+                if (calendarTargets.isNotEmpty()) {
+                    callback.onSearchResult(query, buildAdapterItems(query, appTargets, calendarTargets))
+                }
             }
         }
     }
@@ -75,10 +86,10 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         }
     }
 
-    private fun getResult(
+    private fun getAppTargets(
         apps: MutableList<AppInfo>,
         query: String,
-    ): ArrayList<BaseAllAppsAdapter.AdapterItem> {
+    ): List<SearchTargetCompat> {
         val appResults = if (enableFuzzySearch) {
             SearchUtils.fuzzySearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch)
         } else {
@@ -106,10 +117,20 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
         }
 
-        searchTargetFactory.createMarketSearchTarget(query)?.let { searchTargets.add(it) }
+        return searchTargets
+    }
 
+    private fun buildAdapterItems(
+        query: String,
+        appTargets: List<SearchTargetCompat>,
+        calendarTargets: List<SearchTargetCompat>,
+    ): ArrayList<BaseAllAppsAdapter.AdapterItem> {
+        // The market target is created fresh on every delivery.
+        // setFirstItemQuickLaunch marks targets in place, so reusing it would keep quick launch on
+        // the market link even after calendar results arrive above it.
+        val marketTarget = searchTargetFactory.createMarketSearchTarget(query)
+        val searchTargets = appTargets + calendarTargets + listOfNotNull(marketTarget)
         setFirstItemQuickLaunch(searchTargets)
-        val adapterItems = transformSearchResults(searchTargets)
-        return ArrayList(adapterItems)
+        return ArrayList(transformSearchResults(searchTargets))
     }
 }

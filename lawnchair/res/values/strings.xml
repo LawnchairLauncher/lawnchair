@@ -1020,6 +1020,7 @@
     <string name="search_pref_result_all_files_title">All files</string>
     <string name="search_pref_result_web_title">Web suggestions</string>
     <string name="search_pref_result_history_title">Search history</string>
+    <string name="search_pref_result_calendar_title">Calendar</string>
     <string name="all_apps_search_result_calculator">Calculator</string>
 
     <string name="search_empty_state_title">Start searching</string>
@@ -1031,6 +1032,7 @@
 
     <string name="search_pref_result_files_description">Media, files, and more</string>
     <string name="search_pref_result_contacts_description">Contacts and more</string>
+    <string name="search_pref_result_calendar_description">Calendar events and more</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g>
     </string>
 
@@ -1041,6 +1043,9 @@
     <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
     <string name="max_recent_result_count_title">Maximum items for search history</string>
     <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
+    <string name="max_calendar_result_count_title">Maximum number of calendar events</string>
+    <string name="calendar_search_show_canceled_title">Show canceled events</string>
+    <string name="calendar_search_show_canceled_description">Include events that have been canceled</string>
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
 
     <!-- Permission management -->
@@ -1051,6 +1056,13 @@
     <string name="warn_contact_permission_title">Contacts permission needed</string>
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g>
     </string>
+    <string name="warn_calendar_permission_title">Calendar permission needed</string>
+    <string name="warn_calendar_permission_content">To search for calendar events, grant calendar permission to <xliff:g id="name" example="My App">%1$s</xliff:g>
+    </string>
+    <string name="calendar_search_today">Today</string>
+    <string name="calendar_search_tomorrow">Tomorrow</string>
+    <string name="calendar_search_all_day">All day</string>
+    <string name="calendar_search_date_time">%1$s, %2$s</string>
 
     <string name="permissions_music_audio">Music and audio access needed</string>
     <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
