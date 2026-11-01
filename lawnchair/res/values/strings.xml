@@ -663,7 +663,7 @@
     <string name="search_bar_settings">Search bar settings</string>
     <string name="hotseat_mode_label">Search bar widget</string>
     <string name="hotseat_mode_disabled">Disabled</string>
-    <string name="hotseat_mode_lawnchair" translatable="false">Lawnchair</string>
+    <string name="hotseat_mode_lawnchair" translatable="false">JARVIS OS</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
 
     <string name="qsb_hotseat_background_transparency">Background opacity</string>
