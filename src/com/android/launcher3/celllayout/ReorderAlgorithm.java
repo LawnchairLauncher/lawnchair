@@ -133,8 +133,9 @@ public class ReorderAlgorithm {
         ArrayList<View> intersectingViews = new ArrayList<>();
         Rect occupiedRect = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
 
-        // Lawnchair: Widget overlap
-        if (PreferenceCacheExtensionsKt.firstCached(mCellLayout.pref.getAllowWidgetOverlap(), mCellLayout.pref)) {
+        // LC-Note: Widget overlap / subgrid free placement
+        if (PreferenceCacheExtensionsKt.firstCached(mCellLayout.pref.getAllowWidgetOverlap())
+                || mCellLayout.isSubgridEnabled()) {
             solution.intersectingViews = new ArrayList<>(intersectingViews);
             return true;
         }

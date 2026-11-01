@@ -353,6 +353,16 @@ public class LauncherWidgetHolder {
      */
     public void startBindFlow(@NonNull BaseActivity activity,
             int appWidgetId, @NonNull AppWidgetProviderInfo info, int requestCode) {
+        startBindFlow(activity, appWidgetId, info, requestCode, null);
+    }
+
+    /**
+     * LC-Note: Same as above, but also passes {@code options} to the bind permission dialog, so a
+     * widget bound there starts with its (possibly half-cell) size options.
+     */
+    public void startBindFlow(@NonNull BaseActivity activity,
+            int appWidgetId, @NonNull AppWidgetProviderInfo info, int requestCode,
+            @Nullable Bundle options) {
         if (!WIDGETS_ENABLED) {
             sendActionCancelled(activity, requestCode);
             return;
@@ -362,8 +372,10 @@ public class LauncherWidgetHolder {
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, info.getProfile());
-        // TODO: we need to make sure that this accounts for the options bundle.
-        // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
+        // LC-Note: Pass the options bundle (an AOSP TODO).
+        if (options != null) {
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
+        }
         activity.startActivityForResult(intent, requestCode);
     }
 

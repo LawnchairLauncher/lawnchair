@@ -80,6 +80,9 @@ public class LauncherDelegate {
                                 mLauncher.getCellPosMapper().mapModelToPresenter(info).screenId);
                         finalItem =  info.getContents().remove(0);
                         newIcon = mLauncher.getItemInflater().inflateItem(finalItem, cellLayout);
+                        // LC-Note: Subgrid positioning, keep the folder's half steps.
+                        finalItem.subX = info.subX;
+                        finalItem.subY = info.subY;
                         mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,
                                 info.container, info.screenId, info.cellX, info.cellY);
                     }

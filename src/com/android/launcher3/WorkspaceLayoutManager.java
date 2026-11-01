@@ -157,6 +157,10 @@ public interface WorkspaceLayoutManager {
         }
         int childId = info.getViewId();
 
+        // LC-Note: Subgrid positioning, half steps only on the workspace.
+        lp.setSubgrid(info, container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                && layout.isSubgridEnabled());
+
         boolean markCellsAsOccupied = !(child instanceof Folder);
         if (!layout.addViewToCellLayout(child, -1, childId, lp, markCellsAsOccupied)) {
             // TODO: This branch occurs when the workspace is adding views

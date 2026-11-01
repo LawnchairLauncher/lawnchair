@@ -18,9 +18,11 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.icu.text.NumberFormat;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -125,10 +127,16 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private boolean mHorizontalResizeActive;
     private boolean mVerticalResizeActive;
 
+    // LC-Note: In half cells while subgrid positioning is on.
     private int mRunningHInc;
     private int mRunningVInc;
+    // LC-Note: Subgrid positioning, whether a resize step was taken.
+    private boolean mSubgridResized;
     private int mMinHSpan;
     private int mMinVSpan;
+    // LC-Note: Subgrid positioning, the minimum spans in half cells.
+    private int mMinHalfHSpan;
+    private int mMinHalfVSpan;
     private int mMaxHSpan;
     private int mMaxVSpan;
     private int mDeltaX;
@@ -299,6 +307,12 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             mMaxHSpan = info.maxSpanX;
             mMaxVSpan = info.maxSpanY;
         }
+        // LC-Note: Subgrid positioning. The provider's minimum in half cells can be one less than
+        // twice the rounded-up minimum in cells; unlimited resizing goes down to half a cell.
+        mMinHalfHSpan = unlimited ? 1
+                : Math.max(1, Math.min(mMinHSpan * 2, getMinHalfSpan(idp, info, true)));
+        mMinHalfVSpan = unlimited ? 1
+                : Math.max(1, Math.min(mMinVSpan * 2, getMinHalfSpan(idp, info, false)));
 
         LauncherAppWidgetInfo widgetInfoOnView = (LauncherAppWidgetInfo) mWidgetView.getTag();
         // Only show resize handles for the directions in which resizing is possible.
@@ -375,12 +389,19 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         lp.setTmpCellY(presenterPos.cellY);
         lp.cellHSpan = widgetInfo.spanX;
         lp.cellVSpan = widgetInfo.spanY;
+        // LC-Note: Subgrid positioning, start from the widget's half steps.
+        boolean subgrid = mCellLayout.isSubgridEnabled();
+        lp.setSubgrid(widgetInfo, subgrid);
         lp.isLockedToGrid = true;
 
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
         // cells (same if not resized, or different) will be marked as occupied when the resize
         // frame is dismissed.
-        mCellLayout.markCellsAsUnoccupiedForView(mWidgetView);
+        // LC-Note: Subgrid placement ignores occupancy, and unmarking could clear the cells of a
+        // widget that shares them.
+        if (!subgrid) {
+            mCellLayout.markCellsAsUnoccupiedForView(mWidgetView);
+        }
 
         mLauncher.getStatsLogManager()
                 .logger()
@@ -503,26 +524,41 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         float xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacePx.x;
         float yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacePx.y;
 
-        int hSpanInc = getSpanIncrement((mDeltaX + mDeltaXAddOn) / xThreshold - mRunningHInc);
-        int vSpanInc = getSpanIncrement((mDeltaY + mDeltaYAddOn) / yThreshold - mRunningVInc);
+        // LC-Note: Subgrid positioning resizes in half cells, so with it on the cells and spans
+        // below are in half cells (cell * 2 + half step).
+        boolean subgrid = mCellLayout.isSubgridEnabled();
+        int scale = subgrid ? 2 : 1;
+        int minHSpan = subgrid ? mMinHalfHSpan : mMinHSpan;
+        int minVSpan = subgrid ? mMinHalfVSpan : mMinVSpan;
+
+        int hSpanInc = getSpanIncrement(
+                (mDeltaX + mDeltaXAddOn) / (xThreshold / scale) - mRunningHInc);
+        int vSpanInc = getSpanIncrement(
+                (mDeltaY + mDeltaYAddOn) / (yThreshold / scale) - mRunningVInc);
 
         if (!onDismiss && (hSpanInc == 0 && vSpanInc == 0)) return;
+        // LC-Note: Subgrid writes the model on dismiss, skip that if nothing was resized. The
+        // running increments can't tell: growing one edge and then the other cancels them out.
+        if (subgrid && onDismiss && hSpanInc == 0 && vSpanInc == 0 && !mSubgridResized) {
+            return;
+        }
 
         mDirectionVector[0] = 0;
         mDirectionVector[1] = 0;
 
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) wlp;
 
-        int spanX = lp.cellHSpan;
-        int spanY = lp.cellVSpan;
-        int cellX = lp.useTmpCoords ? lp.getTmpCellX() : lp.getCellX();
-        int cellY = lp.useTmpCoords ? lp.getTmpCellY() : lp.getCellY();
+        int spanX = lp.cellHSpan * scale + lp.subSpanX;
+        int spanY = lp.cellVSpan * scale + lp.subSpanY;
+        int cellX = (lp.useTmpCoords ? lp.getTmpCellX() : lp.getCellX()) * scale + lp.subX;
+        int cellY = (lp.useTmpCoords ? lp.getTmpCellY() : lp.getCellY()) * scale + lp.subY;
 
         // For each border, we bound the resizing based on the minimum width, and the maximum
         // expandability.
         mTempRange1.set(cellX, spanX + cellX);
         int hSpanDelta = mTempRange1.applyDeltaAndBound(mLeftBorderActive, mRightBorderActive,
-                hSpanInc, mMinHSpan, mMaxHSpan, mCellLayout.getCountX(), mTempRange2);
+                hSpanInc, minHSpan, mMaxHSpan * scale, mCellLayout.getCountX() * scale,
+                mTempRange2);
         cellX = mTempRange2.start;
         spanX = mTempRange2.size();
         if (hSpanDelta != 0) {
@@ -531,7 +567,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         mTempRange1.set(cellY, spanY + cellY);
         int vSpanDelta = mTempRange1.applyDeltaAndBound(mTopBorderActive, mBottomBorderActive,
-                vSpanInc, mMinVSpan, mMaxVSpan, mCellLayout.getCountY(), mTempRange2);
+                vSpanInc, minVSpan, mMaxVSpan * scale, mCellLayout.getCountY() * scale,
+                mTempRange2);
         cellY = mTempRange2.start;
         spanY = mTempRange2.size();
         if (vSpanDelta != 0) {
@@ -548,6 +585,13 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         } else {
             mLastDirectionVector[0] = mDirectionVector[0];
             mLastDirectionVector[1] = mDirectionVector[1];
+        }
+
+        // LC-Note: Subgrid placement is free, so there is no reorder.
+        if (subgrid) {
+            resizeSubgrid(lp, cellX, cellY, spanX, spanY, hSpanDelta, vSpanDelta, onDismiss);
+            mWidgetView.requestLayout();
+            return;
         }
 
         // We don't want to evaluate resize if a widget was pending config activity and was already
@@ -574,6 +618,77 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mWidgetView.requestLayout();
     }
 
+    /**
+     * LC-Note: Subgrid positioning. The minimum span of {@link
+     * LauncherAppWidgetProviderInfo#initSpans} in half cells, so n half cells span
+     * n / 2 * (cellSize + cellSpacing) - cellSpacing.
+     */
+    private static int getMinHalfSpan(InvariantDeviceProfile idp,
+            LauncherAppWidgetProviderInfo info, boolean horizontal) {
+        int minHalfSpan = 1;
+        Point cellSize = new Point();
+        for (DeviceProfile dp : idp.supportedProfiles) {
+            if (Flags.oneGridSpecs() && dp.inv.deviceType == InvariantDeviceProfile.TYPE_PHONE
+                    && dp.inv.isFixedLandscape != dp.getDeviceProperties().isLandscape()) {
+                continue;
+            }
+            dp.getCellSize(cellSize);
+            Rect padding = dp.widgetPadding;
+            int size = horizontal
+                    ? info.minResizeWidth + padding.left + padding.right
+                    : info.minResizeHeight + padding.top + padding.bottom;
+            int spacing = horizontal ? dp.cellLayoutBorderSpacePx.x : dp.cellLayoutBorderSpacePx.y;
+            int cell = horizontal ? cellSize.x : cellSize.y;
+            minHalfSpan = Math.max(minHalfSpan,
+                    (int) Math.ceil(2f * (size + spacing) / (cell + spacing)));
+        }
+        return minHalfSpan;
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Applies a resize given in half cells, and writes the model on
+     * dismiss, as there is no reorder to commit it.
+     */
+    private void resizeSubgrid(CellLayoutLayoutParams lp, int cellX, int cellY, int spanX,
+            int spanY, int hSpanDelta, int vSpanDelta, boolean onDismiss) {
+        // A half-cell span is a base span of 1 with a step of -1, so base spans stay positive.
+        int newSpanX = Math.max(1, Math.floorDiv(spanX, 2));
+        int newSpanY = Math.max(1, Math.floorDiv(spanY, 2));
+        lp.useTmpCoords = true;
+        lp.setTmpCellX(Math.floorDiv(cellX, 2));
+        lp.setTmpCellY(Math.floorDiv(cellY, 2));
+        lp.subX = cellX - lp.getTmpCellX() * 2;
+        lp.subY = cellY - lp.getTmpCellY() * 2;
+        lp.cellHSpan = newSpanX;
+        lp.cellVSpan = newSpanY;
+        lp.subSpanX = spanX - newSpanX * 2;
+        lp.subSpanY = spanY - newSpanY * 2;
+        mRunningHInc += hSpanDelta;
+        mRunningVInc += vSpanDelta;
+        mSubgridResized = true;
+
+        if (onDismiss) {
+            mCellLayout.persistViewGeometry(mWidgetView);
+        } else {
+            WidgetSizes.updateWidgetSizeRanges(mWidgetView, mLauncher, newSpanX, newSpanY);
+            if (mStateAnnouncer != null) {
+                mStateAnnouncer.announce(mLauncher.getString(R.string.widget_resized,
+                        formatHalfCells(mLauncher, spanX), formatHalfCells(mLauncher, spanY)));
+            }
+        }
+    }
+
+    /**
+     * LC-Note: Subgrid positioning. Formats a size in half cells (5 -> 2.5) in the locale's
+     * digits, for the {@code widget_resized} announcement.
+     */
+    public static String formatHalfCells(Context context, int halfCells) {
+        NumberFormat format = NumberFormat.getInstance(
+                context.getResources().getConfiguration().getLocales().get(0));
+        format.setMaximumFractionDigits(1);
+        return format.format(halfCells / 2f);
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -592,8 +707,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         int xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacePx.x;
         int yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacePx.y;
 
-        mDeltaXAddOn = mRunningHInc * xThreshold;
-        mDeltaYAddOn = mRunningVInc * yThreshold;
+        // LC-Note: Subgrid positioning counts the increments in half cells.
+        float scale = mCellLayout.isSubgridEnabled() ? 2f : 1f;
+        mDeltaXAddOn = Math.round(mRunningHInc * (xThreshold / scale));
+        mDeltaYAddOn = Math.round(mRunningVInc * (yThreshold / scale));
         mDeltaX = 0;
         mDeltaY = 0;
 

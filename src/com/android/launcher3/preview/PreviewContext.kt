@@ -141,11 +141,12 @@ constructor(
 
     private class NoOpWidgetSizeHandler(context: Context) : WidgetSizeHandler(context) {
 
+        // LC-Note: Float spans for subgrid positioning.
         override fun updateSizeRangesAsync(
             widgetId: Int,
             info: AppWidgetProviderInfo,
-            spanX: Int,
-            spanY: Int,
+            spanX: Float,
+            spanY: Float,
         ) {
             // Ignore
         }
