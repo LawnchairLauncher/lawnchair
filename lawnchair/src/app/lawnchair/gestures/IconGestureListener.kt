@@ -13,7 +13,9 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.MSDLPlayerWrapper
 import com.android.launcher3.util.VibratorWrapper
+import com.google.android.msdl.data.model.MSDLToken
 import kotlin.math.abs
 import kotlinx.coroutines.launch
 
@@ -30,6 +32,7 @@ class IconGestureListener(
     private var isAnimating = false
     private var cachedPreferences: Preferences? = null
     private var configuredGestures = emptySet<GestureType>()
+    private var mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
 
     /** Represents the axis on which the current scroll gesture is locked.
      */
@@ -126,8 +129,7 @@ class IconGestureListener(
 
         context.launcher.lifecycleScope.launch {
             Log.d("GESTURE_HANDLER", "Triggering gesture: ${gestureType.name}")
-            // Lawnchair-TODO: Migrate to MSDL vibration?
-            VibratorWrapper.INSTANCE.get(context.launcher).vibrate(VibratorWrapper.OVERVIEW_HAPTIC)
+            mMSDLPlayerWrapper.playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR)
             gesture.createHandler(context).onTrigger(context.launcher)
         }
 
