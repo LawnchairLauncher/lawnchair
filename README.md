@@ -1,6 +1,6 @@
 # NIX OS
 
-**Version:** `Nix_OS_v1.3_Beta`
+**Version:** `Nix_OS_v1.3_Beta_Hotfix`
 
 NIX OS is an Android home-screen launcher project. It customizes the Android home experience; it is **not** a standalone Android operating system, custom ROM, or firmware replacement.
 
@@ -25,6 +25,8 @@ The configured release task is:
 ```bash
 ./gradlew assembleLawnWithQuickstepGithubRelease bundleLawnWithQuickstepPlayRelease
 ```
+
+Release builds require a stable signing key configured as GitHub Actions repository secrets: `KEYSTORE` (base64-encoded JKS), `KEYSTORE_PASSWORD`, `KEY_ALIAS`, and `KEY_PASSWORD`. The workflow stops instead of silently producing a temporary-key-signed release APK. Use the same keystore and alias that signed the previously installed NIX OS APK to support in-place updates.
 
 ## Package identity
 
