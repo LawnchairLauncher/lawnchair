@@ -132,7 +132,7 @@
     <string name="apps_in_folder_label">Ocultar aplicativos da pasta</string>
     <string name="apps_in_folder_description">Os aplicativos atribuídos a pastas são excluídos das listas de aplicativos</string>
     <string name="folders_filter_duplicates">Mostrar apenas apps únicos</string>
-    <string name="folder_manage_apps">Manage apps</string>
+    <string name="folder_manage_apps">Gerenciar aplicativos</string>
     <string name="my_folder_label">Minha pasta</string>
     <string name="sort_active_items_action">Organizar itens ativos</string>
     <!-- A11y description -->
@@ -155,7 +155,7 @@
     -->
     <string name="settings">Configurações</string>
     <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
-    <string name="settings_pick_a_page">Pick a setting from the menu</string>
+    <string name="settings_pick_a_page">Escolher uma configuração do menu</string>
     <string name="general_label">Geral</string>
     <string name="general_description">Cores, pacotes de ícones, pontos de notificação</string>
     <string name="home_screen_label">Tela inicial</string>
@@ -504,12 +504,12 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="backup_restore_success">Backup restaurado</string>
     <string name="backup_restore_error">Falha ao restaurar o backup</string>
     <string name="invalid_backup_file">Arquivo de backup inválido</string>
-    <string name="restore_nova_backup">Restaure o backup Nova</string>
+    <string name="restore_nova_backup">Restaurar backup Nova</string>
     <string name="invalid_nova_backup_file">Arquivo de backup Nova inválido</string>
     <string name="nova_grid_label">Grade</string>
     <string name="nova_grid_value">%1$d x %2$d</string>
     <string name="nova_dock_label">Ancorar</string>
-    <string name="nova_app_label">Apps</string>
+    <string name="nova_app_label">Aplicativos</string>
     <string name="nova_widget_label">Widgets</string>
     <string name="nova_folder_label">Pastas</string>
     <string name="nova_shortcut_label">Atalhos</string>
@@ -678,7 +678,7 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <string name="when_folded_label">Quando estiver dentro da pasta</string>
     <string name="when_unfolded_label">Quando estiver fora da pasta</string>
     <string name="unfolded_grid_description">Lawnchair agrupa duas páginas para preencher um display mais largo</string>
-    <string name="foldable_columns_error">The folded value must be less than or equal to the unfolded value. It will be automatically adjusted if needed.</string>
+    <string name="foldable_columns_error">O valor dobrável deve ser menor ou igual ao valor desdobrável. Será ajustado automaticamente se necessário.</string>
     <string name="hotseat_bottom_space_label">Preenchimento inferior</string>
     <string name="page_indicator_height">Altura do indicador de página</string>
     <!-- Search providers -->

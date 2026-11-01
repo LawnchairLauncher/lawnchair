@@ -132,7 +132,7 @@
     <string name="apps_in_folder_label">Peida kaustade rakendused</string>
     <string name="apps_in_folder_description">Kaustadesse määratud rakendusi rakenduste loendis ei kuvata</string>
     <string name="folders_filter_duplicates">Kuva ainult unikaalsed rakendused</string>
-    <string name="folder_manage_apps">Manage apps</string>
+    <string name="folder_manage_apps">Halda rakendusi</string>
     <string name="my_folder_label">Minu kaust</string>
     <string name="sort_active_items_action">Järjesta aktiivsed üksused</string>
     <!-- A11y description -->
@@ -230,7 +230,7 @@
     <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
     <string name="dismissed_prediction_apps_label">Blokeeritud rakendused</string>
     <string name="dismissed_prediction_apps_label_with_count">Blokeeritud rakendused (%1$d)</string>
-    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="prediction_system_settings">Halda süsteemi soovitusi</string>
     <string name="missing_usage_access_label">Usage access needed</string>
     <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
@@ -330,7 +330,7 @@
     <string name="system_icons">Süsteemi ikoonid</string>
     <string name="force_monochrome_label">Sunni ühevärvilisus</string>
     <string name="force_monochrome_description">Värvi mittetoetatud rakendused üle praeguse aktsentvärviga.</string>
-    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_title">Sunni temaatilised ikoonid jõuga</string>
     <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Temaatilised ikoonid</string>
     <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
@@ -341,7 +341,7 @@
     <string name="lawnicons_not_installed_description">Toetatud ikoonipakette pole</string>
     <string name="advanced_icon_settings_title">Advanced icon settings</string>
     <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
-    <string name="reshape_unthemed_icons_description">By adding a background</string>
+    <string name="reshape_unthemed_icons_description">Lisades tausta</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Lisa fonte</string>
     <string name="pref_fonts_add_fonts_summary">Toetatakse OTF ja TTF fonte</string>
