@@ -167,13 +167,7 @@ class AboutViewModel(
             ),
         )
 
-        private val topLinks = listOf(
-            Link(
-                iconResId = R.drawable.ic_github,
-                labelResId = R.string.github,
-                url = "https://github.com/ITS1NEXO/J.A.R.V.I.S-OS",
-            ),
-        )
+        private val topLinks = emptyList<Link>()
 
         private val bottomLinks = emptyList<Link>()
 
