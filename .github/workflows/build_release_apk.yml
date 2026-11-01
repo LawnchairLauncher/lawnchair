@@ -20,16 +20,25 @@ jobs:
       - uses: gradle/actions/setup-gradle@v5
         with:
           cache-encryption-key: Da25KUVSE5jbGds2zXmfXw==
-      - name: Write sign info
-        if: github.repository_owner == 'LawnchairLauncher'
+      - name: Configure stable release signing
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
-            echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
-            echo keyAlias='${{ secrets.KEY_ALIAS }}' >> keystore.properties
-            echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> keystore.properties
-            echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
-            echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
+          if [ -z "$KEYSTORE_B64" ] || [ -z "$KEYSTORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "::error::Stable release signing is not configured. Add KEYSTORE (base64), KEYSTORE_PASSWORD, KEY_ALIAS, and KEY_PASSWORD repository secrets. Refusing to create an APK with a temporary debug key that cannot reliably update an existing installation."
+            exit 1
           fi
+
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > "$GITHUB_WORKSPACE/key.jks"
+          {
+            printf 'storePassword=%s\n' "$KEYSTORE_PASSWORD"
+            printf 'keyAlias=%s\n' "$KEY_ALIAS"
+            printf 'keyPassword=%s\n' "$KEY_PASSWORD"
+            printf 'storeFile=%s\n' "$GITHUB_WORKSPACE/key.jks"
+          } > keystore.properties
       - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepGithubRelease bundleLawnWithQuickstepPlayRelease
       - name: Upload artifact
