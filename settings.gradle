@@ -16,7 +16,7 @@ plugins {
     id "com.gradle.develocity" version "4.3.1"
 }
 
-rootProject.name = "JarvisOS"
+rootProject.name = "NIXOS"
 
 def isCI = providers.environmentVariable('CI').present
 
