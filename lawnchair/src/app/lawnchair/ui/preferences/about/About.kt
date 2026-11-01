@@ -142,7 +142,7 @@ fun About(
                             onClick = {},
                             onLongClick = {
                                 val commitUrl =
-                                    "https://github.com/ITS1NEXO/J.A.R.V.I.S-OS/commit/${BuildConfig.COMMIT_HASH}"
+                                    "https://github.com/ITS1NEXO/NIX-OS/commit/${BuildConfig.COMMIT_HASH}"
                                 context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
                             },
                         ),
@@ -185,25 +185,22 @@ fun About(
                 }
             }
         }
-        preferenceGroupItems(
-            items = uiState.coreTeam,
-            key = { _, it -> it.name },
-            isFirstChild = false,
-            heading = { stringResource(id = R.string.nix_os_upstream_contributors) },
-        ) { _, it ->
-            ContributorRow(
-                member = it,
+        item {
+            PreferenceGroupHeading(
+                stringResource(R.string.nix_os_project_credit),
             )
         }
-        preferenceGroupItems(
-            items = uiState.supportAndPr,
-            key = { _, it -> it.name },
-            isFirstChild = false,
-            heading = { stringResource(id = R.string.nix_os_upstream_support) },
-        ) { _, it ->
-            ContributorRow(
-                member = it,
-            )
+        item {
+            PreferenceGroupItem(
+                cutTop = false,
+                cutBottom = true,
+            ) {
+                HorizontalLawnchairLink(
+                    iconResId = R.drawable.ic_github,
+                    label = stringResource(R.string.nix_os_github_credit),
+                    url = "https://github.com/ITS1NEXO/NIX-OS",
+                )
+            }
         }
         preferenceGroupItems(
             items = uiState.bottomLinks,
