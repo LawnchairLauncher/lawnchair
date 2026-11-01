@@ -156,7 +156,10 @@ class LawnchairShortcut {
             }
             // Work profile app can lose its Pause Apps shortcut.
             if (itemInfo.user.identifier != context.userId &&
-                context.checkCallingOrSelfPermission(INTERACT_ACROSS_USERS_FULL_PERMISSION) != PackageManager.PERMISSION_GRANTED
+                (
+                    !Utilities.ATLEAST_U || context.checkCallingOrSelfPermission(INTERACT_ACROSS_USERS_FULL_PERMISSION)
+                        != PackageManager.PERMISSION_GRANTED
+                    )
             ) {
                 return@Factory null
             }
