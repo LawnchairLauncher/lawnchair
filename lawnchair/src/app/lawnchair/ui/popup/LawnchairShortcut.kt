@@ -136,6 +136,7 @@ class LawnchairShortcut {
         )
 
         private const val SUSPEND_APPS_PERMISSION = "android.permission.SUSPEND_APPS"
+        private const val INTERACT_ACROSS_USERS_FULL_PERMISSION = "android.permission.INTERACT_ACROSS_USERS_FULL"
 
         val OPEN_IN_STORE =
             SystemShortcut.Factory { activity: ActivityContext, itemInfo: ItemInfo, originalView: View ->
@@ -153,13 +154,19 @@ class LawnchairShortcut {
             if (context.checkCallingOrSelfPermission(SUSPEND_APPS_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
                 return@Factory null
             }
+            // Work profile app can lose its Pause Apps shortcut.
+            if (itemInfo.user.identifier != context.userId &&
+                context.checkCallingOrSelfPermission(INTERACT_ACROSS_USERS_FULL_PERMISSION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return@Factory null
+            }
             val targetCmp = itemInfo.targetComponent
             val packageName = targetCmp?.packageName ?: return@Factory null
 
             val unsuspendableApps = try {
                 AppGlobals.getPackageManager().getUnsuspendablePackagesForUser(
                     arrayOf(packageName),
-                    context.userId,
+                    itemInfo.user.identifier,
                 )
             } catch (e: RemoteException) {
                 Log.e("LawnchairShortcut", "Fail to query suspension authority for $packageName", e)
