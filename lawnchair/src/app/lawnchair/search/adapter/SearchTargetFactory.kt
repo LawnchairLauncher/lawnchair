@@ -63,9 +63,6 @@ import okio.ByteString
 class SearchTargetFactory(
     private val context: Context,
 ) {
-    /** Colour schemes seeded from calendar colours, built once per colour since building one is costly. */
-    private val calendarColorSchemes = ConcurrentHashMap<Int, MonetColorSchemeCompat>()
-
     fun createAppSearchTarget(appInfo: AppInfo, asRow: Boolean = false): SearchTargetCompat {
         val componentName = appInfo.componentName
         val user = appInfo.user
@@ -453,6 +450,12 @@ class SearchTargetFactory(
 
         // Matches the threshold below which Monet's ColorScheme ignores the seed colour.
         private const val MIN_CALENDAR_SEED_CHROMA = 5f
+
+        /**
+         * Colour schemes seeded from calendar colours, built once per colour since building one is
+         * costly.
+         */
+        private val calendarColorSchemes = ConcurrentHashMap<Int, MonetColorSchemeCompat>()
         private val CALENDAR_ICONS = intArrayOf(
             R.drawable.themed_icon_calendar_1,
             R.drawable.themed_icon_calendar_2,
@@ -488,9 +491,9 @@ class SearchTargetFactory(
         )
 
         // TODO find a way to properly provide tag/provide ids to search target
-        private val messageDigest by lazy { MessageDigest.getInstance(HASH_ALGORITHM) }
-
-        private fun generateHashKey(input: String): String = ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
+        // MessageDigest isn't thread-safe and targets are built on several threads, so each call
+        // gets its own instance.
+        private fun generateHashKey(input: String): String = ByteString.of(*MessageDigest.getInstance(HASH_ALGORITHM).digest(input.toByteArray())).hex()
 
         fun createSearchTarget(
             id: String,
