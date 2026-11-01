@@ -193,12 +193,24 @@ fun About(
         item {
             PreferenceGroupItem(
                 cutTop = false,
-                cutBottom = true,
+                cutBottom = false,
             ) {
                 HorizontalLawnchairLink(
                     iconResId = R.drawable.ic_github,
                     label = stringResource(R.string.nix_os_github_credit),
                     url = "https://github.com/ITS1NEXO/NIX-OS",
+                )
+            }
+        }
+        item {
+            PreferenceGroupItem(
+                cutTop = true,
+                cutBottom = true,
+            ) {
+                HorizontalLawnchairLink(
+                    iconResId = R.drawable.ic_github,
+                    label = stringResource(R.string.lawnchair_open_source_credit),
+                    url = "https://github.com/LawnchairLauncher/lawnchair",
                 )
             }
         }
