@@ -49,7 +49,6 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
@@ -57,7 +56,6 @@ import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
 import app.lawnchair.ui.preferences.navigation.About
 import app.lawnchair.ui.preferences.navigation.AppDrawer
 import app.lawnchair.ui.preferences.navigation.CreateBackup
@@ -87,7 +85,6 @@ fun PreferencesDashboard(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    SyncLiveInformation()
     val pref2 = preferenceManager2()
 
     PreferenceLayout(
@@ -97,7 +94,7 @@ fun PreferencesDashboard(
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu(currentRoute = currentRoute, onNavigate = onNavigate) },
     ) {
-        AnnouncementPreference()
+        NixOsProjectAnnouncement()
 
         if (BuildConfig.APPLICATION_ID.contains("nightly") || BuildConfig.DEBUG) {
             PreferencesDebugWarning()
@@ -195,6 +192,48 @@ fun PreferencesDashboard(
                 isSelected = currentRoute is About,
             )
         }
+    }
+}
+
+@Composable
+private fun NixOsProjectAnnouncement() {
+    val context = LocalContext.current
+
+    Surface(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .clickable {
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    android.net.Uri.parse("https://github.com/ITS1NEXO/NIX-OS"),
+                )
+                context.startActivity(intent)
+            },
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        PreferenceTemplate(
+            title = {
+                Text("NIX OS v1.3 Beta")
+            },
+            description = {
+                Text("Explore NIX OS updates, features, and project news.")
+            },
+            startWidget = {
+                Icon(
+                    imageVector = Icons.Rounded.TipsAndUpdates,
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = null,
+                )
+            },
+            endWidget = {
+                Icon(
+                    imageVector = Icons.Rounded.TipsAndUpdates,
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = null,
+                )
+            },
+        )
     }
 }
 
