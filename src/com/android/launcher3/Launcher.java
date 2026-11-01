@@ -1642,10 +1642,10 @@ public class Launcher extends StatefulActivity<LauncherState>
                     mAppsView.reset(isStarted() /* animate */);
                 }
 
-                if (shouldMoveToDefaultScreen && !mWorkspace.isHandlingTouch()) {
+                if (!mWorkspace.isHandlingTouch()) {
                     if (mWorkspace.getNextPage() != mWorkspace.getDefaultPage()) {
                         mWorkspace.post(mWorkspace::moveToDefaultScreen);
-                    } else {
+                    } else if (shouldMoveToDefaultScreen) {
                         handleHomeTap();
                     }
                 }
