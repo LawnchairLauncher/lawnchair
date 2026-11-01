@@ -339,6 +339,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     PreferenceManager2 mPreferenceManager2;
     PreferenceManager mPreferenceManger;
+    private int mDefaultPage = -1;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -604,6 +605,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Initializes various states for this workspace.
      */
     protected void initWorkspace() {
+        mDefaultPage = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getDefaultHomePage());
         mCurrentPage = getDefaultPage();
         setClipToPadding(false);
 
@@ -1181,8 +1183,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         updateAccessibilityViewPageDescription();
 
         // Reset default home page if it's now out of range after page removal
-        int storedDefault = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getDefaultHomePage());
-        if (storedDefault >= getChildCount()) {
+        int storedDefault = mDefaultPage >= 0 ? mDefaultPage
+                : PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getDefaultHomePage());
+        if (getChildCount() > 0 && storedDefault >= getChildCount()) {
             setDefaultPage(DEFAULT_PAGE);
         }
         persistCurrentScreenOrderSync();
@@ -3918,9 +3921,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Falls back to {@link #DEFAULT_PAGE} if the stored page is out of range.
      */
     public int getDefaultPage() {
-        int storedPage = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getDefaultHomePage());
+        int storedPage = mDefaultPage >= 0 ? mDefaultPage
+                : PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getDefaultHomePage());
+        if (storedPage < 0) {
+            return DEFAULT_PAGE;
+        }
+        if (mLauncher != null && mLauncher.isWorkspaceLoading()) {
+            return storedPage;
+        }
         int pageCount = getChildCount();
-        if (storedPage >= 0 && storedPage < pageCount) {
+        if (pageCount == 0 || storedPage < pageCount) {
             return storedPage;
         }
         return DEFAULT_PAGE;
@@ -3930,6 +3940,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * Sets the given page index as the default home page.
      */
     public void setDefaultPage(int pageIndex) {
+        mDefaultPage = pageIndex;
         com.patrykmichalik.opto.core.PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getDefaultHomePage(), pageIndex);
     }
 

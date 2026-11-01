@@ -46,13 +46,16 @@ open class WidgetSizeHandler @Inject constructor(@ApplicationContext private val
         spanY: Int,
     ) {
         Executors.UI_HELPER_EXECUTOR.execute {
-            val widgetManager = AppWidgetManager.getInstance(context)
-            val sizeOptions = WidgetSizes.getWidgetSizeOptions(context, info.provider, spanX, spanY)
-            if (
-                sizeOptions.getWidgetSizeList() !=
-                    widgetManager.getAppWidgetOptions(widgetId).getWidgetSizeList()
-            )
-                widgetManager.updateAppWidgetOptions(widgetId, sizeOptions)
+            try {
+                val widgetManager = AppWidgetManager.getInstance(context)
+                val sizeOptions = WidgetSizes.getWidgetSizeOptions(context, info.provider, spanX, spanY) ?: return@execute
+                val currentOptions = widgetManager.getAppWidgetOptions(widgetId)
+                if (sizeOptions.getWidgetSizeList() != currentOptions?.getWidgetSizeList()) {
+                    widgetManager.updateAppWidgetOptions(widgetId, sizeOptions)
+                }
+            } catch (e: Exception) {
+                // Ignore widget options update errors (e.g. invalid or stale widget id)
+            }
         }
     }
 

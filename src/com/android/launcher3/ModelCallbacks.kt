@@ -71,6 +71,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             AbstractFloatingView.TYPE_ALL and AbstractFloatingView.TYPE_REBIND_SAFE.inv(),
         )
         workspaceLoading = true
+        synchronouslyBoundPages = IntSet()
 
         // Clear the workspace because it's going to be rebound
         launcher.dragController.cancelDrag()
@@ -141,13 +142,21 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         workspaceLoading = false
         launcher.processActivityResult()
         val currentPage =
-            if (pagesBoundFirst != null && !pagesBoundFirst.isEmpty)
-                launcher.workspace.getPageIndexForScreenId(pagesBoundFirst.array[0])
-            else PagedView.INVALID_PAGE
+            if (pagesBoundFirst != null && !pagesBoundFirst.isEmpty) {
+                val pageIndex = launcher.workspace.getPageIndexForScreenId(pagesBoundFirst.array[0])
+                if (pageIndex != PagedView.INVALID_PAGE) pageIndex else launcher.workspace.defaultPage
+            } else {
+                launcher.workspace.defaultPage
+            }
         // When undoing the removal of the last item on a page, return to that page.
         // Since we are just resetting the current page without user interaction,
         // override the previous page so we don't log the page switch.
         launcher.workspace.setCurrentPage(currentPage, currentPage /* overridePrevPage */)
+        launcher.workspace.runOnPageScrollsInitialized {
+            if (launcher.workspace.currentPage != currentPage) {
+                launcher.workspace.setCurrentPage(currentPage, currentPage)
+            }
+        }
         pagesToBindSynchronously = IntSet()
 
         // Cache one page worth of icons
@@ -257,7 +266,38 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             when {
                 !pagesToBindSynchronously.isEmpty -> pagesToBindSynchronously
                 !workspaceLoading -> launcher.workspace.currentPageScreenIds
-                else -> synchronouslyBoundPages
+                !synchronouslyBoundPages.isEmpty -> synchronouslyBoundPages
+                else -> {
+                    val screenIds =
+                        if (
+                            launcher.deviceProfile.deviceProperties.isTwoPanels &&
+                                FeatureFlags.FOLDABLE_SINGLE_PAGE.get()
+                        ) {
+                            val filteredIds = filterTwoPanelScreenIds(orderedScreenIds)
+                            LIntArray().apply {
+                                orderedScreenIds.forEach { id ->
+                                    if (filteredIds.contains(id) && !contains(id)) {
+                                        add(id)
+                                    }
+                                }
+                                filteredIds.forEach { id ->
+                                    if (!contains(id)) {
+                                        add(id)
+                                    }
+                                }
+                            }
+                        } else {
+                            orderedScreenIds
+                        }
+                    val defaultPage = launcher.workspace.defaultPage
+                    val defaultScreenId =
+                        if (defaultPage >= 0 && defaultPage < screenIds.size()) {
+                            screenIds[defaultPage]
+                        } else {
+                            FIRST_SCREEN_ID
+                        }
+                    IntSet.wrap(defaultScreenId)
+                }
             }
         // Launcher IntArray has the same name as Kotlin IntArray
         val result = IntSet()
