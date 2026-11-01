@@ -194,6 +194,8 @@
     <string name="quickstep_description">Clear All button, corner radius</string>
 
     <string name="about_label">About</string>
+    <string name="nix_os_upstream_contributors">Original Lawnchair contributors</string>
+    <string name="nix_os_upstream_support">Original Lawnchair support contributors</string>
 
     <string name="app_info_drop_target_label">App info</string>
     <string name="debug_restart_launcher">Restart NIX OS</string>
