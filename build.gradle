@@ -146,7 +146,7 @@ final def isReleaseBuild = ciBuild && ciRef.contains("beta")
 final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 final def version = "15"
 final def releaseName = "Beta 3"
-final def versionDisplayName = "Nix_OS_v1.3_Beta_Hotfix"
+final def versionDisplayName = "Nix_OS_v1.3.1_Beta_Hotfix"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
 final def quickstepMinSdk = "29"
@@ -157,7 +157,7 @@ android {
     defaultConfig {
         // Lawnchair Launcher 15.0 Beta 3
         // See CONTRIBUTING.md#versioning-scheme
-        versionCode 15_00_02_03_03
+        versionCode 15_00_02_03_04
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
