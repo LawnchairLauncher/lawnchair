@@ -193,6 +193,11 @@ fun GenericSearchProviderPreference(
                 }
 
                 SearchProviderId.WEB -> {
+                    SwitchPreference(
+                        adapter = prefs2.showWebSearchSuggestions.getAdapter(),
+                        label = stringResource(id = R.string.web_search_suggestions_label),
+                        description = stringResource(id = R.string.web_search_suggestions_description),
+                    )
                     SliderPreference(
                         label = stringResource(id = R.string.max_web_suggestion_delay),
                         adapter = prefs2.maxWebSuggestionDelay.getAdapter(),

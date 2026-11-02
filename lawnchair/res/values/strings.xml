@@ -1042,6 +1042,8 @@
     <string name="max_recent_result_count_title">Maximum items for search history</string>
     <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <string name="web_search_suggestions_label">Search suggestions</string>
+    <string name="web_search_suggestions_description">Suggest searches from your web suggestion provider as you type</string>
 
     <!-- Permission management -->
     <string name="missing_notification_access_label">Notification access needed</string>
