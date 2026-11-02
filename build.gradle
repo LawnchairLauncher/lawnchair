@@ -221,7 +221,7 @@ android {
     if ([releaseKeystorePath, releaseStorePassword, releaseKeyAlias, releaseKeyPassword].any { !it }) {
         throw new GradleException("Release signing is not configured. Add all four NIX OS signing secrets to GitHub Actions.")
     }
-    releaseSigning = signingConfigs.create("release") {
+    def releaseSigning = signingConfigs.create("release") {
         keyAlias releaseKeyAlias
         keyPassword releaseKeyPassword
         storeFile file(releaseKeystorePath)
