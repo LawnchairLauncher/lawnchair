@@ -212,25 +212,23 @@ android {
         .findAll { it.exists() }
         .toArray()
 
-    // Release builds must always use the persistent NIX OS signing key.
-    // Credentials are supplied only through the GitHub Actions environment.
+    // Release builds use the permanent NIX OS key when configured.
+    // Debug builds use Gradle's standard debug signing key and need no secrets.
     def releaseKeystorePath = System.getenv("RELEASE_KEYSTORE_PATH")
     def releaseStorePassword = System.getenv("KEYSTORE_PASSWORD")
     def releaseKeyAlias = System.getenv("KEY_ALIAS")
     def releaseKeyPassword = System.getenv("KEY_PASSWORD")
-    if ([releaseKeystorePath, releaseStorePassword, releaseKeyAlias, releaseKeyPassword].any { !it }) {
-        throw new GradleException("Release signing is not configured. Add all four NIX OS signing secrets to GitHub Actions.")
-    }
-    def releaseSigning = signingConfigs.create("release") {
+    def hasReleaseSigning = [releaseKeystorePath, releaseStorePassword, releaseKeyAlias, releaseKeyPassword].every { it }
+    def releaseSigning = hasReleaseSigning ? signingConfigs.create("release") {
         keyAlias releaseKeyAlias
         keyPassword releaseKeyPassword
         storeFile file(releaseKeystorePath)
         storePassword releaseStorePassword
-    }
+    } : null
 
     buildTypes {
         all {
-            signingConfig releaseSigning
+            signingConfig = (name == "release" && releaseSigning != null) ? releaseSigning : signingConfigs.debug
 
             applicationVariants.configureEach { variant ->
                 variant.outputs.configureEach {
