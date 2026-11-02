@@ -1,4 +1,5 @@
 @file:JvmName("FolderUtils")
+
 package app.lawnchair.util
 
 import com.android.launcher3.model.ModelWriter
@@ -10,17 +11,17 @@ import com.android.launcher3.model.data.FolderInfo
 fun FolderInfo.sortAlphabetically(modelWriter: ModelWriter? = null) {
     val items = getContents()
 
-
-    items.sortWith(Comparator { a, b ->
-        val titleA = a.title?.toString() ?: ""
-        val titleB = b.title?.toString() ?: ""
-        titleA.compareTo(titleB, ignoreCase = true)
-    })
+    items.sortWith(
+        Comparator { a, b ->
+            val titleA = a.title?.toString() ?: ""
+            val titleB = b.title?.toString() ?: ""
+            titleA.compareTo(titleB, ignoreCase = true)
+        },
+    )
 
     items.forEachIndexed { index, item ->
         item.rank = index
     }
-
 
     modelWriter?.let { writer ->
         items.forEach { item ->
