@@ -37,6 +37,7 @@ class VerticalSwipeTouchController(
     private var currentDisplacement = 0f
 
     private var pointerCount = 0
+    private var maxPointerCount = 0
     private var triggered = false
 
     // LC: a touch that starts on a paged dock belongs to the pager while it is mostly horizontal.
@@ -48,10 +49,10 @@ class VerticalSwipeTouchController(
     init {
         launcher.lifecycleScope.launch {
             prefs.swipeUpGestureHandler.get()
-                .onEach { overrideSwipeUp = it != prefs.swipeUpGestureHandler.defaultValue }
+                .onEach { overrideSwipeUp = it != prefs.swipeUpGestureHandler.defaultValue && it !is GestureHandlerConfig.OpenAppDrawer }
                 .launchIn(this)
             prefs.swipeDownGestureHandler.get()
-                .onEach { overrideSwipeDown = it != prefs.swipeDownGestureHandler.defaultValue }
+                .onEach { overrideSwipeDown = it != prefs.swipeDownGestureHandler.defaultValue && it !is GestureHandlerConfig.OpenNotifications }
                 .launchIn(this)
             // Override when a custom gesture handler is configured, as launcher does not handle these by default
             prefs.twoFingerSwipeUpGestureHandler.get()
@@ -72,7 +73,7 @@ class VerticalSwipeTouchController(
             downOnPagedDock = isOnPagedDock(ev)
             downX = ev.x
             downY = ev.y
-            detector.setDetectableScrollConditions(getSwipeDirection(), false)
+            maxPointerCount = 1
         } else if (downOnPagedDock && !noIntercept &&
             HorizontalSwipeFilter.isHorizontalSwipe(ev.x - downX, ev.y - downY, touchSlop / 2f)
         ) {
@@ -81,6 +82,10 @@ class VerticalSwipeTouchController(
         if (noIntercept) {
             return false
         }
+        pointerCount = ev.pointerCount
+        maxPointerCount = maxOf(maxPointerCount, pointerCount)
+        val effectivePointerCount = if (maxPointerCount >= 2) 2 else pointerCount
+        detector.setDetectableScrollConditions(getSwipeDirection(effectivePointerCount), false)
         onControllerTouchEvent(ev)
         return detector.isDraggingOrSettling
     }
@@ -88,6 +93,7 @@ class VerticalSwipeTouchController(
     override fun onControllerTouchEvent(ev: MotionEvent): Boolean {
         // We don't need to check when the pointer count changes during a swipe
         pointerCount = ev.pointerCount
+        maxPointerCount = maxOf(maxPointerCount, pointerCount)
         return detector.onTouchEvent(ev)
     }
 
@@ -122,16 +128,17 @@ class VerticalSwipeTouchController(
         val velocity = computeVelocity(displacement.y - currentDisplacement, motionEvent.eventTime)
         if (velocity.absoluteValue > TRIGGER_VELOCITY) {
             triggered = true
+            val effectivePointerCount = if (maxPointerCount >= 2) 2 else pointerCount
             if (velocity < 0) {
-                if (pointerCount == 1) {
+                if (effectivePointerCount == 1 && overrideSwipeUp) {
                     gestureController.onSwipeUp()
-                } else if (pointerCount == 2) {
+                } else if (effectivePointerCount == 2 && overrideTwoFingerSwipeUp) {
                     gestureController.onTwoFingerSwipeUp()
                 }
             } else {
-                if (pointerCount == 1) {
+                if (effectivePointerCount == 1 && overrideSwipeDown) {
                     gestureController.onSwipeDown()
-                } else if (pointerCount == 2) {
+                } else if (effectivePointerCount == 2 && overrideTwoFingerSwipeDown) {
                     gestureController.onTwoFingerSwipeDown()
                 }
             }
@@ -141,15 +148,29 @@ class VerticalSwipeTouchController(
 
     override fun onDragEnd(velocity: PointF) {
         detector.finishedScrolling()
+        maxPointerCount = 0
     }
 
-    private fun getSwipeDirection(): Int {
+    private fun getSwipeDirection(pointerCount: Int): Int {
         var directions = 0
-        if (overrideSwipeUp || overrideTwoFingerSwipeUp) {
-            directions = directions or BothAxesSwipeDetector.DIRECTION_UP
-        }
-        if (overrideSwipeDown || overrideTwoFingerSwipeDown) {
-            directions = directions or BothAxesSwipeDetector.DIRECTION_DOWN
+        when (pointerCount) {
+            1 -> {
+                if (overrideSwipeUp) {
+                    directions = directions or BothAxesSwipeDetector.DIRECTION_UP
+                }
+                if (overrideSwipeDown) {
+                    directions = directions or BothAxesSwipeDetector.DIRECTION_DOWN
+                }
+            }
+
+            2 -> {
+                if (overrideTwoFingerSwipeUp) {
+                    directions = directions or BothAxesSwipeDetector.DIRECTION_UP
+                }
+                if (overrideTwoFingerSwipeDown) {
+                    directions = directions or BothAxesSwipeDetector.DIRECTION_DOWN
+                }
+            }
         }
         return directions
     }

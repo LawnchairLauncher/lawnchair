@@ -114,6 +114,10 @@ public class VibratorWrapper {
      */
     @SuppressLint("NewApi")
     public void vibrate(int primitiveId, float primitiveScale, VibrationEffect fallbackEffect) {
+        if (!Utilities.ATLEAST_R) {
+            vibrate(fallbackEffect);
+            return;
+        }
         if (mHasVibrator && mIsHapticFeedbackEnabled) {
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (primitiveId >= 0 && mVibrator.areAllPrimitivesSupported(primitiveId)) {

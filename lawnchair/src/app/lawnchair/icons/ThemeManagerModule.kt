@@ -3,6 +3,7 @@ package app.lawnchair.icons
 import android.content.Context
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.theme.ThemeProvider
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.concurrent.annotations.Ui
 import com.android.launcher3.dagger.ApplicationContext
@@ -26,6 +27,7 @@ class ThemeManagerModule {
         iconControllerFactory: ThemeManager.IconControllerFactory,
         prefs2: PreferenceManager2,
         prefs1: PreferenceManager,
+        themeProvider: ThemeProvider,
     ): ThemeManager {
         return LawnchairThemeManager(
             context = context,
@@ -35,6 +37,7 @@ class ThemeManagerModule {
             iconControllerFactory = iconControllerFactory,
             prefs2 = prefs2,
             prefs1 = prefs1,
+            themeProvider = themeProvider,
         )
     }
 }

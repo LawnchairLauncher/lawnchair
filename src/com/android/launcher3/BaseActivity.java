@@ -28,11 +28,13 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.Display;
 import android.view.View;
 import android.window.OnBackInvokedDispatcher;
 
@@ -530,7 +532,14 @@ public abstract class BaseActivity extends Activity implements ActivityContext,
     }
 
     protected WindowBounds getMultiWindowDisplaySize() {
-        return WindowBounds.fromWindowMetrics(getWindowManager().getCurrentWindowMetrics());
+        if (Utilities.ATLEAST_R) {
+            return WindowBounds.fromWindowMetrics(getWindowManager().getCurrentWindowMetrics());
+        } else {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            return new WindowBounds(size.x, size.y, size.x, size.y, -1);
+        }
     }
 
     @Override

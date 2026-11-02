@@ -49,7 +49,7 @@
     <string name="pro_updated">Ihre Version ist aktuell</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Änderungen</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">Updates konnten nicht geladen werden</string>
     <string name="changes_dialog_no_changes">Keine Änderungen gefunden</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">von %1$s • %2$s • %3$s</string>
@@ -142,8 +142,8 @@
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">Erweitert</string>
     <!-- Draggable -->
-    <string name="reorderable_move_up">Move up</string>
-    <string name="reorderable_move_down">Move down</string>
+    <string name="reorderable_move_up">Nach oben verschieben</string>
+    <string name="reorderable_move_down">Nach unten verschieben</string>
     <string name="reorderable_active_items">Aktive Elemente</string>
     <string name="reorderable_disabled_items">Inaktive Elemente</string>
     <string name="reorderable_disabled_hint">Disabled items will appear here</string>
