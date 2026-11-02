@@ -213,18 +213,19 @@ android {
         .toArray()
 
     // Release builds must always use the persistent NIX OS signing key.
-    // CI creates keystore.properties from GitHub Actions secrets before Gradle runs.
-    def keystorePropertiesFile = rootProject.file("keystore.properties")
-    if (!keystorePropertiesFile.exists()) {
-        throw new GradleException("Release signing is not configured. Add the NIX OS signing secrets to GitHub Actions.")
+    // Credentials are supplied only through the GitHub Actions environment.
+    def releaseKeystorePath = System.getenv("RELEASE_KEYSTORE_PATH")
+    def releaseStorePassword = System.getenv("KEYSTORE_PASSWORD")
+    def releaseKeyAlias = System.getenv("KEY_ALIAS")
+    def releaseKeyPassword = System.getenv("KEY_PASSWORD")
+    if ([releaseKeystorePath, releaseStorePassword, releaseKeyAlias, releaseKeyPassword].any { !it }) {
+        throw new GradleException("Release signing is not configured. Add all four NIX OS signing secrets to GitHub Actions.")
     }
-    def keystoreProperties = new Properties()
-    keystoreProperties.load(keystorePropertiesFile.newInputStream())
     releaseSigning = signingConfigs.create("release") {
-        keyAlias keystoreProperties['keyAlias']
-        keyPassword keystoreProperties['keyPassword']
-        storeFile rootProject.file(keystoreProperties['storeFile'])
-        storePassword keystoreProperties['storePassword']
+        keyAlias releaseKeyAlias
+        keyPassword releaseKeyPassword
+        storeFile file(releaseKeystorePath)
+        storePassword releaseStorePassword
     }
 
     buildTypes {
