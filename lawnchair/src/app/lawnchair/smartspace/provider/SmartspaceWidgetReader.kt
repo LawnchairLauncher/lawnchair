@@ -123,9 +123,10 @@ class SmartspaceWidgetReader(context: Context) :
             temperature,
             pendingIntent,
         ) ?: return null
-        val intent = Intent().apply {
-            component = WEATHER_COMPONENT
-        }
+        // Prefer the Pixel Weather app. The Google app's WeatherExportedActivity only opens a weather search.
+        val intent = context.packageManager.getLaunchIntentForPackage(WEATHER_APP_PACKAGE)
+            ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            ?: Intent().apply { component = WEATHER_COMPONENT }
         return SmartspaceTarget(
             id = "smartspaceWidgetWeather",
             headerAction = SmartspaceAction(
@@ -162,6 +163,7 @@ class SmartspaceWidgetReader(context: Context) :
         private const val GSA_PACKAGE = "com.google.android.googlequicksearchbox"
         private const val WIDGET_CLASS_NAME = "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
         private const val GSA_WEATHER = "com.google.android.apps.search.weather.WeatherExportedActivity"
+        private const val WEATHER_APP_PACKAGE = "com.google.android.apps.weather"
         private val WEATHER_COMPONENT = ComponentName(GSA_PACKAGE, GSA_WEATHER)
 
         private val dummyTarget = SmartspaceTarget(
