@@ -25,6 +25,7 @@ sealed class QsbSearchProvider(
     val packageName: String,
     val className: String? = null,
     val action: String? = null,
+    val privateAction: String? = null,
     val supportVoiceIntent: Boolean = false,
     val website: String,
     val type: QsbSearchProviderType = QsbSearchProviderType.APP_AND_WEBSITE,
@@ -38,13 +39,17 @@ sealed class QsbSearchProvider(
     }
 
     open suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
-        createLaunchIntent(launcher, forceWebsite)
+        val privateTab = privateAction != null &&
+            PreferenceManager2.getInstance(launcher).hotseatQsbPrivateTab.first()
+        createLaunchIntent(launcher, forceWebsite, privateTab)
             ?.let { launcher.startActivity(it) }
     }
 
-    private fun createLaunchIntent(context: Context, forceWebsite: Boolean): Intent? {
+    private fun createLaunchIntent(context: Context, forceWebsite: Boolean, privateTab: Boolean): Intent? {
         if (!forceWebsite) {
-            val intent = createSearchIntent().takeIf { context.resolveIntent(it) != null }
+            val intent = (if (privateTab) createSearchIntent(privateTab = true) else null)
+                ?.takeIf { context.resolveIntent(it) != null }
+                ?: createSearchIntent().takeIf { context.resolveIntent(it) != null }
             if (intent != null) {
                 return intent
             }
@@ -52,7 +57,7 @@ sealed class QsbSearchProvider(
         return createWebsiteIntent().takeIf { context.resolveIntent(it) != null }
     }
 
-    fun createSearchIntent() = Intent(action)
+    fun createSearchIntent(privateTab: Boolean = false) = Intent(if (privateTab) privateAction else action)
         .addFlags(INTENT_FLAGS)
         .apply {
             if (className != null) {
