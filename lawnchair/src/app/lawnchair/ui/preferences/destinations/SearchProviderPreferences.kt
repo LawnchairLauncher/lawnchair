@@ -65,7 +65,11 @@ fun SearchProviderPreferences(
                         showDownloadButton = showDownloadButton,
                         enabled = qsbSearchProvider.type != QsbSearchProviderType.APP || appInstalled,
                         selected = selected,
-                        onClick = { adapter.onChange(newValue = qsbSearchProvider) },
+                        onClick = {
+                            adapter.onChange(newValue = qsbSearchProvider)
+                            // The force-website option only applies to providers that offer both an app and a website.
+                            if (!hasAppAndWebsite) forceWebsiteAdapter.onChange(newValue = false)
+                        },
                         onDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
                         onSponsorDisclaimerClick = {
                             bottomSheetHandler.show {
