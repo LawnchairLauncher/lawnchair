@@ -38,6 +38,10 @@ sealed class QsbSearchProvider(
         launch(launcher, forceWebsite)
     }
 
+    /**
+     * Launches the provider. If [privateAction] is set and the private tab preference is on,
+     * the browser is opened on a private tab instead of a regular one.
+     */
     open suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         val privateTab = privateAction != null &&
             PreferenceManager2.getInstance(launcher).hotseatQsbPrivateTab.first()
@@ -45,6 +49,10 @@ sealed class QsbSearchProvider(
             ?.let { launcher.startActivity(it) }
     }
 
+    /**
+     * Picks the intent to launch. The private search intent is preferred when [privateTab] is set,
+     * then the regular search intent, and finally the website. Each one is only used if it resolves.
+     */
     private fun createLaunchIntent(context: Context, forceWebsite: Boolean, privateTab: Boolean): Intent? {
         if (!forceWebsite) {
             val intent = (if (privateTab) createSearchIntent(privateTab = true) else null)
@@ -57,6 +65,10 @@ sealed class QsbSearchProvider(
         return createWebsiteIntent().takeIf { context.resolveIntent(it) != null }
     }
 
+    /**
+     * Creates the intent that opens the provider's app. With [privateTab], it uses [privateAction]
+     * instead of [action].
+     */
     fun createSearchIntent(privateTab: Boolean = false) = Intent(if (privateTab) privateAction else action)
         .addFlags(INTENT_FLAGS)
         .apply {
