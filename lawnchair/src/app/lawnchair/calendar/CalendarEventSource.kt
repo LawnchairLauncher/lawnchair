@@ -18,7 +18,7 @@ object CalendarEventSource {
      * distinct by event id to start time, limited to [maxResults] (or throw
      * [IllegalArgumentException] if max result is zero or less than zero)
      * @throws IllegalArgumentException if [windowStart] exceeds [windowEnd] or [maxResults] is
-     * zero or negative number
+     * a negative number
      */
     suspend fun query(
         context: Context,
@@ -30,7 +30,7 @@ object CalendarEventSource {
         query: String? = null,
     ): List<CalendarEvent> = withContext(Dispatchers.IO) {
         require(windowStart <= windowEnd) { "Calendar window start must not exceed its end" }
-        require(maxResults >= 0) { "Calendar max results mustn't be zero or negative number" }
+        require(maxResults >= 0) { "Calendar max results must not be negative number" }
 
         val events = queryInstances(context, query, now, windowStart, windowEnd) +
             if (showCanceled) {
