@@ -190,9 +190,6 @@ class SearchTargetFactory(
         // Some calendar providers store colours without an alpha channel, so force them opaque.
         val seed = calendarColor or 0xFF000000.toInt()
 
-        // Monet replaces seeds with almost no chroma (black, grey, white) with Google blue, so
-        // those keep their own colour, with a white or black glyph for contrast. A black calendar
-        // gets a black icon with a white glyph.
         if (Cam.fromInt(seed).chroma < MIN_CALENDAR_SEED_CHROMA) {
             return seed to contrastingGlyphColor(seed)
         }
