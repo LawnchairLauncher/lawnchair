@@ -25,6 +25,8 @@ import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.exifinterface.media.ExifInterface
 import app.lawnchair.allapps.views.SearchResultView
+import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import app.lawnchair.search.algorithms.data.Calculation
 import app.lawnchair.search.algorithms.data.CalendarEvent
 import app.lawnchair.search.algorithms.data.ContactInfo
@@ -143,7 +145,12 @@ class SearchTargetFactory(
         val calendarDay = java.util.Calendar.getInstance().apply {
             timeInMillis = event.localStartTime
         }.get(java.util.Calendar.DAY_OF_MONTH)
-        val iconColors = event.calendarColor?.let(::calendarIconColors)
+        val useEventColor = PreferenceManager2.getInstance(context).useCalendarEventColor.firstCached()
+        val iconColors = if (useEventColor) {
+            event.calendarColor?.let(::calendarIconColors)
+        } else {
+            null
+        } ?: themeCalendarIconColors()
         val bitmap = createSmallSearchResultBitmap(
             context = context,
             drawable = CALENDAR_ICONS[calendarDay - 1],
@@ -195,6 +202,10 @@ class SearchTargetFactory(
         return ColorTokens.SearchResultCalendarIcon.resolveColor(context, scheme, uiColorMode) to
             ColorTokens.SearchResultCalendarIconForeground.resolveColor(context, scheme, uiColorMode)
     }
+
+    private fun themeCalendarIconColors(): Pair<Int, Int> =
+        ColorTokens.SearchResultCalendarIcon.resolveColor(context) to
+            ColorTokens.SearchResultCalendarIconForeground.resolveColor(context)
 
     /** Returns white or black, whichever has more contrast against the opaque [background]. */
     @ColorInt

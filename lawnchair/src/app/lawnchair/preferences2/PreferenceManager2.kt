@@ -691,7 +691,12 @@ class PreferenceManager2 @Inject constructor(
 
     val showCalendarCanceledEvents = preference(
         key = booleanPreferencesKey(name = "show_calendar_canceled_events"),
-        defaultValue = false,
+        defaultValue = context.resources.getBoolean(R.bool.config_default_calendar_show_canceled_result),
+    )
+
+    val useCalendarEventColor = preference(
+        key = booleanPreferencesKey(name = "use_calendar_event_color"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_calendar_use_individual_event_color),
     )
 
     val enableSmartspace = preference(

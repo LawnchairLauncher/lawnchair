@@ -102,6 +102,11 @@ fun CalendarSearchProvider(
             label = stringResource(R.string.calendar_search_show_canceled_title),
             description = stringResource(R.string.calendar_search_show_canceled_description),
         )
+        SwitchPreference(
+            adapter = prefs2.useCalendarEventColor.getAdapter(),
+            label = stringResource(R.string.calendar_search_use_event_color_title),
+            description = stringResource(R.string.calendar_search_use_event_color_description),
+        )
     }
 }
 

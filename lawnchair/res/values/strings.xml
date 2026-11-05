@@ -1046,6 +1046,8 @@
     <string name="max_calendar_result_count_title">Maximum number of calendar events</string>
     <string name="calendar_search_show_canceled_title">Show canceled events</string>
     <string name="calendar_search_show_canceled_description">Include events that have been canceled</string>
+    <string name="calendar_search_use_event_color_title">Use event colors</string>
+    <string name="calendar_search_use_event_color_description">Use each event\'s color for its calendar search icon background</string>
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
 
     <!-- Permission management -->
