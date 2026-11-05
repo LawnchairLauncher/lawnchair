@@ -1064,6 +1064,7 @@
     <string name="calendar_search_today">Today</string>
     <string name="calendar_search_tomorrow">Tomorrow</string>
     <string name="calendar_search_all_day">All day</string>
+    <string name="calendar_search_canceled">Canceled</string>
     <string name="calendar_search_date_time">%1$s, %2$s</string>
     <string name="calendar_search_date_range">%1$s – %2$s</string>
 

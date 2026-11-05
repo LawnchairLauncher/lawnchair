@@ -61,11 +61,13 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
                             endTime = event.endTime,
                             allDay = event.allDay,
                             location = event.location,
+                            isCanceled = event.isCanceled,
                         ),
                         calendarColor = event.calendarColor,
                         startTime = event.startTime,
                         endTime = event.endTime,
                         allDay = event.allDay,
+                        isCanceled = event.isCanceled,
                     )
                 }
             }
@@ -93,6 +95,7 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
         endTime: Long,
         allDay: Boolean,
         location: String?,
+        isCanceled: Boolean,
     ): String {
         val localStartTime = if (allDay) CalendarEvent.utcMidnightToLocal(startTime) else startTime
         val displayEndTime = if (allDay && endTime > startTime) {
@@ -132,8 +135,11 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
                 range
             }
         }
-        return listOf(dateTime, location?.trim().orEmpty())
-            .filter(String::isNotBlank)
+        return listOfNotNull(
+            if (isCanceled) context.getString(R.string.calendar_search_canceled) else null,
+            dateTime,
+            location?.trim()?.takeIf(String::isNotBlank),
+        )
             .joinToString(" \u2022 ")
     }
 

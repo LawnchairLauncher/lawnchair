@@ -11,6 +11,7 @@ data class CalendarEvent(
     val startTime: Long,
     val endTime: Long,
     val allDay: Boolean,
+    val isCanceled: Boolean,
 ) {
     val localStartTime: Long
         get() = if (allDay) utcMidnightToLocal(startTime) else startTime
