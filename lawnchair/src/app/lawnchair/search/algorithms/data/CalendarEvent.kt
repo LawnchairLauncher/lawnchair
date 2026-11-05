@@ -1,6 +1,6 @@
 package app.lawnchair.search.algorithms.data
 
-import java.util.Calendar
+import app.lawnchair.calendar.CalendarEvent
 import java.util.TimeZone
 
 data class CalendarEvent(
@@ -21,17 +21,7 @@ data class CalendarEvent(
             utcMillis: Long,
             timeZone: TimeZone = TimeZone.getDefault(),
         ): Long {
-            val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-                timeInMillis = utcMillis
-            }
-            return Calendar.getInstance(timeZone).apply {
-                clear()
-                set(
-                    utc.get(Calendar.YEAR),
-                    utc.get(Calendar.MONTH),
-                    utc.get(Calendar.DAY_OF_MONTH),
-                )
-            }.timeInMillis
+            return CalendarEvent.utcMidnightToLocal(utcMillis, timeZone)
         }
     }
 }
