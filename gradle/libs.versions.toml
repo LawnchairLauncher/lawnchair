@@ -32,7 +32,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-ksp = "com.google.devtools.ksp:2.3.13"
-google-protobuf = "com.google.protobuf:0.10.0"
+google-protobuf = "com.google.protobuf:0.10.1"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
 diffplug-spotless = "com.diffplug.spotless:8.11.0"
@@ -62,7 +62,7 @@ androidx-recyclerview = "androidx.recyclerview:recyclerview:1.4.0"
 androidx-slice-core = "androidx.slice:slice-core:1.1.0-alpha02"
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
-androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.0"
+androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.1"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
@@ -70,7 +70,7 @@ compose-bom = "androidx.compose:compose-bom:2026.09.00"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-beta02"
+compose-material3 = "androidx.compose.material3:material3:1.5.0-rc01"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }
