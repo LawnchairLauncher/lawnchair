@@ -72,20 +72,46 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
         if (maxResults <= 0) return@withContext emptyList()
 
         val now = System.currentTimeMillis()
-        // The window starts a day back so that all-day events, which are stored in UTC, still
-        // overlap it in every time zone. Rows that already ended locally are skipped below.
-        val instancesUri = CalendarContract.Instances.CONTENT_URI.buildUpon()
-            .appendPath((now - ONE_DAY_MILLIS).toString())
-            .appendPath((now + ONE_YEAR_MILLIS).toString())
-            .build()
-        val canceledFilter = if (showCanceled) {
-            ""
+        val windowStart = now - ONE_DAY_MILLIS
+        val windowEnd = now + ONE_YEAR_MILLIS
+        val events = queryInstances(
+            context = context,
+            query = query,
+            now = now,
+            windowStart = windowStart,
+            windowEnd = windowEnd,
+        ) + if (showCanceled) {
+            queryCanceledEvents(
+                context = context,
+                query = query,
+                now = now,
+                windowStart = windowStart,
+                windowEnd = windowEnd,
+            )
         } else {
-            "(${CalendarContract.Instances.STATUS} IS NULL OR " +
-                "${CalendarContract.Instances.STATUS} != ${CalendarContract.Events.STATUS_CANCELED}) AND "
+            emptyList()
         }
+
+        events
+            .sortedBy(CalendarEvent::localStartTime)
+            .distinctBy(CalendarEvent::eventId)
+            .take(maxResults)
+    }
+
+    private fun queryInstances(
+        context: Context,
+        query: String,
+        now: Long,
+        windowStart: Long,
+        windowEnd: Long,
+    ): List<CalendarEvent> {
+        val instancesUri = CalendarContract.Instances.CONTENT_URI.buildUpon()
+            .appendPath(windowStart.toString())
+            .appendPath(windowEnd.toString())
+            .build()
         val selection = "${CalendarContract.Instances.VISIBLE} = 1 AND " +
-            canceledFilter +
+            "(${CalendarContract.Instances.STATUS} IS NULL OR " +
+            "${CalendarContract.Instances.STATUS} != ${CalendarContract.Events.STATUS_CANCELED}) AND " +
             "(${CalendarContract.Instances.SELF_ATTENDEE_STATUS} IS NULL OR " +
             "${CalendarContract.Instances.SELF_ATTENDEE_STATUS} != ${CalendarContract.Attendees.ATTENDEE_STATUS_DECLINED}) AND " +
             "(${CalendarContract.Instances.TITLE} LIKE ? ESCAPE '\\' OR " +
@@ -104,7 +130,7 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
             CalendarContract.Instances.DISPLAY_COLOR,
         )
 
-        context.contentResolver.query(
+        return context.contentResolver.query(
             instancesUri,
             projection,
             selection,
@@ -120,31 +146,25 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
             val colorIndex = cursor.getColumnIndex(CalendarContract.Instances.DISPLAY_COLOR)
 
             if (eventIdIndex < 0 || titleIndex < 0 || beginIndex < 0 || endIndex < 0 || allDayIndex < 0) {
-                return@withContext emptyList()
+                return@use emptyList()
             }
 
-            // Instances has one row per occurrence. Rows are sorted by BEGIN, so the first row
-            // kept for each event is its ongoing or next occurrence.
-            val seenEventIds = mutableSetOf<Long>()
             buildList {
-                while (cursor.moveToNext() && size < maxResults) {
+                while (cursor.moveToNext()) {
                     val title = cursor.getString(titleIndex)?.trim().orEmpty()
                     if (title.isBlank()) continue
 
                     val allDay = cursor.getInt(allDayIndex) != 0
+                    val startTime = cursor.getLong(beginIndex)
                     val endTime = cursor.getLong(endIndex)
                     val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
                     if (localEndTime <= now) continue
 
-                    val eventId = cursor.getLong(eventIdIndex)
-                    if (!seenEventIds.add(eventId)) continue
-
-                    val startTime = cursor.getLong(beginIndex)
                     val localStartTime = if (allDay) CalendarEvent.utcMidnightToLocal(startTime) else startTime
                     val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
                     add(
                         CalendarEvent(
-                            eventId = eventId,
+                            eventId = cursor.getLong(eventIdIndex),
                             title = title,
                             calendarColor = colorIndex.takeIf { it >= 0 && !cursor.isNull(it) }?.let(cursor::getInt),
                             description = formatDescription(
@@ -162,6 +182,146 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
             }
         } ?: emptyList()
     }
+
+    private fun queryCanceledEvents(
+        context: Context,
+        query: String,
+        now: Long,
+        windowStart: Long,
+        windowEnd: Long,
+    ): List<CalendarEvent> {
+        val visibleCalendarIds = queryVisibleCalendarIds(context)
+        if (visibleCalendarIds.isEmpty()) return emptyList()
+
+        val effectiveStartTime = "CASE WHEN ${CalendarContract.Events.ORIGINAL_INSTANCE_TIME} IS NOT NULL " +
+            "AND ${CalendarContract.Events.ORIGINAL_INSTANCE_TIME} != 0 " +
+            "THEN ${CalendarContract.Events.ORIGINAL_INSTANCE_TIME} ELSE ${CalendarContract.Events.DTSTART} END"
+        val pattern = "%${escapeLike(query)}%"
+        val selection = "${CalendarContract.Events.STATUS} = ? AND " +
+            "(${CalendarContract.Events.SELF_ATTENDEE_STATUS} IS NULL OR " +
+            "${CalendarContract.Events.SELF_ATTENDEE_STATUS} != ${CalendarContract.Attendees.ATTENDEE_STATUS_DECLINED}) AND " +
+            "$effectiveStartTime >= ? AND $effectiveStartTime <= ? AND " +
+            "(${CalendarContract.Events.TITLE} LIKE ? ESCAPE '\\' OR " +
+            "${CalendarContract.Events.DESCRIPTION} LIKE ? ESCAPE '\\' OR " +
+            "${CalendarContract.Events.EVENT_LOCATION} LIKE ? ESCAPE '\\')"
+        val selectionArgs = arrayOf(
+            CalendarContract.Events.STATUS_CANCELED.toString(),
+            windowStart.toString(),
+            windowEnd.toString(),
+            pattern,
+            pattern,
+            pattern,
+        )
+        val projection = arrayOf(
+            CalendarContract.Events._ID,
+            CalendarContract.Events.CALENDAR_ID,
+            CalendarContract.Events.TITLE,
+            CalendarContract.Events.DTSTART,
+            CalendarContract.Events.DTEND,
+            CalendarContract.Events.ALL_DAY,
+            CalendarContract.Events.EVENT_LOCATION,
+            CalendarContract.Events.DISPLAY_COLOR,
+            CalendarContract.Events.ORIGINAL_INSTANCE_TIME,
+            CalendarContract.Events.ORIGINAL_ALL_DAY,
+        )
+
+        return context.contentResolver.query(
+            CalendarContract.Events.CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            "${CalendarContract.Events.DTSTART} ASC",
+        )?.use { cursor ->
+            val eventIdIndex = cursor.getColumnIndex(CalendarContract.Events._ID)
+            val calendarIdIndex = cursor.getColumnIndex(CalendarContract.Events.CALENDAR_ID)
+            val titleIndex = cursor.getColumnIndex(CalendarContract.Events.TITLE)
+            val beginIndex = cursor.getColumnIndex(CalendarContract.Events.DTSTART)
+            val endIndex = cursor.getColumnIndex(CalendarContract.Events.DTEND)
+            val allDayIndex = cursor.getColumnIndex(CalendarContract.Events.ALL_DAY)
+            val locationIndex = cursor.getColumnIndex(CalendarContract.Events.EVENT_LOCATION)
+            val colorIndex = cursor.getColumnIndex(CalendarContract.Events.DISPLAY_COLOR)
+            val originalStartIndex = cursor.getColumnIndex(CalendarContract.Events.ORIGINAL_INSTANCE_TIME)
+            val originalAllDayIndex = cursor.getColumnIndex(CalendarContract.Events.ORIGINAL_ALL_DAY)
+
+            if (eventIdIndex < 0 || calendarIdIndex < 0 || titleIndex < 0 ||
+                beginIndex < 0 || endIndex < 0 || allDayIndex < 0
+            ) {
+                return@use emptyList()
+            }
+
+            buildList {
+                while (cursor.moveToNext()) {
+                    if (cursor.getLong(calendarIdIndex) !in visibleCalendarIds) continue
+
+                    val title = cursor.getString(titleIndex)?.trim().orEmpty()
+                    if (title.isBlank()) continue
+
+                    val originalStartTime = originalStartIndex
+                        .takeIf { it >= 0 && !cursor.isNull(it) }
+                        ?.let(cursor::getLong)
+                        ?.takeIf { it != 0L }
+                    val eventStartTime = cursor.getLong(beginIndex)
+                    val startTime = originalStartTime ?: eventStartTime
+                    val allDay = if (
+                        originalStartTime != null &&
+                        originalAllDayIndex >= 0 &&
+                        !cursor.isNull(originalAllDayIndex)
+                    ) {
+                        cursor.getInt(originalAllDayIndex) != 0
+                    } else {
+                        cursor.getInt(allDayIndex) != 0
+                    }
+                    val eventEndTime = cursor.getLong(endIndex)
+                    val endTime = if (originalStartTime != null) {
+                        startTime + (eventEndTime - eventStartTime).coerceAtLeast(0L)
+                    } else {
+                        eventEndTime
+                    }
+                    val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
+                    if (localEndTime <= now) continue
+
+                    val localStartTime = if (allDay) CalendarEvent.utcMidnightToLocal(startTime) else startTime
+                    val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
+                    add(
+                        CalendarEvent(
+                            eventId = cursor.getLong(eventIdIndex),
+                            title = title,
+                            calendarColor = colorIndex.takeIf { it >= 0 && !cursor.isNull(it) }?.let(cursor::getInt),
+                            description = formatDescription(
+                                context = context,
+                                startTime = localStartTime,
+                                allDay = allDay,
+                                location = location,
+                            ),
+                            startTime = startTime,
+                            endTime = endTime,
+                            allDay = allDay,
+                        ),
+                    )
+                }
+            }
+        } ?: emptyList()
+    }
+
+    private fun queryVisibleCalendarIds(context: Context): Set<Long> =
+        context.contentResolver.query(
+            CalendarContract.Calendars.CONTENT_URI,
+            arrayOf(CalendarContract.Calendars._ID),
+            "${CalendarContract.Calendars.VISIBLE} = 1",
+            null,
+            null,
+        )?.use { cursor ->
+            val idIndex = cursor.getColumnIndex(CalendarContract.Calendars._ID)
+            if (idIndex < 0) {
+                emptySet()
+            } else {
+                buildSet {
+                    while (cursor.moveToNext()) {
+                        add(cursor.getLong(idIndex))
+                    }
+                }
+            }
+        } ?: emptySet()
 
     private fun formatDescription(
         context: Context,
