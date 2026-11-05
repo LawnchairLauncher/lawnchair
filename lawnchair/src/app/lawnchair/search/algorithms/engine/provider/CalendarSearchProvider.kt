@@ -15,6 +15,7 @@ import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
 import com.android.launcher3.R
 import java.util.Calendar
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -94,7 +95,7 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
 
         events
             .sortedBy(CalendarEvent::localStartTime)
-            .distinctBy(CalendarEvent::eventId)
+            .distinctBy { it.eventId to it.startTime }
             .take(maxResults)
     }
 
@@ -160,7 +161,6 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
                     val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
                     if (localEndTime <= now) continue
 
-                    val localStartTime = if (allDay) CalendarEvent.utcMidnightToLocal(startTime) else startTime
                     val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
                     add(
                         CalendarEvent(
@@ -169,7 +169,8 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
                             calendarColor = colorIndex.takeIf { it >= 0 && !cursor.isNull(it) }?.let(cursor::getInt),
                             description = formatDescription(
                                 context = context,
-                                startTime = localStartTime,
+                                startTime = startTime,
+                                endTime = endTime,
                                 allDay = allDay,
                                 location = location,
                             ),
@@ -280,7 +281,6 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
                     val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
                     if (localEndTime <= now) continue
 
-                    val localStartTime = if (allDay) CalendarEvent.utcMidnightToLocal(startTime) else startTime
                     val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
                     add(
                         CalendarEvent(
@@ -289,7 +289,8 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
                             calendarColor = colorIndex.takeIf { it >= 0 && !cursor.isNull(it) }?.let(cursor::getInt),
                             description = formatDescription(
                                 context = context,
-                                startTime = localStartTime,
+                                startTime = startTime,
+                                endTime = endTime,
                                 allDay = allDay,
                                 location = location,
                             ),
@@ -303,32 +304,76 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
         } ?: emptyList()
     }
 
-    private fun queryVisibleCalendarIds(context: Context): Set<Long> =
-        context.contentResolver.query(
-            CalendarContract.Calendars.CONTENT_URI,
-            arrayOf(CalendarContract.Calendars._ID),
-            "${CalendarContract.Calendars.VISIBLE} = 1",
-            null,
-            null,
-        )?.use { cursor ->
-            val idIndex = cursor.getColumnIndex(CalendarContract.Calendars._ID)
-            if (idIndex < 0) {
-                emptySet()
-            } else {
-                buildSet {
-                    while (cursor.moveToNext()) {
-                        add(cursor.getLong(idIndex))
-                    }
+    private fun queryVisibleCalendarIds(context: Context): Set<Long> = context.contentResolver.query(
+        CalendarContract.Calendars.CONTENT_URI,
+        arrayOf(CalendarContract.Calendars._ID),
+        "${CalendarContract.Calendars.VISIBLE} = 1",
+        null,
+        null,
+    )?.use { cursor ->
+        val idIndex = cursor.getColumnIndex(CalendarContract.Calendars._ID)
+        if (idIndex < 0) {
+            emptySet()
+        } else {
+            buildSet {
+                while (cursor.moveToNext()) {
+                    add(cursor.getLong(idIndex))
                 }
             }
-        } ?: emptySet()
+        }
+    } ?: emptySet()
 
     private fun formatDescription(
         context: Context,
         startTime: Long,
+        endTime: Long,
         allDay: Boolean,
         location: String?,
     ): String {
+        val localStartTime = if (allDay) CalendarEvent.utcMidnightToLocal(startTime) else startTime
+        val displayEndTime = if (allDay && endTime > startTime) {
+            val lastDay = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+                timeInMillis = endTime
+                add(Calendar.DAY_OF_MONTH, -1)
+            }
+            CalendarEvent.utcMidnightToLocal(lastDay.timeInMillis)
+        } else if (allDay) {
+            CalendarEvent.utcMidnightToLocal(endTime)
+        } else {
+            endTime
+        }
+        val startDate = Calendar.getInstance().apply { timeInMillis = localStartTime }
+        val endDate = Calendar.getInstance().apply { timeInMillis = displayEndTime }
+        val sameYear = startDate.get(Calendar.ERA) == endDate.get(Calendar.ERA) &&
+            startDate.get(Calendar.YEAR) == endDate.get(Calendar.YEAR)
+        val sameDay = sameYear && startDate.get(Calendar.DAY_OF_YEAR) == endDate.get(Calendar.DAY_OF_YEAR)
+        val dateTime = if (sameDay) {
+            formatSingleDay(context, localStartTime, allDay)
+        } else {
+            val flags = DateUtils.FORMAT_SHOW_DATE or
+                (if (allDay) 0 else DateUtils.FORMAT_SHOW_TIME) or
+                (if (sameYear) 0 else DateUtils.FORMAT_SHOW_YEAR)
+            val range = context.getString(
+                R.string.calendar_search_date_range,
+                DateUtils.formatDateTime(context, localStartTime, flags),
+                DateUtils.formatDateTime(context, displayEndTime, flags),
+            )
+            if (allDay) {
+                context.getString(
+                    R.string.calendar_search_date_time,
+                    range,
+                    context.getString(R.string.calendar_search_all_day),
+                )
+            } else {
+                range
+            }
+        }
+        return listOf(dateTime, location?.trim().orEmpty())
+            .filter(String::isNotBlank)
+            .joinToString(" \u2022 ")
+    }
+
+    private fun formatSingleDay(context: Context, startTime: Long, allDay: Boolean): String {
         val day = when {
             DateUtils.isToday(startTime) -> context.getString(R.string.calendar_search_today)
 
@@ -345,10 +390,7 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
         } else {
             DateUtils.formatDateTime(context, startTime, DateUtils.FORMAT_SHOW_TIME)
         }
-        val dateTime = context.getString(R.string.calendar_search_date_time, day, time)
-        return listOf(dateTime, location?.trim().orEmpty())
-            .filter(String::isNotBlank)
-            .joinToString(" \u2022 ")
+        return context.getString(R.string.calendar_search_date_time, day, time)
     }
 
     /** Escapes LIKE wildcards so `%` and `_` in the query match literally. Pair with ESCAPE '\'. */

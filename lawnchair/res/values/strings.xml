@@ -1065,6 +1065,7 @@
     <string name="calendar_search_tomorrow">Tomorrow</string>
     <string name="calendar_search_all_day">All day</string>
     <string name="calendar_search_date_time">%1$s, %2$s</string>
+    <string name="calendar_search_date_range">%1$s - %2$s</string>
 
     <string name="permissions_music_audio">Music and audio access needed</string>
     <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
