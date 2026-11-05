@@ -32,10 +32,10 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-ksp = "com.google.devtools.ksp:2.3.13"
-google-protobuf = "com.google.protobuf:0.10.0"
+google-protobuf = "com.google.protobuf:0.10.1"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = "com.diffplug.spotless:8.10.4"
+diffplug-spotless = "com.diffplug.spotless:8.11.0"
 
 [libraries]
 # AndroidX
@@ -62,7 +62,7 @@ androidx-recyclerview = "androidx.recyclerview:recyclerview:1.4.0"
 androidx-slice-core = "androidx.slice:slice-core:1.1.0-alpha02"
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
-androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.0"
+androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.1"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
@@ -70,7 +70,7 @@ compose-bom = "androidx.compose:compose-bom:2026.09.00"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-beta02"
+compose-material3 = "androidx.compose.material3:material3:1.5.0-rc01"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }
@@ -140,7 +140,7 @@ rikka-annotation-processor = { module = "dev.rikka.tools.refine:annotation-proce
 rikka-refine-runtime = { group = "dev.rikka.tools.refine", name = "runtime", version.ref = "refine" }
 smartspacer-sdk = "com.kieronquinn.smartspacer:sdk-client:1.2"
 xdrop-fuzzywuzzy = "me.xdrop:fuzzywuzzy:1.4.0"
-errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.51.0"
+errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.52.0"
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.8.0"
 composeRules = "io.nlopez.compose.rules:ktlint:0.6.8"
@@ -152,8 +152,8 @@ google-truth = { group = "com.google.truth", name = "truth", version.ref = "trut
 junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 mockito-robolectric = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
-mockito-robolectric-bytebuddy = "net.bytebuddy:byte-buddy:1.18.16-jdk5"
-mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.18.16-jdk5"
+mockito-robolectric-bytebuddy = "net.bytebuddy:byte-buddy:1.18.17-jdk5"
+mockito-robolectric-bytebuddy-agent = "net.bytebuddy:byte-buddy-agent:1.18.17-jdk5"
 
 [bundles]
 accompanist = ["accompanist-adaptive", "accompanist-drawablepainter", "accompanist-permissions"]
