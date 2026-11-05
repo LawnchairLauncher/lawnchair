@@ -3,6 +3,7 @@ package app.lawnchair
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.UserHandle
@@ -57,7 +58,14 @@ class LawnchairActivityCachingLogic @Inject constructor(
         val activityInfo = if (VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             info.activityInfo
         } else {
-            context.packageManager.getActivityInfo(info.componentName, 0)
+            try {
+                context.packageManager.getActivityInfo(info.componentName, 0)
+            } catch (_: PackageManager.NameNotFoundException) {
+                // The component can disappear between the package update callback and
+                // this icon refresh. Return the default icon so addIconToDBAndMemCache
+                // skips the entry instead of crashing.
+                return cache.getDefaultIcon(info.user)
+            }
         }
         cache.iconFactory.use { li ->
             val iconOptions: IconOptions = IconOptions().setUser(info.user)
