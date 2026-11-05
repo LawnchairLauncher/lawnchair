@@ -9,7 +9,7 @@ import app.lawnchair.calendar.CalendarEventSource
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
-import app.lawnchair.search.algorithms.data.CalendarEvent
+import app.lawnchair.search.algorithms.data.CalendarSearchEvent
 import app.lawnchair.search.algorithms.engine.SearchPermission
 import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
@@ -52,7 +52,7 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
                     maxResults = maxResults,
                     showCanceled = showCanceled,
                 ).map { event ->
-                    CalendarEvent(
+                    CalendarSearchEvent(
                         eventId = event.eventId,
                         title = event.title,
                         description = formatDescription(
@@ -97,15 +97,15 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
         location: String?,
         isCanceled: Boolean,
     ): String {
-        val localStartTime = if (allDay) CalendarEvent.utcMidnightToLocal(startTime) else startTime
+        val localStartTime = if (allDay) CalendarSearchEvent.utcMidnightToLocal(startTime) else startTime
         val displayEndTime = if (allDay && endTime > startTime) {
             val lastDay = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
                 timeInMillis = endTime
                 add(Calendar.DAY_OF_MONTH, -1)
             }
-            CalendarEvent.utcMidnightToLocal(lastDay.timeInMillis)
+            CalendarSearchEvent.utcMidnightToLocal(lastDay.timeInMillis)
         } else if (allDay) {
-            CalendarEvent.utcMidnightToLocal(endTime)
+            CalendarSearchEvent.utcMidnightToLocal(endTime)
         } else {
             endTime
         }

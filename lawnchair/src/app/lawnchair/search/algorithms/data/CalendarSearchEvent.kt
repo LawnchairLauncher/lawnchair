@@ -3,7 +3,7 @@ package app.lawnchair.search.algorithms.data
 import app.lawnchair.calendar.CalendarEvent
 import java.util.TimeZone
 
-data class CalendarEvent(
+data class CalendarSearchEvent(
     val eventId: Long,
     val title: String,
     val description: String,

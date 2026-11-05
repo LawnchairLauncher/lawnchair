@@ -28,7 +28,7 @@ import app.lawnchair.allapps.views.SearchResultView
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.search.algorithms.data.Calculation
-import app.lawnchair.search.algorithms.data.CalendarEvent
+import app.lawnchair.search.algorithms.data.CalendarSearchEvent
 import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.FileInfo
 import app.lawnchair.search.algorithms.data.FileInfo.Companion.isImageType
@@ -139,7 +139,7 @@ class SearchTargetFactory(
     }
 
     internal fun createCalendarTarget(
-        event: CalendarEvent,
+        event: CalendarSearchEvent,
     ): SearchTargetCompat {
         val id = "calendar:${event.eventId}:${event.startTime}"
         val calendarDay = java.util.Calendar.getInstance().apply {
