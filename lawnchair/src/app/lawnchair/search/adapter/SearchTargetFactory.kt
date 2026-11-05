@@ -203,9 +203,8 @@ class SearchTargetFactory(
             ColorTokens.SearchResultCalendarIconForeground.resolveColor(context, scheme, uiColorMode)
     }
 
-    private fun themeCalendarIconColors(): Pair<Int, Int> =
-        ColorTokens.SearchResultCalendarIcon.resolveColor(context) to
-            ColorTokens.SearchResultCalendarIconForeground.resolveColor(context)
+    private fun themeCalendarIconColors(): Pair<Int, Int> = ColorTokens.SearchResultCalendarIcon.resolveColor(context) to
+        ColorTokens.SearchResultCalendarIconForeground.resolveColor(context)
 
     /** Returns white or black, whichever has more contrast against the opaque [background]. */
     @ColorInt
