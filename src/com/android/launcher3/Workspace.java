@@ -147,6 +147,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import app.lawnchair.hotseat.HotseatPagedView;
+import app.lawnchair.gestures.PanToMoveController;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
@@ -338,6 +339,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private DragController.DragListener mAccessibilityDragListener;
 
     PreferenceManager2 mPreferenceManager2;
+    private PanToMoveController mPanToMoveController;
     PreferenceManager mPreferenceManger;
 
     /**
@@ -364,6 +366,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWallpaperManager = WallpaperManager.getInstance(context);
         mAllAppsIconSize = mLauncher.getDeviceProfile().getAllAppsProfile().getIconSizePx();
         mPreferenceManager2 = PreferenceManager2.getInstance(context);
+        mPanToMoveController = new PanToMoveController(context, this);
         mPreferenceManger = PreferenceManager.getInstance(context);
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
 
@@ -557,6 +560,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (mAccessibilityDragListener != null) {
             mAccessibilityDragListener.onDragStart(dragObject, options);
         }
+        mPanToMoveController.onDragStarted();
         if (!mLauncher.isInState(EDIT_MODE)) {
             mLauncher.getStateManager().goToState(SPRING_LOADED);
         }
@@ -596,6 +600,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (mAccessibilityDragListener != null) {
             mAccessibilityDragListener.onDragEnd();
         }
+        mPanToMoveController.onDragEnded();
         mDragInfo = null;
         mDragSourceInternal = null;
     }
