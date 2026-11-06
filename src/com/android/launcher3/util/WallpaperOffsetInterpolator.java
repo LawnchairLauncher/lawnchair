@@ -312,6 +312,10 @@ public class WallpaperOffsetInterpolator {
                 mWM.setWallpaperOffsets(token, mCurrentOffset, 0.5f);
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, "Error updating wallpaper offset: " + e);
+            } catch (SecurityException e) {
+                // Some OEM builds (e.g. Huawei EMUI) fetch the wallpaper bitmap inside
+                // setWallpaperOffsets(), which requires READ_EXTERNAL_STORAGE on API <= 28.
+                Log.e(TAG, "Error updating wallpaper offset: " + e);
             }
         }
     }

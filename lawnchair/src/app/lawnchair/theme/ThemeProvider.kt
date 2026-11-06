@@ -22,6 +22,7 @@ import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
+import com.android.launcher3.util.DaggerSingletonTracker
 import com.android.launcher3.util.SafeCloseable
 import com.android.systemui.monet.Style
 import com.patrykmichalik.opto.core.onEach
@@ -29,36 +30,49 @@ import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.colorkt.conversion.ConversionGraph.convert
 import dev.kdrag0n.colorkt.rgb.Srgb
 import dev.kdrag0n.monet.theme.ColorScheme
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 
 @LauncherAppSingleton
 class ThemeProvider @Inject constructor(
     @ApplicationContext private val context: Context,
+    tracker: DaggerSingletonTracker,
 ) : SafeCloseable {
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
     private val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
+    @Volatile
     private var accentColor: ColorOption = preferenceManager2.accentColor.firstCached()
+
+    @Volatile
     private var colorStyle: ColorStyle = preferenceManager2.colorStyle.firstCached()
 
-    private val colorSchemeMap = HashMap<Pair<Int, Style>, ColorScheme>()
-    private val listeners = mutableListOf<ColorSchemeChangeListener>()
+    private val colorSchemeMap = ConcurrentHashMap<Pair<Int, Style>, ColorScheme>()
+    private val listeners = CopyOnWriteArrayList<ColorSchemeChangeListener>()
+    private var overlayChangedReceiver: BroadcastReceiver? = null
+    private val wallpaperColorsChangedListener =
+        object : WallpaperManagerCompat.OnColorsChangedListener {
+            override fun onColorsChanged() {
+                if (accentColor is ColorOption.WallpaperPrimary) {
+                    notifyColorSchemeChanged()
+                }
+            }
+        }
+
+    @Volatile
+    private var isClosed = false
 
     init {
         if (Utilities.ATLEAST_S) {
             colorSchemeMap[Pair(0, Style.TONAL_SPOT)] = SystemColorScheme(context)
             registerOverlayChangedListener()
         }
-        wallpaperManager.addOnChangeListener(object : WallpaperManagerCompat.OnColorsChangedListener {
-            override fun onColorsChanged() {
-                if (accentColor is ColorOption.WallpaperPrimary) {
-                    notifyColorSchemeChanged()
-                }
-            }
-        })
+        wallpaperManager.addOnChangeListener(wallpaperColorsChangedListener)
         preferenceManager2.accentColor.onEach(launchIn = coroutineScope) {
             accentColor = it
             notifyColorSchemeChanged()
@@ -67,25 +81,23 @@ class ThemeProvider @Inject constructor(
             colorStyle = it
             notifyColorSchemeChanged()
         }
+        tracker.addCloseable(this)
     }
 
     private fun registerOverlayChangedListener() {
         val packageFilter = IntentFilter("android.intent.action.OVERLAY_CHANGED")
         packageFilter.addDataScheme("package")
         packageFilter.addDataSchemeSpecificPart("android", PatternMatcher.PATTERN_LITERAL)
-        context.registerReceiver(
-            object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
-                    colorSchemeMap[Pair(0, Style.TONAL_SPOT)] = SystemColorScheme(context)
-                    if (accentColor is ColorOption.SystemAccent) {
-                        notifyColorSchemeChanged()
-                    }
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                colorSchemeMap[Pair(0, Style.TONAL_SPOT)] = SystemColorScheme(context)
+                if (accentColor is ColorOption.SystemAccent) {
+                    notifyColorSchemeChanged()
                 }
-            },
-            packageFilter,
-            null,
-            Handler(Looper.getMainLooper()),
-        )
+            }
+        }
+        context.registerReceiver(receiver, packageFilter, null, Handler(Looper.getMainLooper()))
+        overlayChangedReceiver = receiver
     }
 
     val colorScheme get() = when (val accentColor = this.accentColor) {
@@ -111,12 +123,9 @@ class ThemeProvider @Inject constructor(
         colorStyle: Style,
     ): ColorScheme {
         val key = Pair(colorInt, colorStyle)
-        var colorScheme = colorSchemeMap[key]
-        if (colorScheme == null) {
-            colorScheme = MonetColorSchemeCompat(colorInt, colorStyle)
-            colorSchemeMap[key] = colorScheme
+        return colorSchemeMap.computeIfAbsent(key) {
+            MonetColorSchemeCompat(colorInt, colorStyle)
         }
-        return colorScheme
     }
 
     fun addListener(listener: ColorSchemeChangeListener) {
@@ -128,12 +137,19 @@ class ThemeProvider @Inject constructor(
     }
 
     private fun notifyColorSchemeChanged() {
-        ArrayList(listeners)
-            .forEach(ColorSchemeChangeListener::onColorSchemeChanged)
+        if (isClosed) return
+        listeners.forEach(ColorSchemeChangeListener::onColorSchemeChanged)
     }
 
     override fun close() {
-        TODO("Not yet implemented")
+        isClosed = true
+        coroutineScope.cancel()
+        wallpaperManager.removeOnChangeListener(wallpaperColorsChangedListener)
+        overlayChangedReceiver?.let {
+            context.unregisterReceiver(it)
+            overlayChangedReceiver = null
+        }
+        listeners.clear()
     }
 
     companion object {
@@ -141,7 +157,7 @@ class ThemeProvider @Inject constructor(
         val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getThemeProvider)
     }
 
-    sealed interface ColorSchemeChangeListener {
+    interface ColorSchemeChangeListener {
         fun onColorSchemeChanged()
     }
 }
