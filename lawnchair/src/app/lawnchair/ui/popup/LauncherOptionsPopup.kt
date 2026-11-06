@@ -21,12 +21,14 @@ object LauncherOptionsPopup {
         LauncherOptionPopupItem("edit_mode", false),
         LauncherOptionPopupItem("wallpaper", true),
         LauncherOptionPopupItem("widgets", true),
+        LauncherOptionPopupItem("curated", true),
         LauncherOptionPopupItem("all_apps", true),
         LauncherOptionPopupItem("home_settings", true),
         LauncherOptionPopupItem("sys_settings", false),
         LauncherOptionPopupItem("default_page", false),
     )
 
+    /** Adds options missing from the saved menu order, using their default visibility. */
     fun restoreMissingPopupOptions(
         launcher: Launcher,
     ) {
@@ -78,6 +80,18 @@ object LauncherOptionsPopup {
                 LauncherEvent.IGNORE,
                 onLockToggle,
             ),
+            "curated" to OptionItem(
+                launcher,
+                R.string.curated_folders,
+                R.drawable.ic_folder,
+                LauncherEvent.IGNORE,
+            ) { v ->
+                app.lawnchair.curated.CuratedFolderPicker.show(
+                    Launcher.getLauncher(v.context),
+                    app.lawnchair.curated.CuratedFolderPicker.Target.CurrentHomePage,
+                )
+                true
+            },
             "sys_settings" to OptionItem(
                 launcher,
                 R.string.system_settings,
@@ -143,7 +157,7 @@ object LauncherOptionsPopup {
             }
             .filter {
                 if (lockHomeScreen) {
-                    it.identifier != "edit_mode" && it.identifier != "widgets"
+                    it.identifier != "edit_mode" && it.identifier != "widgets" && it.identifier != "curated"
                 } else {
                     true
                 }
@@ -163,6 +177,7 @@ object LauncherOptionsPopup {
         return true
     }
 
+    /** Label and icon for [identifier] in the menu order settings. */
     fun getMetadataForOption(identifier: String): LauncherOptionMetadata {
         return when (identifier) {
             "carousel" -> LauncherOptionMetadata(
@@ -174,6 +189,11 @@ object LauncherOptionsPopup {
             "lock" -> LauncherOptionMetadata(
                 label = R.string.home_screen_lock,
                 icon = R.drawable.ic_lock,
+            )
+
+            "curated" -> LauncherOptionMetadata(
+                label = R.string.curated_folders,
+                icon = R.drawable.ic_folder,
             )
 
             "sys_settings" -> LauncherOptionMetadata(
