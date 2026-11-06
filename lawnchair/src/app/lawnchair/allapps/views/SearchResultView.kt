@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import app.lawnchair.search.adapter.CALENDAR
 import app.lawnchair.search.adapter.CONTACT
 import app.lawnchair.search.adapter.FILES
 import app.lawnchair.search.adapter.MARKET_STORE
@@ -41,7 +42,7 @@ sealed interface SearchResultView {
 
     fun shouldHandleClick(targetCompat: SearchTargetCompat): Boolean {
         val packageName = targetCompat.packageName
-        return (packageName in listOf(START_PAGE, MARKET_STORE, WEB_SUGGESTION, CONTACT, FILES)) &&
+        return (packageName in listOf(START_PAGE, MARKET_STORE, WEB_SUGGESTION, CONTACT, FILES, CALENDAR)) &&
             targetCompat.layoutType != LayoutType.SMALL_ICON_HORIZONTAL_TEXT &&
             targetCompat.resultType != SearchTargetCompat.RESULT_TYPE_SHORTCUT
     }
