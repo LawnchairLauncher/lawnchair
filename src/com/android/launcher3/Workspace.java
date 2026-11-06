@@ -560,7 +560,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (mAccessibilityDragListener != null) {
             mAccessibilityDragListener.onDragStart(dragObject, options);
         }
-        mPanToMoveController.onDragStarted();
+        if (!(options.isAccessibleDrag && dragObject.dragSource instanceof Folder)) {
+            mPanToMoveController.onDragStarted();
+        }
         if (!mLauncher.isInState(EDIT_MODE)) {
             mLauncher.getStateManager().goToState(SPRING_LOADED);
         }
@@ -1679,6 +1681,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        mPanToMoveController.onDragEnded();
         mWallpaperOffset.setWindowToken(null);
         mLauncher.getStateManager().removeStateListener(mAccessibilityDropListener);
     }
@@ -2252,6 +2255,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     @Override
     public void onDrop(final DragObject d, DragOptions options) {
+        mPanToMoveController.onDragEnded();
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
         CellLayout dropTargetLayout = mDropToLayout;
 
