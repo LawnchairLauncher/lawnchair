@@ -55,7 +55,10 @@ public class MainProcessInitializer implements ResourceBasedOverride {
         try {
             Unseal.unseal();
             Log.i(TAG, "Unseal success!");
-        } catch (Exception e) {
+        } catch (Exception | LinkageError e) {
+            // A repackaged APK or a multi-open container can fail to load libnrb.so, in which
+            // case Unseal.unseal() throws UnsatisfiedLinkError (an Error). Startup must survive
+            // a broken bypass: only the hidden API exemption is lost for this launch.
             Log.e(TAG, "Unseal fail!");
             e.printStackTrace();
         }
