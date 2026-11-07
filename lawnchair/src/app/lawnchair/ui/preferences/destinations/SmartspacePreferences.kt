@@ -17,6 +17,8 @@
 package app.lawnchair.ui.preferences.destinations
 
 import android.app.Activity
+import android.content.Context
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -26,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +45,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
 import app.lawnchair.smartspace.model.LawnchairSmartspace
 import app.lawnchair.smartspace.model.SmartspaceCalendar
+import app.lawnchair.smartspace.model.SmartspaceCapitalization
 import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.smartspace.model.Smartspacer
@@ -53,13 +57,16 @@ import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.controls.TextPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import app.lawnchair.ui.theme.preferenceGroupColor
+import app.lawnchair.util.createCustomDateTimeFormat
 import com.android.launcher3.R
 import com.kieronquinn.app.smartspacer.sdk.SmartspacerConstants
+import java.util.Date
 
 @Composable
 fun SmartspacePreferences(
@@ -223,32 +230,107 @@ fun SmartspaceDateAndTimePreferences(
     val calendarHasMinimumContent = !showDateAdapter.state.value || !showTimeAdapter.state.value
     val calendar = calendarAdapter.state.value
 
-    PreferenceGroup(
-        heading = stringResource(id = R.string.smartspace_date_and_time),
-        modifier = modifier.padding(top = 8.dp),
-    ) {
-        val supportCustomizationFormat = calendar.formatCustomizationSupport
-        ExpandAndShrink(visible = supportCustomizationFormat) {
-            SwitchPreference(
-                adapter = showDateAdapter,
-                label = stringResource(id = R.string.smartspace_date),
-                enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
-            )
+    Column(modifier = modifier) {
+        PreferenceGroup(
+            heading = stringResource(id = R.string.smartspace_date_and_time),
+            modifier = Modifier.padding(top = 8.dp),
+        ) {
+            val supportCustomizationFormat = calendar.formatCustomizationSupport
+            ExpandAndShrink(visible = supportCustomizationFormat) {
+                SwitchPreference(
+                    adapter = showDateAdapter,
+                    label = stringResource(id = R.string.smartspace_date),
+                    enabled = if (showDateAdapter.state.value) !calendarHasMinimumContent else true,
+                )
+            }
+            ExpandAndShrink(visible = showDateAdapter.state.value) {
+                SmartspaceCalendarPreference()
+            }
+            ExpandAndShrink(visible = supportCustomizationFormat) {
+                SwitchPreference(
+                    adapter = showTimeAdapter,
+                    label = stringResource(id = R.string.smartspace_time),
+                    enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
+                )
+            }
+            ExpandAndShrink(visible = supportCustomizationFormat && showTimeAdapter.state.value) {
+                SmartspaceTimeFormatPreference()
+            }
         }
-        ExpandAndShrink(visible = supportCustomizationFormat && showDateAdapter.state.value) {
-            SmartspaceCalendarPreference()
-        }
-        ExpandAndShrink(visible = supportCustomizationFormat) {
-            SwitchPreference(
-                adapter = showTimeAdapter,
-                label = stringResource(id = R.string.smartspace_time),
-                enabled = if (showTimeAdapter.state.value) !calendarHasMinimumContent else true,
-            )
-        }
-        ExpandAndShrink(visible = supportCustomizationFormat && showTimeAdapter.state.value) {
-            SmartspaceTimeFormatPreference()
+        val enableCustomSmartspaceDateFormat = preferenceManager2.enableCustomSmartspaceDateFormat.getAdapter()
+        ExpandAndShrink(visible = calendar is SmartspaceCalendar.Custom && enableCustomSmartspaceDateFormat.state.value) {
+            PreferenceGroup(
+                heading = stringResource(id = R.string.smartspace_custom_date_header),
+            ) { SmartspaceCustomDateTimePreference() }
         }
     }
+}
+
+private fun formatCustomSkeleton(context: Context, pattern: String, localeTag: String = ""): String {
+    if (pattern.isBlank()) return ""
+    return try {
+        val formatter = createCustomDateTimeFormat(pattern, localeTag)
+        formatter.format(Date())
+    } catch (e: Throwable) {
+        Log.w("SmartspaceDateTime", "Invalid format", e)
+        context.getString(R.string.smartspace_custom_datetime_invalid_format_warning_description)
+    }
+}
+
+@Composable
+fun SmartspaceCustomDateTimePreference(
+    modifier: Modifier = Modifier, // This being unused is to shut spotless from complaining
+) {
+    val context = LocalContext.current
+    val prefs2 = preferenceManager2()
+    val customDateTimePatternState by prefs2.smartspaceCustomDateTime.getAdapter()
+    val customDateTimeLocaleState by prefs2.smartspaceCustomDateTimeLocale.getAdapter()
+
+    val patternOverline: @Composable (String) -> Unit = { pattern ->
+        val previewText = remember(pattern, customDateTimeLocaleState) {
+            formatCustomSkeleton(context, pattern, customDateTimeLocaleState)
+        }
+        Text(
+            text = stringResource(id = R.string.smartspace_custom_datetime_preview, previewText),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+
+    val localeOverline: @Composable (String) -> Unit = { localeTag ->
+        val previewText = remember(customDateTimePatternState, localeTag) {
+            formatCustomSkeleton(context, customDateTimePatternState, localeTag)
+        }
+        Text(
+            text = stringResource(id = R.string.smartspace_custom_datetime_preview, previewText),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+    val smartspaceCapitalizationEntries = remember {
+        SmartspaceCapitalization.values().map { mode ->
+            ListPreferenceEntry(
+                value = mode,
+                label = { stringResource(id = mode.nameResourceId) },
+            )
+        }.toList()
+    }
+
+    TextPreference(
+        adapter = prefs2.smartspaceCustomDateTime.getAdapter(),
+        label = stringResource(id = R.string.smartspace_datetime_custom_format),
+        fieldOverline = patternOverline,
+    )
+    TextPreference(
+        adapter = prefs2.smartspaceCustomDateTimeLocale.getAdapter(),
+        label = stringResource(id = R.string.smartspace_datetime_custom_locale),
+        fieldOverline = localeOverline,
+    )
+    ListPreference(
+        adapter = prefs2.smartspaceCustomDateTimeCapitalization.getAdapter(),
+        label = stringResource(id = R.string.smartspace_datetime_custom_capitalization),
+        entries = smartspaceCapitalizationEntries,
+    )
 }
 
 @Composable
@@ -275,10 +357,13 @@ fun SmartspaceTimeFormatPreference(
 fun SmartspaceCalendarPreference(
     modifier: Modifier = Modifier,
 ) {
-    val entries = remember {
-        SmartspaceCalendar.values().map { calendar ->
-            ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
-        }
+    val enableCustomSmartspaceDateFormat by preferenceManager2().enableCustomSmartspaceDateFormat.getAdapter()
+    val entries = remember(enableCustomSmartspaceDateFormat) {
+        SmartspaceCalendar.values()
+            .filter { calendar -> calendar !is SmartspaceCalendar.Custom || enableCustomSmartspaceDateFormat }
+            .map { calendar ->
+                ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
+            }
     }
 
     val adapter = preferenceManager2().smartspaceCalendar.getAdapter()

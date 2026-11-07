@@ -73,6 +73,9 @@
     <!-- Which calendar to use on smartspace by default -->
     <string name="config_default_smart_space_calendar" translatable="false">gregorian</string>
 
+    <!-- Which capitalization method smartspace use by default -->
+    <string name="config_default_smartspace_capitalization" translatable="false">default</string>
+
     <!-- which accent color to use by default -->
     <string name="config_default_accent_color" translatable="false">no_default</string>
 
