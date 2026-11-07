@@ -29,6 +29,10 @@ object WebSuggestionProvider : SearchProvider {
             return flow { emit(emptyList()) }
         }
 
+        if (!prefs2.showWebSearchSuggestions.firstCached()) {
+            return flow { emit(emptyList()) }
+        }
+
         val provider = prefs2.webSuggestionProvider.firstCached()
         val timeout = prefs2.maxWebSuggestionDelay.firstCached()
         val maxResults = prefs2.maxWebSuggestionResultCount.firstCached()
