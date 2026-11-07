@@ -80,7 +80,7 @@ class PanToMoveController(
 
         val isGyroscope = event.sensor.type == Sensor.TYPE_GYROSCOPE
         val sensitivity = preferences.panToMoveSensitivity.get().coerceIn(0f, 1f)
-        val reading = screenRelativeReading(event, isGyroscope)
+        val reading = screenRelativeReading(event, isGyroscope) ?: return
         if (isGyroscope) {
             // Gyroscope values are angular velocity. A flick is brief, so use a responsive
             // filter rather than smoothing it over several sensor frames.
@@ -125,10 +125,10 @@ class PanToMoveController(
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
 
-    private fun screenRelativeReading(event: SensorEvent, isGyroscope: Boolean): Float {
+    private fun screenRelativeReading(event: SensorEvent, isGyroscope: Boolean): Float? {
         val x = event.values[0]
         val y = event.values[1]
-        return when (context.display.rotation) {
+        return when (pager.display?.rotation ?: return null) {
             Surface.ROTATION_90 -> if (isGyroscope) -x else y
             Surface.ROTATION_180 -> if (isGyroscope) -y else -x
             Surface.ROTATION_270 -> if (isGyroscope) x else -y
