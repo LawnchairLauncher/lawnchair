@@ -75,6 +75,11 @@ fun FolderPreferences(
                 valueRange = 0F..1F,
                 showAsPercentage = true,
             )
+            SwitchPreference(
+                adapter = prefs2.folderTapOpensFirstApp.getAdapter(),
+                label = stringResource(id = R.string.folder_tap_opens_first_app),
+                description = stringResource(id = R.string.folder_tap_opens_first_app_description),
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(
