@@ -315,6 +315,22 @@ android {
             }
         }
 
+        // LC-Note: JVM unit tests of plain Lawnchair logic, outside `src` (main's source root).
+        test {
+            kotlin.directories.add('tests/unit')
+        }
+
+        // LC-Note: debug-only tools (the fold transition replay); release builds get no-op twins.
+        debug {
+            java.srcDirs = ['lawnchair/src_debug']
+            kotlin.directories.add('lawnchair/src_debug')
+        }
+
+        release {
+            java.srcDirs = ['lawnchair/src_release']
+            kotlin.directories.add('lawnchair/src_release')
+        }
+
         github {
             manifest.srcFile "github/AndroidManifest.xml"
         }
@@ -498,6 +514,8 @@ dependencies {
 
     debugImplementation libs.leakcanary.android
     debugImplementation libs.leakcanary.androidstudio
+
+    testImplementation libs.junit
 }
 
 ksp {
@@ -514,7 +532,7 @@ spotless {
         removeUnusedImports()
     }
     kotlin {
-        target("lawnchair/src/**/*.kt")
+        target("lawnchair/src/**/*.kt", "lawnchair/src_debug/**/*.kt", "lawnchair/src_release/**/*.kt")
         ktlint(libs.ktlint.get().version).customRuleSets([
             libs.composeRules.get().toString()
         ]).editorConfigOverride([

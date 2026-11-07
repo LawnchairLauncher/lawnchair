@@ -136,6 +136,8 @@ public class DisplayController implements DesktopVisibilityListener {
 
     private final boolean mIsDesktopFormFactor;
     private boolean mDestroyed = false;
+    // LC-Note: see calculateChange.
+    private boolean mDeviceTypeFlipLogged;
 
     @Inject
     protected DisplayController(@ApplicationContext Context context,
@@ -425,6 +427,14 @@ public class DisplayController implements DesktopVisibilityListener {
         int change = 0;
         if (!newInfo.normalizedDisplayInfo.equals(oldInfo.normalizedDisplayInfo)) {
             change |= CHANGE_ACTIVE_SCREEN;
+            // LC-Note: a device that folds without declaring the hinge changes type on every fold.
+            if (!newInfo.mIsFoldable && !mDeviceTypeFlipLogged
+                    && (oldInfo.getDeviceType() == TYPE_PHONE)
+                    != (newInfo.getDeviceType() == TYPE_PHONE)) {
+                mDeviceTypeFlipLogged = true;
+                Log.w("LC-DisplayController", "device type changed with the screen, without "
+                        + "FEATURE_SENSOR_HINGE_ANGLE: the launcher reloads on every fold");
+            }
         }
         if (newInfo.rotation != oldInfo.rotation) {
             change |= CHANGE_ROTATION;

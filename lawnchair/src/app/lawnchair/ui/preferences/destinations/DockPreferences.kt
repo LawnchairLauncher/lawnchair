@@ -37,6 +37,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.DummyLauncherLayout
+import app.lawnchair.ui.preferences.components.FoldMirrorNote
 import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.components.WithWallpaper
 import app.lawnchair.ui.preferences.components.clipToBottomPercentage
@@ -46,6 +47,7 @@ import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.createPreviewIdp
+import app.lawnchair.ui.preferences.components.isFoldHomeMirrored
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
@@ -156,12 +158,17 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
                 step = 1,
                 valueRange = 3..10,
             )
+            val homeMirrored = isFoldHomeMirrored()
             SliderPreference(
                 label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.dock_icons)),
                 adapter = hotseatColumnsUnfoldedAdapter,
                 step = 1,
                 valueRange = 3..10,
+                enabled = !homeMirrored,
             )
+            if (homeMirrored) {
+                FoldMirrorNote()
+            }
             ExpandAndShrink(
                 visible = hotseatColumnsAdapter.state.value > hotseatColumnsUnfoldedAdapter.state.value,
             ) {

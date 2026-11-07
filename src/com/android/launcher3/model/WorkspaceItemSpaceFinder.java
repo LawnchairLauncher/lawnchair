@@ -37,6 +37,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import app.lawnchair.fold.FoldItemSets;
+
 /**
  * Utility class to help find space for new workspace items
  */
@@ -61,6 +63,18 @@ public class WorkspaceItemSpaceFinder {
      */
     public int[] findSpaceForItem(IntArray workspaceScreens, IntArray addedWorkspaceScreensFinal,
             ArrayList<ItemInfo> addItemsFinal, int spanX, int spanY, Context context) {
+        return findSpaceForItem(workspaceScreens, addedWorkspaceScreensFinal, addItemsFinal,
+                spanX, spanY, context, false);
+    }
+
+    /**
+     * LC-Note: same, within one item set of the "Independent" home layout: the inner set if
+     * {@code innerItemSet} (see FoldItemSets), and {@code workspaceScreens} are model screen ids
+     * of that set.
+     */
+    public int[] findSpaceForItem(IntArray workspaceScreens, IntArray addedWorkspaceScreensFinal,
+            ArrayList<ItemInfo> addItemsFinal, int spanX, int spanY, Context context,
+            boolean innerItemSet) {
         LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
 
         // Use sBgItemsIdMap as all the items are already loaded.
@@ -101,7 +115,7 @@ public class WorkspaceItemSpaceFinder {
         PreferenceManager2 prefs = PreferenceManager2.INSTANCE.get(context);
         boolean smartspaceEnabled = PreferenceCacheExtensionsKt.firstCached(prefs.getEnableSmartspace());
         if (smartspaceEnabled) {
-            screensToExclude.add(FIRST_SCREEN_ID);
+            screensToExclude.add(FoldItemSets.toModelScreenId(FIRST_SCREEN_ID, innerItemSet));
         }
 
         for (int screen = 0; screen < screenCount; screen++) {
@@ -116,7 +130,10 @@ public class WorkspaceItemSpaceFinder {
 
         if (!found) {
             // Still no position found. Add a new screen to the end.
-            screenId = mModel.getModelDbController().getNewScreenId();
+            screenId = !innerItemSet
+                    ? mModel.getModelDbController().getNewScreenId()
+                    : FoldItemSets.toModelScreenId(
+                            mModel.getModelDbController().getNewScreenId(true), true);
 
             // Save the screen id for binding in the workspace
             workspaceScreens.add(screenId);

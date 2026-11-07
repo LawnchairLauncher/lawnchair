@@ -1094,4 +1094,95 @@
     <string name="lawnchair_action_failed">Failed to trigger action</string>
 
     <string name="please_wait">Please wait…</string>
+
+    <string name="fold_label">Foldable screen</string>
+    <string name="fold_description">Large screen layout and fold transitions</string>
+    <string name="fold_option_summary">%1$s: %2$s</string>
+    <string name="fold_preview_folded">Folded: cover screen</string>
+    <string name="fold_preview_unfolded">Unfolded: %1$s, %2$s</string>
+    <string name="fold_preview_try">Try it on the home screen</string>
+
+    <string name="fold_group_large_screen">Large screen</string>
+    <string name="fold_group_transition">Transition</string>
+    <string name="fold_group_after_fold">After folding</string>
+    <string name="fold_group_advanced">Advanced</string>
+
+    <string name="fold_home_screen">Home screen</string>
+    <string name="fold_home_pages">Two pages</string>
+    <string name="fold_home_pages_description">The page you were on stays in place and the next one opens beside it, like a book.</string>
+    <string name="fold_home_expand">Expand</string>
+    <string name="fold_home_expand_description">One wide page across both halves, swiped as one. Items and widgets stay on one side of the fold, so the cover screen keeps them exactly as they are.</string>
+    <string name="fold_home_mirror">Same as cover</string>
+    <string name="fold_home_mirror_description">The exact layout of the cover screen, just larger. No need to arrange two screens. The app drawer keeps its own layout setting.</string>
+    <string name="fold_home_independent">Independent</string>
+    <string name="fold_home_independent_description">A separate layout for the large screen. It starts as a copy of the cover screen, and widgets may need to be set up again there.</string>
+    <string name="fold_page_order">Page order</string>
+    <string name="fold_page_order_opening">Opening direction</string>
+    <string name="fold_page_order_opening_description">The page you were on stays on the half you hold, and unfolding adds the next page on the half that opens.</string>
+    <string name="fold_page_order_reading">Reading direction</string>
+    <string name="fold_page_order_reading_description">Pages follow your language, like a book. On the home screen, the page you were on stays on the half you hold when it can, so unfolding may add the page before it.</string>
+
+    <string name="fold_app_drawer">App drawer</string>
+    <string name="fold_drawer_expand">Expand</string>
+    <string name="fold_drawer_expand_description">Columns increase and apps flow in order into the new half. The first row stays put.</string>
+    <string name="fold_drawer_pages">Two pages</string>
+    <string name="fold_drawer_pages_description">The grid you see does not move. Apps that were below the edge continue on the second page.</string>
+    <string name="fold_drawer_big_icons">Bigger icons</string>
+    <string name="fold_drawer_big_icons_description">The cover\'s columns in the same order, with larger icons. Icons are kept sharp, which takes about 2.5 times the memory for app icons (roughly 25 MB more for 200 apps).</string>
+
+    <string name="fold_animation">Animation</string>
+    <string name="fold_transition_window">Window</string>
+    <string name="fold_transition_window_description">The whole screen comes into focus. The new half opens like a window, blurred at first, and the page you were on sharpens with it.</string>
+    <string name="fold_transition_wave">Light wave</string>
+    <string name="fold_transition_wave_description">Light spreads from the hinge side you were looking at across to the opening edge, lighting up the icons as it passes.</string>
+    <string name="fold_transition_book">Open book</string>
+    <string name="fold_transition_book_description">Both halves straighten together, like a book opening flat in your hands.</string>
+    <string name="fold_transition_simple">Simple</string>
+    <string name="fold_transition_simple_description">A calm fade and a direct switch, without effects.</string>
+    <string name="fold_track_hinge">Follow hinge angle</string>
+    <string name="fold_track_hinge_description">The animation follows your hand and stops when you stop</string>
+    <string name="fold_track_hinge_posture_only">This phone\'s hinge sensor reports only open and closed, so the animation plays at its own pace.</string>
+
+    <string name="fold_cover_opens_on">Cover screen opens on</string>
+    <string name="fold_after_fold_last_panel">Last panel you used</string>
+    <string name="fold_after_fold_last_panel_description">The page you used last, even if it was on the second half.</string>
+    <string name="fold_after_fold_first_page">First page</string>
+    <string name="fold_after_fold_first_page_description">Always the first page.</string>
+    <string name="fold_extra_dock_info">Extra dock icons are hidden on the cover screen and come back when you unfold. They are never deleted.</string>
+
+    <string name="fold_dock">Dock</string>
+    <string name="fold_dock_merge">Merge</string>
+    <string name="fold_dock_merge_description">Your familiar dock stays in its half and the new part arrives with the new half, merging at the hinge.</string>
+    <string name="fold_dock_same">Same dock</string>
+    <string name="fold_dock_same_description">The same icons and the same count on both screens.</string>
+    <string name="fold_dock_side">Side dock</string>
+    <string name="fold_dock_side_description">A vertical dock on the screen edge where your thumb rests.</string>
+    <string name="fold_landscape">Landscape</string>
+    <string name="fold_landscape_auto">Automatic</string>
+    <string name="fold_landscape_auto_description">The same layout adapts to the width automatically.</string>
+    <string name="fold_landscape_own">Own sizes</string>
+    <string name="fold_landscape_own_description">Own icon and label sizes for the large screen in landscape.</string>
+    <string name="fold_landscape_icon_size">Icon size in landscape</string>
+    <string name="fold_landscape_label_size">Label size in landscape</string>
+    <string name="fold_wallpaper">Wallpaper</string>
+    <string name="fold_wallpaper_span">One spanning image</string>
+    <string name="fold_wallpaper_span_description">One image across both screens. With wallpaper scrolling off, the cover keeps the part of the image you saw on the half you hold.</string>
+    <string name="fold_wallpaper_each">Per screen</string>
+    <string name="fold_wallpaper_each_description">A separate image for each screen: with Lawnchair\'s dual wallpaper, or the system\'s own setting where it has one.</string>
+    <string name="fold_wallpaper_each_system_note">Set each screen\'s wallpaper in the system\'s wallpaper settings while that screen is in use.</string>
+    <string name="fold_dual_wallpaper_label">Lawnchair dual wallpaper</string>
+    <string name="fold_dual_wallpaper_description">One image on the cover screen and another on the inner screen. Choose the images, then set the dual wallpaper in the system\'s chooser. A screen without an image shows the other one.</string>
+    <string name="fold_wallpaper_cover_image">Cover screen image</string>
+    <string name="fold_wallpaper_inner_image">Inner screen image</string>
+    <string name="fold_wallpaper_image_set">Chosen. Tap to replace</string>
+    <string name="fold_wallpaper_image_not_set">Not chosen</string>
+    <string name="fold_wallpaper_image_failed">Couldn\'t use this image</string>
+    <string name="fold_wallpaper_set_dual">Set Lawnchair\'s dual wallpaper</string>
+    <string name="fold_wallpaper_dual_active">In use</string>
+    <string name="fold_wallpaper_dual_inactive">Opens the system\'s live wallpaper chooser</string>
+    <string name="fold_wallpaper_chooser_failed">Couldn\'t open the system\'s live wallpaper chooser</string>
+    <string name="fold_unfolded_grid_mirror_note">Not used while Foldable screen › Home screen is set to “Same as cover”: the large screen then uses the folded grid.</string>
+    <string name="fold_independent_after_fold_note">Not used with “Independent”: each screen has its own pages and opens on the page you used there last.</string>
+    <string name="fold_independent_copy_failed">Couldn\'t copy the cover layout to the large screen, so “Independent” wasn\'t turned on</string>
+    <string name="fold_independent_dock_note">With “Independent” the large screen has its own dock, so “Merge” shows it as a normal dock; the side dock and “Same as cover” still apply.</string>
 </resources>

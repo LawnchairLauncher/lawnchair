@@ -24,6 +24,8 @@ import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 
+import app.lawnchair.fold.FoldDrawerBook;
+
 /**
  * A helper class to draw background of a focused view.
  */
@@ -60,6 +62,8 @@ public abstract class FocusIndicatorHelper extends ItemFocusIndicatorHelper<View
         @Override
         public void viewToRect(View v, Rect outRect) {
             outRect.set(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+            // LC-Note: items of the foldable "book" drawer are drawn on their page
+            FoldDrawerBook.offsetFocusRect(v, outRect);
         }
     }
 }

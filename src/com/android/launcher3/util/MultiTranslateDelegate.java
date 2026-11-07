@@ -50,6 +50,10 @@ public class MultiTranslateDelegate {
     // Specific for hotseat items when adjusting for bubbles
     public static final int INDEX_BUBBLE_ADJUSTMENT_ANIM = 3;
 
+    // LC-Note: specific for hotseat items while a foldable's dock merges or splits (the
+    // taskbar index it reuses only moves taskbar views vertically)
+    public static final int INDEX_FOLD_DOCK_ANIM = 8;
+
     public static final int COUNT = 9;
 
     private final MultiPropertyFactory<View> mTranslationX;

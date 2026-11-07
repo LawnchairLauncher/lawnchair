@@ -84,6 +84,8 @@ import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.preferences2.PreferenceManager2;
 
+import app.lawnchair.fold.FoldItemSets;
+
 /**
  * Extension of {@link Cursor} with utility methods for workspace loading.
  */
@@ -103,6 +105,8 @@ public class LoaderCursor extends CursorWrapper {
     private final IntArray mItemsToRemove = new IntArray();
     private final IntArray mRestoredRows = new IntArray();
     private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
+    // LC-Note: items of the inner item set kept in the database but not loaded, see checkAndAddItem.
+    private int mKeptInnerItemCount;
 
     // CollectionInfo objects, which have not yet been loaded from the DB, but are expected to
     // found eventually as the loading progresses
@@ -480,6 +484,11 @@ public class LoaderCursor extends CursorWrapper {
      * @return true is any item was removed.
      */
     public boolean commitDeleted() {
+        if (mKeptInnerItemCount > 0) {
+            // LC-Note: see checkAndAddItem.
+            FileLog.d(TAG, "Keeping " + mKeptInnerItemCount
+                    + " items of the inner set that don't fit in the database");
+        }
         if (mItemsToRemove.size() > 0) {
             // Remove dead items
             mModel.getModelDbController().delete(
@@ -599,6 +608,11 @@ public class LoaderCursor extends CursorWrapper {
             // good. Don't bind it, but keep it in the database so it shows up again once the
             // hotseat is large enough.
             FileLog.d(TAG, "Keeping hotseat item out of bounds in the database: " + info);
+        } else if (FoldItemSets.isInnerItem(info)) {
+            // LC-Note: an item of the inner set of "Independent" (see FoldItemSets) may not fit
+            // while it is hidden. Keep it in the database like the hotseat items above. Logged
+            // once per load, as the whole set can be hidden, see commitDeleted.
+            mKeptInnerItemCount++;
         } else {
             markDeleted("Item position overlap", RestoreError.OVERLAPPING_ITEM);
         }
@@ -610,7 +624,12 @@ public class LoaderCursor extends CursorWrapper {
      */
     private boolean isHotseatItemOutOfBounds(ItemInfo item) {
         return item.container == Favorites.CONTAINER_HOTSEAT
-                && item.screenId >= mIDP.numDatabaseHotseatIcons;
+                && getHotseatRank(item) >= mIDP.numDatabaseHotseatIcons;
+    }
+
+    /** LC-Note: dock rank within the item's set (inner dock ranks start at the set base). */
+    private static int getHotseatRank(ItemInfo item) {
+        return FoldItemSets.toPresenterScreenId(item.screenId);
     }
 
     /**
@@ -619,10 +638,14 @@ public class LoaderCursor extends CursorWrapper {
     protected boolean checkItemPlacement(ItemInfo item) {
         int containerIndex = item.screenId;
         if (item.container == Favorites.CONTAINER_HOTSEAT) {
-            final GridOccupancy hotseatOccupancy =
-                    mOccupied.get(Favorites.CONTAINER_HOTSEAT);
+            // LC-Note: each item set of "Independent" has its own dock, see FoldItemSets.
+            final int rank = getHotseatRank(item);
+            final int occupancyKey = FoldItemSets.isInnerItem(item)
+                    ? Favorites.CONTAINER_HOTSEAT - FoldItemSets.INNER_SCREEN_BASE
+                    : Favorites.CONTAINER_HOTSEAT;
+            final GridOccupancy hotseatOccupancy = mOccupied.get(occupancyKey);
 
-            if (item.screenId >= mIDP.numDatabaseHotseatIcons) {
+            if (rank >= mIDP.numDatabaseHotseatIcons) {
                 Log.e(TAG, "Error loading shortcut " + item
                         + " into hotseat position " + item.screenId
                         + ", position out of bounds: (0 to " + (mIDP.numDatabaseHotseatIcons - 1)
@@ -631,19 +654,19 @@ public class LoaderCursor extends CursorWrapper {
             }
 
             if (hotseatOccupancy != null) {
-                if (hotseatOccupancy.cells[(int) item.screenId][0]) {
+                if (hotseatOccupancy.cells[rank][0]) {
                     Log.e(TAG, "Error loading shortcut into hotseat " + item
                             + " into position (" + item.screenId + ":" + item.cellX + ","
                             + item.cellY + ") already occupied");
                     return false;
                 } else {
-                    hotseatOccupancy.cells[item.screenId][0] = true;
+                    hotseatOccupancy.cells[rank][0] = true;
                     return true;
                 }
             } else {
                 final GridOccupancy occupancy = new GridOccupancy(mIDP.numDatabaseHotseatIcons, 1);
-                occupancy.cells[item.screenId][0] = true;
-                mOccupied.put(Favorites.CONTAINER_HOTSEAT, occupancy);
+                occupancy.cells[rank][0] = true;
+                mOccupied.put(occupancyKey, occupancy);
                 return true;
             }
         } else if (item.container != Favorites.CONTAINER_DESKTOP) {
@@ -664,7 +687,9 @@ public class LoaderCursor extends CursorWrapper {
 
         if (!mOccupied.containsKey(item.screenId)) {
             GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
-            if (item.screenId == Workspace.FIRST_SCREEN_ID && PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableSmartspace())) {
+            // LC-Note: the inner set's first page shows the smartspace too.
+            if (FoldItemSets.toPresenterScreenId(item.screenId) == Workspace.FIRST_SCREEN_ID
+                    && PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableSmartspace())) {
                 // Mark the first X columns (X is width of the search container) in the first row as
                 // occupied (if the feature is enabled) in order to account for the search
                 // container.

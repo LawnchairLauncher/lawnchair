@@ -77,6 +77,7 @@ import app.lawnchair.ui.preferences.navigation.BackupAndRestore
 import app.lawnchair.ui.preferences.navigation.DebugMenu
 import app.lawnchair.ui.preferences.navigation.Dock
 import app.lawnchair.ui.preferences.navigation.ExperimentalFeatures
+import app.lawnchair.ui.preferences.navigation.Foldable
 import app.lawnchair.ui.preferences.navigation.Folders
 import app.lawnchair.ui.preferences.navigation.General
 import app.lawnchair.ui.preferences.navigation.Gestures
@@ -89,6 +90,7 @@ import app.lawnchair.ui.util.addIf
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
@@ -130,6 +132,7 @@ fun PreferencesDashboard(
         }
 
         val deckLayout = prefs2.deckLayout.getAdapter()
+        val foldForceShowSettings = prefs2.foldForceShowSettings.getAdapter()
         PreferenceGroup {
             PreferenceCategory(
                 label = stringResource(R.string.general_label),
@@ -209,6 +212,19 @@ fun PreferencesDashboard(
                     iconResource = R.drawable.ic_quickstep,
                     onNavigate = { onNavigate(Quickstep) },
                     isSelected = currentRoute is Quickstep,
+                )
+            }
+
+            ExpandAndShrink(
+                visible = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY ||
+                    foldForceShowSettings.state.value,
+            ) {
+                PreferenceCategory(
+                    label = stringResource(R.string.fold_label),
+                    description = stringResource(R.string.fold_description),
+                    iconResource = R.drawable.ic_foldable,
+                    onNavigate = { onNavigate(Foldable) },
+                    isSelected = currentRoute is Foldable,
                 )
             }
 
