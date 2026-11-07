@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">توسط %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">همین الان</string>
-    <string name="time_minutes_ago">%dد</string>
-    <string name="time_hours_ago">%dس</string>
-    <string name="time_days_ago">%dر</string>
-    <string name="time_weeks_ago">%dه</string>
-    <string name="time_months_ago">%dماه</string>
-    <string name="time_years_ago">%dسال</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dد</item>
+        <item quantity="other">%dد</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dس</item>
+        <item quantity="other">%dس</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dر</item>
+        <item quantity="other">%dر</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dه</item>
+        <item quantity="other">%dه</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dماه</item>
+        <item quantity="other">%dماه</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dسال</item>
+        <item quantity="other">%dسال</item>
+    </plurals>
     <string name="managed_by_lawnchair">مدیریت شده توسط Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">ترجیحات</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">پنهان کردن برنامه‌های پوشه</string>
     <string name="apps_in_folder_description">برنامه‌های اختصاص داده شده به پوشه‌ها از فهرست برنامه‌ها حذف می‌شوند</string>
     <string name="folders_filter_duplicates">فقط برنامه های ویژه را نشان بده</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">پوشه من</string>
     <string name="sort_active_items_action">Sort active items</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">تنظیمات</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">عمومی</string>
     <string name="general_description">رنگ‌ها، بسته آیکون، نشان اعلان‌ها</string>
     <string name="home_screen_label">صفحه اصلی</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">حداکثر محدودیت اندازه شبکه را افزایش دهید</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">همیشه بارگذاری دوباره آیکون‌ها</string>
-    <string name="always_reload_icons_description">خودداری از استفاده از آیکون‌های ذخیره شده در آیکون پک‌ها</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">چیدمان عرشه</string>
     <string name="show_deck_layout_description">نمایش گزینه طرح‌بندی برای مخفی کردن کشوی برنامه‌ها و افزودن خودکار برنامه‌های جدید به صفحه اصلی</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">استفاده از چندخطی</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="transparent_background_icons_description">For themed icons and auto-adaptive icons</string>
     <string name="auto_adaptive_icons_label">آیکون‌های انطباقی خودکار</string>
-    <string name="auto_adaptive_icons_description">برای تمام آیکون‌های غیر انطباقی</string>
     <string name="shadow_bg_icons_label">نمایش سایه پشت آیکون ها</string>
     <string name="background_lightness_label">روشنایی پس‌زمینه</string>
     <string name="adaptive_icon_background_description">استفاده از نور پس زمینه 100% برای رنگ سفید</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">کلیپ بورد دارای شکل آیکون معتبری نیست</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">بسته آیکون</string>
-    <string name="themed_icon_pack">منبع آیکون های پویا</string>
-    <string name="themed_icon_pack_tint">رنگ آمیزی با رنگ تاکیدی</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">آیکون‌های سیستمی</string>
     <string name="force_monochrome_label">Force monochrome</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">آیکون‌های پوسته‎‌ای</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">خاموش</string>
     <string name="themed_icons_home_label">صفحه اصلی</string>
     <string name="themed_icons_home_and_drawer_label">کشوی برنامه‌ها و صفحه اصلی</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">هیچ بسته آیکونی پشتیبانی نمی‌شود</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">افزودن قلم</string>
     <string name="pref_fonts_add_fonts_summary">قلم‌های OTF و TTF پشتیبانی می‌شوند</string>

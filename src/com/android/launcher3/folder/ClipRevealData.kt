@@ -19,6 +19,7 @@ package com.android.launcher3.folder
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import com.android.launcher3.Utilities
+import com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR
 import com.android.launcher3.graphics.ShapeDelegate
 
 /**
@@ -42,7 +43,7 @@ data class ClipRevealData(
     val finalRadius: Float,
 ) {
     companion object Factory {
-        const val EXTRA_FOLDER_REVEAL_RADIUS_PERCENTAGE = 0.125f
+        private const val CONTENT_REVEAL_PADDING_PERCENTAGE = ICON_OVERLAP_FACTOR - 1
 
         /** Calculates start and end values for revealing [Folder] background and content */
         fun Folder.getClipRevealData(
@@ -74,7 +75,7 @@ data class ClipRevealData(
                 // Setup start and end area for revealing Folder Content
                 val extraRadius =
                     ((deviceProfile.folderIconSizePx / initialFolderScale) *
-                            EXTRA_FOLDER_REVEAL_RADIUS_PERCENTAGE)
+                        CONTENT_REVEAL_PADDING_PERCENTAGE)
                         .toInt()
                 val contentStart =
                     Rect(

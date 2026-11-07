@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">por %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">agora</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%ds</string>
-    <string name="time_months_ago">%dm</string>
-    <string name="time_years_ago">%da</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dm</item>
+        <item quantity="other">%dm</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dh</item>
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dd</item>
+        <item quantity="other">%dd</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%ds</item>
+        <item quantity="other">%ds</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dm</item>
+        <item quantity="other">%dm</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%da</item>
+        <item quantity="other">%da</item>
+    </plurals>
     <string name="managed_by_lawnchair">Gerido por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferências</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Ocultar aplicações da pasta</string>
     <string name="apps_in_folder_description">As aplicações atribuídas a pastas são excluídas das listas de aplicações</string>
     <string name="folders_filter_duplicates">Mostrar apenas aplicações únicas</string>
+    <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">A minha pasta</string>
     <string name="sort_active_items_action">Ordenar itens ativos</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Definições</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">Geral</string>
     <string name="general_description">Cores, pacotes de ícones, pontos de notificação</string>
     <string name="home_screen_label">Ecrã principal</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Aumentar o limite máximo do tamanho da grelha</string>
     <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grelha do ecrã inicial de 10 &#xd7; 10 para 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Recarregar sempre os ícones</string>
-    <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
+    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">Isso fará com que os ícones atualizem regularmente, afetando o desempenho. Desative se o pacote de ícones não for atualizado regularmente.</string>
     <string name="show_deck_layout">Ambiente do Deck</string>
     <string name="show_deck_layout_description">Exibir uma opção de layout para ocultar o menu de aplicações e adicionar automaticamente novos aplicativos à página inicial</string>
@@ -199,13 +220,13 @@
     App suggestions
     -->
     <string name="suggestion_pref_screen_title">Sugestões de aplicações</string>
-    <string name="global_predictions_label">Mostrar sugestões de funcionalidades</string>
+    <string name="global_predictions_label">Mostrar sugestões</string>
     <string name="app_predictions_label">Sugestões</string>
     <string name="prediction_mode_label">Fornecedor de Sugestões</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Esta funcionalidade requer Android 10 ou superior</string>
     <string name="prediction_mode_system">Sistema</string>
     <string name="prediction_mode_none">Desligado</string>
-    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
+    <string name="prediction_weighted_usage_stats_label">Utilizar as previsões do sistema</string>
     <string name="prediction_weighted_usage_stats_description">Utilize as previsões do sistema para tornar as Sugestões mais fiáveis</string>
     <string name="dismissed_prediction_apps_label">Aplicações bloqueadas</string>
     <string name="dismissed_prediction_apps_label_with_count">Aplicações bloqueadas (%1$d)</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Usa múltiplas linhas</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Fundos de ícone transparentes</string>
-    <string name="transparent_background_icons_description">Para ícones temáticos e ícones auto-adaptáveis</string>
     <string name="auto_adaptive_icons_label">Ícones auto-adaptáveis</string>
-    <string name="auto_adaptive_icons_description">Para todos os ícones não adaptáveis</string>
     <string name="shadow_bg_icons_label">Mostrar sombra atrás dos ícones</string>
     <string name="background_lightness_label">Luminosidade do fundo</string>
     <string name="adaptive_icon_background_description">Usar 100% de luminosidade do fundo para branco</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">A área de transferência não contém um formato de ícone válido</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Pacote de ícones</string>
-    <string name="themed_icon_pack">Fonte de ícones temáticos</string>
-    <string name="themed_icon_pack_tint">Tonalizar com a cor de destaque</string>
+    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">Ícones do sistema</string>
     <string name="force_monochrome_label">Forçar monocromático</string>
     <string name="force_monochrome_description">Recolorir aplicativos não suportados com a cor de destaque atual.</string>
+    <string name="enforce_themed_icons_title">Enforce themed icons</string>
+    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">Ícones temáticos</string>
+    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
     <string name="themed_icons_off_label">Desligado</string>
     <string name="themed_icons_home_label">Ecrã principal</string>
     <string name="themed_icons_home_and_drawer_label">Área de trabalho e menu de aplicações</string>
+    <string name="themed_icons_no_fallback">No fallback</string>
     <string name="lawnicons_not_installed_description">Sem pacotes de ícones suportados</string>
+    <string name="advanced_icon_settings_title">Advanced icon settings</string>
+    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
+    <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Adicionar fontes</string>
     <string name="pref_fonts_add_fonts_summary">São suportadas fontes OTF e TTF</string>
@@ -715,7 +741,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Procurar no dispositivo</string>
+    <string name="all_apps_device_search_hint">Procurar aplicações, na web e muito mais</string>
     <string name="all_apps_search_bar_hint">Procurar aplicações</string>
     <string name="all_apps_no_search_results">Nenhuma aplicação encontrada correspondente a \"<xliff:g example="Android" id="query">%1$s</xliff:g>    </string>
     <string name="all_apps_search_result_suggestions">Da web</string>

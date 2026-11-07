@@ -146,6 +146,12 @@ public class AllAppsSearchBarController
      * Resets the search bar state.
      */
     public void reset() {
+        // Cancel any in-flight search so a late-arriving result can't re-enter the search
+        // state after the drawer has closed (see afterTextChanged/refreshSearchResult, which
+        // also cancel before starting a new search).
+        if (mSearchAlgorithm != null) {
+            mSearchAlgorithm.cancel(true);
+        }
         mCallback.clearSearchResult();
         mInput.reset();
         mInput.clearFocus();

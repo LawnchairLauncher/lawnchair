@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.util;
 
-import static android.content.pm.PackageManager.FEATURE_SENSOR_HINGE_ANGLE;
 import static android.content.res.Configuration.UI_MODE_NIGHT_MASK;
 import static android.content.res.Configuration.UI_MODE_NIGHT_YES;
 import static android.view.Display.DEFAULT_DISPLAY;
@@ -57,6 +56,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
 
+import app.lawnchair.util.LawnchairWindowManagerProxy;
 import com.android.launcher3.InvariantDeviceProfile.DeviceType;
 import com.android.launcher3.LauncherPrefChangeListener;
 import com.android.launcher3.LauncherPrefs;
@@ -347,9 +347,25 @@ public class DisplayController implements DesktopVisibilityListener {
                 != info.showLockedTaskbarOnHome()
                 || mWMProxy.showDesktopTaskbarForFreeformDisplay(windowContext)
                 != info.showDesktopTaskbarForFreeformDisplay()
-                || config.isNightModeActive() != info.mIsNightModeActive) {
+                || isNightModeActiveCompat(config) != info.mIsNightModeActive) {
             notifyConfigChange(displayId);
         }
+    }
+
+    /** 
+     * LC-Note: Returns whether the configuration is in night mode
+     * <p> 
+     * Compat <code>API 30</code> and higher: <code>config.isNightModeActive()</code>
+     * <p> 
+     * Compat <code>API 29</code> and lower: <code>(config.uiMode & UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES</code>
+     * 
+     * @return true if night mode is active and false otherwise
+     */
+    private static boolean isNightModeActiveCompat(Configuration config) {
+        if (Utilities.ATLEAST_R) {
+            return config.isNightModeActive();
+        }
+        return (config.uiMode & UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES;
     }
 
     public void setPriorityListener(DisplayInfoChangeListener listener) {
@@ -551,6 +567,7 @@ public class DisplayController implements DesktopVisibilityListener {
         private final boolean mIsNightModeActive;
 
         private boolean mIsFoldable;
+        private boolean mDeviceTypeLogged;
 
         public Info(Context displayInfoContext) {
             /* don't need system overrides for external displays */
@@ -579,15 +596,10 @@ public class DisplayController implements DesktopVisibilityListener {
             mStableDensityScaleFactor = (float) defaultDensityDpi / DisplayMetrics.DENSITY_DEFAULT;
             mScreenSizeDp = new PortraitSize(config.screenHeightDp, config.screenWidthDp);
             navigationMode = wmProxy.getNavigationMode(displayInfoContext);
-            if (Utilities.ATLEAST_R) {
-                mIsNightModeActive = config.isNightModeActive();
-            } else {
-                mIsNightModeActive = (config.uiMode & UI_MODE_NIGHT_MASK) == UI_MODE_NIGHT_YES;
-            }
+            mIsNightModeActive = isNightModeActiveCompat(config);
 
-            // LC: Hacky stuff but it work!
-            mIsFoldable = Utilities.ATLEAST_R && displayInfoContext.getPackageManager()
-                .hasSystemFeature(FEATURE_SENSOR_HINGE_ANGLE);
+            // LC-Note: the single "does this device fold" check (LawnchairWindowManagerProxy).
+            mIsFoldable = LawnchairWindowManagerProxy.isFoldable(displayInfoContext);
             
             mPerDisplayBounds.putAll(perDisplayBoundsCache);
             List<WindowBounds> cachedValue = getCurrentBounds();
@@ -729,7 +741,7 @@ public class DisplayController implements DesktopVisibilityListener {
 
         public @DeviceType int getDeviceType() {
             if (mIsDesktopFormFactor) {
-                Log.d("LC-DisplayController", "Device has desktop profile (Desktop)");
+                logDeviceType("Device has desktop profile (Desktop)");
                 return TYPE_DESKTOP;
             }
 
@@ -741,20 +753,31 @@ public class DisplayController implements DesktopVisibilityListener {
                     .reduce(0, (a, b) -> a | b);
 
             if (type == (flagPhone | flagTablet)) {
-                Log.d("LC-DisplayController", "Device has multiple display (Phone|Tablet) based on bounds");
+                logDeviceType("Device has multiple display (Phone|Tablet) based on bounds");
                 return TYPE_MULTI_DISPLAY;
             }
             if (type == flagTablet) {
                 // LC: Hacky stuff but it work!
                 if (mIsFoldable) {
-                    Log.d("LC-DisplayController", "Device is Foldable (Tablet && Hinge Detected)");
+                    logDeviceType("Device is Foldable (Tablet && Hinge Detected)");
                     return TYPE_MULTI_DISPLAY;
                 }
-                Log.d("LC-DisplayController", "Device has tablet profile (Tablet)");
+                logDeviceType("Device has tablet profile (Tablet)");
                 return TYPE_TABLET;
             } else {
-                Log.d("LC-DisplayController", "Device has phone profile (Phone)");
+                logDeviceType("Device has phone profile (Phone)");
                 return TYPE_PHONE;
+            }
+        }
+
+        /**
+         * LC-Note: getDeviceType() is called many times for each display change (once per
+         * DeviceProfile and more), so only log it the first time.
+         */
+        private void logDeviceType(String message) {
+            if (!mDeviceTypeLogged) {
+                mDeviceTypeLogged = true;
+                Log.d("LC-DisplayController", message + ", currentSize=" + currentSize);
             }
         }
 

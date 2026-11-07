@@ -17,6 +17,7 @@ package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_EDU_ONLY_TIP;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.util.Log;
@@ -39,6 +40,9 @@ import com.android.launcher3.views.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import app.lawnchair.ui.preferences.PreferenceActivity;
+import app.lawnchair.ui.preferences.navigation.Predictions;
 
 /**
  * Controller class for managing user onboaridng flow for hybrid hotseat
@@ -70,7 +74,7 @@ public class HotseatEduController {
         migrateHotseatWhole();
         Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_enabled,
                 R.string.hotseat_prediction_settings, null,
-                () -> mLauncher.startActivity(getSettingsIntent()));
+                () -> mLauncher.startActivity(getLawnchairSettingsIntent(mLauncher)));
     }
 
     /**
@@ -158,7 +162,8 @@ public class HotseatEduController {
         if (childCount < mLauncher.getDeviceProfile().numShownHotseatIcons) {
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
-                    () -> mLauncher.startActivity(getSettingsIntent()));
+                    // LC-Note: Start Lawnchair prediction settings instead of AOSP
+                    () -> mLauncher.startActivity(getLawnchairSettingsIntent(mLauncher)));
         } else {
             showHotseatArrowTip(true, mLauncher.getString(R.string.hotseat_tip_no_empty_slots));
         }
@@ -241,6 +246,12 @@ public class HotseatEduController {
         mActiveDialog = HotseatEduDialog.getDialog(mLauncher);
         mActiveDialog.setHotseatEduController(this);
         mActiveDialog.show(mPredictedApps);
+    }
+
+    // LC-Note: Start Lawnchair prediction settings instead of AOSP
+    public static Intent getLawnchairSettingsIntent(Context context) {
+        return PreferenceActivity.createIntent(context, Predictions.INSTANCE)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     static Intent getSettingsIntent() {

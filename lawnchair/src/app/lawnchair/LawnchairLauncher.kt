@@ -194,7 +194,7 @@ class LawnchairLauncher : QuickstepLauncher() {
             }
         }.launchIn(scope = lifecycleScope)
 
-        preferenceManager2.statusBarClock.get().onEach {
+        preferenceManager2.statusBarClock.get().distinctUntilChanged().onEach {
             with(launcher.stateManager) {
                 if (it) {
                     addStateListener(statusBarClockListener)
@@ -204,7 +204,7 @@ class LawnchairLauncher : QuickstepLauncher() {
                     LawnchairApp.instance.restoreClockInStatusBar()
                 }
             }
-        }
+        }.launchIn(scope = lifecycleScope)
         preferenceManager2.rememberPosition.get().onEach {
             with(launcher.stateManager) {
                 if (it) {
@@ -283,7 +283,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         super.getSupportedShortcuts(container),
         Stream.concat(
             Stream.of(LawnchairShortcut.UNINSTALL, LawnchairShortcut.CUSTOMIZE, LawnchairShortcut.OPEN_IN_STORE),
-            if (LawnchairApp.isRecentsEnabled) Stream.of(LawnchairShortcut.PAUSE_APPS) else Stream.empty(),
+            Stream.of(LawnchairShortcut.PAUSE_APPS),
         ),
     )
 

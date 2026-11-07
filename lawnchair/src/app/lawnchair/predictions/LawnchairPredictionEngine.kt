@@ -9,6 +9,7 @@ import android.content.pm.LauncherApps
 import android.os.Build
 import android.os.Process
 import android.os.UserHandle
+import android.util.Log
 import androidx.annotation.RequiresApi
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
@@ -186,7 +187,16 @@ class LawnchairPredictionEngine(
         val appFilter = AppFilter(context)
         return userProfilesInPredictionOrder()
             .asSequence()
-            .flatMap { user -> launcherApps.getActivityList(null, user).asSequence() }
+            .flatMap { user ->
+                try {
+                    launcherApps.getActivityList(null, user)
+                } catch (e: SecurityException) {
+                    // Lawnchair-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
+                    // Ref: https://issuetracker.google.com/issues/547643926
+                    Log.e("LawnchairPredictionEngine", "Failed to get activity list for user $user", e)
+                    emptyList()
+                }.asSequence()
+            }
             .filter { activityInfo -> appFilter.shouldShowApp(activityInfo.componentName) }
             .map { activityInfo -> toStoreKey(activityInfo.componentName, activityInfo.user) }
             .distinct()

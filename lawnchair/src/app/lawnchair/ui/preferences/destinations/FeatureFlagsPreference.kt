@@ -4,7 +4,6 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,7 +30,6 @@ import com.android.launcher3.util.OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN
 import com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP
 import com.google.android.msdl.data.model.MSDLToken
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FeatureFlagsPreference(modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -192,7 +190,6 @@ private fun IntentPreference(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun LazyListScope.preferenceCategory(heading: String, description: String? = null) {
     item(key = heading) {
         PreferenceTemplate(

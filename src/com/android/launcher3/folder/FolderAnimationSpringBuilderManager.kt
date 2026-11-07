@@ -16,10 +16,14 @@
 package com.android.launcher3.folder
 
 import android.animation.AnimatorSet
+import android.graphics.Color
 import android.view.View
 import com.android.launcher3.BubbleTextView
-import com.android.launcher3.Hotseat
-import com.android.launcher3.Workspace
+import com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY
+import com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_FOLDER_ANIM
+import com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY
+import com.android.launcher3.LauncherState
+import com.android.launcher3.Utilities
 import com.android.launcher3.apppairs.AppPairIcon
 import com.android.launcher3.folder.ClipRevealData.Factory.getClipRevealData
 import com.android.launcher3.folder.FolderAnimationData.Factory.getAnimationData
@@ -42,7 +46,9 @@ class FolderAnimationSpringBuilderManager(
     private val launcherDelegate: LauncherDelegate,
 ) : FolderAnimationCreator {
     override fun createAnimatorSet(isOpening: Boolean): AnimatorSet {
-        resetLauncherScale(launcherDelegate.launcher?.workspace, launcherDelegate.launcher?.hotseat)
+        // Since we scale down workspace/hotseat when opening folder,
+        // need to have initial values to find starting folder icon location
+        resetLauncherScale(launcherDelegate)
         val folderAnimData: FolderAnimationData = folder.getAnimationData(isOpening)
         val clipRevealData: ClipRevealData = folder.getClipRevealData(shapeDelegate, folderAnimData)
         val iconAnimData: List<IconAnimationData> = folder.getIconAnimationDataList(folderAnimData)
@@ -56,22 +62,36 @@ class FolderAnimationSpringBuilderManager(
             .animatorSet
     }
 
-    // Folders can exist outside of Launcher (Ex. Transient Taskbar)
-    // So we only apply Launcher effects when we have a Launcher.
-    // We need to reset these values before calculating folder positioning.
-    private fun resetLauncherScale(workspace: Workspace<*>?, hotseat: Hotseat?) {
-        if (hotseat == null || workspace == null) return
-        // Used to match the translation of the scaling between hotseat and workspace.
-        workspace.setPivotToScaleWithSelf(hotseat)
-        // Since we scale down workspace/hotseat when opening folder,
-        // need to have initial values to find starting folder icon location
-        workspace.scaleX = 1f
-        workspace.scaleY = 1f
-        hotseat.scaleX = 1f
-        hotseat.scaleY = 1f
-    }
-
     companion object {
+        /** Resets the scale of the launcher workspace. Used to prepare for folder calculations. */
+        @JvmStatic
+        fun resetLauncherScale(launcherDelegate: LauncherDelegate) {
+            val launcher = launcherDelegate.launcher ?: return
+            val workspace = launcher.workspace
+            val hotseat = launcher.hotseat
+            // Used to match the translation of the scaling between hotseat and workspace.
+            workspace.setPivotToScaleWithSelf(hotseat)
+            WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_FOLDER_ANIM).set(workspace, 1f)
+            HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_FOLDER_ANIM).set(hotseat, 1f)
+        }
+
+        /** Resets the scrim and wallpaper zoom, which are changed by the folder animation. */
+        @JvmStatic
+        fun resetScrimAndZoom(launcherDelegate: LauncherDelegate) {
+            val launcher = launcherDelegate.launcher ?: return
+            val scrim = launcher.scrimView
+            launcherDelegate.launcher?.depthController?.folderZoom?.value = 0f
+            if (!launcher.isInState(LauncherState.ALL_APPS)) {
+                scrim.alpha = 1f
+                scrim.setBackgroundColor(Color.TRANSPARENT)
+            }
+            if (Utilities.ATLEAST_S && launcher.stateManager.state.getDepth(launcher) == 0f) {
+                for (target in launcher.depthBlurTargets) {
+                    target.setRenderEffect(null)
+                }
+            }
+        }
+
         /** Returns the list of "preview items" on {@param page}. */
         fun getPreviewIconsOnPage(folder: Folder, page: Int): List<View> {
             return createFolderGridOrganizer(folder.mActivityContext.deviceProfile)

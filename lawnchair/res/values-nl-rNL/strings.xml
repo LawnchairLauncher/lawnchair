@@ -55,12 +55,30 @@
     <string name="changes_dialog_commit_info">door %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">zojuist</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <plurals name="time_minutes_ago">
+        <item quantity="one">%dm</item>
+        <item quantity="other">%dm</item>
+    </plurals>
+    <plurals name="time_hours_ago">
+        <item quantity="one">%dh</item>
+        <item quantity="other">%dh</item>
+    </plurals>
+    <plurals name="time_days_ago">
+        <item quantity="one">%dd</item>
+        <item quantity="other">%dd</item>
+    </plurals>
+    <plurals name="time_weeks_ago">
+        <item quantity="one">%dw</item>
+        <item quantity="other">%dw</item>
+    </plurals>
+    <plurals name="time_months_ago">
+        <item quantity="one">%dmo</item>
+        <item quantity="other">%dmo</item>
+    </plurals>
+    <plurals name="time_years_ago">
+        <item quantity="one">%dy</item>
+        <item quantity="other">%dy</item>
+    </plurals>
     <string name="managed_by_lawnchair">Beheerd door Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Voorkeuren</string>
@@ -98,8 +116,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Weergeven</string>
     <string name="wallpapers">Achtergrond</string>
-    <string name="caddy_beta">Caddy (beta)</string>
-    <string name="caddy">Caddy</string>
+    <string name="caddy_beta">Blik (beta)</string>
+    <string name="caddy">Blik</string>
     <string name="app_drawer_folder">Mappen</string>
     <string name="selected_apps">Geselecteerde apps</string>
     <string name="add_apps">Apps toevoegen</string>
@@ -114,6 +132,7 @@
     <string name="apps_in_folder_label">Map-apps verbergen</string>
     <string name="apps_in_folder_description">Apps toegewezen aan mappen worden uitgesloten van app lijsten</string>
     <string name="folders_filter_duplicates">Alleen unieke apps tonen</string>
+    <string name="folder_manage_apps">Apps beheren</string>
     <string name="my_folder_label">Mijn map</string>
     <string name="sort_active_items_action">Sorteer active item\'s</string>
     <!-- A11y description -->
@@ -135,6 +154,8 @@
 
     -->
     <string name="settings">Instellingen</string>
+    <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
+    <string name="settings_pick_a_page">Kies een instelling uit het menu</string>
     <string name="general_label">Algemeen</string>
     <string name="general_description">Kleuren, icoonpakketten, meldingsstippen</string>
     <string name="home_screen_label">Startscherm</string>
@@ -170,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Maximale rastergrootte verhogen</string>
     <string name="workspace_increase_max_grid_size_description">Het maximaal toegestane startscherm-raster vergroten van 10 &#xd7; 10 tot 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Iconen altijd vernieuwen</string>
-    <string name="always_reload_icons_description">Gecachete iconen van icoonpakketten vermijden</string>
+    <string name="always_reload_icons_description">Vermijd cachen om iconen direct te verversen wanneer het thema of accentkleur verandert</string>
     <string name="always_reload_icons_warning">Dit zorgt ervoor dat iconen regelmatig worden vernieuwd, waardoor de prestaties worden beïnvloed. Schakel dit uit als het icoonpakket niet regelmatig wordt bijgewerkt.</string>
     <string name="show_deck_layout">Opmaak van het dek</string>
     <string name="show_deck_layout_description">De optie Opmaak weergeven om de app-lade te verbergen en nieuwe apps automatisch toe te voegen aan het startscherm</string>
@@ -202,7 +223,7 @@
     <string name="global_predictions_label">Suggestiefuncties weergeven</string>
     <string name="app_predictions_label">App-suggesties</string>
     <string name="prediction_mode_label">Suggestie-aanbieder</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Deze functie vereist Android 10 of hoger</string>
     <string name="prediction_mode_system">Systeem</string>
     <string name="prediction_mode_none">Uitgeschakeld</string>
     <string name="prediction_weighted_usage_stats_label">Gebruiksgegevens van apparaat gebruiken</string>
@@ -239,9 +260,7 @@
     <string name="twoline_label">Meerdere regels gebruiken</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparante icoonachtergronden</string>
-    <string name="transparent_background_icons_description">Voor thema-iconen en auto-adaptieve pictogrammen</string>
     <string name="auto_adaptive_icons_label">Automatische adaptieve iconen</string>
-    <string name="auto_adaptive_icons_description">Voor alle niet-adaptieve iconen</string>
     <string name="shadow_bg_icons_label">Schaduw achter iconen weergeven</string>
     <string name="background_lightness_label">Achtergrond helderheid</string>
     <string name="adaptive_icon_background_description">Gebruik 100% achtergrondhelderheid voor wit</string>
@@ -306,16 +325,23 @@
     <string name="icon_shape_clipboard_import_error">Klembord bevat geen geldige icoonvorm</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Icoonpakket</string>
-    <string name="themed_icon_pack">Bron van thema-iconen</string>
-    <string name="themed_icon_pack_tint">Tint met accentkleur</string>
+    <string name="get_more_icon_packs">Verkrijg meer iconen</string>
+    <string name="fallback_icon_source_title">Terugvallen op icoonbron</string>
     <string name="system_icons">Systeemiconen</string>
     <string name="force_monochrome_label">Monochroom afdwingen</string>
     <string name="force_monochrome_description">Niet-ondersteunde apps de huidige accentkleur geven</string>
+    <string name="enforce_themed_icons_title">Gethematiseerde iconen afdwingen</string>
+    <string name="enforce_themed_icons_description">Zelfs voor niet-ondersteunde apps (niet aanbevolen)</string>
     <string name="themed_icon_title">Thema-iconen</string>
+    <string name="themed_icons_description">Pas ondersteunde app-iconen aan die overeenkomen met het thema en kleurenschema van uw apparaat. Deze pictogrammen worden toegepast bovenop uw bestaande pictogrampakketten.</string>
     <string name="themed_icons_off_label">Uitgeschakeld</string>
     <string name="themed_icons_home_label">Startscherm</string>
     <string name="themed_icons_home_and_drawer_label">Startscherm en app-lade</string>
+    <string name="themed_icons_no_fallback">Geen terugval</string>
     <string name="lawnicons_not_installed_description">Geen ondersteunde icoonpakketten</string>
+    <string name="advanced_icon_settings_title">Geavanceerde icooninstellingen</string>
+    <string name="reshape_unthemed_icons_title">Ongethematiseerde iconen hervormen</string>
+    <string name="reshape_unthemed_icons_description">Door een achtergrond toe te voegen</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Lettertypen toevoegen</string>
     <string name="pref_fonts_add_fonts_summary">OTF- en TTF-lettertypen zijn ondersteund</string>

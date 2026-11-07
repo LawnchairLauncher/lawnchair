@@ -259,7 +259,12 @@ public class NotificationListener extends NotificationListenerService {
         super.onListenerDisconnected();
         Log.i(TAG, "onListenerDisconnected");
         sIsConnected = false;
-        mSettingsCache.unregister(NOTIFICATION_BADGING_URI, mNotificationSettingsChangedListener);
+        // The framework also calls onListenerDisconnected() from NotificationListenerService's
+        // onDestroy(), so this can run before onListenerConnected() has initialised mSettingsCache.
+        if (mSettingsCache != null) {
+            mSettingsCache.unregister(NOTIFICATION_BADGING_URI,
+                    mNotificationSettingsChangedListener);
+        }
         onNotificationFullRefresh();
     }
 

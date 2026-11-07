@@ -187,6 +187,29 @@ object DrawableTokens {
         .setColor(ColorTokens.SurfaceContainerHighest)
 
     @JvmField
+    val WorkFabBackground = ResourceDrawableToken<RippleDrawable>(R.drawable.work_mode_fab_background)
+        .mutate { context, scheme, uiColorMode ->
+            val background = getDrawable(0) as? GradientDrawable
+            background?.setColor(ColorTokens.PrimaryButton.resolveColor(context, scheme, uiColorMode))
+        }
+
+    @JvmField
+    val WorkSchedulerBackground = ResourceDrawableToken<RippleDrawable>(R.drawable.work_scheduler_background)
+        .mutate { context, scheme, uiColorMode ->
+            val background = getDrawable(0) as? GradientDrawable
+            background?.setColor(ColorTokens.PrimaryButton.resolveColor(context, scheme, uiColorMode))
+        }
+
+    @JvmField
+    val WorkAppsPausedActionButton = ResourceDrawableToken<RippleDrawable>(R.drawable.bg_work_apps_paused_action_button)
+        .mutate { context, scheme, uiColorMode ->
+            val strokeWidth = context.resources.getDimensionPixelSize(R.dimen.work_apps_paused_button_stroke)
+            val strokeColor = ColorTokens.PrimaryButton.resolveColor(context, scheme, uiColorMode)
+            val background = findDrawableByLayerId(android.R.id.background) as? GradientDrawable
+            background?.setStroke(strokeWidth, strokeColor)
+        }
+
+    @JvmField
     val WidgetAddButtonBackground = ResourceDrawableToken<InsetDrawable>(R.drawable.widget_cell_add_button_background)
         .setTint(ColorTokens.WidgetAddButtonBackgroundColor)
 }

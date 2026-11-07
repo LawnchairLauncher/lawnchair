@@ -467,7 +467,12 @@ public class GridSizeMigrationDBController {
 
         final boolean[] occupied = new boolean[dstHotseatSize];
         for (DbEntry entry : placedHotseatItems) {
-            occupied[entry.screenId] = true;
+            // LC-Note: the target may still hold dock items past this dock size (it was last
+            // used with a larger dock), and a corrupt database a negative rank. They take no slot;
+            // marking one would throw ArrayIndexOutOfBoundsException.
+            if (entry.screenId >= 0 && entry.screenId < occupied.length) {
+                occupied[entry.screenId] = true;
+            }
         }
 
         for (int i = 0; i < occupied.length; i++) {

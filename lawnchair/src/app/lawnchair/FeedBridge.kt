@@ -159,6 +159,7 @@ class FeedBridge(private val context: Context) {
 
         fun initializeWhitelist(context: Context) {
             whitelist["com.saulhdev.neofeed"] = getSignatureHash(context, "com.saulhdev.neofeed")
+            whitelist["com.nyancatlabs.whisper"] = getSignatureHash(context, "com.nyancatlabs.whisper")
             whitelist["ua.itaysonlab.homefeeder"] = 0x887456ed
             whitelist["launcher.libre.dev"] = 0x2e9dbab5
             whitelist[SmartspacerConstants.SMARTSPACER_PACKAGE_NAME] = 0x15c6e36f

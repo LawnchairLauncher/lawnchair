@@ -33,7 +33,9 @@ class ReloadHelper(private val context: Context) {
     private val tisBinder = TISBindHelper(context) { tis = it }
 
     fun reloadGrid() {
-        idp.onPreferencesChanged(context)
+        // The grid reads the preferences from the cache of PreferenceManager2, which may not have
+        // the value just set yet.
+        PreferenceManager2.getInstance(context).withFreshCache { idp.onPreferencesChanged(context) }
     }
 
     fun recreate() {

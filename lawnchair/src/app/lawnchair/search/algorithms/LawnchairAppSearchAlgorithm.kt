@@ -8,17 +8,14 @@ import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherModel
 import com.android.launcher3.allapps.BaseAllAppsAdapter
-import com.android.launcher3.model.AllAppsList
-import com.android.launcher3.model.BgDataModel
-import com.android.launcher3.model.ModelTaskController
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Executors
 import com.patrykmichalik.opto.core.onEach
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
@@ -39,6 +36,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
     val coroutineScope = CoroutineScope(context = Dispatchers.IO)
 
+    private var modelRetryJob: Job? = null
+    private var currentJob: Job? = null
+
     init {
         prefs2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
             enableFuzzySearch = it
@@ -55,18 +55,22 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     }
 
     override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
-        appState.model.enqueueModelUpdateTask(object : LauncherModel.ModelUpdateTask {
-            override fun execute(app: ModelTaskController, dataModel: BgDataModel, apps: AllAppsList) {
-                coroutineScope.launch(Dispatchers.Main) {
-                    val results = getResult(apps.data, query)
-                    callback.onSearchResult(query, results)
-                }
+        modelRetryJob?.cancel()
+        modelRetryJob = appState.model.runWhenModelLoaded(coroutineScope) { apps ->
+            // Track the delivery job so cancel(true) (e.g. from a drawer close) can stop a
+            // late-arriving result from being delivered after reset. See issue #7325.
+            currentJob?.cancel()
+            currentJob = coroutineScope.launch(Dispatchers.Main) {
+                val results = getResult(apps.data, query)
+                callback.onSearchResult(query, results)
             }
-        })
+        }
     }
 
     override fun cancel(interruptActiveRequests: Boolean) {
         if (interruptActiveRequests) {
+            modelRetryJob?.cancel()
+            currentJob?.cancel()
             resultHandler.removeCallbacksAndMessages(null)
         }
     }

@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -36,7 +35,7 @@ import com.android.launcher3.R
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangesDialog(
     changelogState: ChangelogState?,
@@ -53,74 +52,81 @@ fun ChangesDialog(
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
-            Text(
-                text = stringResource(R.string.changes_dialog_title),
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            Text(
-                text = stringResource(
-                    R.string.changes_dialog_build_format,
-                    currentBuild,
-                    latestBuild,
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            )
-        }
-        LazyColumn(
+        Column(
             modifier = Modifier
-                .heightIn(max = 600.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .heightIn(max = 600.dp),
         ) {
-            if (commits != null) {
-                itemsIndexed(commits) { index, commit ->
-                    PreferenceGroupItem(
-                        cutTop = index != 0,
-                        cutBottom = index != commits.lastIndex,
-                    ) {
-                        CommitItem(commit = commit)
+            Column(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.changes_dialog_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+                Text(
+                    text = stringResource(
+                        R.string.changes_dialog_build_format,
+                        currentBuild,
+                        latestBuild,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                )
+            }
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .fillMaxWidth(),
+            ) {
+                if (commits != null) {
+                    itemsIndexed(commits) { index, commit ->
+                        PreferenceGroupItem(
+                            cutTop = index != 0,
+                            cutBottom = index != commits.lastIndex,
+                        ) {
+                            CommitItem(commit = commit)
+                        }
+                        Spacer(Modifier.height(3.dp))
                     }
-                    Spacer(Modifier.height(3.dp))
-                }
-            } else {
-                item {
-                    Text(
-                        text = stringResource(R.string.changes_dialog_error),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+                } else {
+                    item {
+                        Text(
+                            text = stringResource(R.string.changes_dialog_error),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
                 }
             }
-        }
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .fillMaxWidth(),
-        ) {
-            OutlinedButton(
-                onClick = onDismiss,
-                shapes = ButtonDefaults.shapes(),
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .fillMaxWidth(),
             ) {
-                Text(text = stringResource(android.R.string.cancel))
-            }
-            Spacer(Modifier.width(8.dp))
-            Button(
-                onClick = {
-                    onDownload()
-                    onDismiss()
-                },
-                shapes = ButtonDefaults.shapes(),
-            ) {
-                Text(text = stringResource(R.string.download_update))
+                OutlinedButton(
+                    onClick = onDismiss,
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(android.R.string.cancel))
+                }
+                Spacer(Modifier.width(8.dp))
+                Button(
+                    onClick = {
+                        onDownload()
+                        onDismiss()
+                    },
+                    shapes = ButtonDefaults.shapes(),
+                ) {
+                    Text(text = stringResource(R.string.download_update))
+                }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun CommitItem(
     commit: GitHubCommit,
@@ -190,32 +196,32 @@ private fun getTimeAgo(context: Context, dateString: String): String {
 
             diffMillis < TimeUnit.HOURS.toMillis(1) -> {
                 val minutes = TimeUnit.MILLISECONDS.toMinutes(diffMillis)
-                context.getString(R.string.time_minutes_ago, minutes)
+                context.resources.getQuantityString(R.plurals.time_minutes_ago, minutes.toInt(), minutes)
             }
 
             diffMillis < TimeUnit.DAYS.toMillis(1) -> {
                 val hours = TimeUnit.MILLISECONDS.toHours(diffMillis)
-                context.getString(R.string.time_hours_ago, hours)
+                context.resources.getQuantityString(R.plurals.time_hours_ago, hours.toInt(), hours)
             }
 
             diffMillis < TimeUnit.DAYS.toMillis(7) -> {
                 val days = TimeUnit.MILLISECONDS.toDays(diffMillis)
-                context.getString(R.string.time_days_ago, days)
+                context.resources.getQuantityString(R.plurals.time_days_ago, days.toInt(), days)
             }
 
             diffMillis < TimeUnit.DAYS.toMillis(30) -> {
                 val weeks = TimeUnit.MILLISECONDS.toDays(diffMillis) / 7
-                context.getString(R.string.time_weeks_ago, weeks)
+                context.resources.getQuantityString(R.plurals.time_weeks_ago, weeks.toInt(), weeks)
             }
 
             diffMillis < TimeUnit.DAYS.toMillis(365) -> {
                 val months = TimeUnit.MILLISECONDS.toDays(diffMillis) / 30
-                context.getString(R.string.time_months_ago, months)
+                context.resources.getQuantityString(R.plurals.time_months_ago, months.toInt(), months)
             }
 
             else -> {
                 val years = TimeUnit.MILLISECONDS.toDays(diffMillis) / 365
-                context.getString(R.string.time_years_ago, years)
+                context.resources.getQuantityString(R.plurals.time_years_ago, years.toInt(), years)
             }
         }
     } catch (e: Exception) {

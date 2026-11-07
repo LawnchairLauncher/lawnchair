@@ -21,6 +21,7 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.graphics.Bitmap
 import android.os.Handler
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
@@ -51,7 +52,16 @@ fun appsState(
 
             if (launcherApps != null) {
                 appsState.value = UserCache.INSTANCE.get(context).userProfiles.asSequence()
-                    .flatMap { launcherApps.getActivityList(null, it) }
+                    .flatMap {
+                        try {
+                            launcherApps.getActivityList(null, it)
+                        } catch (e: SecurityException) {
+                            // Lawnchair-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
+                            // Ref: https://issuetracker.google.com/issues/547643926
+                            Log.e("LC-AppsList", "Failed to get activity list for user $it", e)
+                            emptyList()
+                        }
+                    }
                     .filter { filter.shouldShowApp(it.componentName) }
                     .map { App(context, it) }
                     .sortedWith(comparator)

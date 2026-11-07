@@ -9,7 +9,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +29,6 @@ import app.lawnchair.util.getApkVersionComparison
 import com.android.launcher3.R
 import java.io.File
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun UpdateSection(
     updateState: UpdateState,

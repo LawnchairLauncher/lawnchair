@@ -27,6 +27,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
@@ -57,6 +58,10 @@ import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
+
+import app.lawnchair.font.FontManager;
+import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 import java.util.ArrayList;
 
@@ -136,6 +141,17 @@ public class WorkUtilityView extends LinearLayout implements Insettable,
         mSchedulerButton = findViewById(R.id.work_scheduler);
         mWorkUtilityView = findViewById(R.id.work_utility_view);
         setSelected(true);
+
+        // LC-Note: Theme work FAB and scheduler button with Lawnchair tokens
+        mWorkFAB.setBackground(DrawableTokens.WorkFabBackground.resolve(getContext()));
+        int onPrimaryColor = ColorTokens.TextColorPrimaryInverse.resolveColor(getContext());
+        mPauseText.setTextColor(onPrimaryColor);
+        mWorkIcon.setImageTintList(ColorStateList.valueOf(onPrimaryColor));
+        FontManager.INSTANCE.get(getContext()).setCustomFont(mPauseText, R.id.font_body_medium);
+
+        mSchedulerButton.setBackground(DrawableTokens.WorkSchedulerBackground.resolve(getContext()));
+        mSchedulerButton.setImageTintList(ColorStateList.valueOf(onPrimaryColor));
+
         KeyboardInsetAnimationCallback keyboardInsetAnimationCallback =
             null;
         if (Utilities.ATLEAST_R) {

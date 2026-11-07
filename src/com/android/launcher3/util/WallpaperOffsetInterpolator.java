@@ -167,7 +167,8 @@ public class WallpaperOffsetInterpolator {
 
     public void syncWithScroll() {
         int numScreens = getNumScrollableScreensExcludingEmpty();
-        wallpaperOffsetForScroll(mWorkspace.getScrollX(), numScreens, sTempInt);
+        // LC-Note: Use wrap-aware scroll to preserve wallpaper parallax during infinite scrolling.
+        wallpaperOffsetForScroll(mWorkspace.getScrollForWallpaper(), numScreens, sTempInt);
         Message msg = Message.obtain(mHandler, MSG_UPDATE_OFFSET, sTempInt[0], sTempInt[1],
                 mWindowToken);
         if (numScreens != mNumScreens) {
@@ -310,6 +311,10 @@ public class WallpaperOffsetInterpolator {
             try {
                 mWM.setWallpaperOffsets(token, mCurrentOffset, 0.5f);
             } catch (IllegalArgumentException e) {
+                Log.e(TAG, "Error updating wallpaper offset: " + e);
+            } catch (SecurityException e) {
+                // Some OEM builds (e.g. Huawei EMUI) fetch the wallpaper bitmap inside
+                // setWallpaperOffsets(), which requires READ_EXTERNAL_STORAGE on API <= 28.
                 Log.e(TAG, "Error updating wallpaper offset: " + e);
             }
         }

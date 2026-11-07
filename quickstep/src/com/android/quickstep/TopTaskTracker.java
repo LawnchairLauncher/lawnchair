@@ -47,6 +47,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.dagger.ApplicationContext;
 import com.android.launcher3.dagger.LauncherAppSingleton;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
@@ -161,7 +162,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
         // task is brought to front, then mark other tasks behind as not-visible
         if (taskInfo.getActivityType() == ACTIVITY_TYPE_HOME
                 || (taskInfo.getWindowingMode() == WINDOWING_MODE_FULLSCREEN
-                        && !taskInfo.isActivityStackTransparent)) {
+                        && (!Utilities.ATLEAST_BAKLAVA || !taskInfo.isActivityStackTransparent))) { // LC-Note: QuickSwitch compatibility!
             // We've moved the task to the front of the list above, so only iterate the tasks after
             for (int i = 1; i < mOrderedTaskList.size(); i++) {
                 final TaskInfo info = mOrderedTaskList.get(i);

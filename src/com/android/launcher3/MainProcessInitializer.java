@@ -35,6 +35,7 @@ import android.util.Log;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapCreationCheck;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import org.chickenhook.restrictionbypass.Unseal;
@@ -54,11 +55,22 @@ public class MainProcessInitializer implements ResourceBasedOverride {
         try {
             Unseal.unseal();
             Log.i(TAG, "Unseal success!");
-        } catch (Exception e) {
+        } catch (Exception | LinkageError e) {
+            // A repackaged APK or a multi-open container can fail to load libnrb.so, in which
+            // case Unseal.unseal() throws UnsatisfiedLinkError (an Error). Startup must survive
+            // a broken bypass: only the hidden API exemption is lost for this launch.
             Log.e(TAG, "Unseal fail!");
             e.printStackTrace();
         }
-        PreferenceManager.getInstance(context);
+        
+        // LC-Note: SharedPreferences will initialise *after* Direct Boot is disengaged once the user has unlocked the Keyguard once.
+        // Attempting to call a prefs system while SharedPrefs are not initialised will result in a Java ISE crash 
+        // because it's in (CE) Credential Encrypted storage. (In other words, just wait till the user unlocked their phone once)
+        // 
+        // *Unless* your SharedPreferences instance is explicitly told to run in device-protected storage or (DE) Device Encrypted storage, 
+        // but in this case it's not, but it's something to keep in mind.
+        LockedUserState.get(context).runOnUserUnlocked(() -> PreferenceManager.getInstance(context));
+        
         Overrides.getObject(
                 MainProcessInitializer.class, context, R.string.main_process_initializer_class)
                 .init(context);

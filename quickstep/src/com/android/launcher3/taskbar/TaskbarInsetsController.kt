@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Insets
@@ -22,6 +23,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Region
 import android.os.Binder
+import android.os.Handler
 import android.os.IBinder
 import android.view.DisplayInfo
 import android.view.Gravity
@@ -50,6 +52,7 @@ import androidx.core.graphics.toRegion
 import com.android.internal.policy.GestureNavigationSettingsObserver
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION
 import com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate
@@ -89,12 +92,29 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
     }
     private val gestureNavSettingsObserver =
-        GestureNavigationSettingsObserver(
-            context.mainThreadHandler,
-            Executors.UI_HELPER_EXECUTOR.handler,
-            context,
-            this::onTaskbarOrBubblebarWindowHeightOrInsetsChanged,
-        )
+        if (Utilities.ATLEAST_V) { // LC-Note: This is only available for V
+            GestureNavigationSettingsObserver(
+                context.mainThreadHandler,
+                Executors.UI_HELPER_EXECUTOR.handler,
+                context,
+                this::onTaskbarOrBubblebarWindowHeightOrInsetsChanged,
+            )
+        } else {
+            try {
+                GestureNavigationSettingsObserver::class.java
+                    .getConstructor(Handler::class.java, Context::class.java, Runnable::class.java)
+                    .newInstance(
+                        context.mainThreadHandler,
+                        context,
+                        Runnable { onTaskbarOrBubblebarWindowHeightOrInsetsChanged() },
+                    )
+            } catch (e: ReflectiveOperationException) {
+                throw IllegalStateException(
+                    "LC: Unable to create legacy GestureNavigationSettingsObserver! QuickSwitch is tested for Android 14 above!",
+                    e,
+                )
+            }
+        }
     @VisibleForTesting val debugTouchableRegion = DebugTouchableRegion()
 
     // Initialized in init.

@@ -19,22 +19,29 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.BadParcelableException;
 import android.os.Process;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.IntSet;
 
+import java.util.Collections;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Predicate;
 
 /**
@@ -114,6 +121,23 @@ public class ModelUtils {
         if (iconInfo == null) {
             Log.e(TAG, "Invalid icon by the app");
             return null;
+        }
+
+        String launchPackage = launchIntent.getComponent() == null
+                ? launchIntent.getPackage() : launchIntent.getComponent().getPackageName();
+        if (!TextUtils.isEmpty(launchPackage)) {
+            IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
+            BitmapInfo baseIconInfo = iconInfo;
+            try {
+                iconInfo = MODEL_EXECUTOR.submit(() -> baseIconInfo.withBadgeInfo(
+                        iconCache.getShortcutInfoBadge(launchPackage, Process.myUserHandle())))
+                        .get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Log.e("LC-ModelUtils", "Interrupted while loading legacy shortcut badge", e);
+            } catch (ExecutionException e) {
+                Log.e("LC-ModelUtils", "Failed to load legacy shortcut badge", e);
+            }
         }
 
         WorkspaceItemInfo info = new WorkspaceItemInfo();

@@ -16,7 +16,7 @@
 
 package app.lawnchair.ui.preferences
 
-import app.lawnchair.ui.preferences.destinations.IconPackInfo
+import app.lawnchair.ui.preferences.destinations.icons.IconPackInfo
 import kotlinx.coroutines.flow.StateFlow
 
 sealed interface PreferenceInteractor {

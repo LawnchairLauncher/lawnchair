@@ -26,10 +26,12 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
+import android.os.Parcel
 import android.os.RemoteException
 import android.os.Trace
 import android.os.Trace.traceBegin
@@ -52,12 +54,14 @@ import android.window.WindowContainerTransaction
 import androidx.annotation.MainThread
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
+import app.lawnchair.util.isAndroidBaklavaInitial
+import app.lawnchair.util.isNothingOs
 //import app.lawnchair.gestures.type.GestureType
 import com.android.internal.logging.InstanceId
 import com.android.internal.util.ScreenshotRequest
 import com.android.internal.view.AppearanceRegion
 import com.android.launcher3.Flags
-import com.android.launcher3.Utilities.ATLEAST_BAKLAVA
+import com.android.launcher3.Utilities
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
@@ -211,6 +215,36 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
             callback.invoke()
         } catch (e: RemoteException) {
             Log.w(tag, errorMsg.invoke(), e)
+        }
+    }
+
+    private fun startInitialAndroid16RecentsTransition(
+        recentTasks: IRecentTasks,
+        pendingIntent: PendingIntent,
+        intent: Intent?,
+        options: Bundle,
+        listener: IRecentsAnimationRunner,
+    ): Boolean {
+        val data = Parcel.obtain(recentTasks.asBinder())
+        return try {
+            data.writeInterfaceToken(IRecentTasks.DESCRIPTOR)
+            data.writeTypedObject(pendingIntent, 0)
+            data.writeTypedObject(intent, 0)
+            data.writeTypedObject(options, 0)
+            data.writeStrongInterface(context.iApplicationThread)
+            data.writeStrongInterface(listener)
+            recentTasks.asBinder().transact(
+                if (usesNothingOs4BaklavaInitialRecentsTransitionAidl()) {
+                    LC_TRANSACTION_startRecentsTransition_NothingOS_4_BaklavaInitial
+                } else {
+                    LC_TRANSACTION_startRecentsTransition_AOSP_BaklavaInitial
+                },
+                data,
+                null,
+                IBinder.FLAG_ONEWAY,
+            )
+        } finally {
+            data.recycle()
         }
     }
 
@@ -1108,7 +1142,7 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
 
     private fun shouldEnableRunningTasksForDesktopMode(): Boolean =
         DesktopModeStatus.canEnterDesktopMode(context) &&
-            if (ATLEAST_BAKLAVA) {
+            if (Utilities.ATLEAST_BAKLAVA) {
                 ENABLE_DESKTOP_WINDOWING_TASKBAR_RUNNING_APPS.isTrue
             } else {
                 false
@@ -1271,6 +1305,24 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
         displayId: Int,
     ): Boolean {
         executeWithErrorLog({ "Error starting recents via shell" }) {
+            if (usesAOSPBaklavaInitialRecentsTransitionAidl()) {
+                if (wct != null) {
+                    Log.w("LC-SystemUiProxy", "Android 16 initial does not support WCT-backed recents transitions")
+                    return false
+                }
+                val recentTasks = recentTasks ?: return false
+                return startInitialAndroid16RecentsTransition(
+                    recentTasks,
+                    getRecentsPendingIntent(displayId),
+                    intent,
+                    options.toBundle().apply {
+                        if (useSyntheticRecentsTransition) {
+                            putBoolean("is_synthetic_recents_transition", true)
+                        }
+                    },
+                    RecentsAnimationListenerStub(listener),
+                )
+            }
             recentTasks?.startRecentsTransition(
                 getRecentsPendingIntent(displayId),
                 intent,
@@ -1284,8 +1336,7 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
                 RecentsAnimationListenerStub(listener),
             )
                 ?: run {
-                    // LC-Ignored
-                    //ActiveGestureProtoLogProxy.logRecentTasksMissing()
+                    if (Utilities.ATLEAST_S) ActiveGestureProtoLogProxy.logRecentTasksMissing()
                     return false
                 }
             return true
@@ -1295,6 +1346,45 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
 
     private class RecentsAnimationListenerStub(val listener: RecentsAnimationListener) :
         IRecentsAnimationRunner.Stub() {
+        override fun onTransact(
+            code: Int,
+            data: Parcel,
+            reply: Parcel?,
+            flags: Int,
+        ): Boolean {
+            if (usesNothingOs4BaklavaInitialRecentsTransitionAidl()
+                    && code == LC_TRANSACTION_onAnimationStartWithSurfaceTransaction) {
+                // LC-Note: What even the fuck this is (this handles a Nothing OS 4 binder transaction)
+                data.enforceInterface(IRecentsAnimationRunner.DESCRIPTOR) // This can be mistaken for IRecentsAnimationController, keep it this way
+                val controller = IRecentsAnimationController.Stub.asInterface(
+                    data.readStrongBinder())
+                val transitionInfo = data.readTypedObject(TransitionInfo.CREATOR)
+                val transaction = data.readTypedObject(Transaction.CREATOR)
+                val apps = data.createTypedArray(RemoteAnimationTarget.CREATOR)
+                val wallpapers = data.createTypedArray(RemoteAnimationTarget.CREATOR)
+                val homeContentInsets = data.readTypedObject(Rect.CREATOR)
+                val minimizedHomeBounds = data.readTypedObject(Rect.CREATOR)
+                val extras = data.readTypedObject(Bundle.CREATOR)
+                data.enforceNoDataAvail()
+                try {
+                    transaction?.apply()
+                } finally {
+                    transaction?.close()
+                }
+                onAnimationStart(
+                    controller,
+                    apps,
+                    wallpapers,
+                    homeContentInsets,
+                    minimizedHomeBounds,
+                    extras,
+                    transitionInfo,
+                )
+                return true
+            }
+            return super.onTransact(code, data, reply, flags)
+        }
+
         override fun onAnimationStart(
             controller: IRecentsAnimationController,
             apps: Array<RemoteAnimationTarget>?,
@@ -1396,6 +1486,31 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
 
     companion object {
         private const val TAG = "SystemUiProxy"
+
+        /** LC-Note: Android 16.0 start recents transition binder code */
+        private const val LC_TRANSACTION_startRecentsTransition_AOSP_BaklavaInitial =
+            IBinder.FIRST_CALL_TRANSACTION + 4
+
+        /** LC-Note: Android 16.0, Nothing OS 4.0 start recents transition binder code whose value
+         * is higher than AOSP 16.0 or [LC_TRANSACTION_startRecentsTransition_AOSP_BaklavaInitial] */
+        private const val LC_TRANSACTION_startRecentsTransition_NothingOS_4_BaklavaInitial =
+            IBinder.FIRST_CALL_TRANSACTION + 5
+
+        /** LC-Note: onAnimationStartWithSurfaceTransac binder code */
+        private const val LC_TRANSACTION_onAnimationStartWithSurfaceTransaction =
+            IBinder.FIRST_CALL_TRANSACTION + 4
+
+        /** LC-Note: Should use AOSP 16.0 recents transition AIDL? */
+        private fun usesAOSPBaklavaInitialRecentsTransitionAidl(): Boolean {
+            return Build.VERSION.SDK_INT == Build.VERSION_CODES.BAKLAVA
+                    && isAndroidBaklavaInitial
+        }
+
+        /** LC-Note: Should use Nothing OS 16.0 recents transition AIDL? */
+        private fun usesNothingOs4BaklavaInitialRecentsTransitionAidl(): Boolean {
+            return usesAOSPBaklavaInitialRecentsTransitionAidl()
+                    && isNothingOs
+        }
 
         @JvmField val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getSystemUiProxy)
 

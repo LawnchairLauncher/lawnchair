@@ -16,6 +16,7 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.Utilities.ATLEAST_P;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.annotation.TargetApi;
@@ -125,7 +126,12 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
 
         // Only convert foreground to a bitmap as it can contain multiple draw commands. Other
         // layers either draw a nothing or a single draw call.
-        Bitmap fgBitmap = Bitmap.createBitmap(foreground);
+        // Bitmap.createBitmap(Picture) requires API 28, so rasterize into a software bitmap
+        // on the older versions Lawnchair still supports.
+        Bitmap fgBitmap = ATLEAST_P
+                ? Bitmap.createBitmap(foreground)
+                : BitmapRenderer.createSoftwareBitmap(foreground.getWidth(), foreground.getHeight(),
+                        c -> c.drawPicture(foreground));
         Paint foregroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         // Do not use PictureDrawable as it moves the picture to the canvas bounds, whereas we want

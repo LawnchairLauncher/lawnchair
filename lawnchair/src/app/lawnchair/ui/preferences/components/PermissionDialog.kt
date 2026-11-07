@@ -20,7 +20,6 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -57,7 +56,6 @@ import com.google.accompanist.permissions.shouldShowRationale
  * @param onGoToSettings Called when the user clicks the "Go to settings" button.
  * @param modifier The modifier to be applied to the dialog.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PermissionDialog(
     title: String,
@@ -104,7 +102,7 @@ fun PermissionDialog(
  * @param modifier The modifier to be applied to the dialog.
  * @param onPermissionRequest Called when a permission request is initiated.
  */
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun WallpaperAccessPermissionDialog(
     managedFilesChecked: Boolean,

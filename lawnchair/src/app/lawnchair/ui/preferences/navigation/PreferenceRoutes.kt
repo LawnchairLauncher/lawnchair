@@ -126,6 +126,16 @@ data object GeneralIconPack : PreferenceRoute, PreferenceDeepLink {
 }
 
 @Serializable
+data object GeneralThemedIcons : PreferenceRoute, PreferenceDeepLink {
+    override val deepLink = "$URI/general-themedicons"
+}
+
+@Serializable
+data object GeneralAdvancedIcons : PreferenceRoute, PreferenceDeepLink {
+    override val deepLink = "$URI/general-advanced-icons"
+}
+
+@Serializable
 data class GeneralIconShape(val selectedId: ShapeRoute = ShapeRoute.APP_SHAPE) : PreferenceRoute
 
 @Serializable

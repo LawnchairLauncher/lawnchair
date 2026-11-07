@@ -113,6 +113,13 @@ class ShapeDelegateTest {
     }
 
     @Test
+    fun `pickBestShape falls back to the default mask for an unparsable mask`() {
+        // Some ROM overlays ship a config_icon_mask with a line break inside a coordinate.
+        val malformed = "M81.2\n909756,99.995088 L0,99.995088 L0,0 Z"
+        assertThat(pickBestShape(malformed)).isEqualTo(pickBestShape(""))
+    }
+
+    @Test
     fun `generic shape creates smooth animation`() {
         val shape = GenericPathShape(FOUR_SIDED_COOKIE)
         val target = TestClipView()
@@ -129,7 +136,7 @@ class ShapeDelegateTest {
         anim.setCurrentFraction(0f)
         assertThat(
                 getAreaDiff(
-                    target.currentClip!!,
+                    target.currentClip!!.path,
                     cookiePath(Rect(0, 0, AREA_CALC_SIZE, AREA_CALC_SIZE)),
                 )
             )
@@ -137,7 +144,7 @@ class ShapeDelegateTest {
 
         // Verify that end rect is similar to end path
         anim.setCurrentFraction(1f)
-        assertThat(getAreaDiff(target.currentClip!!, roundedRectPath(0.5f)))
+        assertThat(getAreaDiff(target.currentClip!!.path, roundedRectPath(0.5f)))
             .isLessThan(AREA_CALC_SIZE)
 
         // Ensure that when running animation, area increases smoothly. We run the animation over
@@ -151,7 +158,7 @@ class ShapeDelegateTest {
         var lastPath = cookiePath(Rect(0, 0, AREA_CALC_SIZE, AREA_CALC_SIZE))
         for (progress in 1..steps) {
             anim.setCurrentFraction(progress / 1000f)
-            val currentPath = Path(target.currentClip!!)
+            val currentPath = Path(target.currentClip!!.path)
             assertThat(getAreaDiff(lastPath, currentPath)).isLessThan(incrementalDiff)
             lastPath = currentPath
         }
@@ -197,9 +204,9 @@ class ShapeDelegateTest {
 
     class TestClipView : View(context), ClipPathView {
 
-        var currentClip: Path? = null
+        var currentClip: PathWrapper? = null
 
-        override fun setClipPath(clipPath: Path?) {
+        override fun setClipPath(clipPath: PathWrapper?) {
             currentClip = clipPath
         }
     }
