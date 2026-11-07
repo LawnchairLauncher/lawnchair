@@ -28,6 +28,7 @@ import app.lawnchair.search.algorithms.data.FolderInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
 import app.lawnchair.search.algorithms.data.SettingInfo
+import app.lawnchair.search.algorithms.engine.SearchResult
 import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
 import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.util.calculateInSampleSize
@@ -366,6 +367,52 @@ class SearchTargetFactory(
         }.build()
     }
 
+    fun createTextActionTarget(action: SearchResult.Action.TextAction): SearchTargetCompat {
+        val intentId = action.pendingIntent?.creatorPackage.hashCode()
+        val anonymisedId = "${action.title.hashCode()}:${action.subtitle.hashCode()}:$intentId:${action.pendingIntent.hashCode()}"
+        val id = "text_action:$anonymisedId"
+
+        val actionBuilder = SearchActionCompat.Builder(id, action.title)
+            .setSubtitle(action.subtitle)
+
+        if (action.icon != null) {
+            /* Icon are returned by the Android's classifier,
+               usually will be the default app of the target intent:
+
+               e.g., 111-111-1111 -> Phone/SMS
+             */
+            actionBuilder.setIcon(action.icon)
+        } else {
+            /* In some cases like when there's no preferred default app for the intent,
+               the classifier will return a generic fallback icons, and a signal that tells us the
+               icon should not be use:
+
+               e.g., 111-111-1111 -> Placeholder
+
+               We override it with our own placeholder icon as the returned icon is way way too old,
+               and does not fit well within our design.
+
+               e.g., 111-111-1111 -> ic_suggestions
+             */
+            actionBuilder.setIcon(
+                Icon.createWithResource(context, R.drawable.ic_suggestions)
+                    .setTint(ColorTokens.PrimaryButton.resolveColor(context)),
+            )
+        }
+
+        if (action.pendingIntent != null) {
+            actionBuilder.setPendingIntent(action.pendingIntent)
+        }
+
+        return createSearchTarget(
+            id = id,
+            action = actionBuilder.build(),
+            layoutType = LayoutType.ICON_HORIZONTAL_TEXT,
+            targetCompat = SearchTargetCompat.RESULT_TYPE_REDIRECTION,
+            pkg = ACTION_SUGGESTION,
+        )
+    }
+
     companion object {
         private const val HASH_ALGORITHM = "SHA-256"
 
@@ -549,7 +596,8 @@ object SettingsTarget {
 // keys used in `pkg` param
 const val START_PAGE = "startpage"
 const val MARKET_STORE = "marketstore"
-const val WEB_SUGGESTION = "suggestion"
+const val ACTION_SUGGESTION = "action_suggestion"
+const val WEB_SUGGESTION = "web_suggestion"
 const val HEADER = "header"
 const val CONTACT = "contact"
 const val FILES = "files"

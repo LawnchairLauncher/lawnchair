@@ -1,6 +1,8 @@
 package app.lawnchair.search.algorithms.engine
 
+import android.app.PendingIntent
 import android.content.pm.ShortcutInfo
+import android.graphics.drawable.Icon
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import app.lawnchair.search.algorithms.data.ContactInfo
@@ -36,5 +38,12 @@ sealed interface SearchResult {
             @StringRes val subtitleRes: Int,
         ) : Action
         data object SearchSettings : Action
+        data class TextAction(
+            val title: String,
+            val subtitle: String,
+            val entityType: String? = null,
+            val pendingIntent: PendingIntent? = null,
+            val icon: Icon? = null,
+        ) : Action
     }
 }
