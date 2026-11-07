@@ -243,6 +243,15 @@ public class FloatingHeaderView extends LinearLayout implements
         return null;
     }
 
+    public boolean hasVisibleContent() {
+        for (FloatingHeaderRow row : mAllRows) {
+            if (row.hasVisibleContent() && row.isVisible()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void setup(AllAppsRecyclerView mainRV, AllAppsRecyclerView workRV, SearchRecyclerView searchRV,
             int activeRV, boolean tabsHidden) {
         for (FloatingHeaderRow row : mAllRows) {

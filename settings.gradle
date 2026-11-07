@@ -14,6 +14,7 @@ pluginManagement {
 // https://docs.gradle.com/enterprise/gradle-plugin/
 plugins {
     id "com.gradle.develocity" version "4.6.1"
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
 def isCI = providers.environmentVariable('CI').present
