@@ -229,6 +229,20 @@ fun resolveFolderBackgroundColor(context: Context): Int {
     }
 }
 
+/** Get the actual folder anim duration with user's speed setting applied in milliseconds */
+fun getFolderAnimDuration(context: Context): Int {
+    val prefs2 = PreferenceManager2.getInstance(context)
+    val speed = prefs2.folderAnimationSpeed.firstCached(prefs2)
+    val baseDuration = context.resources.getInteger(R.integer.config_materialFolderExpandDuration)
+    return (baseDuration + speed.durationDelta).coerceAtLeast(context.resources.getInteger(R.integer.config_folderDelay))
+}
+
+/** Get folder anim duration delta in milliseconds */
+fun getFolderAnimDurationDelta(context: Context): Int {
+    val prefs2 = PreferenceManager2.getInstance(context)
+    return prefs2.folderAnimationSpeed.firstCached(prefs2).durationDelta
+}
+
 /** Apply Lawnchair custom allapps colour to the provided colour */
 private fun getAllAppsBaseColor(context: Context, defaultColor: Int): Int {
     val prefs2 = PreferenceManager2.getInstance(context)

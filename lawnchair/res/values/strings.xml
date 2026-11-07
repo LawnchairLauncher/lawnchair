@@ -924,6 +924,11 @@
     <string name="max_folder_columns">Maximum folder columns</string>
     <string name="max_folder_rows">Maximum folder rows</string>
 
+    <string name="folder_animation_speed_label">Folder animation speed</string>
+    <string name="folder_animation_speed_slow">Slow</string>
+    <string name="folder_animation_speed_default">Default</string>
+    <string name="folder_animation_speed_fast">Fast</string>
+
     <!-- Quickstep settings -->
     <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
 
