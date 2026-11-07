@@ -61,6 +61,9 @@ object HomeScreenRoutes {
     const val POPUP_EDITOR = "popup_editor"
 }
 
+/**
+ * Shows home-screen settings and exposes tilt-to-page only when a motion sensor is available.
+ */
 @Composable
 fun HomeScreenPreferences(
     modifier: Modifier = Modifier,
@@ -72,8 +75,8 @@ fun HomeScreenPreferences(
     val hasMotionSensor = remember {
         context.getSystemService(SensorManager::class.java)
             ?.let { manager ->
-                manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null
-                    || manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
+                manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null ||
+                    manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
             } == true
     }
     val panToMoveEnabledAdapter = prefs.panToMoveEnabled.getAdapter()

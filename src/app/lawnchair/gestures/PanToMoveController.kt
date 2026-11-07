@@ -24,7 +24,10 @@ import app.lawnchair.preferences.PreferenceManager
 import kotlin.math.abs
 
 /**
- * Pages the workspace once for each deliberate left/right gyroscope flick while dragging.
+ * Converts deliberate motion while dragging into one workspace page change at a time.
+ *
+ * Gyroscope input detects angular-velocity flicks, while accelerometer input calibrates a
+ * drag-start tilt baseline and rearms after the device returns near that baseline.
  */
 class PanToMoveController(
     private val context: Context,
@@ -42,9 +45,16 @@ class PanToMoveController(
     private var tiltTriggered = false
     private var lastPageChangeMs = 0L
 
+    /** Returns whether a motion sensor and manager are available for this controller. */
     val isSupported: Boolean
         get() = sensor != null && sensorManager != null
 
+    /**
+     * Resets motion state and registers the preferred sensor for the duration of a drag.
+     *
+     * A gyroscope is preferred; devices without one use the accelerometer fallback and calibrate
+     * its neutral tilt from the first reading.
+     */
     fun onDragStarted() {
         if (!preferences.panToMoveEnabled.get()) return
         val manager = sensorManager ?: run {
@@ -68,10 +78,15 @@ class PanToMoveController(
         }
     }
 
+    /** Unregisters motion updates so sensor callbacks do not outlive the drag. */
     fun onDragEnded() {
         sensorManager?.unregisterListener(this)
     }
 
+    /**
+     * Filters a screen-relative motion reading and pages left or right after crossing a
+     * sensitivity-adjusted threshold, enforcing a cooldown and accelerometer rearm.
+     */
     override fun onSensorChanged(event: SensorEvent) {
         if (!preferences.panToMoveEnabled.get()) {
             onDragEnded()
@@ -123,8 +138,12 @@ class PanToMoveController(
         }
     }
 
+    /** Accuracy changes do not alter the calibrated gesture state. */
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) = Unit
 
+    /**
+     * Maps sensor axes into the current display orientation and returns the signed gesture axis.
+     */
     private fun screenRelativeReading(event: SensorEvent, isGyroscope: Boolean): Float? {
         val x = event.values[0]
         val y = event.values[1]
@@ -136,6 +155,7 @@ class PanToMoveController(
         }
     }
 
+    /** Interpolates the gesture threshold between its least- and most-sensitive values. */
     private fun lerp(start: Float, end: Float, fraction: Float): Float {
         return start + (end - start) * fraction
     }

@@ -243,6 +243,9 @@ public class FloatingHeaderView extends LinearLayout implements
         return null;
     }
 
+    /**
+     * Reports whether any header row both has content and is currently visible.
+     */
     public boolean hasVisibleContent() {
         for (FloatingHeaderRow row : mAllRows) {
             if (row.hasVisibleContent() && row.isVisible()) {

@@ -844,6 +844,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         updateSearchResultsVisibility();
     }
 
+    /**
+     * Sets up header rows and hides the header shell when neither tabs nor visible row content
+     * requires it, keeping adapter top padding consistent with that visibility.
+     */
     void setupHeader() {
         mAdditionalHeaderRows.forEach(row -> mHeader.onPluginDisconnected(row));
 
@@ -1444,6 +1448,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
     }
 
+    /**
+     * Shows search results without the header, or restores the header only when tabs or visible
+     * header rows provide content.
+     */
     protected void updateSearchResultsVisibility() {
         if (isSearching()) {
             getSearchRecyclerView().setVisibility(VISIBLE);

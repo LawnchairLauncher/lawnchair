@@ -512,6 +512,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return r;
     }
 
+    /**
+     * Starts workspace drag handling and motion sensing, except for accessibility drags confined
+     * to a folder.
+     */
     @Override
     public void onDragStart(DragObject dragObject, DragOptions options) {
         if (ENFORCE_DRAG_EVENT_ORDER) {
@@ -579,6 +583,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mDeferRemoveExtraEmptyScreen = true;
     }
 
+    /**
+     * Ends workspace drag handling and unregisters motion sensors before clearing drag state.
+     */
     @Override
     public void onDragEnd() {
         if (ENFORCE_DRAG_EVENT_ORDER) {
@@ -1679,6 +1686,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mLauncher.getStateManager().addStateListener(mAccessibilityDropListener);
     }
 
+    /**
+     * Detaches the workspace and ensures motion sensors are unregistered with the view.
+     */
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mPanToMoveController.onDragEnded();
@@ -2253,6 +2263,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     @Override
     public void prepareAccessibilityDrop() {}
 
+    /**
+     * Stops motion sensing before processing the final drop on the workspace.
+     */
     @Override
     public void onDrop(final DragObject d, DragOptions options) {
         mPanToMoveController.onDragEnded();
