@@ -377,6 +377,11 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
         return true;
     }
 
+    private static boolean isValidWorkspaceScreenId(int screenId) {
+        // Extra empty screens are transient and must be committed before persisting an item.
+        return !Workspace.EXTRA_EMPTY_SCREEN_IDS.contains(screenId);
+    }
+
     /**
      * Find empty space on the workspace and returns the screenId.
      */
@@ -390,12 +395,14 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
         screenId = workspaceScreens.get(screenIndex);
         CellLayout layout = (CellLayout) workspace.getPageAt(screenIndex);
 
-        boolean found = layout.findCellForSpan(outCoordinates, info.spanX, info.spanY);
+        boolean found = isValidWorkspaceScreenId(screenId)
+                && layout.findCellForSpan(outCoordinates, info.spanX, info.spanY);
         screenIndex = 0;
         while (!found && screenIndex < workspaceScreens.size()) {
             screenId = workspaceScreens.get(screenIndex);
             layout = (CellLayout) workspace.getPageAt(screenIndex);
-            found = layout.findCellForSpan(outCoordinates, info.spanX, info.spanY);
+            found = isValidWorkspaceScreenId(screenId)
+                    && layout.findCellForSpan(outCoordinates, info.spanX, info.spanY);
             screenIndex++;
         }
 
