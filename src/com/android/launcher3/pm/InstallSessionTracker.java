@@ -27,6 +27,7 @@ import android.os.Build;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,8 +48,10 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback impl
 
     public static final String TAG = "InstallSessionTracker";
 
-    // Lazily initialized
+    // Initialized before registering callbacks, including sessions that predate this tracker.
     private SparseArray<PackageUserKey> mActiveSessions = null;
+    // LC-Note: Unarchival recovery must not depend on whether a new icon was allowed.
+    private final SparseBooleanArray mUnarchivalSessions = new SparseBooleanArray();
 
     @NonNull
     private final WeakReference<InstallSessionHelper> mWeakHelper;
@@ -111,6 +114,8 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback impl
         SparseArray<PackageUserKey> activeSessions = getActiveSessionMap(helper);
         PackageUserKey key = activeSessions.get(sessionId);
         activeSessions.remove(sessionId);
+        boolean isUnarchival = mUnarchivalSessions.get(sessionId);
+        mUnarchivalSessions.delete(sessionId);
 
         if (key != null && key.mPackageName != null) {
             Log.d(TAG, "onFinished: active install session finished for"
@@ -123,7 +128,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback impl
                     packageName, key.mUser);
             callback.onPackageStateChanged(info);
 
-            if (!success && helper.promiseIconAddedForId(sessionId)) {
+            if (!success && (isUnarchival || helper.promiseIconAddedForId(sessionId))) {
                 callback.onSessionFailure(packageName, key.mUser);
                 // If it is successful, the id is removed in the the package added flow.
                 helper.removePromiseIconId(sessionId);
@@ -173,6 +178,7 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback impl
             PackageUserKey key =
                     new PackageUserKey(session.getAppPackageName(), getUserHandle(session));
             getActiveSessionMap(helper).put(session.getSessionId(), key);
+            trackUnarchival(session);
             callback.onUpdateSessionDisplay(key, session);
             return session;
         }
@@ -184,28 +190,47 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback impl
             @NonNull final InstallSessionHelper helper) {
         if (mActiveSessions == null) {
             mActiveSessions = new SparseArray<>();
-            helper.getActiveSessions().forEach(
-                    (key, si) -> mActiveSessions.put(si.getSessionId(), key));
+            helper.getActiveSessions().forEach((key, si) -> {
+                mActiveSessions.put(si.getSessionId(), key);
+                trackUnarchival(si);
+            });
         }
         return mActiveSessions;
     }
 
-    void register() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            mInstaller.registerSessionCallback(this, MODEL_EXECUTOR.getHandler());
-        } else {
-            Objects.requireNonNull(mLauncherApps).registerPackageInstallerSessionCallback(
-                    MODEL_EXECUTOR, this);
+    private void trackUnarchival(SessionInfo session) {
+        if (Utilities.ATLEAST_V && Flags.enableSupportForArchiving() && session.isUnarchival()) {
+            mUnarchivalSessions.put(session.getSessionId(), true);
         }
+    }
+
+    void register() {
+        MODEL_EXECUTOR.execute(() -> {
+            InstallSessionHelper helper = mWeakHelper.get();
+            if (helper != null) {
+                // Existing sessions do not receive onCreated again. Snapshot them before
+                // registering, while completion callbacks cannot interleave on this executor.
+                getActiveSessionMap(helper);
+            }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                mInstaller.registerSessionCallback(this, MODEL_EXECUTOR.getHandler());
+            } else {
+                Objects.requireNonNull(mLauncherApps).registerPackageInstallerSessionCallback(
+                        MODEL_EXECUTOR, this);
+            }
+        });
     }
 
     @Override
     public void close() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            mInstaller.unregisterSessionCallback(this);
-        } else {
-            Objects.requireNonNull(mLauncherApps).unregisterPackageInstallerSessionCallback(this);
-        }
+        // Keep unregister ordered after a registration queued by another thread.
+        MODEL_EXECUTOR.execute(() -> {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                mInstaller.unregisterSessionCallback(this);
+            } else {
+                Objects.requireNonNull(mLauncherApps).unregisterPackageInstallerSessionCallback(this);
+            }
+        });
     }
 
     public interface Callback {
