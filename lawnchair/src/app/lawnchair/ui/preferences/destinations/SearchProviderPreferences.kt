@@ -25,6 +25,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.qsb.providers.QsbSearchProviderType
 import app.lawnchair.ui.ModalBottomSheetContent
+import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
@@ -43,6 +44,7 @@ fun SearchProviderPreferences(
     val bottomSheetHandler = LocalBottomSheetHandler.current
     val adapter = preferenceManager2().hotseatQsbProvider.getAdapter()
     val forceWebsiteAdapter = preferenceManager2().hotseatQsbForceWebsite.getAdapter()
+    val privateTabAdapter = preferenceManager2().hotseatQsbPrivateTab.getAdapter()
 
     PreferenceLayout(
         label = stringResource(R.string.search_provider),
@@ -63,7 +65,11 @@ fun SearchProviderPreferences(
                         showDownloadButton = showDownloadButton,
                         enabled = qsbSearchProvider.type != QsbSearchProviderType.APP || appInstalled,
                         selected = selected,
-                        onClick = { adapter.onChange(newValue = qsbSearchProvider) },
+                        onClick = {
+                            adapter.onChange(newValue = qsbSearchProvider)
+                            // The force-website option only applies to providers that offer both an app and a website.
+                            if (!hasAppAndWebsite) forceWebsiteAdapter.onChange(newValue = false)
+                        },
                         onDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
                         onSponsorDisclaimerClick = {
                             bottomSheetHandler.show {
@@ -86,6 +92,13 @@ fun SearchProviderPreferences(
                             onAppDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
                             onWebsiteClick = { forceWebsiteAdapter.onChange(newValue = true) },
                             showAppDownloadButton = !appInstalled,
+                        )
+                    }
+                    ExpandAndShrink(visible = selected && qsbSearchProvider.privateAction != null) {
+                        PreferenceDivider(startIndent = 40.dp)
+                        SwitchPreference(
+                            adapter = privateTabAdapter,
+                            label = stringResource(id = R.string.search_provider_open_private_tab),
                         )
                     }
                     Spacer(Modifier.height(ListItemDefaults.SegmentedGap))

@@ -324,6 +324,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_dock_search_bar_force_website),
     )
 
+    val hotseatQsbPrivateTab = preference(
+        key = booleanPreferencesKey(name = "dock_search_bar_private_tab"),
+        defaultValue = false,
+    )
+
     val accentColor = preference(
         key = stringPreferencesKey(name = "accent_color"),
         parse = ColorOption::fromString,
