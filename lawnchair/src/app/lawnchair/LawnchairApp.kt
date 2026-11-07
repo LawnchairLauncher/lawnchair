@@ -43,6 +43,8 @@ import app.lawnchair.flowerpot.Flowerpot
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.destinations.openAppInfo
+import app.lawnchair.ui.util.rememberCloseSheet
+import app.lawnchair.ui.util.rememberSheetState
 import app.lawnchair.util.restartLauncher
 import app.lawnchair.util.unsafeLazy
 import app.lawnchair.views.ComposeBottomSheet
@@ -55,6 +57,7 @@ import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 import com.android.systemui.shared.system.QuickStepContract
 import java.io.File
+import kotlinx.coroutines.launch
 
 class LawnchairApp : LauncherApplication() {
     private val compatible = Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
@@ -245,6 +248,8 @@ class LawnchairApp : LauncherApplication() {
             val launcher = this
             if (!lawnchairApp.isRecentsComponent || isRecentsEnabled) return
             ComposeBottomSheet.show(this) {
+                val sheetState = rememberSheetState()
+                val closeSheet = rememberCloseSheet(sheetState)
                 ModalBottomSheetContent(
                     title = { Text(text = stringResource(id = R.string.quickstep_incompatible)) },
                     text = {
@@ -259,7 +264,7 @@ class LawnchairApp : LauncherApplication() {
                         OutlinedButton(
                             onClick = {
                                 openAppInfo(launcher)
-                                close(true)
+                                closeSheet()
                             },
                             shapes = ButtonDefaults.shapes(),
                         ) {
@@ -267,7 +272,7 @@ class LawnchairApp : LauncherApplication() {
                         }
                         Spacer(modifier = Modifier.requiredWidth(8.dp))
                         Button(
-                            onClick = { close(true) },
+                            onClick = { closeSheet() },
                             shapes = ButtonDefaults.shapes(),
                         ) {
                             Text(text = stringResource(id = android.R.string.ok))
