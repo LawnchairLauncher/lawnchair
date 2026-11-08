@@ -29,6 +29,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -63,7 +64,6 @@ import app.lawnchair.hotseat.LawnchairHotseat;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * View class that represents the bottom dock of the home screen.
@@ -101,6 +101,7 @@ public class Hotseat extends FrameLayout implements Insettable {
     private Workspace<?> mWorkspace;
     private boolean mSendTouchToWorkspace;
     private boolean mSendTouchToPager;
+    private boolean mDisallowWorkspaceInterceptForIconSwipe;
     private final MultiValueAlpha mIconsAlphaChannels;
     private final MultiValueAlpha mQsbAlphaChannels;
 
@@ -212,9 +213,12 @@ public class Hotseat extends FrameLayout implements Insettable {
         int insetHorizontalRight = preferenceManager.getHotseatBGHorizontalInsetRight().get();
         int insetVerticalTop = preferenceManager.getHotseatBGVerticalInsetTop().get();
         int insetVerticalBottom = preferenceManager.getHotseatBGVerticalInsetBottom().get();
-        InsetDrawable bg = new InsetDrawable(DrawableTokens.BgCellLayout.resolve(getContext()),
-                insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
-        bg.setTint(finalColor);
+        GradientDrawable shape = new GradientDrawable();
+        shape.setColor(Color.rgb(Color.red(finalColor), Color.green(finalColor),
+                Color.blue(finalColor)));
+        shape.setCornerRadius(getResources().getDimension(R.dimen.bg_round_rect_radius));
+        InsetDrawable bg = new InsetDrawable(shape, insetHorizontalLeft, insetVerticalTop,
+                insetHorizontalRight, insetVerticalBottom);
         setBackground(bg);
     }
 
@@ -253,6 +257,33 @@ public class Hotseat extends FrameLayout implements Insettable {
             pages[i] = mPagedView.getPageAt(i);
         }
         return pages;
+    }
+
+    /**
+     * Returns whether the touch starts on a dock icon with a configured swipe gesture.
+     */
+    public boolean isTouchOnIconWithSwipeGesture(MotionEvent ev) {
+        CellLayout page = mPagedView.getCurrentCellLayout();
+        if (page == null) {
+            return false;
+        }
+
+        ShortcutAndWidgetContainer container = page.getShortcutsAndWidgets();
+        int[] location = new int[2];
+        int rawX = (int) ev.getRawX();
+        int rawY = (int) ev.getRawY();
+        for (int i = container.getChildCount() - 1; i >= 0; i--) {
+            View child = container.getChildAt(i);
+            if (!(child instanceof BubbleTextView icon) || child.getVisibility() != VISIBLE) {
+                continue;
+            }
+            child.getLocationOnScreen(location);
+            if (rawX >= location[0] && rawX < location[0] + child.getWidth()
+                    && rawY >= location[1] && rawY < location[1] + child.getHeight()) {
+                return icon.hasConfiguredIconSwipeGesture();
+            }
+        }
+        return false;
     }
 
     /** Whether {@code layout} is one of this hotseat's page CellLayouts. */
@@ -446,6 +477,26 @@ public class Hotseat extends FrameLayout implements Insettable {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mDisallowWorkspaceInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(ev);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                boolean disallow = mDisallowWorkspaceInterceptForIconSwipe;
+                mDisallowWorkspaceInterceptForIconSwipe = false;
+                if (disallow) {
+                    return false;
+                }
+                break;
+            default:
+                break;
+        }
+
+        if (mDisallowWorkspaceInterceptForIconSwipe) {
+            return false;
+        }
+
         int yThreshold = getMeasuredHeight() - getPaddingBottom();
         if (ev.getY() > yThreshold || isTouchOnQsb(ev)) {
             return false;
