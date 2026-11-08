@@ -38,58 +38,58 @@
     <string name="action_copy">Kopírovať</string>
     <string name="action_paste">Prilepiť</string>
     <string name="action_done">Hotovo</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">Vybrať všetko</string>
+    <string name="deselect_all">Zrušiť výber</string>
+    <string name="inverse_selection">Invertovať výber</string>
     <string name="loading">Načítava sa…</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="view_changes">View changes</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="dismiss">Zavrieť</string>
+    <string name="download_update">Stiahnuť aktualizáciu</string>
+    <string name="install_update">Inštalovať aktualizáciu</string>
+    <string name="view_changes">Zobraziť zmeny</string>
+    <string name="pro_updated">Všetko je aktuálne</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">Aktualizácie</string>
+    <string name="changes_dialog_error">Nepodarilo sa načítať aktualizácie</string>
+    <string name="changes_dialog_no_changes">Neboli nájdené žiadne zmeny</string>
+    <string name="changes_dialog_build_format">Zostava č. #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">od %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">práve teraz</string>
     <plurals name="time_minutes_ago">
-        <item quantity="one">%dm</item>
-        <item quantity="few">%dm</item>
-        <item quantity="many">%dm</item>
-        <item quantity="other">%dm</item>
+        <item quantity="one">%d min</item>
+        <item quantity="few">%d min</item>
+        <item quantity="many">%d min</item>
+        <item quantity="other">%d min</item>
     </plurals>
     <plurals name="time_hours_ago">
-        <item quantity="one">%dh</item>
-        <item quantity="few">%dh</item>
-        <item quantity="many">%dh</item>
-        <item quantity="other">%dh</item>
+        <item quantity="one">%d h</item>
+        <item quantity="few">%d h</item>
+        <item quantity="many">%d h</item>
+        <item quantity="other">%d h</item>
     </plurals>
     <plurals name="time_days_ago">
-        <item quantity="one">%dd</item>
-        <item quantity="few">%dd</item>
-        <item quantity="many">%dd</item>
-        <item quantity="other">%dd</item>
+        <item quantity="one">%d d</item>
+        <item quantity="few">%d d</item>
+        <item quantity="many">%d d</item>
+        <item quantity="other">%d d</item>
     </plurals>
     <plurals name="time_weeks_ago">
-        <item quantity="one">%dw</item>
-        <item quantity="few">%dw</item>
-        <item quantity="many">%dw</item>
-        <item quantity="other">%dw</item>
+        <item quantity="one">%d týžd</item>
+        <item quantity="few">%d týžd</item>
+        <item quantity="many">%d týžd</item>
+        <item quantity="other">%d týžd</item>
     </plurals>
     <plurals name="time_months_ago">
-        <item quantity="one">%dmo</item>
-        <item quantity="few">%dmo</item>
-        <item quantity="many">%dmo</item>
-        <item quantity="other">%dmo</item>
+        <item quantity="one">%d mes.</item>
+        <item quantity="few">%d mes.</item>
+        <item quantity="many">%d mes.</item>
+        <item quantity="other">%d mes.</item>
     </plurals>
     <plurals name="time_years_ago">
-        <item quantity="one">%dy</item>
-        <item quantity="few">%dy</item>
-        <item quantity="many">%dy</item>
-        <item quantity="other">%dy</item>
+        <item quantity="one">%d r.</item>
+        <item quantity="few">%d r.</item>
+        <item quantity="many">%d r.</item>
+        <item quantity="other">%d r.</item>
     </plurals>
     <string name="managed_by_lawnchair">Spravované Lawnchair</string>
     <!-- When mentioning settings UI -->
@@ -102,7 +102,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Ostatné</string>
     <!-- Selection options -->
     <string name="dynamic">Dynamické</string>
     <string name="presets">Predvoľby</string>
@@ -117,17 +117,17 @@
     <string name="grid">Mriežka</string>
     <string name="layout">Rozloženie</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Zobraziť tapetu</string>
     <string name="wallpaper">Tapeta</string>
-    <string name="style">Style</string>
+    <string name="style">Štýl</string>
     <string name="background_opacity">Priehľadnosť pozadia</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopírovať do schránky</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Výsledok skopírovaný do schránky</string>
     <string name="item_removed">Odstránená položka</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Čo ukázať</string>
-    <string name="wallpapers">Wallpapers</string>
+    <string name="wallpapers">Tapety</string>
     <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">App drawer folders</string>
