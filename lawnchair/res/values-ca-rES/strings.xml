@@ -21,14 +21,14 @@
     Actions and Verbs
 
     -->
-    <string name="preview_label">Vista prèvia</string>
+    <string name="preview_label">Previsualitza</string>
     <string name="action_create">Crea</string>
     <string name="action_backup">Còpia de seguretat</string>
     <string name="action_restore">Restaura</string>
     <string name="action_delete">Elimina</string>
     <string name="action_reset">Reiniciar</string>
-    <string name="action_unlock">Desbloquejar</string>
-    <string name="action_lock">Bloquejar</string>
+    <string name="action_unlock">Desbloqueja</string>
+    <string name="action_lock">Bloqueja</string>
     <string name="action_apply">Aplica</string>
     <string name="action_customize">Personalitza</string>
     <string name="always_choice">Sempre</string>
@@ -36,23 +36,23 @@
     <string name="clipboard">Porta-retalls</string>
     <string name="action_copy_link">Copia l\'enllaç</string>
     <string name="action_copy">Copia</string>
-    <string name="action_paste">Enganxar</string>
+    <string name="action_paste">Enganxa</string>
     <string name="action_done">Feta</string>
-    <string name="select_all">Seleccionar tot</string>
-    <string name="deselect_all">Desseleccionar tot</string>
-    <string name="inverse_selection">Invertir selecció</string>
+    <string name="select_all">Selecciona-ho tot</string>
+    <string name="deselect_all">Desselecciona-ho tot</string>
+    <string name="inverse_selection">Inverteix selecció</string>
     <string name="loading">Carregant…</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="download_update">Descarregar actualització</string>
-    <string name="install_update">Instal·lar actualització</string>
+    <string name="dismiss">Descarta</string>
+    <string name="download_update">Descarrega actualització</string>
+    <string name="install_update">Instal·la actualització</string>
     <string name="view_changes">Veure canvis</string>
-    <string name="pro_updated">You\'re up-to-date</string>
+    <string name="pro_updated">Estàs al dia</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Actualitzacions</string>
-    <string name="changes_dialog_error">Couldn\'t load updates</string>
+    <string name="changes_dialog_error">No es poden carregar les actualitzacions</string>
     <string name="changes_dialog_no_changes">No s\'han trobat canvis</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_build_format">Compilació #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">de %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">just ara</string>
     <plurals name="time_minutes_ago">
@@ -64,20 +64,20 @@
         <item quantity="other">%dh</item>
     </plurals>
     <plurals name="time_days_ago">
-        <item quantity="one">%dd</item>
-        <item quantity="other">%dd</item>
+        <item quantity="one">%d dia</item>
+        <item quantity="other">%d dies</item>
     </plurals>
     <plurals name="time_weeks_ago">
-        <item quantity="one">%dw</item>
-        <item quantity="other">%dw</item>
+        <item quantity="one">%d setmana</item>
+        <item quantity="other">%d setmanes</item>
     </plurals>
     <plurals name="time_months_ago">
-        <item quantity="one">%dmo</item>
-        <item quantity="other">%dmo</item>
+        <item quantity="one">%d mes</item>
+        <item quantity="other">%d mesos</item>
     </plurals>
     <plurals name="time_years_ago">
-        <item quantity="one">%dy</item>
-        <item quantity="other">%dy</item>
+        <item quantity="one">%d any</item>
+        <item quantity="other">%d anys</item>
     </plurals>
     <string name="managed_by_lawnchair">Gestionat per Lawnchair</string>
     <!-- When mentioning settings UI -->
@@ -102,52 +102,52 @@
     <string name="rows">Files</string>
     <string name="label">Etiqueta</string>
     <string name="icons">Icones</string>
-    <string name="grid">Graella</string>
+    <string name="grid">Quadrícula</string>
     <string name="layout">Diseny</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Mostrar fons de pantalla</string>
+    <string name="show_wallpaper">Mostra el fons de pantalla</string>
     <string name="wallpaper">Fons de pantalla</string>
     <string name="style">Estil</string>
     <string name="background_opacity">Opacitat del fons</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">S\'ha copiat al porta-retalls</string>
     <string name="calculator_search_result_copied_toast">Resultat copiat al porta-retalls</string>
-    <string name="item_removed">Item removed</string>
+    <string name="item_removed">Element esborrat</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
-    <string name="wallpapers">Wallpapers</string>
+    <string name="what_to_show">Què mostrar</string>
+    <string name="wallpapers">Fons de pantalla</string>
     <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="app_drawer_folder">Carpetes del calaix d\'aplicacions</string>
+    <string name="selected_apps">Aplicacions seleccionades</string>
+    <string name="add_apps">Afegeix aplicacions</string>
+    <string name="app_drawer_folder_settings">Carpeta del calaix d\'aplicacions</string>
+    <string name="add_folder">Crea carpeta</string>
+    <string name="edit_folder">Edita carpeta</string>
+    <string name="add_label">Afegeix</string>
+    <string name="edit_label">Edita</string>
     <string name="apply_label">Aplica</string>
     <string name="delete_label">Elimina</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="folder_manage_apps">Manage apps</string>
-    <string name="my_folder_label">My folder</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="folder_list_note">Llisca cap a l\'esquerra per editar, llisca cap a la dreta per eliminar, o toca per actualitzar elements</string>
+    <string name="apps_in_folder_label">Amaga aplicacions de carpetes</string>
+    <string name="apps_in_folder_description">Les aplicacions assignades a carpetes s\'exclouen de la llista d\'aplicacions</string>
+    <string name="folders_filter_duplicates">Només mostra aplicacions úniques</string>
+    <string name="folder_manage_apps">Gestiona les aplicacions</string>
+    <string name="my_folder_label">La meva carpeta</string>
+    <string name="sort_active_items_action">Ordena els elements actius</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Avançat</string>
     <!-- Draggable -->
-    <string name="reorderable_move_up">Move up</string>
-    <string name="reorderable_move_down">Move down</string>
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_move_up">Mou amunt</string>
+    <string name="reorderable_move_down">Mou avall</string>
+    <string name="reorderable_active_items">Elements actius</string>
+    <string name="reorderable_disabled_items">Altres elements</string>
+    <string name="reorderable_disabled_hint">Els elements desactivats apareixeran aquí</string>
+    <string name="reorderable_add_hint_items">Els elements actius apareixeran aquí</string>
     <!--
 
     Preference Dashboard
@@ -158,56 +158,56 @@
     <string name="settings_pick_a_page">Pick a setting from the menu</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_label">Pantalla d\'inici</string>
+    <string name="home_screen_description">Feed, quadrícula, icones</string>
+    <string name="home_screen_actions">Accions de la pantalla d\'inici</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
+    <string name="app_drawer_label">Calaix d\'aplicacions</string>
     <string name="app_drawer_description">Hidden apps, column count, icons</string>
     <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="drawer_search_description">Suggeriments web, cerca global</string>
     <string name="folders_label">Carpetes</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">Nombre de files i columnes</string>
     <string name="gestures_label">Gestos</string>
     <string name="gestures_description">Taps and swipes</string>
     <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">Clear all button, corner radius</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
+    <string name="backup_and_restore_label">Còpia de seguretat i restauració</string>
     <string name="backup_and_restore_description">Save current setup, restore backups</string>
     <string name="about_label">Quant a</string>
     <string name="app_info_drop_target_label">App info</string>
     <string name="debug_restart_launcher">Reinicia Lawnchair</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">Funcions experimentals</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
+    <string name="workspace_label">Espai de treball</string>
     <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
+    <string name="internal_label">Intern</string>
     <string name="internal_description">Internal may be less stable than other experimental groups</string>
-    <string name="font_picker_label">Font customization</string>
+    <string name="font_picker_label">Personalització de font</string>
     <string name="font_picker_description">Alguns textos romanen sense canvis</string>
     <string name="smartspace_calendar_label">At a Glance calendar customization</string>
-    <string name="smartspace_calendar_description">Mostrant sempre la data en calendari de sistema no-Gregorià</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
+    <string name="smartspace_calendar_description">Permet mostrar la data en sistemes de calendari no Gregorià</string>
+    <string name="workspace_increase_max_grid_size_label">Augmenta el límit de la mida màxima de la quadrícula</string>
+    <string name="workspace_increase_max_grid_size_description">Augmenta la mida màxima permesa de la quadrícula de la pantalla d\'inici de 10 &#xd7; 10 a 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Always reload icons</string>
     <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
-    <string name="folder_shape_label">Folder shape</string>
+    <string name="material_expressive_description">Activa els canvis de Material 3 Expressive a l\'espai de treball</string>
+    <string name="folder_shape_label">Forma de carpeta</string>
     <string name="folder_label">Folder</string>
     <string name="app_icon_shape_label">Aplicació</string>
-    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
+    <string name="gesturenavcontract_label">Utilitza l\'API GestureNavContract</string>
     <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
-    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
-    <string name="vibration_feedback_level_label">Vibration feedback level</string>
-    <string name="vibration_feedback_no_feedback_choice">None</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="gesturenavcontract_warning_incompatibility">El teu dispositiu no és totalment compatible. Això podria causar problemes visuals en algunes animacions.</string>
+    <string name="vibration_feedback_level_label">Nivell de vibració</string>
+    <string name="vibration_feedback_no_feedback_choice">Cap</string>
+    <string name="vibration_feedback_minimal_choice">Mínim</string>
     <string name="vibration_feedback_default_choice">Predeterminat</string>
-    <string name="vibration_feedback_expressive_choice">Expressive</string>
+    <string name="vibration_feedback_expressive_choice">Expressiu</string>
     <string name="recents_lock_unlock">App locking</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
@@ -223,26 +223,26 @@
     <string name="global_predictions_label">Show suggestion features</string>
     <string name="app_predictions_label">App suggestions</string>
     <string name="prediction_mode_label">Suggestions provider</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Aquesta funció requereix Android 10 o superior</string>
     <string name="prediction_mode_system">Sistema</string>
     <string name="prediction_mode_none">Desactivat</string>
     <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
     <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
     <string name="dismissed_prediction_apps_label">Blocked apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
-    <string name="prediction_system_settings">Manage system suggestions</string>
+    <string name="dismissed_prediction_apps_label_with_count">Aplicacions bloquejades (%1$d)</string>
+    <string name="prediction_system_settings">Gestiona els suggeriments del sistema</string>
     <string name="missing_usage_access_label">Usage access needed</string>
-    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <string name="missing_usage_access_desc">Per millorar els suggeriments d\'aplicacions, activa l\'accés d\'ús per a <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
 
     -->
     <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
-    <string name="notification_dots_text_color">Notification counter color</string>
+    <string name="notification_dots">Punts de notificació</string>
+    <string name="show_notification_count">Mostra comptador de notificacions</string>
+    <string name="notification_dots_color">Color del punt de notificació</string>
+    <string name="notification_dots_text_color">Color del comptador de notificació</string>
     <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
     <!--
@@ -251,13 +251,13 @@
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Icon style</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
-    <string name="icon_shape_label">Icon shape</string>
-    <string name="icon_sizes">Icon size</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="icon_style_label">Estil de la icona</string>
+    <string name="apply_icon_pack_title">Aplica paquet d\'icones</string>
+    <string name="icon_shape_label">Forma d\'icona</string>
+    <string name="icon_sizes">Mida de la icona</string>
+    <string name="show_labels">Mostra etiquetes</string>
+    <string name="label_size">Mida de l\'etiqueta</string>
+    <string name="twoline_label">Utilitza diverses línies</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
@@ -265,7 +265,7 @@
     <string name="background_lightness_label">Background lightness</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
     <string name="reset_custom_icons">Reset custom icons</string>
-    <string name="reset_custom_icons_confirmation">Totes les icones seran reiniciades. Vols continuar?</string>
+    <string name="reset_custom_icons_confirmation">Totes les icones personalitzades es restabliran. Vols continuar?</string>
     <string name="remove_all_views_from_home_screen">Clear home screen</string>
     <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
     <!-- Icon picker -->
@@ -282,29 +282,29 @@
     <string name="icon_shape_egg">Ou</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octàgon</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">Hexàgon</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
+    <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
+    <string name="icon_shape_sharp_square">Quadrat ben definit</string>
     <string name="icon_shape_square">Quadrat</string>
-    <string name="icon_shape_squircle">Quadrat Superellipse</string>
-    <string name="icon_shape_teardrop">Gota d\'aigua</string>
+    <string name="icon_shape_squircle">Cercle quadrat</string>
+    <string name="icon_shape_teardrop">Llàgrima</string>
     <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_very_sunny">Molt assolellat</string>
+    <string name="icon_shape_complex_clover">Trèvol complex</string>
+    <string name="icon_shape_four_sided_cookie">Galeta de quatre costats</string>
+    <string name="icon_shape_seven_sided_cookie">Galeta de set costats</string>
+    <string name="icon_shape_arch">Arc</string>
     <!-- Additional icon shapes -->
-    <string name="icon_shape_cloudy">Cloudy</string>
-    <string name="icon_shape_flower">Flower</string>
-    <string name="icon_shape_heart">Heart</string>
-    <string name="icon_shape_leaf">Leaf</string>
-    <string name="icon_shape_meow">Meow</string>
-    <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
-    <string name="icon_shape_stretched">Stretched</string>
-    <string name="icon_shape_vessel">Vessel</string>
+    <string name="icon_shape_cloudy">Ennuvolat</string>
+    <string name="icon_shape_flower">Flor</string>
+    <string name="icon_shape_heart">Cor</string>
+    <string name="icon_shape_leaf">Fulla</string>
+    <string name="icon_shape_meow">Meu</string>
+    <string name="icon_shape_pebble">Còdol</string>
+    <string name="icon_shape_roundedhexagon">Hexàgon arrodonit</string>
+    <string name="icon_shape_stretched">Estirada</string>
+    <string name="icon_shape_vessel">Recipient</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Custom icon shape</string>
     <string name="custom_icon_shape_create">Create custom icon shape</string>
@@ -312,22 +312,22 @@
     <string name="custom_folder_shape">Custom folder shape</string>
     <string name="custom_folder_shape_create">Create custom folder shape</string>
     <string name="custom_folder_shape_edit">Edit custom folder shape</string>
-    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape_corner">Forma de la cantonada</string>
     <string name="custom_icon_shape_corner_round">Rodona</string>
     <string name="custom_icon_shape_corner_squircle">Suau</string>
-    <string name="custom_icon_shape_corner_cut">Tall</string>
-    <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
-    <string name="custom_icon_shape_bottom_right">Bottom right</string>
+    <string name="custom_icon_shape_corner_cut">Tallada</string>
+    <string name="custom_icon_shape_top_left">Superior esquerra</string>
+    <string name="custom_icon_shape_top_right">Superior dreta</string>
+    <string name="custom_icon_shape_bottom_left">Inferior esquerra</string>
+    <string name="custom_icon_shape_bottom_right">Inferior dreta</string>
     <string name="export_to_clipboard">Export to clipboard</string>
     <string name="import_from_clipboard">Import from clipboard</string>
     <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Icon pack</string>
-    <string name="get_more_icon_packs">Get more icons</string>
+    <string name="icon_pack">Paquet d\'icones</string>
+    <string name="get_more_icon_packs">Obtén més icones</string>
     <string name="fallback_icon_source_title">Fallback icon source</string>
-    <string name="system_icons">System icons</string>
+    <string name="system_icons">Icones del sistema</string>
     <string name="force_monochrome_label">Force monochrome</string>
     <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
     <string name="enforce_themed_icons_title">Enforce themed icons</string>
@@ -338,20 +338,20 @@
     <string name="themed_icons_home_label">Home screen</string>
     <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="themed_icons_no_fallback">No fallback</string>
-    <string name="lawnicons_not_installed_description">Paquet d\'icones no suportat</string>
+    <string name="lawnicons_not_installed_description">No hi ha paquets d\'icones compatibles</string>
     <string name="advanced_icon_settings_title">Advanced icon settings</string>
     <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
     <string name="reshape_unthemed_icons_description">By adding a background</string>
     <!-- Fonts -->
-    <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
+    <string name="pref_fonts_add_fonts">Afegeix fonts</string>
+    <string name="pref_fonts_add_fonts_summary">Les fonts OTF i TTF són compatibles</string>
     <string name="pref_fonts_missing_font">Font no trobada</string>
     <string name="font_label">Font (experimental)</string>
     <string name="fontWorkspace">General</string>
     <string name="fontHeading">Encapçalaments</string>
-    <string name="fontHeadingMedium">Headings (medium)</string>
+    <string name="fontHeadingMedium">Encapçalaments (mitjana)</string>
     <string name="fontBody">Cos</string>
-    <string name="fontBodyMedium">Body (medium)</string>
+    <string name="fontBodyMedium">Cos (mitjana)</string>
     <string name="font_variant_italic">Italica</string>
     <string name="font_weight_thin">Fina</string>
     <string name="font_weight_extra_light">Extra light</string>
@@ -455,9 +455,9 @@
     <!-- List of available providers -->
     <string name="smartspace_mode_label">At a Glance provider</string>
     <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Recerca de Google</string>
+    <string name="smartspace_mode_google_search">Cerca de Google</string>
     <!-- Miscellaneous Smartspace strings -->
-    <string name="smartspace_media_info_separator">" - "</string>
+    <string name="smartspace_media_info_separator">" — "</string>
     <string name="accessibility_smartspace_page">Pàgina %1$d de %2$d</string>
     <string name="smartspace_widget_placeholder_date">Dv. 3 de març</string>
     <!--
@@ -505,7 +505,7 @@
     <string name="invalid_backup_file">Invalid backup file</string>
     <string name="restore_nova_backup">Restore Nova backup</string>
     <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
-    <string name="nova_grid_label">Graella</string>
+    <string name="nova_grid_label">Quadrícula</string>
     <string name="nova_grid_value">%1$d x %2$d</string>
     <string name="nova_dock_label">Dock</string>
     <string name="nova_app_label">Apps</string>
@@ -591,7 +591,7 @@
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
     <string name="minus_one_enable">Show feed</string>
-    <string name="minus_one_unavailable">Sense aplicacions al feed</string>
+    <string name="minus_one_unavailable">No hi ha aplicacions de feed instal·lades</string>
     <string name="minus_one">Canal de notícies</string>
     <string name="feed_provider">Feed provider</string>
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
@@ -600,11 +600,11 @@
     <string name="show_sys_ui_scrim">Top shadow</string>
     <string name="infinite_scrolling_label">Infinite scrolling</string>
     <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
-    <string name="home_screen_grid">Home screen grid</string>
+    <string name="home_screen_grid">Quadrícula de la pantalla d\'inici</string>
     <string name="home_screen_lock">Lock home screen</string>
     <string name="home_screen_unlock">Unlock home screen</string>
     <string name="home_screen_locked">Home screen is locked</string>
-    <string name="home_screen_lock_description">Prevenir canvis a la visualització del menú principal</string>
+    <string name="home_screen_lock_description">Evita canvis a la distribució de la pantalla principal</string>
     <string name="horizontal_padding_label">Horizontal padding</string>
     <string name="vertical_padding_label">Vertical padding</string>
     <string name="top_padding_label">Top padding</string>
@@ -688,7 +688,7 @@
     <string name="website_label">Lloc web</string>
     <string name="qsb_search_provider_app_required">App required</string>
     <!-- Dock search bar a11y -->
-    <string name="label_search">Busca</string>
+    <string name="label_search">Cerca</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Cerca de veu</string>
     <!-- App drawer settings -->
@@ -793,7 +793,7 @@
     <string name="search_pref_result_all_files_title">All files</string>
     <string name="search_pref_result_web_title">Web suggestions</string>
     <string name="search_pref_result_history_title">Search history</string>
-    <string name="all_apps_search_result_calculator">Calculador</string>
+    <string name="all_apps_search_result_calculator">Calculadora</string>
     <string name="search_empty_state_title">Start searching</string>
     <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
     <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more</string>
