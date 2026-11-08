@@ -248,7 +248,7 @@ public class FloatingHeaderView extends LinearLayout implements
      */
     public boolean hasVisibleContent() {
         for (FloatingHeaderRow row : mAllRows) {
-            if (row.hasVisibleContent() && row.isVisible()) {
+            if (row.hasVisibleContent() && row.shouldDraw()) {
                 return true;
             }
         }

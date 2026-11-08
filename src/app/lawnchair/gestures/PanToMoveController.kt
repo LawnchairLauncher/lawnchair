@@ -115,11 +115,7 @@ class PanToMoveController(
             }
             filteredRate = FILTER_WEIGHT * filteredRate + (1f - FILTER_WEIGHT) * tiltDelta
         }
-        val threshold = lerp(
-            if (isGyroscope) MAX_RATE_THRESHOLD else MAX_TILT_THRESHOLD,
-            if (isGyroscope) MIN_RATE_THRESHOLD else MIN_TILT_THRESHOLD,
-            sensitivity,
-        )
+        val threshold = thresholdForSensitivity(sensitivity, isGyroscope)
         if (abs(filteredRate) < threshold) return
         if (!isGyroscope && tiltTriggered) return
 
@@ -155,11 +151,6 @@ class PanToMoveController(
         }
     }
 
-    /** Interpolates the gesture threshold between its least- and most-sensitive values. */
-    private fun lerp(start: Float, end: Float, fraction: Float): Float {
-        return start + (end - start) * fraction
-    }
-
     private companion object {
         const val FILTER_WEIGHT = 0.35f
         const val MAX_RATE_THRESHOLD = 1.5f
@@ -169,4 +160,10 @@ class PanToMoveController(
         const val TILT_REARM_THRESHOLD = 0.1f
         const val PAGE_CHANGE_COOLDOWN_MS = 700L
     }
+}
+
+internal fun thresholdForSensitivity(sensitivity: Float, isGyroscope: Boolean): Float {
+    val start = if (isGyroscope) 1.5f else 0.5f
+    val end = if (isGyroscope) 0.35f else 0.2f
+    return start + (end - start) * sensitivity.coerceIn(0f, 1f)
 }

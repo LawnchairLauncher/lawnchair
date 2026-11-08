@@ -80,6 +80,7 @@ fun HomeScreenPreferences(
             } == true
     }
     val panToMoveEnabledAdapter = prefs.panToMoveEnabled.getAdapter()
+    val panToMoveSensitivityAdapter = prefs.panToMoveSensitivity.getAdapter()
     PreferenceLayout(
         label = stringResource(id = R.string.home_screen_label),
         backArrowVisible = !LocalIsExpandedScreen.current,
@@ -121,6 +122,15 @@ fun HomeScreenPreferences(
                     label = stringResource(id = R.string.pan_to_move_icon_label),
                     description = stringResource(id = R.string.pan_to_move_icon_description),
                 )
+                ExpandAndShrink(visible = panToMoveEnabledAdapter.state.value) {
+                    SliderPreference(
+                        adapter = panToMoveSensitivityAdapter,
+                        label = stringResource(id = R.string.pan_to_move_sensitivity_label),
+                        valueRange = 0f..1f,
+                        step = 0.05f,
+                        showAsPercentage = true,
+                    )
+                }
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.home_screen_actions)) {

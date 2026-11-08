@@ -2846,6 +2846,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (layout == null) {
                 // Check visible pages
                 IntSet visiblePageIndices = getVisiblePageIndices();
+                if (isPageInTransition()) {
+                    visiblePageIndices.add(getNextPage());
+                }
                 for (int visiblePageIndex : visiblePageIndices) {
                     layout = verifyInsidePage(visiblePageIndex, d.x, d.y);
                     if (layout != null) break;
