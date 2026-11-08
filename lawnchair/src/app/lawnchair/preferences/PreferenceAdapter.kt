@@ -84,39 +84,35 @@ private class StatePreferenceAdapter<T>(
 }
 
 @Composable
-fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Int> {
+inline fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Int> {
+    val pref: BasePreferenceManager.IdpIntPref = this
     val context = LocalContext.current
     val idp = remember { InvariantDeviceProfile.INSTANCE.get(context) }
     val defaultGrid = idp.closestProfile
-    return getAdapter(
-        this,
-        { get(defaultGrid) },
-        { newValue -> set(newValue, defaultGrid) },
-    )
-}
-
-@Composable
-fun <T> PrefEntry<T>.getAdapter() = getAdapter(this, ::get, ::set)
-
-@Composable
-fun <T> PrefEntry<T>.getState() = getAdapter().state
-
-@Composable
-fun <T> PrefEntry<T>.observeAsState() = getAdapter().state
-
-@Composable
-private fun <P, T> getAdapter(
-    pref: PrefEntry<P>,
-    get: () -> T,
-    set: (T) -> Unit,
-): PreferenceAdapter<T> {
-    val adapter = remember { PreferenceAdapterImpl(get, set) }
+    val adapter = remember { PreferenceAdapterImpl({ pref.get(defaultGrid) }, { newValue -> pref.set(newValue, defaultGrid) }) }
     DisposableEffect(pref) {
         pref.addListener(adapter)
         onDispose { pref.removeListener(adapter) }
     }
     return adapter
 }
+
+@Composable
+inline fun <T> PrefEntry<T>.getAdapter(): PreferenceAdapter<T> {
+    val pref: PrefEntry<T> = this
+    val adapter = remember { PreferenceAdapterImpl(pref::get, pref::set) }
+    DisposableEffect(pref) {
+        pref.addListener(adapter)
+        onDispose { pref.removeListener(adapter) }
+    }
+    return adapter
+}
+
+@Composable
+inline fun <T> PrefEntry<T>.getState(): State<T> = getAdapter().state
+
+@Composable
+inline fun <T> PrefEntry<T>.observeAsState(): State<T> = getAdapter().state
 
 @Composable
 fun <T> Preference<T, *, *>.getAdapter(): PreferenceAdapter<T> {
