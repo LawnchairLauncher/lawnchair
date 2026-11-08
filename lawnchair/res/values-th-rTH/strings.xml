@@ -115,7 +115,7 @@
     <string name="app_drawer_folder">โฟลเดอร์ในรายการแอป</string>
     <string name="selected_apps">เลือกแอพ</string>
     <string name="add_apps">เพิ่มแอพ</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
+    <string name="app_drawer_folder_settings">โฟลเดอร์ในรายการแอป</string>
     <string name="add_folder">สร้างโฟลเดอร์</string>
     <string name="edit_folder">แก้ไขโฟลเดอร์</string>
     <string name="add_label">เพิ่ม</string>
