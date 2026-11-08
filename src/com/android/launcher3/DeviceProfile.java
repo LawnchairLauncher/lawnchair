@@ -907,9 +907,9 @@ public class DeviceProfile {
         boolean isLabelInDock = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getEnableLabelInDock());
         HotseatMode hotseatMode = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatMode());
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
-        // LC-Note: Hidden dock labels need no text space; keep the minimum touch target.
-        hotseatCellHeightPx = app.lawnchair.util.DockCellSize.calculate(
-                hotseatIconSizePx, iconTextHeight, isLabelInDock, pxFromDp(48, mMetrics));
+        hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx * 2)
+                - hotseatIconSizePx / 2;
+        hotseatCellHeightPx += isLabelInDock ? iconTextHeight : 0;
         hotseatQsbSpace = mHotseatQsbSpaceBase;
         hotseatQsbSpace += isQsbEnable && isLabelInDock ? (iconTextHeight / 2) : 0;
         
@@ -921,8 +921,6 @@ public class DeviceProfile {
         // Extra height needed for additional dock rows
         int extraRowsHeight = (numHotseatRows - 1) * hotseatCellHeightPx;
 
-        int hotseatTopSpace = getHotseatTopSpace();
-
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + getHotseatProfile().getBarEdgePaddingPx()
                     + getHotseatProfile().getBarWorkspaceSpacePx()
@@ -930,23 +928,20 @@ public class DeviceProfile {
         } else if (isQsbInline) {
             hotseatBarSizePx = Math.max(hotseatIconSizePx, getHotseatProfile().getQsbVisualHeight())
                     + hotseatBarBottomSpacePx
-                    + extraRowsHeight
-                    + hotseatTopSpace;
+                    + extraRowsHeight;
         } else if (isQsbOnTop()) { // LC-Note: isQsbOnTop, this usually is a foldable device, not a tablet
             hotseatBarSizePx = hotseatIconSizePx
                     + hotseatQsbSpace
                     + getHotseatProfile().getQsbVisualHeight()
                     + hotseatBarBottomSpacePx
-                    + extraRowsHeight
-                    + hotseatTopSpace;
+                    + extraRowsHeight;
         } else {
             hotseatBarSizePx = hotseatIconSizePx
                     + hotseatQsbSpace
                     + getHotseatProfile().getQsbVisualHeight()
                     + hotseatBarBottomSpacePx
                     + space
-                    + extraRowsHeight
-                    + hotseatTopSpace;
+                    + extraRowsHeight;
         }
         var isHotseatEnabled = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.isHotseatEnabled());
         if (!isHotseatEnabled) {
@@ -955,9 +950,6 @@ public class DeviceProfile {
     }
 
     public int getHotseatTopSpace() {
-        if (!isVerticalBarLayout() && preferenceManager != null && preferenceManager.getHotseatBG().get()) {
-            return hotseatBarBottomSpacePx;
-        }
         return 0;
     }
 

@@ -96,13 +96,6 @@ fun HotseatBackgroundSettings(prefs: PreferenceManager, prefs2: PreferenceManage
     DividerColumn {
         ColorPreference(preference = prefs2.hotseatBackgroundColor)
         SliderPreference(
-            label = stringResource(id = R.string.hotseat_bg_corner_radius),
-            adapter = prefs2.hotseatBackgroundCornerRadius.getAdapter(),
-            step = 1f,
-            valueRange = 0f..100f,
-            showUnit = "dp",
-        )
-        SliderPreference(
             label = stringResource(id = R.string.hotseat_bg_alpha),
             adapter = prefs.hotseatBGAlpha.getAdapter(),
             step = 5,
@@ -235,7 +228,6 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
             prefs.hotseatBGVerticalInsetBottom.getAdapter(),
             prefs2.pageIndicatorHeightFactor.getAdapter(),
             prefs2.hotseatBackgroundColor.getAdapter(),
-            prefs2.hotseatBackgroundCornerRadius.getAdapter(),
             prefs.hotseatBGAlpha.getAdapter(),
         )
 

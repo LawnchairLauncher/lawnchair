@@ -29,10 +29,8 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -65,6 +63,7 @@ import app.lawnchair.hotseat.LawnchairHotseat;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * View class that represents the bottom dock of the home screen.
@@ -213,17 +212,9 @@ public class Hotseat extends FrameLayout implements Insettable {
         int insetHorizontalRight = preferenceManager.getHotseatBGHorizontalInsetRight().get();
         int insetVerticalTop = preferenceManager.getHotseatBGVerticalInsetTop().get();
         int insetVerticalBottom = preferenceManager.getHotseatBGVerticalInsetBottom().get();
-        float cornerRadiusDp = PreferenceCacheExtensionsKt.firstCached(
-                preferenceManager2.getHotseatBackgroundCornerRadius());
-        float cornerRadius = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                cornerRadiusDp,
-                getResources().getDisplayMetrics());
-        GradientDrawable background = new GradientDrawable();
-        background.setColor(finalColor);
-        background.setCornerRadius(cornerRadius);
-        InsetDrawable bg = new InsetDrawable(background,
+        InsetDrawable bg = new InsetDrawable(DrawableTokens.BgCellLayout.resolve(getContext()),
                 insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
+        bg.setTint(finalColor);
         setBackground(bg);
     }
 
@@ -420,6 +411,7 @@ public class Hotseat extends FrameLayout implements Insettable {
             lp.gravity = Gravity.BOTTOM;
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
             lp.height = grid.hotseatBarSizePx;
+            lp.topMargin = grid.hotseatBarBottomSpacePx;
         }
 
         Rect padding = grid.getHotseatLayoutPadding(getContext());
