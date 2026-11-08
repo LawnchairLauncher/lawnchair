@@ -17,6 +17,12 @@ data class CalendarEvent(
     val localStartTime: Long
         get() = if (allDay) utcMidnightToLocal(startTime) else startTime
 
+    fun overlaps(windowStart: Long, windowEnd: Long): Boolean {
+        val start = localStartTime
+        val end = if (allDay) utcMidnightToLocal(endTime) else endTime
+        return start < windowEnd && if (end > start) end > windowStart else start >= windowStart
+    }
+
     companion object {
         /** Returns local midnight of the calendar date that [utcMillis] falls on in UTC. */
         fun utcMidnightToLocal(

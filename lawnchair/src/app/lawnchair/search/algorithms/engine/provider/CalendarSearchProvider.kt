@@ -14,9 +14,10 @@ import app.lawnchair.search.algorithms.engine.SearchPermission
 import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
 import com.android.launcher3.R
+import java.time.ZoneId
 import java.util.Calendar
+import java.util.Locale
 import java.util.TimeZone
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -43,33 +44,65 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
             val now = System.currentTimeMillis()
             val showCanceled = prefs2.showCalendarCanceledEvents.firstCached()
             withContext(Dispatchers.IO) {
-                CalendarEventSource.query(
+                val temporal = CalendarTemporalQueryParser.parse(
+                    input = query,
+                    now = now,
+                    locale = context.resources.configuration.locales[0] ?: Locale.getDefault(),
+                    timezone = ZoneId.systemDefault(),
+                    todayWords = listOf(
+                        "today",
+                        "now",
+                        context.getString(R.string.calendar_search_today),
+                        context.getString(R.string.calendar_search_keyword_now),
+                    ),
+                    yesterdayWords = listOf("yesterday", context.getString(R.string.calendar_search_yesterday)),
+                    tomorrowWords = listOf("tomorrow", context.getString(R.string.calendar_search_tomorrow)),
+                    calendarWords = listOf("calendar", context.getString(R.string.search_pref_result_calendar_title)),
+                )
+                val temporalEvents = temporal?.let {
+                    CalendarEventSource.query(
+                        context = context,
+                        windowStart = it.start,
+                        windowEnd = it.end,
+                        now = now,
+                        maxResults = maxResults,
+                        showCanceled = showCanceled,
+                        includeEnded = it.includeEnded,
+                        matchWindow = true,
+                        includeAllDay = it.includeAllDay,
+                    )
+                }.orEmpty()
+                val literalEvents = CalendarEventSource.query(
                     context = context,
                     query = query,
-                    windowStart = now - ONE_DAY_MILLIS,
-                    windowEnd = now + ONE_YEAR_MILLIS,
+                    windowStart = now - CALENDAR_SEARCH_LOOKBACK.inWholeMilliseconds,
+                    windowEnd = now + CALENDAR_SEARCH_LOOKAHEAD.inWholeMilliseconds,
                     now = now,
                     maxResults = maxResults,
                     showCanceled = showCanceled,
-                ).map { event ->
-                    CalendarSearchEvent(
-                        eventId = event.eventId,
-                        title = event.title,
-                        description = formatDescription(
-                            context = context,
+                )
+                (temporalEvents + literalEvents)
+                    .distinctBy { it.eventId to it.startTime }
+                    .take(maxResults)
+                    .map { event ->
+                        CalendarSearchEvent(
+                            eventId = event.eventId,
+                            title = event.title,
+                            description = formatDescription(
+                                context = context,
+                                startTime = event.startTime,
+                                endTime = event.endTime,
+                                allDay = event.allDay,
+                                location = event.location,
+                                isCanceled = event.isCanceled,
+                            ),
+                            calendarColor = event.calendarColor,
                             startTime = event.startTime,
                             endTime = event.endTime,
                             allDay = event.allDay,
-                            location = event.location,
                             isCanceled = event.isCanceled,
-                        ),
-                        calendarColor = event.calendarColor,
-                        startTime = event.startTime,
-                        endTime = event.endTime,
-                        allDay = event.allDay,
-                        isCanceled = event.isCanceled,
-                    )
-                }
+                        )
+                    }
             }
         } catch (e: CancellationException) {
             throw e
@@ -113,13 +146,16 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
         val endDate = Calendar.getInstance().apply { timeInMillis = displayEndTime }
         val sameYear = startDate.get(Calendar.ERA) == endDate.get(Calendar.ERA) &&
             startDate.get(Calendar.YEAR) == endDate.get(Calendar.YEAR)
+        val currentDate = Calendar.getInstance()
+        val currentYear = startDate.get(Calendar.ERA) == currentDate.get(Calendar.ERA) &&
+            startDate.get(Calendar.YEAR) == currentDate.get(Calendar.YEAR)
         val sameDay = sameYear && startDate.get(Calendar.DAY_OF_YEAR) == endDate.get(Calendar.DAY_OF_YEAR)
         val dateTime = if (sameDay) {
             formatSingleDay(context, localStartTime, allDay)
         } else {
             val flags = DateUtils.FORMAT_SHOW_DATE or
                 (if (allDay) 0 else DateUtils.FORMAT_SHOW_TIME) or
-                (if (sameYear) 0 else DateUtils.FORMAT_SHOW_YEAR)
+                (if (sameYear && currentYear) 0 else DateUtils.FORMAT_SHOW_YEAR)
             val range = context.getString(
                 R.string.calendar_search_date_range,
                 DateUtils.formatDateTime(context, localStartTime, flags),
@@ -147,13 +183,20 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
         val day = when {
             DateUtils.isToday(startTime) -> context.getString(R.string.calendar_search_today)
 
-            isTomorrow(startTime) -> context.getString(R.string.calendar_search_tomorrow)
+            isRelativeDay(startTime, -1) -> context.getString(R.string.calendar_search_yesterday)
 
-            else -> DateUtils.formatDateTime(
-                context,
-                startTime,
-                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_NO_YEAR,
-            )
+            isRelativeDay(startTime, 1) -> context.getString(R.string.calendar_search_tomorrow)
+
+            else -> {
+                val eventYear = Calendar.getInstance().apply { timeInMillis = startTime }.get(Calendar.YEAR)
+                val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+                DateUtils.formatDateTime(
+                    context,
+                    startTime,
+                    DateUtils.FORMAT_SHOW_DATE or
+                        if (eventYear == currentYear) DateUtils.FORMAT_NO_YEAR else DateUtils.FORMAT_SHOW_YEAR,
+                )
+            }
         }
         val time = if (allDay) {
             context.getString(R.string.calendar_search_all_day)
@@ -163,18 +206,15 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
         return context.getString(R.string.calendar_search_date_time, day, time)
     }
 
-    private fun isTomorrow(timeMillis: Long): Boolean {
-        val tomorrow = Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_YEAR, 1)
+    private fun isRelativeDay(timeMillis: Long, offset: Int): Boolean {
+        val relativeDay = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, offset)
         }
         val date = Calendar.getInstance().apply {
             timeInMillis = timeMillis
         }
-        return tomorrow.get(Calendar.ERA) == date.get(Calendar.ERA) &&
-            tomorrow.get(Calendar.YEAR) == date.get(Calendar.YEAR) &&
-            tomorrow.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)
+        return relativeDay.get(Calendar.ERA) == date.get(Calendar.ERA) &&
+            relativeDay.get(Calendar.YEAR) == date.get(Calendar.YEAR) &&
+            relativeDay.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)
     }
-
-    private const val ONE_DAY_MILLIS = 1L * 24 * 60 * 60 * 1000
-    private val ONE_YEAR_MILLIS = TimeUnit.DAYS.toMillis(366)
 }

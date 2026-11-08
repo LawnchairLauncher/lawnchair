@@ -2,6 +2,9 @@ package app.lawnchair.calendar
 
 import android.content.Context
 import android.provider.CalendarContract
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -15,8 +18,9 @@ object CalendarEventSource {
      * To use this you need [android.Manifest.permission.READ_CALENDAR] permission.
      *
      * @return Events based on your [query] (or all events if null) sorted by start time,
-     * distinct by event id to start time, limited to [maxResults] (or throw
-     * [IllegalArgumentException] if max result is zero or less than zero)
+     * distinct by event id to start time, limited to [maxResults].
+     * With [matchWindow], events must overlap the half-open local time window.
+     * [includeEnded] includes occurrences that ended before [now].
      * @throws IllegalArgumentException if [windowStart] exceeds [windowEnd] or [maxResults] is
      * a negative number
      */
@@ -28,21 +32,31 @@ object CalendarEventSource {
         maxResults: Int,
         showCanceled: Boolean = false,
         query: String? = null,
+        includeEnded: Boolean = false,
+        matchWindow: Boolean = false,
+        includeAllDay: Boolean = true,
     ): List<CalendarEvent> = withContext(Dispatchers.IO) {
         require(windowStart <= windowEnd) { "Calendar window start must not exceed its end" }
         require(maxResults >= 0) { "Calendar max results must not be negative number" }
 
-        val events = queryInstances(context, query, now, windowStart, windowEnd) +
+        // All-day instance dates are stored in UTC, so include a margin before local filtering.
+        val providerStart = if (matchWindow) windowStart - ALL_DAY_MARGIN.inWholeMilliseconds else windowStart
+        val providerEnd = if (matchWindow) windowEnd + ALL_DAY_MARGIN.inWholeMilliseconds else windowEnd
+        val events = queryInstances(context, query, now, providerStart, providerEnd, includeEnded) +
             if (showCanceled) {
                 // Combining cancelled events with normal events into one function will make the
                 // code needlessly more complicated than it alright is :(
-                queryCanceledEvents(context, query, now, windowStart, windowEnd)
+                queryCanceledEvents(context, query, now, providerStart, providerEnd, includeEnded, matchWindow)
             } else {
                 emptyList()
             }
-        events.sortedBy(CalendarEvent::localStartTime)
+        events.asSequence()
+            .filter { includeAllDay || !it.allDay }
+            .filter { !matchWindow || it.overlaps(windowStart, windowEnd) }
+            .sortedBy(CalendarEvent::localStartTime)
             .distinctBy { it.eventId to it.startTime }
             .take(maxResults)
+            .toList()
     }
 
     private suspend fun queryInstances(
@@ -51,6 +65,7 @@ object CalendarEventSource {
         now: Long,
         windowStart: Long,
         windowEnd: Long,
+        includeEnded: Boolean,
     ): List<CalendarEvent> {
         val instancesUri = CalendarContract.Instances.CONTENT_URI.buildUpon()
             .appendPath(windowStart.toString())
@@ -110,7 +125,7 @@ object CalendarEventSource {
                     val startTime = cursor.getLong(beginIndex)
                     val endTime = cursor.getLong(endIndex)
                     val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
-                    if (localEndTime <= now) continue
+                    if (!includeEnded && localEndTime <= now) continue
 
                     val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
                     add(
@@ -136,6 +151,8 @@ object CalendarEventSource {
         now: Long,
         windowStart: Long,
         windowEnd: Long,
+        includeEnded: Boolean,
+        matchWindow: Boolean,
     ): List<CalendarEvent> {
         val visibleCalendarIds = queryVisibleCalendarIds(context)
         if (visibleCalendarIds.isEmpty()) return emptyList()
@@ -143,10 +160,17 @@ object CalendarEventSource {
         val effectiveStartTime = "CASE WHEN ${CalendarContract.Events.ORIGINAL_INSTANCE_TIME} IS NOT NULL " +
             "AND ${CalendarContract.Events.ORIGINAL_INSTANCE_TIME} != 0 " +
             "THEN ${CalendarContract.Events.ORIGINAL_INSTANCE_TIME} ELSE ${CalendarContract.Events.DTSTART} END"
+        val windowSelection = if (matchWindow) {
+            val duration = "(COALESCE(${CalendarContract.Events.DTEND}, ${CalendarContract.Events.DTSTART}) - " +
+                "${CalendarContract.Events.DTSTART})"
+            "$effectiveStartTime + MAX($duration, 0) >= ? AND $effectiveStartTime <= ?"
+        } else {
+            "$effectiveStartTime >= ? AND $effectiveStartTime <= ?"
+        }
         val selection = "${CalendarContract.Events.STATUS} = ? AND " +
             "(${CalendarContract.Events.SELF_ATTENDEE_STATUS} IS NULL OR " +
             "${CalendarContract.Events.SELF_ATTENDEE_STATUS} != ${CalendarContract.Attendees.ATTENDEE_STATUS_DECLINED}) AND " +
-            "$effectiveStartTime >= ? AND $effectiveStartTime <= ?"
+            windowSelection
         val searchFilter = textSearchFilter(
             query,
             CalendarContract.Events.TITLE,
@@ -218,12 +242,13 @@ object CalendarEventSource {
                     }
                     val eventEndTime = cursor.getLong(endIndex)
                     val endTime = if (originalStartTime != null) {
-                        startTime + (eventEndTime - eventStartTime).coerceAtLeast(0L)
+                        val duration = (eventEndTime - eventStartTime).milliseconds.coerceAtLeast(Duration.ZERO)
+                        startTime + duration.inWholeMilliseconds
                     } else {
                         eventEndTime
                     }
                     val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
-                    if (localEndTime <= now) continue
+                    if (!includeEnded && localEndTime <= now) continue
 
                     val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
                     add(
@@ -268,6 +293,8 @@ object CalendarEventSource {
         val selection: String,
         val selectionArgs: List<String>,
     )
+
+    private val ALL_DAY_MARGIN = 2.days
 
     private fun textSearchFilter(
         query: String?,
