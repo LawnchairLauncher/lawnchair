@@ -147,6 +147,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import app.lawnchair.hotseat.HotseatPagedView;
+import app.lawnchair.gestures.PanToMoveController;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
@@ -338,6 +339,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private DragController.DragListener mAccessibilityDragListener;
 
     PreferenceManager2 mPreferenceManager2;
+    private PanToMoveController mPanToMoveController;
     PreferenceManager mPreferenceManger;
 
     /**
@@ -364,6 +366,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWallpaperManager = WallpaperManager.getInstance(context);
         mAllAppsIconSize = mLauncher.getDeviceProfile().getAllAppsProfile().getIconSizePx();
         mPreferenceManager2 = PreferenceManager2.getInstance(context);
+        mPanToMoveController = new PanToMoveController(context, this);
         mPreferenceManger = PreferenceManager.getInstance(context);
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
 
@@ -509,6 +512,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return r;
     }
 
+    /**
+     * Starts workspace drag handling and motion sensing, except for accessibility drags confined
+     * to a folder.
+     */
     @Override
     public void onDragStart(DragObject dragObject, DragOptions options) {
         if (ENFORCE_DRAG_EVENT_ORDER) {
@@ -557,6 +564,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (mAccessibilityDragListener != null) {
             mAccessibilityDragListener.onDragStart(dragObject, options);
         }
+        if (!(options.isAccessibleDrag && dragObject.dragSource instanceof Folder)) {
+            mPanToMoveController.onDragStarted();
+        }
         if (!mLauncher.isInState(EDIT_MODE)) {
             mLauncher.getStateManager().goToState(SPRING_LOADED);
         }
@@ -573,6 +583,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mDeferRemoveExtraEmptyScreen = true;
     }
 
+    /**
+     * Ends workspace drag handling and unregisters motion sensors before clearing drag state.
+     */
     @Override
     public void onDragEnd() {
         if (ENFORCE_DRAG_EVENT_ORDER) {
@@ -596,6 +609,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (mAccessibilityDragListener != null) {
             mAccessibilityDragListener.onDragEnd();
         }
+        mPanToMoveController.onDragEnded();
         mDragInfo = null;
         mDragSourceInternal = null;
     }
@@ -1672,8 +1686,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mLauncher.getStateManager().addStateListener(mAccessibilityDropListener);
     }
 
+    /**
+     * Detaches the workspace and ensures motion sensors are unregistered with the view.
+     */
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        mPanToMoveController.onDragEnded();
         mWallpaperOffset.setWindowToken(null);
         mLauncher.getStateManager().removeStateListener(mAccessibilityDropListener);
     }
@@ -2245,8 +2263,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     @Override
     public void prepareAccessibilityDrop() {}
 
+    /**
+     * Stops motion sensing before processing the final drop on the workspace.
+     */
     @Override
     public void onDrop(final DragObject d, DragOptions options) {
+        mPanToMoveController.onDragEnded();
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
         CellLayout dropTargetLayout = mDropToLayout;
 
@@ -2841,6 +2863,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (layout == null) {
                 // Check visible pages
                 IntSet visiblePageIndices = getVisiblePageIndices();
+                if (isPageInTransition()) {
+                    visiblePageIndices.add(getNextPage());
+                }
                 for (int visiblePageIndex : visiblePageIndices) {
                     layout = verifyInsidePage(visiblePageIndex, d.x, d.y);
                     if (layout != null) break;

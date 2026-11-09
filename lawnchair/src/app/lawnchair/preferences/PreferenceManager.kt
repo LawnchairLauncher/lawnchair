@@ -73,6 +73,15 @@ class PreferenceManager @Inject constructor(
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
     val themedIconPackPackage = StringPref("pref_themedIconPackPackage", "", reloadIcons)
     val allowRotation = BoolPref("pref_allowRotation", false)
+
+    /** Enables motion-driven interactions that use the device's motion sensors. */
+    val motionEnabled = BoolPref("pref_motionEnabled", false)
+
+    /** Enables tilt-to-page gestures while rearranging home-screen items. */
+    val panToMoveEnabled = BoolPref("pref_panToMoveEnabled", false)
+
+    /** Controls how far a motion reading must move toward the gesture threshold. */
+    val panToMoveSensitivity = FloatPref("pref_panToMoveSensitivity", 0.5f)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", true)
     val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false)
     val shadowBGIcons = BoolPref("pref_shadowBGIcons", true)
