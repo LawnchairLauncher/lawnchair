@@ -202,8 +202,23 @@ public class Hotseat extends FrameLayout implements Insettable {
         setClipToPadding(false);
     }
 
+    public void refreshBackground() {
+        setUpBackground();
+    }
+
     private void setUpBackground() {
-        if(!preferenceManager.getHotseatBG().get()) return;
+        DeviceProfile grid = mActivity != null ? mActivity.getDeviceProfile() : null;
+        Rect layoutPadding = grid != null ? grid.getHotseatLayoutPadding(getContext()) : null;
+        int pl = layoutPadding != null ? layoutPadding.left : getPaddingLeft();
+        int pt = layoutPadding != null ? layoutPadding.top : getPaddingTop();
+        int pr = layoutPadding != null ? layoutPadding.right : getPaddingRight();
+        int pb = layoutPadding != null ? layoutPadding.bottom : getPaddingBottom();
+
+        if (!preferenceManager.getHotseatBG().get()) {
+            setBackground(null);
+            setPadding(pl, pt, pr, pb);
+            return;
+        }
 
         var bgColor = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatBackgroundColor());
         var transparency = preferenceManager.getHotseatBGAlpha().get();
@@ -224,8 +239,17 @@ public class Hotseat extends FrameLayout implements Insettable {
         background.setColor(finalColor);
         background.setCornerRadius(cornerRadius);
         InsetDrawable bg = new InsetDrawable(background,
-                insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
+                insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom) {
+            @Override
+            public boolean getPadding(Rect padding) {
+                if (padding != null) {
+                    padding.set(0, 0, 0, 0);
+                }
+                return false;
+            }
+        };
         setBackground(bg);
+        setPadding(pl, pt, pr, pb);
     }
 
     /** Provides translation X for hotseat icons for the channel. */

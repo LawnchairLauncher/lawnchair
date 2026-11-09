@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.lawnchair.hotseat.DisabledHotseat
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -94,6 +95,11 @@ fun DockPreferences(modifier: Modifier = Modifier) {
 @Composable
 fun HotseatBackgroundSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
     DividerColumn {
+        val bottomMarginMax = if (prefs2.hotseatMode.getAdapter().state.value == DisabledHotseat) {
+            175
+        } else {
+            100
+        }
         ColorPreference(preference = prefs2.hotseatBackgroundColor)
         SliderPreference(
             label = stringResource(id = R.string.hotseat_bg_corner_radius),
@@ -134,7 +140,7 @@ fun HotseatBackgroundSettings(prefs: PreferenceManager, prefs2: PreferenceManage
             label = stringResource(id = R.string.hotseat_bg_vertical_inset_bottom),
             adapter = prefs.hotseatBGVerticalInsetBottom.getAdapter(),
             step = 5,
-            valueRange = 0..100,
+            valueRange = 0..bottomMarginMax,
             showUnit = "px",
         )
     }

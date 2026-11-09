@@ -32,7 +32,6 @@ import app.lawnchair.ui.preferences.navigation.Search
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.ProvideLifecycleState
 import app.lawnchair.util.repeatOnAttached
-import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager
@@ -42,11 +41,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
 class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
-    private val activity: ActivityContext = ActivityContext.lookupContext<BaseActivity>(context)
+    private val activity: ActivityContext? get() = ActivityContext.lookupContextNoThrow(context)
     private val composeView = ComposeView(context)
     private lateinit var preferenceManager2: PreferenceManager2
 
@@ -120,8 +120,16 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             onEndIconClick = { id ->
                                 runCatching {
                                     when (id) {
-                                        QsbIconId.MIC -> voiceIntent?.let { context.startActivity(it) }
+                                        QsbIconId.MIC -> if (searchProvider == Google) {
+                                            context.launcher.lifecycleScope.launch {
+                                                Google.launchVoice(context.launcher)
+                                            }
+                                        } else {
+                                            voiceIntent?.let { context.startActivity(it) }
+                                        }
+
                                         QsbIconId.LENS -> lensIntent?.let { context.startActivity(it) }
+
                                         else -> null
                                     }
                                 }
@@ -160,7 +168,11 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                 val forceWebsite = preferenceManager2.hotseatQsbForceWebsite.get()
                 forceWebsite
                     .flatMapLatest {
-                        if (it) Google.getSearchIntent(context) else flowOf(null)
+                        if (!it) {
+                            merge(Google.getSearchIntent(context), Google.getVoiceIntent(context))
+                        } else {
+                            flowOf(null)
+                        }
                     }
                     .collect()
             }
@@ -185,10 +197,10 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val dp = activity.deviceProfile
+        val dp = activity?.deviceProfile
         // Unlike Phone, for Foldable/Tablet we let the original onMeasure do that instead since it
         // matched what we need. It perfectly fit the QSB with the grid.
-        if (!dp.deviceProperties.isPhone) {
+        if (dp == null || !dp.deviceProperties.isPhone) {
             if (!composeView.isAttachedToWindow) {
                 setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
                 return

@@ -28,11 +28,13 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.data.Converters
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
 import app.lawnchair.gestures.type.GestureType
+import app.lawnchair.hotseat.DisabledHotseat
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
@@ -146,6 +148,12 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = HotseatMode.fromString(context.getString(R.string.config_default_hotseat_mode)),
         parse = { HotseatMode.fromString(it) },
         save = { it.toString() },
+        onSet = { mode ->
+            val bottomMargin = if (mode == DisabledHotseat) 175 else 100
+            app.lawnchair.preferences.PreferenceManager.getInstance(context)
+                .hotseatBGVerticalInsetBottom.set(bottomMargin)
+            reloadHelper.recreate()
+        },
     )
 
     val iconShape = preference(
@@ -231,15 +239,22 @@ class PreferenceManager2 @Inject constructor(
         key = stringPreferencesKey(name = "hotseat_bg_color"),
         parse = ColorOption::fromString,
         save = ColorOption::toString,
-        onSet = { reloadHelper.reloadGrid() },
+        onSet = {
+            withFreshCache {
+                LawnchairLauncher.instance?.hotseat?.refreshBackground()
+            }
+        },
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_hotseat_bg_color)),
     )
 
     val hotseatBackgroundCornerRadius = preference(
         key = floatPreferencesKey(name = "hotseat_bg_corner_radius"),
-        defaultValue = context.resources.getDimension(R.dimen.bg_round_rect_radius) /
-            context.resources.displayMetrics.density,
-        onSet = { reloadHelper.recreate() },
+        defaultValue = 30f,
+        onSet = {
+            withFreshCache {
+                LawnchairLauncher.instance?.hotseat?.refreshBackground()
+            }
+        },
     )
 
     val appDrawerBackgroundColor = preference(
