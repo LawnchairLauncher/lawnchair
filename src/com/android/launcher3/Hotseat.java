@@ -265,31 +265,63 @@ public class Hotseat extends FrameLayout implements Insettable {
         return pages;
     }
 
-    /**
-     * Returns whether the touch starts on a dock icon with a configured swipe gesture.
-     */
-    public boolean isTouchOnIconWithSwipeGesture(MotionEvent ev) {
-        CellLayout page = mPagedView.getCurrentCellLayout();
-        if (page == null) {
-            return false;
-        }
-
-        ShortcutAndWidgetContainer container = page.getShortcutsAndWidgets();
-        int[] location = new int[2];
-        int rawX = (int) ev.getRawX();
-        int rawY = (int) ev.getRawY();
-        for (int i = container.getChildCount() - 1; i >= 0; i--) {
-            View child = container.getChildAt(i);
-            if (!(child instanceof BubbleTextView icon) || child.getVisibility() != VISIBLE) {
-                continue;
-            }
-            child.getLocationOnScreen(location);
-            if (rawX >= location[0] && rawX < location[0] + child.getWidth()
-                    && rawY >= location[1] && rawY < location[1] + child.getHeight()) {
-                return icon.hasConfiguredIconSwipeGesture();
-            }
+    // Lawnchair: Icon swipe gesture feature
+    public boolean isTouchOnIconWithSwipeGesture(float x, float y, boolean vertical) {
+        BubbleTextView touchedIcon = findIconAtPosition(x, y);
+        if (touchedIcon != null) {
+            return vertical
+                    ? touchedIcon.hasConfiguredVerticalIconSwipeGesture()
+                    : touchedIcon.hasConfiguredHorizontalIconSwipeGesture();
         }
         return false;
+    }
+
+    // Lawnchair: Icon swipe gesture feature
+    public boolean isTouchOnIconWithSwipeGesture(MotionEvent ev) {
+        return isTouchOnIconWithSwipeGesture(ev, false) || isTouchOnIconWithSwipeGesture(ev, true);
+    }
+
+    // Lawnchair: Icon swipe gesture feature
+    public boolean isTouchOnIconWithSwipeGesture(MotionEvent ev, boolean vertical) {
+        return isTouchOnIconWithSwipeGesture(ev.getX(), ev.getY(), vertical)
+                || isTouchOnIconWithSwipeGesture(ev.getRawX(), ev.getRawY(), vertical);
+    }
+
+    // Lawnchair: Icon swipe gesture feature
+    @Nullable
+    public BubbleTextView findIconAtPosition(float x, float y) {
+        if (mIconsContainer == null || mPagedView == null) {
+            return null;
+        }
+        if (x >= 0 && x <= getWidth() && y >= 0 && y <= getHeight()) {
+            float pagerX = x - mIconsContainer.getLeft() - mPagedView.getLeft();
+            float pagerY = y - mIconsContainer.getTop() - mPagedView.getTop();
+            BubbleTextView icon = mPagedView.findIconAtPosition(pagerX, pagerY);
+            if (icon != null) {
+                return icon;
+            }
+        }
+        CellLayout page = mPagedView.getCurrentCellLayout();
+        if (page != null) {
+            ShortcutAndWidgetContainer container = page.getShortcutsAndWidgets();
+            if (container != null) {
+                int[] location = new int[2];
+                int ix = (int) x;
+                int iy = (int) y;
+                for (int i = container.getChildCount() - 1; i >= 0; i--) {
+                    View child = container.getChildAt(i);
+                    if (!(child instanceof BubbleTextView btv) || child.getVisibility() != VISIBLE) {
+                        continue;
+                    }
+                    child.getLocationOnScreen(location);
+                    if (ix >= location[0] && ix < location[0] + child.getWidth()
+                            && iy >= location[1] && iy < location[1] + child.getHeight()) {
+                        return btv;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /** Whether {@code layout} is one of this hotseat's page CellLayouts. */
@@ -633,8 +665,20 @@ public class Hotseat extends FrameLayout implements Insettable {
         }
         int right = left + qsbMeasuredWidth;
 
+        int qsbHeight = dp.getHotseatProfile().getQsbHeight();
+        int qsbWidth = Math.min(qsbMeasuredWidth, width);
+        left = Math.max(0, Math.min(left, width - qsbWidth));
+        right = left + qsbWidth;
+
         int bottom = height - dp.getQsbOffsetY();
-        int top = bottom - dp.getHotseatProfile().getQsbHeight();
+        int top = bottom - qsbHeight;
+        if (qsbHeight > 0) {
+            top = Math.max(0, Math.min(top, height - qsbHeight));
+            bottom = top + qsbHeight;
+        } else {
+            top = 0;
+            bottom = 0;
+        }
         mQsb.layout(left, top, right, bottom);
     }
 

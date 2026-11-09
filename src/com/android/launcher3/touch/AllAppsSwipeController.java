@@ -144,9 +144,22 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
-        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN
-                && mLauncher.getHotseat().isTouchOnIconWithSwipeGesture(ev)) {
-            return false;
+        // Lawnchair: Icon Swipe Gestures (For vertical up gestures)
+        if (mLauncher.getDragLayer() != null) {
+            if (mLauncher.getWorkspace() != null) {
+                float[] coord = new float[]{ev.getX(), ev.getY()};
+                mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getWorkspace(), coord);
+                if (mLauncher.getWorkspace().isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)) {
+                    return false;
+                }
+            }
+            if (mLauncher.getHotseat() != null) {
+                float[] coord = new float[]{ev.getX(), ev.getY()};
+                mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getHotseat(), coord);
+                if (mLauncher.getHotseat().isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)) {
+                    return false;
+                }
+            }
         }
         if (mCurrentAnimation != null) {
             // If we are already animating from a previous state, we can intercept.
