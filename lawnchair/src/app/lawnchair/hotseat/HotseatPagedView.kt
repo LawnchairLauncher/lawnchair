@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
+import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.CellLayout
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.PagedView
@@ -62,10 +63,23 @@ class HotseatPagedView @JvmOverloads constructor(
 
     fun getCurrentCellLayout(): CellLayout? = getPageAt(nextPage)
 
+    /** Main dock page, the one shown on start and when pressing home, like Nova's center page. */
+    val defaultPage: Int
+        get() = PreferenceManager.getInstance(context).dockDefaultPage.get().coerceIn(0, maxOf(0, childCount - 1))
+
+    /** Scrolls back to [defaultPage]. */
+    fun moveToDefaultPage() {
+        val page = defaultPage
+        if (isPagingEnabled && nextPage != page) snapToPage(page)
+    }
+
+    /** Rebuilds the dock pages for the device profile, with a gap between pages when paging. */
     fun resetPages(hasVerticalHotseat: Boolean, workspace: Workspace<*>?, dp: DeviceProfile) {
         removeAllViews()
         val pageCount = if (hasVerticalHotseat) 1 else maxOf(1, dp.numHotseatPages)
         isPagingEnabled = pageCount > 1
+        // Icons may be wider than their cell; without a gap the next page's first icon peeks in
+        setPageSpacing(if (isPagingEnabled) dp.iconSizePx + dp.hotseatBorderSpace else 0)
 
         val inflater = LayoutInflater.from(context)
         for (i in 0 until pageCount) {
@@ -87,10 +101,10 @@ class HotseatPagedView @JvmOverloads constructor(
 
         mPageIndicator?.let {
             it.setMarkersCount(pageCount)
-            it.setActiveMarker(0)
+            it.setActiveMarker(defaultPage)
         }
         applyPageIndicatorVisibility()
-        setCurrentPage(0)
+        setCurrentPage(defaultPage)
         requestLayout()
     }
 
@@ -126,7 +140,7 @@ class HotseatPagedView @JvmOverloads constructor(
         if (width <= 0 || childCount == 0) {
             return getCurrentCellLayout()
         }
-        var raw = (scrollX + x).toInt() / width
+        var raw = (scrollX + x).toInt() / (width + pageSpacing)
         if (mIsRtl) {
             raw = childCount - 1 - raw
         }

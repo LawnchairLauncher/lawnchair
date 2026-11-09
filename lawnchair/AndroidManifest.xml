@@ -189,6 +189,30 @@
             android:foregroundServiceType="dataSync" />
 
         <receiver
+            android:name="app.lawnchair.widget.worldclock.WorldClockWidgetProvider"
+            android:exported="false"
+            android:label="@string/world_clock_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/world_clock_widget_info" />
+        </receiver>
+
+        <activity
+            android:name="app.lawnchair.widget.worldclock.WorldClockConfigActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:label="@string/world_clock_widget_label"
+            android:theme="@style/Theme.Lawnchair"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
             android:name="app.lawnchair.smartspace.SmartspaceAppWidgetProvider"
             android:exported="false">
             <intent-filter>

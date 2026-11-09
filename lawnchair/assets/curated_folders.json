@@ -1,0 +1,451 @@
+{
+  "version": 1,
+  "folders": [
+    {
+      "id": "system",
+      "title": "System",
+      "apps": [
+        {
+          "package": "org.fdroid.fdroid",
+          "name": "F-Droid",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.looker.droidify",
+          "name": "Droid-ify",
+          "source": "fdroid"
+        },
+        {
+          "package": "dev.imranr.obtainium",
+          "alt": [
+            "dev.imranr.obtainium.fdroid"
+          ],
+          "name": "Obtainium",
+          "source": "https://github.com/ImranR98/Obtainium"
+        },
+        {
+          "package": "com.aurora.store",
+          "name": "Aurora Store",
+          "source": "fdroid"
+        },
+        {
+          "package": "io.github.muntashirakon.AppManager",
+          "name": "App Manager",
+          "source": "fdroid"
+        },
+        {
+          "package": "me.zhanghai.android.files",
+          "name": "Material Files",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "camera",
+      "title": "Camera & Scan",
+      "apps": [
+        {
+          "package": "net.sourceforge.opencamera",
+          "name": "Open Camera",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fairscan.app",
+          "name": "FairScan",
+          "source": "fdroid"
+        },
+        {
+          "package": "de.markusfisch.android.binaryeye",
+          "name": "Binary Eye",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fossify.gallery",
+          "name": "Fossify Gallery",
+          "source": "fdroid"
+        },
+        {
+          "package": "deckers.thibault.aves.libre",
+          "name": "Aves",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "audio",
+      "title": "Audio & Voice",
+      "apps": [
+        {
+          "package": "org.fossify.voicerecorder",
+          "name": "Voice Recorder",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.dimowner.audiorecorder",
+          "name": "Audio Recorder",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.oxycblt.auxio",
+          "name": "Auxio",
+          "source": "fdroid"
+        },
+        {
+          "package": "de.danoeh.antennapod",
+          "name": "AntennaPod",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.videolan.vlc",
+          "name": "VLC",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "time",
+      "title": "Time & Weather",
+      "apps": [
+        {
+          "package": "com.best.deskclock",
+          "name": "Clock",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fossify.clock",
+          "name": "Fossify Clock",
+          "source": "fdroid"
+        },
+        {
+          "package": "ws.xsoh.etar",
+          "name": "Etar Calendar",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fossify.calendar",
+          "name": "Fossify Calendar",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.breezyweather",
+          "name": "Breezy Weather",
+          "source": "fdroid"
+        },
+        {
+          "package": "at.bitfire.davdroid",
+          "name": "DAVx⁵",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "maps",
+      "title": "Maps & Travel",
+      "apps": [
+        {
+          "package": "app.organicmaps",
+          "name": "Organic Maps",
+          "source": "fdroid"
+        },
+        {
+          "package": "app.comaps.fdroid",
+          "name": "CoMaps",
+          "source": "fdroid"
+        },
+        {
+          "package": "net.osmand.plus",
+          "name": "OsmAnd~",
+          "source": "fdroid"
+        },
+        {
+          "package": "de.grobox.liberario",
+          "name": "Transportr",
+          "source": "fdroid"
+        },
+        {
+          "package": "de.dennisguse.opentracks",
+          "name": "OpenTracks",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "messaging",
+      "title": "Messaging",
+      "apps": [
+        {
+          "package": "org.thoughtcrime.securesms",
+          "name": "Signal",
+          "source": "https://signal.org/android/apk/"
+        },
+        {
+          "package": "im.molly.app",
+          "name": "Molly",
+          "source": "https://github.com/mollyim/mollyim-android"
+        },
+        {
+          "package": "im.vector.app",
+          "name": "Element",
+          "source": "fdroid"
+        },
+        {
+          "package": "eu.siacs.conversations",
+          "name": "Conversations",
+          "source": "fdroid"
+        },
+        {
+          "package": "net.thunderbird.android",
+          "alt": [
+            "com.fsck.k9"
+          ],
+          "name": "Thunderbird",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fossify.messages",
+          "name": "Fossify Messages",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fossify.contacts",
+          "name": "Fossify Contacts",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fossify.phone",
+          "name": "Fossify Phone",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "web",
+      "title": "Web & Reading",
+      "apps": [
+        {
+          "package": "org.mozilla.fennec_fdroid",
+          "name": "Fennec",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.ironfoxoss.ironfox",
+          "name": "IronFox",
+          "source": "https://gitlab.com/ironfox-oss/IronFox"
+        },
+        {
+          "package": "org.schabi.newpipe",
+          "name": "NewPipe",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.github.libretube",
+          "name": "LibreTube",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.nononsenseapps.feeder",
+          "name": "Feeder",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.koreader.launcher.fdroid",
+          "alt": [
+            "org.koreader.launcher"
+          ],
+          "name": "KOReader",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "privacy",
+      "title": "Privacy & Security",
+      "apps": [
+        {
+          "package": "com.kunzisoft.keepass.libre",
+          "name": "KeePassDX",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.beemdevelopment.aegis",
+          "name": "Aegis",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.x8bit.bitwarden",
+          "name": "Bitwarden",
+          "source": "https://github.com/bitwarden/android"
+        },
+        {
+          "package": "com.celzero.bravedns",
+          "name": "RethinkDNS",
+          "source": "fdroid"
+        },
+        {
+          "package": "eu.faircode.netguard",
+          "name": "NetGuard",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "vpn",
+      "title": "VPN",
+      "apps": [
+        {
+          "package": "ch.protonvpn.android",
+          "name": "Proton VPN",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.wireguard.android",
+          "name": "WireGuard",
+          "source": "https://download.wireguard.com/android-client/"
+        },
+        {
+          "package": "com.tailscale.ipn",
+          "name": "Tailscale",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "productivity",
+      "title": "Productivity",
+      "apps": [
+        {
+          "package": "net.gsantner.markor",
+          "name": "Markor",
+          "source": "fdroid"
+        },
+        {
+          "package": "net.cozic.joplin",
+          "name": "Joplin",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.nextcloud.client",
+          "name": "Nextcloud",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fossify.notes",
+          "name": "Fossify Notes",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.localsend.localsend_app",
+          "name": "LocalSend",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.artifex.mupdf.viewer.app",
+          "name": "MuPDF",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "networking",
+      "title": "Networking",
+      "apps": [
+        {
+          "package": "com.networkscanner.app",
+          "name": "Network Scanner",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.aaronjwood.portauthority",
+          "name": "Port Authority",
+          "source": "fdroid"
+        },
+        {
+          "package": "fr.jnda.android.ipcalc",
+          "name": "IPCalc",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.emanuelef.remote_capture",
+          "name": "PCAPdroid",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.surfaceocean.nexttraceroute",
+          "name": "NextTraceroute",
+          "source": "fdroid"
+        },
+        {
+          "package": "xyz.pisoj.og.nettools",
+          "name": "OG Network Tools",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.vrem.wifianalyzer",
+          "name": "WiFiAnalyzer",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.example.iperf3client",
+          "name": "iPerf3 Client",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.dosse.speedtest",
+          "name": "LibreSpeed",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.craxiom.networksurvey",
+          "name": "Network Survey",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.connectbot",
+          "name": "ConnectBot",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.coboltforge.dontmind.multivnc",
+          "name": "MultiVNC",
+          "source": "fdroid"
+        },
+        {
+          "package": "com.freerdp.afreerdp",
+          "name": "aFreeRDP",
+          "source": "fdroid"
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "title": "Tools",
+      "apps": [
+        {
+          "package": "com.termux",
+          "name": "Termux",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fossify.math",
+          "name": "Fossify Calculator",
+          "source": "fdroid"
+        },
+        {
+          "package": "org.fossify.filemanager",
+          "name": "Fossify Files",
+          "source": "fdroid"
+        },
+        {
+          "package": "helium314.keyboard",
+          "name": "HeliBoard",
+          "source": "fdroid"
+        },
+        {
+          "package": "dev.patrickgold.florisboard",
+          "name": "FlorisBoard",
+          "source": "fdroid"
+        }
+      ]
+    }
+  ]
+}

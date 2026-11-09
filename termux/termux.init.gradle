@@ -1,0 +1,13 @@
+// Termux cannot run the glibc protoc that the protobuf plugin downloads, so point it at
+// Termux's protoc. This afterEvaluate is registered before the plugin's own, so it runs
+// after build.gradle sets the artifact and before the plugin resolves it.
+def protocPath = gradle.startParameter.projectProperties['termux.protoc']
+if (protocPath) {
+    gradle.allprojects { project ->
+        project.afterEvaluate {
+            project.plugins.withId('com.google.protobuf') {
+                project.extensions.getByName('protobuf').protoc { it.path = protocPath }
+            }
+        }
+    }
+}

@@ -21,6 +21,7 @@ import android.util.SparseArray
 import androidx.annotation.VisibleForTesting
 import androidx.core.util.putAll
 import androidx.core.util.valueIterator
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.BuildConfigs
@@ -46,6 +47,10 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
 
     /** Creates an array of valid workspace screens based on current items in the model. */
     // LC-Note: Add context to replace QSB_ON_FIRST_SCREEN config
+    /**
+     * Screen ids to bind: pages with items, the persisted order, padded to the fixed home screen
+     * count.
+     */
     fun collectWorkspaceScreens(context: Context): IntArray {
         val prefs2 = PreferenceManager2.INSTANCE.get(context)
         val smartspaceEnabled = prefs2.enableSmartspace.firstCached()
@@ -56,7 +61,16 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
             screenSet.add(Workspace.FIRST_SCREEN_ID)
         }
         val persistedOrder = LauncherPrefs.get(context).get(LauncherPrefs.WORKSPACE_SCREEN_ORDER)
-        return mergeWorkspaceScreens(screenSet.array, persistedOrder)
+        val screens = IntArray()
+        screens.addAll(mergeWorkspaceScreens(screenSet.array, persistedOrder))
+        // Fixed home screens: pad with empty pages, reusing the lowest free ids
+        val fixedScreens = PreferenceManager.getInstance(context).homeScreenCount.get()
+        var candidate = Workspace.FIRST_SCREEN_ID
+        while (screens.size() < fixedScreens) {
+            if (!screens.contains(candidate)) screens.add(candidate)
+            candidate++
+        }
+        return screens
     }
 
     /** Returns the [ItemInfo] associated with the [id] or null */
