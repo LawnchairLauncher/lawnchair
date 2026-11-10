@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.widget.RemoteViews
 import androidx.core.content.edit
 import com.android.launcher3.LauncherPrefs
@@ -17,6 +18,7 @@ import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +45,17 @@ class HeadlessWidgetsManager @Inject constructor(
     }
 
     fun getWidget(info: AppWidgetProviderInfo, prefKey: String): Widget {
-        val widget = widgetsMap.getOrPut(prefKey) { Widget(info, prefKey) }
+        val widget = widgetsMap.getOrPut(prefKey) {
+            Widget(
+                context = context,
+                prefs = prefs,
+                widgetManager = widgetManager,
+                host = host,
+                scope = scope,
+                info = info,
+                prefKey = prefKey,
+            )
+        }
         check(info.provider == widget.info.provider) {
             "widget $prefKey was created with a different provider"
         }
@@ -85,7 +97,15 @@ class HeadlessWidgetsManager @Inject constructor(
         }
     }
 
-    inner class Widget internal constructor(val info: AppWidgetProviderInfo, private val prefKey: String) {
+    class Widget internal constructor(
+        private val context: Context,
+        private val prefs: SharedPreferences,
+        private val widgetManager: AppWidgetManager,
+        private val host: AppWidgetHost,
+        private val scope: CoroutineScope,
+        val info: AppWidgetProviderInfo,
+        private val prefKey: String,
+    ) {
 
         private var widgetId = prefs.getInt(prefKey, -1)
         val isBound: Boolean
