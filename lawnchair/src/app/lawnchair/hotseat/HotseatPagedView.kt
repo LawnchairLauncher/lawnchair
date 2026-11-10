@@ -113,7 +113,9 @@ class HotseatPagedView @JvmOverloads constructor(
         }
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    /**
+     * Finds the BubbleTextView at the specified coordinates within the paged view.
+     */
     fun findIconAtPosition(x: Float, y: Float): BubbleTextView? {
         val scrollAdjustedX = x + scrollX
         val scrollAdjustedY = y + scrollY
@@ -140,7 +142,9 @@ class HotseatPagedView @JvmOverloads constructor(
         return null
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    /**
+     * Returns true if the touch coordinates fall on a dock icon with a configured swipe gesture.
+     */
     fun isTouchOnIconWithSwipeGesture(x: Float, y: Float, vertical: Boolean): Boolean {
         val touchedIcon = findIconAtPosition(x, y) ?: return false
         return if (vertical) {

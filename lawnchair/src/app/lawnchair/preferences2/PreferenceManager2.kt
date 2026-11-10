@@ -34,7 +34,6 @@ import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
 import app.lawnchair.gestures.type.GestureType
-import app.lawnchair.hotseat.DisabledHotseat
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
@@ -148,12 +147,7 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = HotseatMode.fromString(context.getString(R.string.config_default_hotseat_mode)),
         parse = { HotseatMode.fromString(it) },
         save = { it.toString() },
-        onSet = { mode ->
-            val bottomMargin = if (mode == DisabledHotseat) 175 else 100
-            app.lawnchair.preferences.PreferenceManager.getInstance(context)
-                .hotseatBGVerticalInsetBottom.set(bottomMargin)
-            reloadHelper.recreate()
-        },
+        onSet = { reloadHelper.recreate() },
     )
 
     val iconShape = preference(
@@ -249,7 +243,8 @@ class PreferenceManager2 @Inject constructor(
 
     val hotseatBackgroundCornerRadius = preference(
         key = floatPreferencesKey(name = "hotseat_bg_corner_radius"),
-        defaultValue = 30f,
+        defaultValue = context.resources.getDimension(R.dimen.bg_round_rect_radius) /
+            context.resources.displayMetrics.density, // This should hopefully match corner of all devices
         onSet = {
             withFreshCache {
                 LawnchairLauncher.instance?.hotseat?.refreshBackground()

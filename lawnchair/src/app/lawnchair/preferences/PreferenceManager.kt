@@ -183,11 +183,21 @@ class PreferenceManager @Inject constructor(
     private fun applyHotseatBackgroundDefaults() {
         if (!hotseatBG.get()) return
         batchEdit {
-            hotseatBGHorizontalInsetLeft.set(30)
-            hotseatBGHorizontalInsetRight.set(30)
-            hotseatBGVerticalInsetTop.set(30)
-            hotseatBGVerticalInsetBottom.set(30)
-            hotseatBGAlpha.set(100)
+            if (!sp.contains(hotseatBGHorizontalInsetLeft.key)) {
+                hotseatBGHorizontalInsetLeft.set(30)
+            }
+            if (!sp.contains(hotseatBGHorizontalInsetRight.key)) {
+                hotseatBGHorizontalInsetRight.set(30)
+            }
+            if (!sp.contains(hotseatBGVerticalInsetTop.key)) {
+                hotseatBGVerticalInsetTop.set(30)
+            }
+            if (!sp.contains(hotseatBGVerticalInsetBottom.key)) {
+                hotseatBGVerticalInsetBottom.set(30)
+            }
+            if (!sp.contains(hotseatBGAlpha.key)) {
+                hotseatBGAlpha.set(100)
+            }
         }
     }
 

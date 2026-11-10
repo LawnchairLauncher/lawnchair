@@ -17,6 +17,9 @@ import com.android.launcher3.qsb.QsbWidgetHostView
 import com.android.launcher3.views.ActivityContext
 import kotlinx.coroutines.launch
 
+/**
+ * A container view for Google's QSB search bar in the hotseat dock.
+ */
 class GoogleQsbContainerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -58,6 +61,9 @@ class GoogleQsbContainerView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Fragment responsible for hosting the Google search widget within the hotseat QSB.
+     */
     class QsbFragment : QsbContainerView.QsbFragment() {
 
         init {
@@ -76,7 +82,6 @@ class GoogleQsbContainerView @JvmOverloads constructor(
         override fun getSearchWidgetProvider(): AppWidgetProviderInfo? {
             val ctx = context ?: return null
             return getSearchWidgetProviderInfo(ctx, Google.packageName)
-                ?: super.getSearchWidgetProvider()
         }
 
         override fun createBindOptions(): Bundle {

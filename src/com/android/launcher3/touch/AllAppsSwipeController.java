@@ -145,7 +145,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
         // Lawnchair: Icon Swipe Gestures (For vertical up gestures)
-        if (mLauncher.getDragLayer() != null) {
+        if (mLauncher.isInState(NORMAL) && mLauncher.getDragLayer() != null) {
             if (mLauncher.getWorkspace() != null) {
                 float[] coord = new float[]{ev.getX(), ev.getY()};
                 mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getWorkspace(), coord);

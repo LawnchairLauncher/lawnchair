@@ -33,9 +33,12 @@ data object Google : QsbSearchProvider(
     supportVoiceIntent = true,
     website = "https://www.google.com/",
 ) {
+    /**
+     * Launches the Google voice search action or fallback recognizer intent.
+     */
     suspend fun launchVoice(launcher: Launcher) {
         val pendingIntent = withTimeoutOrNull(2.seconds) {
-            getVoiceIntent(launcher).filterNotNull().firstOrNull()
+            getVoiceIntent(launcher).firstOrNull()
         }
         if (pendingIntent != null) {
             val options = ActivityOptions.makeBasic()
@@ -102,10 +105,16 @@ data object Google : QsbSearchProvider(
         super.launch(launcher, forceWebsite)
     }
 
+    /**
+     * Emits the pending search intent extracted from the Google search widget, if available.
+     */
     fun getSearchIntent(context: Context): Flow<PendingIntent?> {
         return getWidgetIntents(context).map(::findSearchIntent)
     }
 
+    /**
+     * Emits the pending voice intent extracted from the Google search widget, if available.
+     */
     fun getVoiceIntent(context: Context): Flow<PendingIntent?> {
         return getWidgetIntents(context).map(::findVoiceIntent)
     }

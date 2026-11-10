@@ -89,8 +89,10 @@ inline fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Int>
     val context = LocalContext.current
     val idp = remember { InvariantDeviceProfile.INSTANCE.get(context) }
     val defaultGrid = idp.closestProfile
-    val adapter = remember { PreferenceAdapterImpl({ pref.get(defaultGrid) }, { newValue -> pref.set(newValue, defaultGrid) }) }
-    DisposableEffect(pref) {
+    val adapter = remember(pref, defaultGrid) {
+        PreferenceAdapterImpl({ pref.get(defaultGrid) }, { newValue -> pref.set(newValue, defaultGrid) })
+    }
+    DisposableEffect(pref, adapter) {
         pref.addListener(adapter)
         onDispose { pref.removeListener(adapter) }
     }

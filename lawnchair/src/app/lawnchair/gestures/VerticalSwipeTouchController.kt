@@ -106,6 +106,11 @@ class VerticalSwipeTouchController(
         if ((ev.edgeFlags and Utilities.EDGE_NAV_BAR) != 0) {
             return false
         }
+        if (!launcher.isInState(LauncherState.NORMAL) ||
+            AbstractFloatingView.getTopOpenView(launcher) != null
+        ) {
+            return false
+        }
         // LC: Icon Swipe Gestures (For vertical gestures)
         val isIconSwipeOnWorkspace = launcher.workspace?.let {
             val coord = floatArrayOf(ev.x, ev.y)
@@ -115,13 +120,14 @@ class VerticalSwipeTouchController(
         val isIconSwipeOnHotseat = launcher.hotseat?.let {
             val coord = floatArrayOf(ev.x, ev.y)
             launcher.dragLayer.mapCoordInSelfToDescendant(it, coord)
+            coord[0] -= it.iconsContainer.translationX
+            coord[1] -= it.iconsContainer.translationY
             it.isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)
         } ?: false
         if (isIconSwipeOnWorkspace || isIconSwipeOnHotseat) {
             return false
         }
-        return AbstractFloatingView.getTopOpenView(launcher) == null &&
-            launcher.isInState(LauncherState.NORMAL)
+        return true
     }
 
     override fun onDragStart(start: Boolean) {

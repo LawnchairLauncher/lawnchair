@@ -202,6 +202,7 @@ public class Hotseat extends FrameLayout implements Insettable {
         setClipToPadding(false);
     }
 
+    /** Refreshes the hotseat background drawable and insets. */
     public void refreshBackground() {
         setUpBackground();
     }
@@ -267,6 +268,11 @@ public class Hotseat extends FrameLayout implements Insettable {
         return mPagedView;
     }
 
+    /** Returns the container holding the hotseat paged view and indicator. */
+    public FrameLayout getIconsContainer() {
+        return mIconsContainer;
+    }
+
     /** Returns the CellLayout for the given dock page. */
     @Nullable
     public CellLayout getPageAt(int page) {
@@ -289,7 +295,9 @@ public class Hotseat extends FrameLayout implements Insettable {
         return pages;
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    /**
+     * Returns true if the touch coordinates fall on a dock icon with a configured swipe gesture.
+     */
     public boolean isTouchOnIconWithSwipeGesture(float x, float y, boolean vertical) {
         BubbleTextView touchedIcon = findIconAtPosition(x, y);
         if (touchedIcon != null) {
@@ -300,18 +308,24 @@ public class Hotseat extends FrameLayout implements Insettable {
         return false;
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    /**
+     * Returns true if the MotionEvent falls on a dock icon with any configured swipe gesture.
+     */
     public boolean isTouchOnIconWithSwipeGesture(MotionEvent ev) {
         return isTouchOnIconWithSwipeGesture(ev, false) || isTouchOnIconWithSwipeGesture(ev, true);
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    /**
+     * Returns true if the MotionEvent falls on a dock icon with a configured directional swipe gesture.
+     */
     public boolean isTouchOnIconWithSwipeGesture(MotionEvent ev, boolean vertical) {
         return isTouchOnIconWithSwipeGesture(ev.getX(), ev.getY(), vertical)
                 || isTouchOnIconWithSwipeGesture(ev.getRawX(), ev.getRawY(), vertical);
     }
 
-    // Lawnchair: Icon swipe gesture feature
+    /**
+     * Finds the BubbleTextView at the specified Hotseat-local coordinates, or null if none found.
+     */
     @Nullable
     public BubbleTextView findIconAtPosition(float x, float y) {
         if (mIconsContainer == null || mPagedView == null) {
@@ -329,17 +343,19 @@ public class Hotseat extends FrameLayout implements Insettable {
         if (page != null) {
             ShortcutAndWidgetContainer container = page.getShortcutsAndWidgets();
             if (container != null) {
+                int[] hotseatLocation = new int[2];
+                getLocationOnScreen(hotseatLocation);
+                int screenX = Math.round(x + hotseatLocation[0]);
+                int screenY = Math.round(y + hotseatLocation[1]);
                 int[] location = new int[2];
-                int ix = (int) x;
-                int iy = (int) y;
                 for (int i = container.getChildCount() - 1; i >= 0; i--) {
                     View child = container.getChildAt(i);
                     if (!(child instanceof BubbleTextView btv) || child.getVisibility() != VISIBLE) {
                         continue;
                     }
                     child.getLocationOnScreen(location);
-                    if (ix >= location[0] && ix < location[0] + child.getWidth()
-                            && iy >= location[1] && iy < location[1] + child.getHeight()) {
+                    if (screenX >= location[0] && screenX < location[0] + child.getWidth()
+                            && screenY >= location[1] && screenY < location[1] + child.getHeight()) {
                         return btv;
                     }
                 }
@@ -540,7 +556,7 @@ public class Hotseat extends FrameLayout implements Insettable {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                mDisallowWorkspaceInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(ev);
+                mDisallowWorkspaceInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(ev, true);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -696,13 +712,6 @@ public class Hotseat extends FrameLayout implements Insettable {
 
         int bottom = height - dp.getQsbOffsetY();
         int top = bottom - qsbHeight;
-        if (qsbHeight > 0) {
-            top = Math.max(0, Math.min(top, height - qsbHeight));
-            bottom = top + qsbHeight;
-        } else {
-            top = 0;
-            bottom = 0;
-        }
         mQsb.layout(left, top, right, bottom);
     }
 

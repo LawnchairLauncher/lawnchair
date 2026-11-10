@@ -171,6 +171,7 @@ public class QsbContainerView extends FrameLayout {
         super.setPadding(0, 0, 0, 0);
     }
 
+    /** Sets view padding without the zero-padding constraint enforced by {@link #setPadding}. */
     protected void setPaddingUnchecked(int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
     }
@@ -306,6 +307,7 @@ public class QsbContainerView extends FrameLayout {
             super.onDestroy();
         }
 
+        /** Re-creates the embedded QSB view inside the wrapper. */
         protected void rebindFragment() {
             // Exit if the embedded qsb is disabled
             if (!isQsbEnabled()) {
