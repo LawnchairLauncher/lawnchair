@@ -844,12 +844,14 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         updateSearchResultsVisibility();
     }
 
+    /**
+     * Sets up header rows and hides the header shell when neither tabs nor visible row content
+     * requires it, keeping adapter top padding consistent with that visibility.
+     */
     void setupHeader() {
         mAdditionalHeaderRows.forEach(row -> mHeader.onPluginDisconnected(row));
 
         boolean hideSearchBar = isAppDrawerSearchBarHidden();
-        // Keep personal/work tabs visible when search is off; only hide the empty header shell.
-        mHeader.setVisibility((hideSearchBar && !mUsingTabs) ? View.GONE : View.VISIBLE);
         boolean tabsHidden = !mUsingTabs;
         mHeader.setup(
                 mAH.get(AdapterHolder.MAIN).mRecyclerView,
@@ -858,7 +860,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 getCurrentPage(),
                 tabsHidden);
 
-        int padding = (hideSearchBar && !mUsingTabs) ? 0 : mHeader.getMaxTranslation();
+        // Keep personal/work tabs or visible rows active; hide the empty header shell.
+        boolean hasHeaderContent = mUsingTabs || (!hideSearchBar && mHeader.hasVisibleContent());
+        mHeader.setVisibility(hasHeaderContent ? View.VISIBLE : View.GONE);
+
+        int padding = hasHeaderContent ? mHeader.getMaxTranslation() : 0;
         mAH.forEach(adapterHolder -> {
             adapterHolder.mPadding.top = padding;
             adapterHolder.applyPadding();
@@ -1442,6 +1448,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
     }
 
+    /**
+     * Shows search results without the header, or restores the header only when tabs or visible
+     * header rows provide content.
+     */
     protected void updateSearchResultsVisibility() {
         if (isSearching()) {
             getSearchRecyclerView().setVisibility(VISIBLE);
@@ -1450,9 +1460,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         } else {
             getSearchRecyclerView().setVisibility(GONE);
             getAppsRecyclerViewContainer().setVisibility(VISIBLE);
-            // Keep the empty header shell hidden when search is off and there are no tabs.
-            mHeader.setVisibility(
-                    (isAppDrawerSearchBarHidden() && !mUsingTabs) ? View.GONE : View.VISIBLE);
+            // Keep personal/work tabs or visible rows active; hide the empty header shell.
+            boolean hasHeaderContent = mUsingTabs
+                    || (!isAppDrawerSearchBarHidden() && mHeader.hasVisibleContent());
+            mHeader.setVisibility(hasHeaderContent ? View.VISIBLE : View.GONE);
         }
         if (mHeader.isSetUp()) {
             mHeader.setActiveRV(getCurrentPage());
