@@ -539,3 +539,17 @@ licensee {
     bundleAndroidAsset = true
     androidAssetReportPath = 'licenses.json'
 }
+
+project(':displaylib') {
+    plugins.withId('com.android.library') {
+        androidComponents {
+            onVariants(selector().all()) { variant ->
+                def generatedKspJavaDir = layout.buildDirectory
+                    .dir("generated/ksp/${variant.name}/java")
+                    .get()
+                    .asFile
+                variant.sources.java.addStaticSourceDirectory(generatedKspJavaDir.absolutePath)
+            }
+        }
+    }
+}
