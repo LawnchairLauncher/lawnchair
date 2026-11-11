@@ -3239,6 +3239,16 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             cellLayout.onDropChild(view);
             cellLayout.getShortcutsAndWidgets().measureChild(view);
 
+            // addInScreen can fail to attach the view through any of its silent failure
+            // branches (unknown screen id, missing hotseat page, or addViewToCellLayout
+            // returning false). Animating a detached view into position then crashes with
+            // an NPE in DragLayer#animateViewIntoPosition when it dereferences the missing
+            // parent. Skip the drop animation and clean up the drag view instead; the item
+            // was already committed to the model above and reappears on the next bind.
+            if (!(view.getParent() instanceof ShortcutAndWidgetContainer)) {
+                d.deferDragViewCleanupPostAnimation = false;
+                return;
+            }
             if (d.dragView != null) {
                 // We wrap the animation call in the temporary set and reset of the current
                 // cellLayout to its final transform -- this means we animate the drag view to
