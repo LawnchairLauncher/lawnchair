@@ -1,0 +1,40 @@
+opt_out_usage
+
+default_platform(:android)
+
+platform :android do
+  desc "Download the Play Store listing into fastlane/metadata/android"
+  lane :download_listing do
+    Dir.mktmpdir do |tmp|
+      # Download to a temp folder first so a failed run leaves the old listing intact
+      path = File.join(tmp, "listing")
+      download_from_play_store(metadata_path: path, track: "beta")
+      download_all_changelogs(path)
+
+      dest = File.join(Dir.pwd, "metadata", "android")
+      FileUtils.rm_rf(dest)
+      FileUtils.mv(path, dest)
+    end
+  end
+end
+
+# supply only fetches the latest release of one track
+def download_all_changelogs(path)
+  client = Supply::Client.make_from_config
+  client.begin_edit(package_name: Supply.config[:package_name])
+  begin
+    client.tracks.each do |track|
+      (track.releases || []).each do |release|
+        (release.release_notes || []).each do |note|
+          dir = File.join(path, note.language, "changelogs")
+          FileUtils.mkdir_p(dir)
+          (release.version_codes || []).each do |code|
+            File.write(File.join(dir, "#{code}.txt"), note.text)
+          end
+        end
+      end
+    end
+  ensure
+    client.abort_current_edit
+  end
+end
