@@ -1,1 +1,0 @@
-Pantalla d'inici basada en el Launcher3 d'AOSP

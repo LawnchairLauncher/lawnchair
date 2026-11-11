@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+The customizable Pixel Launcher — no clever tagline needed.

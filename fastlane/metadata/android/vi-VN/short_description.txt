@@ -1,1 +1,0 @@
-Trình khởi chạy dựa trên Launcher3 từ AOSP
