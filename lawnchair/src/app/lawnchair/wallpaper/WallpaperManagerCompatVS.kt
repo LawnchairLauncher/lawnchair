@@ -31,7 +31,10 @@ internal class WallpaperManagerCompatVS(context: Context) : WallpaperManagerComp
 
     private fun update(wallpaperColors: WallpaperColors?) {
         if (wallpaperColors == null) {
-            this.wallpaperColors = null
+            // One UI returns no WallpaperColors to third-party apps, which made every
+            // wallpaper-based color setting silently fall back to the default blue.
+            // Samsung still exposes the seed it computed for the current wallpaper.
+            this.wallpaperColors = getSamsungSeedColor()?.let { WallpaperColorsCompat(it, 0) }
             return
         }
         val platformHints = wallpaperManager
@@ -45,5 +48,18 @@ internal class WallpaperManagerCompatVS(context: Context) : WallpaperManagerComp
             hints = hints or HINT_SUPPORTS_DARK_THEME
         }
         this.wallpaperColors = WallpaperColorsCompat(wallpaperColors.primaryColor.toArgb(), hints)
+    }
+
+    /**
+     * One UI's hidden `WallpaperManager.getSeedColors(int which)`, which returns the seed
+     * colors Samsung extracted from the wallpaper. Returns null on other builds.
+     */
+    private fun getSamsungSeedColor(): Int? = try {
+        val seeds = WallpaperManager::class.java
+            .getMethod("getSeedColors", Int::class.javaPrimitiveType)
+            .invoke(wallpaperManager, WallpaperManager.FLAG_SYSTEM) as? IntArray
+        seeds?.firstOrNull { it != 0 }
+    } catch (_: Exception) {
+        null
     }
 }
