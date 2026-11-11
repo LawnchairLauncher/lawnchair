@@ -1,0 +1,61 @@
+name: Store Listing Download
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+
+  download-store-listing:
+    name: Download store listing from Google Play
+    if: github.repository_owner == 'LawnchairLauncher'
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ github.ref_name }}-store-listing
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v7
+      with:
+        lfs: true
+        token: ${{ secrets.LAWNCHAIR_BOT_TOKEN }}
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
+
+    - name: Download listing
+      env:
+        PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
+      run: bundle exec fastlane android download_listing
+
+    - name: Create pull request
+      env:
+        GH_TOKEN: ${{ secrets.LAWNCHAIR_BOT_TOKEN }}
+      run: |
+        git add fastlane/metadata/android
+        if git diff --cached --quiet; then
+          echo "Store listing is up to date"
+          exit 0
+        fi
+
+        git config user.name "Lawnchair Bot"
+        git config user.email "115872683+lawnchair-bot@users.noreply.github.com"
+        git checkout -B "$BRANCH"
+        git commit -m "Update store listing from Google Play"
+        git push --force origin "$BRANCH"
+
+        if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
+          gh pr create \
+            --base "${{ github.ref_name }}" \
+            --head "$BRANCH" \
+            --title "Update store listing from Google Play" \
+            --body "Downloaded by the Store Listing Download workflow."
+        fi
