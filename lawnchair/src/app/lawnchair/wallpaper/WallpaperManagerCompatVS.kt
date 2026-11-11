@@ -29,6 +29,12 @@ internal class WallpaperManagerCompatVS(context: Context) : WallpaperManagerComp
         update(wallpaperManager.getWallpaperColors(WallpaperManager.FLAG_SYSTEM))
     }
 
+    /**
+     * Updates [wallpaperColors] from the platform colors of the system wallpaper.
+     *
+     * When the platform reports no colors (as on Samsung One UI), falls back to the seed color
+     * One UI extracted for the wallpaper; if that is unavailable too, the colors are cleared.
+     */
     private fun update(wallpaperColors: WallpaperColors?) {
         if (wallpaperColors == null) {
             // One UI returns no WallpaperColors to third-party apps, which made every
