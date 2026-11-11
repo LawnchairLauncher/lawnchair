@@ -180,7 +180,15 @@ public class QuickstepWidgetPickerActivity extends
         } else if (Utilities.ATLEAST_T) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                     OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-                    () -> onBackPressed());
+                    () -> {
+                        // Delegate to the sheet like the U+ path so that back resets an active
+                        // search before closing the picker.
+                        if (mWidgetSheet != null) {
+                            mWidgetSheet.onBackInvoked();
+                        } else {
+                            onBackPressed();
+                        }
+                    });
         }
     }
 
