@@ -43,6 +43,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
@@ -95,6 +96,7 @@ public class AddItemActivity extends BaseActivity
         WidgetCell.PreviewReadyListener {
 
     private static final int SHADOW_SIZE = 10;
+    private static final String TAG = "AddItemActivity";
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
     private static final String STATE_EXTRA_WIDGET_ID = "state.widget.id";
@@ -342,7 +344,15 @@ public class AddItemActivity extends BaseActivity
             ShortcutInfo shortcutInfo = mRequest.getShortcutInfo();
             ItemInstallQueue.INSTANCE.get(this).queueItem(shortcutInfo);
             logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
-            mRequest.accept();
+            // accept() can rethrow a system-side exception as a RuntimeException (see
+            // PinRequestHelper); close the sheet instead of crashing.
+            try {
+                mRequest.accept();
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Failed to accept pin shortcut request", e);
+                mSlideInView.close(/* animate= */ true);
+                return;
+            }
             CharSequence label = shortcutInfo.getLongLabel();
             if (TextUtils.isEmpty(label)) {
                 label = shortcutInfo.getShortLabel();
