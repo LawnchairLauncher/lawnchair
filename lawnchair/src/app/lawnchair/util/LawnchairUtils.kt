@@ -97,8 +97,18 @@ fun restartLauncher(context: Context) {
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     val componentName = intent!!.resolveActivity(pm)
     if (context.packageName != componentName.packageName) {
-        intent = pm.getLaunchIntentForPackage(context.packageName)
-            ?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        // Restart through a home-category intent pinned to our own package instead of
+        // PackageManager.getLaunchIntentForPackage(), which builds a CATEGORY_LAUNCHER
+        // (standard-typed) intent to the home activity. Some Android 8-10 OEM ROMs react
+        // to that launch by trying to re-type the home task and killing the app with
+        // RemoteServiceException("Can't change activity type once set: …
+        // mActivityType=home} activityType=standard") via SCHEDULE_CRASH, which cannot
+        // be caught. The resolved activity and flags are unchanged: NEW_TASK was already
+        // implied by the launch intent, CLEAR_TOP stays.
+        intent = Intent(Intent.ACTION_MAIN)
+            .addCategory(Intent.CATEGORY_HOME)
+            .setPackage(context.packageName)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
     }
     restartLauncher(context, intent)
 }
