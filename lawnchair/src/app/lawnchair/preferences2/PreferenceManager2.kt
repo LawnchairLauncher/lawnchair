@@ -831,6 +831,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = GestureHandlerConfig.Sleep,
     )
 
+    val gestureHapticFeedback = preference(
+        key = booleanPreferencesKey(name = "gesture_haptic_feedback"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_gesture_haptic_feedback),
+    )
+
     val sleepMode = preference(
         key = stringPreferencesKey(name = "sleep_mode"),
         defaultValue = SleepMode.AUTO,

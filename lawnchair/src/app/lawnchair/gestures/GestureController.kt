@@ -23,6 +23,7 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.GestureHandler
 import app.lawnchair.gestures.handlers.NoOpGestureHandler
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.util.MSDLPlayerWrapper
 import com.android.launcher3.util.VibratorWrapper
 import com.google.android.msdl.data.model.MSDLToken
@@ -90,7 +91,7 @@ class GestureController(private val launcher: LawnchairLauncher) {
                 return@launch
             }
             handler.onTrigger(launcher)
-            if (withHaptic) {
+            if (withHaptic && prefs.gestureHapticFeedback.firstCached(prefs)) {
                 mMSDLPlayerWrapper.playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR)
             }
         }

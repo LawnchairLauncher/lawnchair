@@ -11,6 +11,7 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.type.GestureType
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MSDLPlayerWrapper
@@ -129,7 +130,9 @@ class IconGestureListener(
 
         context.launcher.lifecycleScope.launch {
             Log.d("GESTURE_HANDLER", "Triggering gesture: ${gestureType.name}")
-            mMSDLPlayerWrapper.playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR)
+            if (prefs.gestureHapticFeedback.firstCached(prefs)) {
+                mMSDLPlayerWrapper.playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR)
+            }
             gesture.createHandler(context).onTrigger(context.launcher)
         }
 

@@ -688,6 +688,8 @@
     <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
 
     <string name="sleep_mode_label">Sleep mode</string>
+    <string name="gesture_haptic_feedback_label">Haptic feedback</string>
+    <string name="gesture_haptic_feedback_description">Vibrate when a gesture is triggered</string>
     <string name="sleep_mode_auto">Automatic</string>
     <string name="sleep_mode_root">Root</string>
     <string name="sleep_mode_accessibility">Accessibility service</string>

@@ -9,6 +9,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.GestureHandlerPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
+import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.R
@@ -51,6 +52,13 @@ fun GesturePreferences(
             GestureHandlerPreference(
                 adapter = prefs.backPressGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_back_tap),
+            )
+        }
+        PreferenceGroup {
+            SwitchPreference(
+                adapter = prefs.gestureHapticFeedback.getAdapter(),
+                label = stringResource(id = R.string.gesture_haptic_feedback_label),
+                description = stringResource(id = R.string.gesture_haptic_feedback_description),
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.sleep_mode_label)) {
