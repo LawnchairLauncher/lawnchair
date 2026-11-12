@@ -86,7 +86,7 @@ internal object CalendarTemporalQueryParser {
             if (matches(value, todayWords)) return today to false
             if (matches(value, yesterdayWords)) return today.minusDays(1) to true
             if (matches(value, tomorrowWords)) return today.plusDays(1) to false
-            for (weekday in DayOfWeek.values()) {
+            for (weekday in DayOfWeek.entries) {
                 val names = listOf(locale, Locale.ENGLISH).flatMap { language ->
                     listOf(
                         weekday.getDisplayName(TextStyle.FULL, language),
