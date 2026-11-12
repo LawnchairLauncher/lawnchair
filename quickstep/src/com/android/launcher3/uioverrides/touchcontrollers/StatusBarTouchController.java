@@ -54,6 +54,8 @@ import java.lang.reflect.InvocationTargetException;
 import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.LawnchairLauncher;
 import app.lawnchair.gestures.config.GestureHandlerConfig;
+import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
+import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.CompatibilityKt;
 
 /**
@@ -130,7 +132,10 @@ public class StatusBarTouchController implements TouchController {
 
     private void vibrate() {
         // LC-Note: For pulling down on notification panel (default gesture config)
-        if (!LawnchairAppKt.getLawnchairApp(mLauncher).isVibrateOnIconAnimation()) {
+        PreferenceManager2 prefs = PreferenceManager2.getInstance(mLauncher);
+        boolean hapticEnabled = PreferenceCacheExtensionsKt.firstCached(
+                prefs.getGestureHapticFeedback(), prefs);
+        if (hapticEnabled && !LawnchairAppKt.getLawnchairApp(mLauncher).isVibrateOnIconAnimation()) {
             if (Flags.msdlFeedback()) {
                 MSDLPlayerWrapper.INSTANCE.get(mLauncher).playToken(MSDLToken.SWIPE_THRESHOLD_INDICATOR);
             } else {
