@@ -47,6 +47,7 @@ import app.lawnchair.flowerpot.Flowerpot
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.destinations.openAppInfo
+import app.lawnchair.util.DecorReattachGuard
 import app.lawnchair.util.restartLauncher
 import app.lawnchair.util.unsafeLazy
 import app.lawnchair.views.ComposeBottomSheet
@@ -75,6 +76,8 @@ class LawnchairApp : LauncherApplication() {
         QuickStepContract.sRecentsDisabled = !recentsEnabled
         Flowerpot.Manager.getInstance(this)
         registerActivityLifecycleCallbacks(activityHandler)
+        // Framework crash workaround on Android 15 and below, see DecorReattachGuard.
+        DecorReattachGuard.install(this)
         scheduleBaselineProfileInstall()
     }
 
