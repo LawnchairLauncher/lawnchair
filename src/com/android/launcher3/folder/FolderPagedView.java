@@ -314,6 +314,10 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             return icon;
         }
         ArrayList<View> views = new ArrayList<>(mFolder.getIconsInReadingOrder());
+        // The rank was resolved when the drag started and can get out of sync with the bound
+        // views when the folder contents change mid-drag, crashing on drop. Clamp it and
+        // append at the end when out of range, like Folder#onDropCompleted does.
+        rank = Utilities.boundToRange(rank, 0, views.size());
         views.add(rank, icon);
         arrangeChildren(views);
         return icon;
