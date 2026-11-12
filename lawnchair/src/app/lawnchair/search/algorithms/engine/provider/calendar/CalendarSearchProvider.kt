@@ -151,7 +151,7 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
             startDate.get(Calendar.YEAR) == currentDate.get(Calendar.YEAR)
         val sameDay = sameYear && startDate.get(Calendar.DAY_OF_YEAR) == endDate.get(Calendar.DAY_OF_YEAR)
         val dateTime = if (sameDay) {
-            formatSingleDay(context, localStartTime, allDay)
+            formatSingleDay(context, localStartTime, displayEndTime, allDay)
         } else {
             val flags = DateUtils.FORMAT_SHOW_DATE or
                 (if (allDay) 0 else DateUtils.FORMAT_SHOW_TIME) or
@@ -179,7 +179,7 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
             .joinToString(" \u2022 ")
     }
 
-    private fun formatSingleDay(context: Context, startTime: Long, allDay: Boolean): String {
+    private fun formatSingleDay(context: Context, startTime: Long, endTime: Long, allDay: Boolean): String {
         val day = when {
             DateUtils.isToday(startTime) -> context.getString(R.string.calendar_search_today)
 
@@ -201,7 +201,7 @@ object CalendarSearchProvider : SearchProvider, SearchPermission {
         val time = if (allDay) {
             context.getString(R.string.calendar_search_all_day)
         } else {
-            DateUtils.formatDateTime(context, startTime, DateUtils.FORMAT_SHOW_TIME)
+            DateUtils.formatDateRange(context, startTime, endTime, DateUtils.FORMAT_SHOW_TIME)
         }
         return context.getString(R.string.calendar_search_date_time, day, time)
     }

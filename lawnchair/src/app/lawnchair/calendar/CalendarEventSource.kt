@@ -1,13 +1,22 @@
 package app.lawnchair.calendar
 
 import android.content.Context
+import android.os.CancellationSignal
+import android.os.OperationCanceledException
 import android.provider.CalendarContract
-import kotlin.time.Duration
+import android.util.Log
+import java.time.Duration
+import java.time.format.DateTimeParseException
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 // TODO: Integrate this with Smartspace Calendar provider
@@ -38,6 +47,7 @@ object CalendarEventSource {
     ): List<CalendarEvent> = withContext(Dispatchers.IO) {
         require(windowStart <= windowEnd) { "Calendar window start must not exceed its end" }
         require(maxResults >= 0) { "Calendar max results must not be negative number" }
+        if (maxResults == 0) return@withContext emptyList()
 
         // All-day instance dates are stored in UTC, so include a margin before local filtering.
         val providerStart = if (matchWindow) windowStart - ALL_DAY_MARGIN.inWholeMilliseconds else windowStart
@@ -46,7 +56,16 @@ object CalendarEventSource {
             if (showCanceled) {
                 // Combining cancelled events with normal events into one function will make the
                 // code needlessly more complicated than it alright is :(
-                queryCanceledEvents(context, query, now, providerStart, providerEnd, includeEnded, matchWindow)
+                try {
+                    queryCanceledEvents(context, query, now, providerStart, providerEnd, includeEnded, matchWindow)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: SecurityException) {
+                    throw e
+                } catch (e: Exception) {
+                    Log.e("CalendarEventSource", "Failed to query canceled calendar events", e)
+                    emptyList()
+                }
             } else {
                 emptyList()
             }
@@ -98,48 +117,51 @@ object CalendarEventSource {
         )
 
         val coroutineContext = currentCoroutineContext()
-        return (
-            context.contentResolver.query(
-                instancesUri,
-                projection,
-                selection,
-                selectionArgs,
-                "${CalendarContract.Instances.BEGIN} ASC",
-            ) ?: error("Calendar instances query returned no cursor")
-            ).use { cursor ->
-            val eventIdIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.EVENT_ID)
-            val titleIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.TITLE)
-            val beginIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.BEGIN)
-            val endIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.END)
-            val allDayIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.ALL_DAY)
-            val locationIndex = cursor.getColumnIndex(CalendarContract.Instances.EVENT_LOCATION)
-            val colorIndex = cursor.getColumnIndex(CalendarContract.Instances.DISPLAY_COLOR)
+        return withQueryCancellation { signal ->
+            (
+                context.contentResolver.query(
+                    instancesUri,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    "${CalendarContract.Instances.BEGIN} ASC",
+                    signal,
+                ) ?: error("Calendar instances query returned no cursor")
+                ).use { cursor ->
+                val eventIdIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.EVENT_ID)
+                val titleIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.TITLE)
+                val beginIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.BEGIN)
+                val endIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.END)
+                val allDayIndex = cursor.getColumnIndexOrThrow(CalendarContract.Instances.ALL_DAY)
+                val locationIndex = cursor.getColumnIndex(CalendarContract.Instances.EVENT_LOCATION)
+                val colorIndex = cursor.getColumnIndex(CalendarContract.Instances.DISPLAY_COLOR)
 
-            buildList {
-                while (cursor.moveToNext()) {
-                    coroutineContext.ensureActive()
-                    val title = cursor.getString(titleIndex)?.trim().orEmpty()
-                    if (title.isBlank()) continue
+                buildList {
+                    while (cursor.moveToNext()) {
+                        coroutineContext.ensureActive()
+                        val title = cursor.getString(titleIndex)?.trim().orEmpty()
+                        if (title.isBlank()) continue
 
-                    val allDay = cursor.getInt(allDayIndex) != 0
-                    val startTime = cursor.getLong(beginIndex)
-                    val endTime = cursor.getLong(endIndex)
-                    val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
-                    if (!includeEnded && localEndTime <= now) continue
+                        val allDay = cursor.getInt(allDayIndex) != 0
+                        val startTime = cursor.getLong(beginIndex)
+                        val endTime = cursor.getLong(endIndex)
+                        val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
+                        if (!includeEnded && localEndTime <= now) continue
 
-                    val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
-                    add(
-                        CalendarEvent(
-                            eventId = cursor.getLong(eventIdIndex),
-                            title = title,
-                            location = location,
-                            calendarColor = colorIndex.takeIf { it >= 0 && !cursor.isNull(it) }?.let(cursor::getInt),
-                            startTime = startTime,
-                            endTime = endTime,
-                            allDay = allDay,
-                            isCanceled = false,
-                        ),
-                    )
+                        val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
+                        add(
+                            CalendarEvent(
+                                eventId = cursor.getLong(eventIdIndex),
+                                title = title,
+                                location = location,
+                                calendarColor = colorIndex.takeIf { it >= 0 && !cursor.isNull(it) }?.let(cursor::getInt),
+                                startTime = startTime,
+                                endTime = endTime,
+                                allDay = allDay,
+                                isCanceled = false,
+                            ),
+                        )
+                    }
                 }
             }
         }
@@ -161,9 +183,10 @@ object CalendarEventSource {
             "AND ${CalendarContract.Events.ORIGINAL_INSTANCE_TIME} != 0 " +
             "THEN ${CalendarContract.Events.ORIGINAL_INSTANCE_TIME} ELSE ${CalendarContract.Events.DTSTART} END"
         val windowSelection = if (matchWindow) {
-            val duration = "(COALESCE(${CalendarContract.Events.DTEND}, ${CalendarContract.Events.DTSTART}) - " +
-                "${CalendarContract.Events.DTSTART})"
-            "$effectiveStartTime + MAX($duration, 0) >= ? AND $effectiveStartTime <= ?"
+            "$effectiveStartTime <= ? AND " +
+                "(${CalendarContract.Events.DTEND} IS NULL OR " +
+                "${CalendarContract.Events.DTEND} < ${CalendarContract.Events.DTSTART} OR " +
+                "$effectiveStartTime + (${CalendarContract.Events.DTEND} - ${CalendarContract.Events.DTSTART}) >= ?)"
         } else {
             "$effectiveStartTime >= ? AND $effectiveStartTime <= ?"
         }
@@ -177,11 +200,10 @@ object CalendarEventSource {
             CalendarContract.Events.DESCRIPTION,
             CalendarContract.Events.EVENT_LOCATION,
         )
-        val selectionArgs = mutableListOf(
-            CalendarContract.Events.STATUS_CANCELED.toString(),
-            windowStart.toString(),
-            windowEnd.toString(),
-        )
+        val selectionArgs = mutableListOf(CalendarContract.Events.STATUS_CANCELED.toString())
+        if (!matchWindow) selectionArgs.add(windowStart.toString())
+        selectionArgs.add(windowEnd.toString())
+        if (matchWindow) selectionArgs.add(windowStart.toString())
         selectionArgs.addAll(searchFilter.selectionArgs)
         val projection = arrayOf(
             CalendarContract.Events._ID,
@@ -189,6 +211,7 @@ object CalendarEventSource {
             CalendarContract.Events.TITLE,
             CalendarContract.Events.DTSTART,
             CalendarContract.Events.DTEND,
+            CalendarContract.Events.DURATION,
             CalendarContract.Events.ALL_DAY,
             CalendarContract.Events.EVENT_LOCATION,
             CalendarContract.Events.DISPLAY_COLOR,
@@ -197,72 +220,89 @@ object CalendarEventSource {
         )
 
         val coroutineContext = currentCoroutineContext()
-        return (
-            context.contentResolver.query(
-                CalendarContract.Events.CONTENT_URI,
-                projection,
-                selection + searchFilter.selection,
-                selectionArgs.toTypedArray(),
-                "${CalendarContract.Events.DTSTART} ASC",
-            ) ?: error("Canceled calendar events query returned no cursor")
-            ).use { cursor ->
-            val eventIdIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events._ID)
-            val calendarIdIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.CALENDAR_ID)
-            val titleIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.TITLE)
-            val beginIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.DTSTART)
-            val endIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.DTEND)
-            val allDayIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.ALL_DAY)
-            val locationIndex = cursor.getColumnIndex(CalendarContract.Events.EVENT_LOCATION)
-            val colorIndex = cursor.getColumnIndex(CalendarContract.Events.DISPLAY_COLOR)
-            val originalStartIndex = cursor.getColumnIndex(CalendarContract.Events.ORIGINAL_INSTANCE_TIME)
-            val originalAllDayIndex = cursor.getColumnIndex(CalendarContract.Events.ORIGINAL_ALL_DAY)
+        return withQueryCancellation { signal ->
+            (
+                context.contentResolver.query(
+                    CalendarContract.Events.CONTENT_URI,
+                    projection,
+                    selection + searchFilter.selection,
+                    selectionArgs.toTypedArray(),
+                    "${CalendarContract.Events.DTSTART} ASC",
+                    signal,
+                ) ?: error("Canceled calendar events query returned no cursor")
+                ).use { cursor ->
+                val eventIdIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events._ID)
+                val calendarIdIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.CALENDAR_ID)
+                val titleIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.TITLE)
+                val beginIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.DTSTART)
+                val endIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.DTEND)
+                val durationIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.DURATION)
+                val allDayIndex = cursor.getColumnIndexOrThrow(CalendarContract.Events.ALL_DAY)
+                val locationIndex = cursor.getColumnIndex(CalendarContract.Events.EVENT_LOCATION)
+                val colorIndex = cursor.getColumnIndex(CalendarContract.Events.DISPLAY_COLOR)
+                val originalStartIndex = cursor.getColumnIndex(CalendarContract.Events.ORIGINAL_INSTANCE_TIME)
+                val originalAllDayIndex = cursor.getColumnIndex(CalendarContract.Events.ORIGINAL_ALL_DAY)
 
-            buildList {
-                while (cursor.moveToNext()) {
-                    coroutineContext.ensureActive()
-                    if (cursor.getLong(calendarIdIndex) !in visibleCalendarIds) continue
+                buildList {
+                    while (cursor.moveToNext()) {
+                        coroutineContext.ensureActive()
+                        if (cursor.getLong(calendarIdIndex) !in visibleCalendarIds) continue
 
-                    val title = cursor.getString(titleIndex)?.trim().orEmpty()
-                    if (title.isBlank()) continue
+                        val title = cursor.getString(titleIndex)?.trim().orEmpty()
+                        if (title.isBlank()) continue
+                        if (cursor.isNull(beginIndex)) {
+                            Log.w("CalendarEventSource", "Skipping canceled event with no start time")
+                            continue
+                        }
 
-                    val originalStartTime = originalStartIndex
-                        .takeIf { it >= 0 && !cursor.isNull(it) }
-                        ?.let(cursor::getLong)
-                        ?.takeIf { it != 0L }
-                    val eventStartTime = cursor.getLong(beginIndex)
-                    val startTime = originalStartTime ?: eventStartTime
-                    val allDay = if (
-                        originalStartTime != null &&
-                        originalAllDayIndex >= 0 &&
-                        !cursor.isNull(originalAllDayIndex)
-                    ) {
-                        cursor.getInt(originalAllDayIndex) != 0
-                    } else {
-                        cursor.getInt(allDayIndex) != 0
+                        val originalStartTime = originalStartIndex
+                            .takeIf { it >= 0 && !cursor.isNull(it) }
+                            ?.let(cursor::getLong)
+                            ?.takeIf { it != 0L }
+                        val eventStartTime = cursor.getLong(beginIndex)
+                        val startTime = originalStartTime ?: eventStartTime
+                        val allDay = if (
+                            originalStartTime != null &&
+                            originalAllDayIndex >= 0 &&
+                            !cursor.isNull(originalAllDayIndex)
+                        ) {
+                            cursor.getInt(originalAllDayIndex) != 0
+                        } else {
+                            cursor.getInt(allDayIndex) != 0
+                        }
+                        val duration = resolveDuration(
+                            eventStartTime,
+                            endIndex.takeUnless(cursor::isNull)?.let(cursor::getLong),
+                            durationIndex.takeUnless(cursor::isNull)?.let(cursor::getString),
+                        )
+                        val endTime = try {
+                            duration?.let { Math.addExact(startTime, it) }
+                        } catch (e: ArithmeticException) {
+                            // What??????? This will never happen, how do you overflow a long.
+                            Log.e("CalendarEventSource", "Something related to arithmetic overflowed a long!", e)
+                            null
+                        }
+                        if (endTime == null) {
+                            Log.w("CalendarEventSource", "Skipping canceled event with invalid end or duration")
+                            continue
+                        }
+                        val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
+                        if (!includeEnded && localEndTime <= now) continue
+
+                        val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
+                        add(
+                            CalendarEvent(
+                                eventId = cursor.getLong(eventIdIndex),
+                                title = title,
+                                location = location,
+                                calendarColor = colorIndex.takeIf { it >= 0 && !cursor.isNull(it) }?.let(cursor::getInt),
+                                startTime = startTime,
+                                endTime = endTime,
+                                allDay = allDay,
+                                isCanceled = true,
+                            ),
+                        )
                     }
-                    val eventEndTime = cursor.getLong(endIndex)
-                    val endTime = if (originalStartTime != null) {
-                        val duration = (eventEndTime - eventStartTime).milliseconds.coerceAtLeast(Duration.ZERO)
-                        startTime + duration.inWholeMilliseconds
-                    } else {
-                        eventEndTime
-                    }
-                    val localEndTime = if (allDay) CalendarEvent.utcMidnightToLocal(endTime) else endTime
-                    if (!includeEnded && localEndTime <= now) continue
-
-                    val location = locationIndex.takeIf { it >= 0 }?.let(cursor::getString)
-                    add(
-                        CalendarEvent(
-                            eventId = cursor.getLong(eventIdIndex),
-                            title = title,
-                            location = location,
-                            calendarColor = colorIndex.takeIf { it >= 0 && !cursor.isNull(it) }?.let(cursor::getInt),
-                            startTime = startTime,
-                            endTime = endTime,
-                            allDay = allDay,
-                            isCanceled = true,
-                        ),
-                    )
                 }
             }
         }
@@ -270,20 +310,42 @@ object CalendarEventSource {
 
     private suspend fun queryVisibleCalendarIds(context: Context): Set<Long> {
         val coroutineContext = currentCoroutineContext()
-        return (
-            context.contentResolver.query(
-                CalendarContract.Calendars.CONTENT_URI,
-                arrayOf(CalendarContract.Calendars._ID),
-                "${CalendarContract.Calendars.VISIBLE} = 1",
-                null,
-                null,
-            ) ?: error("Visible calendars query returned no cursor")
-            ).use { cursor ->
-            val idIndex = cursor.getColumnIndexOrThrow(CalendarContract.Calendars._ID)
-            buildSet {
-                while (cursor.moveToNext()) {
+        return withQueryCancellation { signal ->
+            (
+                context.contentResolver.query(
+                    CalendarContract.Calendars.CONTENT_URI,
+                    arrayOf(CalendarContract.Calendars._ID),
+                    "${CalendarContract.Calendars.VISIBLE} = 1",
+                    null,
+                    null,
+                    signal,
+                ) ?: error("Visible calendars query returned no cursor")
+                ).use { cursor ->
+                val idIndex = cursor.getColumnIndexOrThrow(CalendarContract.Calendars._ID)
+                buildSet {
+                    while (cursor.moveToNext()) {
+                        coroutineContext.ensureActive()
+                        add(cursor.getLong(idIndex))
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun <T> withQueryCancellation(block: (CancellationSignal) -> T): T = coroutineScope {
+        suspendCancellableCoroutine { continuation ->
+            val signal = CancellationSignal()
+            continuation.invokeOnCancellation { signal.cancel() }
+            launch {
+                try {
                     coroutineContext.ensureActive()
-                    add(cursor.getLong(idIndex))
+                    continuation.resume(block(signal))
+                } catch (e: OperationCanceledException) {
+                    val cancellation = CancellationException("Calendar provider query canceled")
+                    cancellation.initCause(e)
+                    continuation.cancel(cancellation)
+                } catch (e: Exception) {
+                    continuation.resumeWithException(e)
                 }
             }
         }
@@ -295,6 +357,35 @@ object CalendarEventSource {
     )
 
     private val ALL_DAY_MARGIN = 2.days
+
+    private fun resolveDuration(start: Long, end: Long?, duration: String?): Long? {
+        if (end != null && end >= start) {
+            try {
+                return Math.subtractExact(end, start)
+            } catch (e: ArithmeticException) {
+                // What??????? This will never happen, how do you overflow a long. Anyway.
+                // Try the duration field if the interval is not representable.
+                Log.e("CalendarEventSource", "Failed to subtract end time from start time for canceled event $end-$start", e)
+            }
+        }
+        if (duration == null) return null
+        return try {
+            val normalized = duration.replace(Regex("^([+-]?)P(\\d+)W$"), "$1P$2D")
+            val weeks = duration.matches(Regex("^[+-]?P\\d+W$"))
+            val parsed = Duration.parse(normalized)
+            val millis = parsed.toMillis()
+            val result = if (weeks) Math.multiplyExact(millis, 7) else millis
+            result.takeIf { it >= 0 }
+        } catch (e: DateTimeParseException) {
+            // What???????
+            Log.e("CalendarEventSource", "Failed to parse text to duration $duration", e)
+            null
+        } catch (e: ArithmeticException) {
+            // What??????? This will never happen, how do you overflow a long.
+            Log.e("CalendarEventSource", "Something related to arithmetic overflowed a long!", e)
+            null
+        }
+    }
 
     private fun textSearchFilter(
         query: String?,
