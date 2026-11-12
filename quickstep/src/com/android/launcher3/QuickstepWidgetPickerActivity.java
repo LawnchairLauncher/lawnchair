@@ -168,10 +168,27 @@ public class QuickstepWidgetPickerActivity extends
 
     @Override
     protected void registerBackDispatcher() {
-        if (Utilities.ATLEAST_T) {
+        // BackAnimationCallback extends FlingOnBackAnimationCallback, which references
+        // com.android.internal.dynamicanimation classes that are missing from the Android 13
+        // framework; instantiating it on T crashes with NoClassDefFoundError. Use it only on
+        // U+ and register a plain callback on T, mirroring
+        // QuickstepLauncher#registerBackDispatcher.
+        if (Utilities.ATLEAST_U) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                     OnBackInvokedDispatcher.PRIORITY_DEFAULT,
                     new BackAnimationCallback());
+        } else if (Utilities.ATLEAST_T) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    () -> {
+                        // Delegate to the sheet like the U+ path so that back resets an active
+                        // search before closing the picker.
+                        if (mWidgetSheet != null) {
+                            mWidgetSheet.onBackInvoked();
+                        } else {
+                            onBackPressed();
+                        }
+                    });
         }
     }
 
