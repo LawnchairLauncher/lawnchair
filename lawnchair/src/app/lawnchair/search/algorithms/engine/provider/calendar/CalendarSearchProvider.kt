@@ -1,4 +1,4 @@
-package app.lawnchair.search.algorithms.engine.provider
+package app.lawnchair.search.algorithms.engine.provider.calendar
 
 import android.Manifest
 import android.content.Context

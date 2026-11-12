@@ -1,4 +1,4 @@
-package app.lawnchair.search.algorithms.engine.provider
+package app.lawnchair.search.algorithms.engine.provider.calendar
 
 import java.text.DateFormat
 import java.text.ParsePosition

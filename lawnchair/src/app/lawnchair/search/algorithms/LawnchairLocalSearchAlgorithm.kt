@@ -22,7 +22,7 @@ import app.lawnchair.search.algorithms.engine.SectionBuilder
 import app.lawnchair.search.algorithms.engine.SettingsSectionBuilder
 import app.lawnchair.search.algorithms.engine.WebSuggestionsSectionBuilder
 import app.lawnchair.search.algorithms.engine.provider.CalculatorSearchProvider
-import app.lawnchair.search.algorithms.engine.provider.CalendarSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.calendar.CalendarSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.ContactsSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.FileSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.HistorySearchProvider
