@@ -520,6 +520,17 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val folderTapOpensFirstApp = preference(
+        key = booleanPreferencesKey(name = "folder_tap_opens_first_app"),
+        defaultValue = false,
+    )
+
+    val folderShowsFirstAppIcon = preference(
+        key = booleanPreferencesKey(name = "folder_shows_first_app_icon"),
+        defaultValue = false,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showIconLabelsOnHomeScreenFolder = preference(
         key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen_folder"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),
