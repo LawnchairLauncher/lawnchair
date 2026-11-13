@@ -78,6 +78,11 @@ data object Quickstep : PreferenceRootRoute, PreferenceDeepLink {
 }
 
 @Serializable
+data object Foldable : PreferenceRootRoute, PreferenceDeepLink {
+    override val deepLink = "$URI/foldable"
+}
+
+@Serializable
 data object BackupAndRestore : PreferenceRootRoute, PreferenceDeepLink {
     override val deepLink = "$URI/backup-restore"
 }

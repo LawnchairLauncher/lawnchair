@@ -132,6 +132,20 @@ class GridSizeMigrationLogic {
                 // Migrate workspace.
                 migrateWorkspace(srcReader, destReader, target, targetSize, idsInUse)
 
+                // LC-Note: the inner item set of "Independent" (FoldItemSets) is migrated the
+                // same way, within its own pages and dock.
+                val innerSrcReader = DbReader(t.db, TMP_TABLE, context, true)
+                val innerDestReader = DbReader(t.db, TABLE_NAME, context, true)
+                migrateHotseat(
+                    srcDeviceState.numHotseat,
+                    destDeviceState.numHotseat,
+                    innerSrcReader,
+                    innerDestReader,
+                    target,
+                    idsInUse,
+                )
+                migrateWorkspace(innerSrcReader, innerDestReader, target, targetSize, idsInUse)
+
                 dropTable(t.db, TMP_TABLE)
                 t.commit()
 

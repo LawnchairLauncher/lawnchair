@@ -92,6 +92,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import app.lawnchair.fold.FoldDrawerLayouts;
+
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
@@ -221,7 +223,10 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         icon.setOnClickListener(activity.getItemOnClickListener());
         icon.mInfo = folderInfo;
         icon.mActivity = activity;
-        icon.mDotRenderer = grid.mDotRendererWorkSpace;
+        // LC-Note: folders in the foldable "zoom" drawer get dots sized for its larger icons
+        icon.mDotRenderer = folderInfo.container == ItemInfo.NO_ID
+                && FoldDrawerLayouts.isZoomDrawer(grid)
+                ? grid.mDotRendererAllApps : grid.mDotRendererWorkSpace;
 
         icon.setContentDescription(icon.getAccessiblityTitle(folderInfo.title));
         icon.updateDotInfo();

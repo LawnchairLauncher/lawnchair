@@ -66,6 +66,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import app.lawnchair.fold.FoldItemSets;
+
 /**
  * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
  * result of restoring from a larger device or device density change.
@@ -173,6 +175,12 @@ public class GridSizeMigrationDBController {
             Point targetSize = new Point(destDeviceState.getColumns(), destDeviceState.getRows());
             migrate(target, srcReader, destReader, srcDeviceState.getNumHotseat(),
                     destDeviceState.getNumHotseat(), targetSize, srcDeviceState, destDeviceState);
+            // LC-Note: the inner item set of "Independent" (FoldItemSets) is migrated the same
+            // way, within its own pages and dock.
+            migrate(target, new DbReader(t.getDb(), TMP_TABLE, context, true),
+                    new DbReader(t.getDb(), TABLE_NAME, context, true),
+                    srcDeviceState.getNumHotseat(), destDeviceState.getNumHotseat(), targetSize,
+                    srcDeviceState, destDeviceState);
             dropTable(t.getDb(), TMP_TABLE);
             t.commit();
             if (isOneGridMigration(srcDeviceState, destDeviceState)) {
@@ -497,14 +505,27 @@ public class GridSizeMigrationDBController {
         final String mTableName;
         final Context mContext;
         int mLastScreenId = -1;
+        // LC-Note: whether this reader reads the inner item set (see FoldItemSets). Its entries
+        // are numbered from 0 within the set, see DbEntry.innerItemSet.
+        final boolean mInnerItemSet;
 
         Map<Integer, List<DbEntry>> mWorkspaceEntriesByScreenId =
                 new ArrayMap<>();
 
         public DbReader(SQLiteDatabase db, String tableName, Context context) {
+            this(db, tableName, context, false);
+        }
+
+        /**
+         * LC-Note: reads one item set of the "Independent" home layout: the inner set if
+         * {@code innerItemSet}, otherwise the cover set (every item without "Independent").
+         */
+        public DbReader(SQLiteDatabase db, String tableName, Context context,
+                boolean innerItemSet) {
             mDb = db;
             mTableName = tableName;
             mContext = context;
+            mInnerItemSet = innerItemSet;
         }
 
         protected List<DbEntry> loadHotseatEntries() {
@@ -516,7 +537,9 @@ public class GridSizeMigrationDBController {
                             LauncherSettings.Favorites.INTENT,               // 2
                             LauncherSettings.Favorites.SCREEN},              // 3
                     LauncherSettings.Favorites.CONTAINER + " = "
-                            + LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+                            + LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                            // LC-Note: this reader's item set.
+                            + " AND " + FoldItemSets.whereItemSet(mInnerItemSet));
 
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
@@ -528,7 +551,9 @@ public class GridSizeMigrationDBController {
                 DbEntry entry = new DbEntry();
                 entry.id = c.getInt(indexId);
                 entry.itemType = c.getInt(indexItemType);
-                entry.screenId = c.getInt(indexScreen);
+                // LC-Note: rank within the item set.
+                entry.screenId = FoldItemSets.toPresenterScreenId(c.getInt(indexScreen));
+                entry.innerItemSet = mInnerItemSet;
 
                 try {
                     // calculate weight
@@ -585,7 +610,9 @@ public class GridSizeMigrationDBController {
                             LauncherSettings.Favorites.APPWIDGET_PROVIDER,   // 8
                             LauncherSettings.Favorites.APPWIDGET_ID},        // 9
                     LauncherSettings.Favorites.CONTAINER + " = "
-                            + LauncherSettings.Favorites.CONTAINER_DESKTOP);
+                            + LauncherSettings.Favorites.CONTAINER_DESKTOP
+                            // LC-Note: this reader's item set.
+                            + " AND " + FoldItemSets.whereItemSet(mInnerItemSet));
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
             final int indexScreen = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
@@ -605,7 +632,9 @@ public class GridSizeMigrationDBController {
                 DbEntry entry = new DbEntry();
                 entry.id = c.getInt(indexId);
                 entry.itemType = c.getInt(indexItemType);
-                entry.screenId = c.getInt(indexScreen);
+                // LC-Note: page within the item set.
+                entry.screenId = FoldItemSets.toPresenterScreenId(c.getInt(indexScreen));
+                entry.innerItemSet = mInnerItemSet;
                 mLastScreenId = Math.max(mLastScreenId, entry.screenId);
                 entry.cellX = c.getInt(indexCellX);
                 entry.cellY = c.getInt(indexCellY);

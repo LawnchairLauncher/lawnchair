@@ -126,7 +126,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private final float mDotRadius;
     private final float mGapWidth;
     private final float mCircleGap;
-    private final boolean mIsRtl;
+    private boolean mIsRtl;
 
     private int mNumPages;
     private int mActivePage;
@@ -454,6 +454,15 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         }
 
         requestLayout();
+    }
+
+    @Override
+    public void setIsRtl(boolean isRtl) {
+        if (mIsRtl != isRtl) {
+            mIsRtl = isRtl;
+            invalidateOutline();
+            invalidate();
+        }
     }
 
     @Override

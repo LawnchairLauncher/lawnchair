@@ -37,8 +37,10 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.components.FoldMirrorNote
 import app.lawnchair.ui.preferences.components.GridOverridesPreview
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
+import app.lawnchair.ui.preferences.components.isFoldHomeMirrored
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
@@ -173,17 +175,25 @@ fun HomeScreenGridPreferences(
                                 PreferenceGroup(
                                     heading = stringResource(id = R.string.when_unfolded_label),
                                 ) {
+                                    val homeMirrored = isFoldHomeMirrored()
+                                    if (homeMirrored) {
+                                        FoldMirrorNote()
+                                    }
                                     SliderPreference(
                                         label = stringResource(id = R.string.dock_icons),
                                         adapter = hotseatColumnsUnfolded.asPreferenceAdapter(),
                                         step = 1,
                                         valueRange = hotseatColumns.intValue..maxGridSize,
+                                        enabled = !homeMirrored,
                                     )
-                                    FakeExpandedGridPreference(
-                                        columns = columns.intValue * 2,
-                                        rows = rows.intValue,
-                                        description = stringResource(id = R.string.unfolded_grid_description),
-                                    )
+                                    // The two-panel preview doesn't apply with "Same as cover".
+                                    if (!homeMirrored) {
+                                        FakeExpandedGridPreference(
+                                            columns = columns.intValue * 2,
+                                            rows = rows.intValue,
+                                            description = stringResource(id = R.string.unfolded_grid_description),
+                                        )
+                                    }
                                 }
                             }
                         } else {

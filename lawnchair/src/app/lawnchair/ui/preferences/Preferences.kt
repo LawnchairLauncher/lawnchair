@@ -80,9 +80,15 @@ fun Preferences(
     interactor: PreferenceInteractor = viewModel<PreferenceViewModel>(),
 ) {
     val navController = rememberNavController()
-    val isExpandedScreen = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
+    // Two panes from the medium width (600dp), so a foldable's large screen gets them too; phones in
+    // landscape are excluded by their compact height.
+    val widthSizeClass = windowSizeClass.widthSizeClass
+    val isExpandedScreen = widthSizeClass in setOf(WindowWidthSizeClass.Expanded, WindowWidthSizeClass.Medium) &&
         windowSizeClass.heightSizeClass in
         setOf(WindowHeightSizeClass.Expanded, WindowHeightSizeClass.Medium)
+    // Below the expanded width the list keeps half the window: on a book-style foldable each pane
+    // is one half of the large screen.
+    val halfSplit = widthSizeClass == WindowWidthSizeClass.Medium
 
     val defaultStartingRoute = if (isExpandedScreen) General else Root
     val startingRoute = startDestination ?: defaultStartingRoute
@@ -108,6 +114,7 @@ fun Preferences(
                         currentTopRoute = it
                     },
                     useTwoPane = useTwoPane,
+                    halfSplit = halfSplit,
                     displayFeatures = displayFeatures,
                     isExpandedScreen = isExpandedScreen,
                     navController = navController,
@@ -128,6 +135,7 @@ private fun PreferenceScreen(
     currentTopRoute: PreferenceRootRoute,
     onRouteChange: (PreferenceRootRoute) -> Unit,
     useTwoPane: Boolean,
+    halfSplit: Boolean,
     displayFeatures: List<DisplayFeature>,
     isExpandedScreen: Boolean,
     navController: NavHostController,
@@ -152,7 +160,11 @@ private fun PreferenceScreen(
                 second = {
                     moveableNavHost()
                 },
-                strategy = HorizontalTwoPaneStrategy(splitOffset = 420.dp),
+                strategy = if (halfSplit) {
+                    HorizontalTwoPaneStrategy(splitFraction = 0.5f)
+                } else {
+                    HorizontalTwoPaneStrategy(splitOffset = 420.dp)
+                },
                 displayFeatures = displayFeatures,
             )
         }

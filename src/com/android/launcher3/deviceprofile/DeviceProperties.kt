@@ -16,6 +16,7 @@
 
 package com.android.launcher3.deviceprofile
 
+import app.lawnchair.fold.FoldScreen
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.WindowBounds
 import kotlin.math.max
@@ -39,6 +40,13 @@ data class DeviceProperties(
     val isMultiWindowMode: Boolean,
     val isGestureMode: Boolean,
 ) {
+    // LC-Note: the one place that says which screen of a foldable this is (see FoldScreen).
+    val foldScreen: FoldScreen = when {
+        !isMultiDisplay -> FoldScreen.NONE
+        isTablet -> FoldScreen.LARGE
+        else -> FoldScreen.COVER
+    }
+
     companion object Factory {
         // b/419264328 adding here all the improvements/cleanup for this class
         fun createDeviceProperties(
@@ -48,6 +56,8 @@ data class DeviceProperties(
             isMultiDisplay: Boolean,
             isMultiWindowMode: Boolean,
             isGestureMode: Boolean,
+            // LC-Note: false when a foldable shows one page on its large screen ("Same as cover").
+            allowTwoPanels: Boolean = true,
         ): DeviceProperties {
             val isTablet = info.isTablet(windowBounds)
             val windowX = windowBounds.bounds.left
@@ -70,7 +80,7 @@ data class DeviceProperties(
                 isPhone = !isTablet,
                 transposeLayoutWithOrientation = transposeLayoutWithOrientation,
                 isMultiDisplay = isMultiDisplay,
-                isTwoPanels = isTablet && isMultiDisplay,
+                isTwoPanels = isTablet && isMultiDisplay && allowTwoPanels,
                 isLandscape = windowBounds.isLandscape,
                 isMultiWindowMode = isMultiWindowMode,
                 isGestureMode = isGestureMode,

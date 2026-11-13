@@ -62,6 +62,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import app.lawnchair.fold.FoldItemSets;
+
 /**
  * Class for handling model updates.
  */
@@ -317,7 +319,9 @@ public class ModelWriter {
             return;
         }
         String serialized = screenOrder.toConcatString();
-        LauncherPrefs.get(mContext).putSync(LauncherPrefs.WORKSPACE_SCREEN_ORDER.to(serialized));
+        // LC-Note: each item set of the "Independent" home layout has its own page order.
+        LauncherPrefs.get(mContext).putSync(
+                FoldItemSets.screenOrderPref(mCellPosMapper.isInnerItemSet()).to(serialized));
     }
 
     /**

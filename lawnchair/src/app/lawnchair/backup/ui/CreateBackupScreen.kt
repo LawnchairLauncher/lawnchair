@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,10 +63,15 @@ fun CreateBackupScreen(
     val screenshot by viewModel.screenshot.collectAsStateWithLifecycle()
     val screenshotDone by viewModel.screenshotDone.collectAsStateWithLifecycle()
 
-    val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     val scrollState = rememberScrollState()
 
     val context = LocalContext.current
+    // The preview of the screen this is shown on, again after a fold or an unfold
+    LaunchedEffect(configuration.screenWidthDp, configuration.screenHeightDp, configuration.densityDpi) {
+        viewModel.captureScreenshotFor(context, Configuration(configuration))
+    }
     val hasLiveWallpaper = remember { WallpaperManager.getInstance(context).wallpaperInfo != null }
     val allFilesAccessState by viewModel.allFilesAccessState.collectAsStateWithLifecycle()
     val wallpaperAccessState by viewModel.wallpaperAccessState.collectAsStateWithLifecycle()
@@ -126,12 +132,19 @@ fun CreateBackupScreen(
             WithWallpaper(
                 displayWallpaperButton = false,
             ) { wallpaper ->
+                // The box takes the captured preview's shape, so it is shown whole
+                val previewRatio = if (screenshotDone && screenshot.height > 1) {
+                    screenshot.width.toFloat() / screenshot.height
+                } else {
+                    null
+                }
                 DummyLauncherBox(
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .weight(1f)
                         .align(Alignment.CenterHorizontally)
                         .clip(MaterialTheme.shapes.large),
+                    aspectRatio = previewRatio,
                 ) {
                     if (contents.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER)) {
                         WallpaperPreview(
@@ -144,7 +157,7 @@ fun CreateBackupScreen(
                             bitmap = screenshot.asImageBitmap(),
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.FillHeight,
+                            contentScale = ContentScale.Fit,
                         )
                     }
                 }
