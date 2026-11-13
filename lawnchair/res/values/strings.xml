@@ -884,6 +884,7 @@
 
     <string name="app_label">App</string>
     <string name="website_label">Website</string>
+    <string name="search_provider_open_private_tab">Open in private tab</string>
     <string name="qsb_search_provider_app_required">App required</string>
 
     <!-- Dock search bar a11y -->
