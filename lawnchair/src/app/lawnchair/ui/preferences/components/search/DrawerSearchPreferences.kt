@@ -82,6 +82,10 @@ fun DrawerSearchPreference(
                 )
             }
             when (searchAlgorithm) {
+                LawnchairSearchAlgorithm.APP_SEARCH -> {
+                    CalendarSearchSetting(prefs)
+                }
+
                 LawnchairSearchAlgorithm.LOCAL_SEARCH -> {
                     LocalSearchSettings(
                         prefs = prefs,
@@ -147,6 +151,24 @@ private fun SearchProvider(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
+private fun CalendarSearchSetting(prefs: PreferenceManager) {
+    val navController = LocalNavController.current
+    val calendarAdapter = prefs.searchResultCalendar.getAdapter()
+    val calendarEnabled = rememberPermissionState(android.Manifest.permission.READ_CALENDAR).status.isGranted
+    TwoTargetSwitchPreference(
+        checked = calendarEnabled && calendarAdapter.state.value,
+        onCheckedChange = calendarAdapter::onChange,
+        switchEnabled = calendarEnabled,
+        label = stringResource(R.string.search_pref_result_calendar_title),
+        description = stringResource(R.string.search_pref_result_calendar_description),
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.CALENDAR))
+        },
+    )
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
 private fun LocalSearchSettings(
     prefs: PreferenceManager,
     prefs2: PreferenceManager2,
@@ -195,6 +217,7 @@ private fun LocalSearchSettings(
             navController.navigate(SearchProviderPreference(SearchProviderId.FILES))
         },
     )
+    CalendarSearchSetting(prefs)
     TwoTargetSwitchPreference(
         adapter = prefs.searchResultSettingsEntry.getAdapter(),
         label = stringResource(id = R.string.search_pref_result_settings_title),

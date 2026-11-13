@@ -278,6 +278,7 @@ data class SearchTargetCompat(
             RESULT_TYPE_CALCULATOR,
             RESULT_TYPE_EMPTY_RESULT,
             RESULT_TYPE_SEARCH_SETTINGS,
+            RESULT_TYPE_CALENDAR,
         ],
     )
     @Retention(AnnotationRetention.SOURCE)
@@ -297,6 +298,7 @@ data class SearchTargetCompat(
         const val RESULT_TYPE_CALCULATOR = 1 shl 10
         const val RESULT_TYPE_EMPTY_RESULT = 1 shl 11
         const val RESULT_TYPE_SEARCH_SETTINGS = 1 shl 12
+        const val RESULT_TYPE_CALENDAR = 1 shl 13
 
         fun wrap(target: SearchTarget): SearchTargetCompat = SearchTargetCompat(target)
     }
