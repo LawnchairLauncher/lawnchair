@@ -28,6 +28,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.lawnchair.animation.FolderAnimationSpeed
 import app.lawnchair.data.Converters
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -178,6 +179,13 @@ class PreferenceManager2 @Inject constructor(
         onSet = {
             reloadHelper.reloadIcons()
         },
+    )
+
+    val folderAnimationSpeed = preference(
+        key = stringPreferencesKey(name = "folder_animation_speed"),
+        defaultValue = FolderAnimationSpeed.NORMAL,
+        parse = { FolderAnimationSpeed.fromString(it) ?: FolderAnimationSpeed.NORMAL },
+        save = { it.toString() },
     )
 
     val customIconShape = preference(
