@@ -20,6 +20,7 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -246,13 +247,19 @@ fun HomeScreenPreferences(
                 label = stringResource(id = R.string.show_labels),
             )
             ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
-                SliderPreference(
-                    label = stringResource(id = R.string.label_size),
-                    adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
-                    step = 0.1f,
-                    valueRange = 0.5F..1.5F,
-                    showAsPercentage = true,
-                )
+                Column {
+                    SliderPreference(
+                        label = stringResource(id = R.string.label_size),
+                        adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
+                        step = 0.1f,
+                        valueRange = 0.5F..1.5F,
+                        showAsPercentage = true,
+                    )
+                    SwitchPreference(
+                        adapter = prefs2.showFolderLabelsOnHomeScreen.getAdapter(),
+                        label = stringResource(id = R.string.show_folder_labels),
+                    )
+                }
             }
         }
         val overrideRepo = IconOverrideRepository.INSTANCE.get(LocalContext.current)
