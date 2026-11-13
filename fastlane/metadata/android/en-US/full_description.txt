@@ -1,1 +1,21 @@
-<p><i>Lawnchair.</i> Get it? It's a bad pun, we know. Based on Launcher3 from AOSP, Lawnchair has all the features of the Pixel Launcher (including the Google Feed), plus customizability. Best of all? No root required.</p><p><i>Lawnchair</i> is a free, open-source home app for Android. Taking Launcher3—Android’s default home app—as a starting point, it ports Pixel Launcher features and introduces rich customization options.</p><p><b>NOTE: These are betas of the upcoming version for the next version of <i>Lawnchair</i>. Use at your own risk!</b></p><p>Icon size, label, rows, and columns are all adjustable. <i>Lawnchair</i> also supports icon packs, and the Pill is customizable as well. These aren't the only features, and more are added regularly. An incomplete feature list includes:</p><ul><li><b>Material You Theming:</b> Adapts to your wallpaper and system theme.</li><li><b>At a Glance Widget:</b> Displays information at a glance with support for Smartspacer.</li><li><b>QuickSwitch Support:</b> Integrates with Android Recents on Android 10 and newer. (requires root)</li><li><b>Global Search:</b> Allows quick access to apps, contacts, and web results from the home screen.</li><li><b>Customization Options:</b> Provides options to tweak icons, fonts, and colors to your liking.</li></ul>
+<b>Lawnchair</b> is a free, open source home screen replacement based on <i>Launcher3</i> from the Android open source project. The app aims to provide an experience similar to that of the Pixel Launcher, while offering more features.
+
+<b>Key highlights:</b>
+* Material You support (with dark theme and color customizations)
+* At a Glance support, alongside Smartspacer app support
+* Rich grid and icon customizations
+* Local, on-device search support
+* Optional integration with Android Recents¹
+
+Lawnchair is still in beta, so not all features and bugs fixes have been fixed yet. We plan on releasing a stable release when Lawnchair meets all features in Lawnchair Legacy, alongside our quality standards.
+
+<b>Get help and support</b>
+Visit https://lawnchair.app to view more info, and see our discussion channels for help and support.
+
+<b>Notes<b>
+1. Requires QuickSwitch, found at t.me/QuickstepSwitcherReleases
+
+<b>Permission explanations</b>
+Lawnchair uses the AccessibilityService permission for optional support of making certain system functions more accessible, such as with desktop gestures, like turning the screen off. Lawnchair will automatically prompt you to enable this if it is necessary for your configuration; for many cases it is not! No data is collected from the AccessibilityService; it is merely used to invoke system actions.
+
+Lawnchair uses the Device Administrator permission to lock the screen when a selected gesture is detected. This is optional and disabled by default.

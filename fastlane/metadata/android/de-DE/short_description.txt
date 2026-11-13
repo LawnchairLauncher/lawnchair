@@ -1,1 +1,0 @@
-Startbildschirm basierend auf Launcher3 des AOSP

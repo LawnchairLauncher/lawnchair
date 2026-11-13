@@ -1,1 +1,0 @@
-Tela inicial baseada no Launcher3 da AOSP

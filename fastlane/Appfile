@@ -1,0 +1,2 @@
+json_key_data_raw(ENV["PLAY_STORE_JSON_KEY"])
+package_name("app.lawnchair.play")

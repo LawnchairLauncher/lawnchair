@@ -1,1 +1,0 @@
-Layar beranda berbasis Launcher3 dari AOSP

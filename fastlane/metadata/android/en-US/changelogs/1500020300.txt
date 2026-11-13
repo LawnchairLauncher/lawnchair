@@ -1,0 +1,8 @@
+Lawnchair 15 Beta 3 is here.
+
+You can now import Nova Launcher backups! Specifically, it imports:
+- Home screen and dock grid layout
+- Widgets and folders
+- Selected icon pack
+
+View our full changelog in our GitHub.
