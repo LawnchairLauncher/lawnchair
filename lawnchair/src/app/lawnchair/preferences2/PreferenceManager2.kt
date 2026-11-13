@@ -28,6 +28,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.data.Converters
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -146,6 +147,7 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = HotseatMode.fromString(context.getString(R.string.config_default_hotseat_mode)),
         parse = { HotseatMode.fromString(it) },
         save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
     )
 
     val iconShape = preference(
@@ -231,7 +233,11 @@ class PreferenceManager2 @Inject constructor(
         key = stringPreferencesKey(name = "hotseat_bg_color"),
         parse = ColorOption::fromString,
         save = ColorOption::toString,
-        onSet = { reloadHelper.reloadGrid() },
+        onSet = {
+            withFreshCache {
+                LawnchairLauncher.instance?.hotseat?.refreshBackground()
+            }
+        },
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_hotseat_bg_color)),
     )
 
@@ -239,7 +245,11 @@ class PreferenceManager2 @Inject constructor(
         key = floatPreferencesKey(name = "hotseat_bg_corner_radius"),
         defaultValue = context.resources.getDimension(R.dimen.bg_round_rect_radius) /
             context.resources.displayMetrics.density, // This should hopefully match corner of all devices
-        onSet = { reloadHelper.recreate() },
+        onSet = {
+            withFreshCache {
+                LawnchairLauncher.instance?.hotseat?.refreshBackground()
+            }
+        },
     )
 
     val appDrawerBackgroundColor = preference(

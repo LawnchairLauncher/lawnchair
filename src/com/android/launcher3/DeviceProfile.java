@@ -342,6 +342,7 @@ public class DeviceProfile {
         mAllAppsProfile = new AllAppsProfile(new Point(0, 0), 0, 0, 0f, 0, 0, 0);
         mTextFactors = new TextFactors(0,0,0);
         preferenceManager2 = null;
+        preferenceManager = null;
     }
 
     private final TextFactors mTextFactors;
@@ -351,6 +352,7 @@ public class DeviceProfile {
     private float widgetPaddingFactor;
     private float drawerPaddingTopFactor;
     private PreferenceManager2 preferenceManager2 = null;
+    private PreferenceManager preferenceManager = null;
 
     /** TODO: Once we fully migrate to staged split, remove "isMultiWindowMode" */
     DeviceProfile(Context context, InvariantDeviceProfile inv, Info info,
@@ -363,6 +365,11 @@ public class DeviceProfile {
         mTextFactors = DeviceProfileOverrides.INSTANCE.get(context).getTextFactors();
 
         preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
+        try {
+            preferenceManager = PreferenceManager.getInstance(context);
+        } catch (Exception e) {
+            preferenceManager = null;
+        }
         allAppsCellHeightMultiplier = PreferenceCacheExtensionsKt
                 .firstCached(preferenceManager2.getDrawerCellHeightFactor());
         // Lawnchair: clamp the user padding factors to their slider ranges so a restored or
@@ -940,6 +947,11 @@ public class DeviceProfile {
         if (!isHotseatEnabled) {
             hotseatBarSizePx = 0;
         }
+    }
+
+    /** Returns any top spacing reserved for the hotseat. */
+    public int getHotseatTopSpace() {
+        return 0;
     }
 
     /**
@@ -1955,7 +1967,7 @@ public class DeviceProfile {
             int iconExtraSpacePx = iconSizePx - getIconVisibleSizePx(iconSizePx);
             int sideSpacing = (mDeviceProperties.getAvailableWidthPx() - (hotseatQsbWidth + iconExtraSpacePx)) / 2;
             hotseatBarPadding.set(sideSpacing,
-                    0,
+                    getHotseatTopSpace(),
                     sideSpacing,
                     getHotseatBarBottomPadding());
         } else {
@@ -1969,7 +1981,7 @@ public class DeviceProfile {
             hotseatBarPadding.set(
                     hotseatAdjustment + workspacePadding.left + cellLayoutPaddingPx.left
                             + mInsets.left,
-                    0,
+                    getHotseatTopSpace(),
                     hotseatAdjustment + workspacePadding.right + cellLayoutPaddingPx.right
                             + mInsets.right,
                     getHotseatBarBottomPadding());
@@ -2039,7 +2051,7 @@ public class DeviceProfile {
             return getHotseatBarBottomPadding()
                     - ((getHotseatProfile().getQsbHeight() - hotseatCellHeightPx) / 2);
         } else if (isQsbOnTop() || (mDeviceProperties.isLandscape() && isQsbInline)) { // LC-Note: isQsbOnTop
-            return hotseatBarSizePx - getHotseatProfile().getQsbHeight()
+            return hotseatBarSizePx - getHotseatTopSpace() - getHotseatProfile().getQsbHeight()
                     + getHotseatProfile().getQsbShadowHeight();
         } else {
             return hotseatBarBottomSpacePx - getHotseatProfile().getQsbShadowHeight();
@@ -2053,7 +2065,7 @@ public class DeviceProfile {
         if (isQsbOnTop() || isQsbInline) { // LC-Note: isQsbOnTop
             return hotseatBarBottomSpacePx - (Math.abs(hotseatCellHeightPx - iconSizePx) / 2);
         } else {
-            return hotseatBarSizePx - hotseatCellHeightPx * numHotseatRows;
+            return hotseatBarSizePx - getHotseatTopSpace() - hotseatCellHeightPx * numHotseatRows;
         }
     }
 
@@ -2064,12 +2076,13 @@ public class DeviceProfile {
     public int getBubbleBarVerticalCenterForHome() {
         if (shouldAlignBubbleBarWithHotseat()) {
             return hotseatBarSizePx
+                    - getHotseatTopSpace()
                     - (isQsbInline ? 0 : getHotseatProfile().getQsbVisualHeight())
                     - hotseatQsbSpace
                     - (hotseatCellHeightPx / 2)
                     + ((hotseatCellHeightPx - iconSizePx) / 2);
         } else {
-            return hotseatBarSizePx - (getHotseatProfile().getQsbVisualHeight() / 2);
+            return hotseatBarSizePx - getHotseatTopSpace() - (getHotseatProfile().getQsbVisualHeight() / 2);
         }
     }
 

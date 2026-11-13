@@ -4,11 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
+import com.android.launcher3.BubbleTextView
 import com.android.launcher3.CellLayout
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.PagedView
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.Workspace
 import com.android.launcher3.pageindicators.PageIndicatorDots
 
@@ -110,7 +113,84 @@ class HotseatPagedView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Finds the BubbleTextView at the specified coordinates within the paged view.
+     */
+    fun findIconAtPosition(x: Float, y: Float): BubbleTextView? {
+        val scrollAdjustedX = x + scrollX
+        val scrollAdjustedY = y + scrollY
+        for (i in childCount - 1 downTo 0) {
+            val page = getPageAt(i) ?: continue
+            val localX = scrollAdjustedX - page.left
+            val localY = scrollAdjustedY - page.top
+            if (!Utilities.pointInView(page, localX, localY, 0f)) {
+                continue
+            }
+            val container = page.shortcutsAndWidgets ?: continue
+            val containerX = localX - container.left
+            val containerY = localY - container.top
+            for (j in container.childCount - 1 downTo 0) {
+                val child = container.getChildAt(j)
+                if (child !is BubbleTextView || child.visibility != View.VISIBLE) {
+                    continue
+                }
+                if (Utilities.pointInView(child, containerX - child.left, containerY - child.top, 0f)) {
+                    return child
+                }
+            }
+        }
+        return null
+    }
+
+    /**
+     * Returns true if the touch coordinates fall on a dock icon with a configured swipe gesture.
+     */
+    fun isTouchOnIconWithSwipeGesture(x: Float, y: Float, vertical: Boolean): Boolean {
+        val touchedIcon = findIconAtPosition(x, y) ?: return false
+        return if (vertical) {
+            touchedIcon.hasConfiguredVerticalIconSwipeGesture()
+        } else {
+            touchedIcon.hasConfiguredHorizontalIconSwipeGesture()
+        }
+    }
+
+    private var disallowPagedViewInterceptForIconSwipe = false
+
+    // Lawnchair: Icon swipe gesture feature
+    private fun shouldSkipPagedViewInterceptionForIconSwipe(ev: MotionEvent): Boolean {
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                disallowPagedViewInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(
+                    ev.x,
+                    ev.y,
+                    vertical = false,
+                )
+                if (disallowPagedViewInterceptForIconSwipe) {
+                    resetTouchState()
+                    return true
+                }
+                return false
+            }
+
+            MotionEvent.ACTION_MOVE -> return disallowPagedViewInterceptForIconSwipe
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                val shouldSkip = disallowPagedViewInterceptForIconSwipe
+                disallowPagedViewInterceptForIconSwipe = false
+                if (shouldSkip) {
+                    resetTouchState()
+                }
+                return shouldSkip
+            }
+
+            else -> return false
+        }
+    }
+
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        if (shouldSkipPagedViewInterceptionForIconSwipe(ev)) {
+            return false
+        }
         if (!isPagingEnabled) return false
         return super.onInterceptTouchEvent(ev)
     }

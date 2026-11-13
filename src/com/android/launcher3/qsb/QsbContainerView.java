@@ -101,19 +101,37 @@ public class QsbContainerView extends FrameLayout {
         }
 
         AppWidgetProviderInfo defaultWidgetForSearchPackage = null;
+        AppWidgetProviderInfo fallbackSearchBoxWidget = null;
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        for (AppWidgetProviderInfo info :
-                appWidgetManager.getInstalledProvidersForPackage(providerPkg, null)) {
-            if (info.provider.getPackageName().equals(providerPkg) && info.configure == null) {
+        var providers = appWidgetManager.getInstalledProvidersForPackage(providerPkg, android.os.Process.myUserHandle());
+        if (providers == null || providers.isEmpty()) {
+            providers = appWidgetManager.getInstalledProvidersForPackage(providerPkg, null);
+        }
+        if (providers != null) {
+            for (AppWidgetProviderInfo info : providers) {
+                if (!info.provider.getPackageName().equals(providerPkg)) {
+                    continue;
+                }
+                String className = info.provider.getClassName();
+                // Skip Glance-based PremiumSearchWidgetProvider which renders empty on 3rd-party launchers
+                if (className != null && className.contains("PremiumSearchWidgetProvider")) {
+                    continue;
+                }
+                // Directly prefer standard SearchWidgetProvider for Google App
+                if ("com.google.android.googlequicksearchbox.SearchWidgetProvider".equals(className)) {
+                    return info;
+                }
                 if ((info.widgetCategory
                         & AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX) != 0) {
-                    return info;
-                } else if (defaultWidgetForSearchPackage == null) {
+                    if (fallbackSearchBoxWidget == null) {
+                        fallbackSearchBoxWidget = info;
+                    }
+                } else if (info.configure == null && defaultWidgetForSearchPackage == null) {
                     defaultWidgetForSearchPackage = info;
                 }
             }
         }
-        return defaultWidgetForSearchPackage;
+        return fallbackSearchBoxWidget != null ? fallbackSearchBoxWidget : defaultWidgetForSearchPackage;
     }
 
     /**
@@ -153,8 +171,9 @@ public class QsbContainerView extends FrameLayout {
         super.setPadding(0, 0, 0, 0);
     }
 
+    /** Sets view padding without the zero-padding constraint enforced by {@link #setPadding}. */
     protected void setPaddingUnchecked(int left, int top, int right, int bottom) {
-        super.setPadding(0, 0, 0, 0);
+        super.setPadding(left, top, right, bottom);
     }
 
     /**
@@ -288,7 +307,8 @@ public class QsbContainerView extends FrameLayout {
             super.onDestroy();
         }
 
-        private void rebindFragment() {
+        /** Re-creates the embedded QSB view inside the wrapper. */
+        protected void rebindFragment() {
             // Exit if the embedded qsb is disabled
             if (!isQsbEnabled()) {
                 return;
