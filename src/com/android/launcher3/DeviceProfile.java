@@ -340,7 +340,7 @@ public class DeviceProfile {
         mDotRendererWorkSpace = null;
         mDotRendererAllApps = null;
         mAllAppsProfile = new AllAppsProfile(new Point(0, 0), 0, 0, 0f, 0, 0, 0);
-        mTextFactors = new TextFactors(0,0,0);
+        mTextFactors = new TextFactors(0,0,0,0);
         preferenceManager2 = null;
     }
 
@@ -1613,7 +1613,8 @@ public class DeviceProfile {
             folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
         }
 
-        folderLabelTextSizePx *= mTextFactors.getIconFolderTextSizeFactor();
+        // The editable folder title stays visible when app icon labels are hidden.
+        folderLabelTextSizePx *= mTextFactors.getFolderTitleTextSizeFactor();
         folderChildTextSizePx *= mTextFactors.getIconFolderTextSizeFactor();
     }
 
