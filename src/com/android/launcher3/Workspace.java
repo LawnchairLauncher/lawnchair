@@ -151,6 +151,7 @@ import app.lawnchair.gestures.PanToMoveController;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.folder.FolderFirstApp;
 import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -1247,20 +1248,39 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     // Lawnchair: Icon swipe gesture feature
     public boolean isTouchOnIconWithSwipeGesture(float x, float y, boolean vertical) {
-        boolean hasConfiguredIconSwipeGesture = false;
-        BubbleTextView touchedIcon = findIconAtPosition(x, y);
-        if (touchedIcon != null) {
-            if (vertical) {
-                hasConfiguredIconSwipeGesture = touchedIcon.hasConfiguredVerticalIconSwipeGesture();
-            } else {
-                hasConfiguredIconSwipeGesture = touchedIcon.hasConfiguredHorizontalIconSwipeGesture();
-            }
+        View touched = findIconAtPosition(x, y);
+        if (touched instanceof BubbleTextView touchedIcon) {
+            return vertical
+                    ? touchedIcon.hasConfiguredVerticalIconSwipeGesture()
+                    : touchedIcon.hasConfiguredHorizontalIconSwipeGesture();
         }
-        return hasConfiguredIconSwipeGesture;
+        if (!vertical) {
+            return false;
+        }
+        if (touched == null) {
+            touched = findIconInHotseat(x, y);
+        }
+        return touched instanceof FolderIcon folderIcon
+                && FolderFirstApp.swipeUpOpensFolder(folderIcon);
     }
 
     // Lawnchair: Icon swipe gesture feature
-    private BubbleTextView findIconAtPosition(float x, float y) {
+    private View findIconInHotseat(float x, float y) {
+        CellLayout page = mLauncher.getHotseat().getCurrentPageLayout();
+        if (page == null) {
+            return null;
+        }
+        float[] coord = {x, y};
+        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, coord);
+        mLauncher.getDragLayer().mapCoordInSelfToDescendant(page, coord);
+        if (!Utilities.pointInView(page, coord[0], coord[1], 0)) {
+            return null;
+        }
+        return findIconInCellLayout(page, coord[0], coord[1]);
+    }
+
+    // Lawnchair: Icon swipe gesture feature
+    private View findIconAtPosition(float x, float y) {
         for (int i = getChildCount() - 1; i >= 0; i--) {
             View child = getChildAt(i);
             if (!(child instanceof CellLayout cellLayout)) {
@@ -1271,7 +1291,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (!Utilities.pointInView(cellLayout, localX, localY, 0)) {
                 continue;
             }
-            BubbleTextView foundView = findIconInCellLayout(cellLayout, localX, localY);
+            View foundView = findIconInCellLayout(cellLayout, localX, localY);
             if (foundView != null) {
                 return foundView;
             }
@@ -1280,13 +1300,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     // Lawnchair: Icon swipe gesture feature
-    private BubbleTextView findIconInCellLayout(CellLayout cellLayout, float x, float y) {
+    private View findIconInCellLayout(CellLayout cellLayout, float x, float y) {
         ShortcutAndWidgetContainer container = cellLayout.getShortcutsAndWidgets();
         float containerX = x - container.getLeft();
         float containerY = y - container.getTop();
         for (int i = container.getChildCount() - 1; i >= 0; i--) {
             View child = container.getChildAt(i);
-            if (!(child instanceof BubbleTextView bubbleTextView)
+            if (!(child instanceof BubbleTextView || child instanceof FolderIcon)
                     || child.getVisibility() != VISIBLE) {
                 continue;
             }
@@ -1294,7 +1314,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     containerX - child.getLeft(),
                     containerY - child.getTop(),
                     0)) {
-                return bubbleTextView;
+                return child;
             }
         }
         return null;

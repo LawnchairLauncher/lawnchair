@@ -92,6 +92,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import app.lawnchair.folder.FolderFirstApp;
+import app.lawnchair.folder.FolderSwipeUpListener;
+
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
@@ -104,6 +107,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     public FolderInfo mInfo;
 
     private CheckLongPressHelper mLongPressHelper;
+
+    // LC: Created on first touch because inflation can run off the main thread.
+    @Nullable
+    private FolderSwipeUpListener mSwipeUpListener;
+    private boolean mShouldHandleSwipeUp;
 
     static final int DROP_IN_ANIMATION_DURATION = 400;
 
@@ -707,12 +715,37 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                 && shouldIgnoreTouchDown(event.getX(), event.getY())) {
             return false;
         }
+        if (handleSwipeUpTouchEvent(event)) {
+            return true;
+        }
 
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         super.onTouchEvent(event);
         mLongPressHelper.onTouchEvent(event);
         // Keep receiving the rest of the events
+        return true;
+    }
+
+    private boolean handleSwipeUpTouchEvent(MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            mShouldHandleSwipeUp = FolderFirstApp.swipeUpOpensFolder(this);
+        }
+        if (!mShouldHandleSwipeUp) {
+            return false;
+        }
+        if (mSwipeUpListener == null) {
+            mSwipeUpListener = new FolderSwipeUpListener(this);
+        }
+        if (!mSwipeUpListener.onTouchEvent(event)) {
+            return false;
+        }
+        mShouldHandleSwipeUp = false;
+        cancelLongPress();
+        MotionEvent cancelEvent = MotionEvent.obtain(event);
+        cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
+        super.onTouchEvent(cancelEvent);
+        cancelEvent.recycle();
         return true;
     }
 
