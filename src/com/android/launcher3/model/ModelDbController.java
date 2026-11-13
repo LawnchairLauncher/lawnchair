@@ -118,6 +118,15 @@ public class ModelDbController {
         mLayoutParserFactory = new LayoutParserFactory(context);
     }
 
+    /** Closes the current database so the next access opens the selected database. */
+    @WorkerThread
+    public synchronized void closeDb() {
+        if (mOpenHelper != null) {
+            mOpenHelper.close();
+            mOpenHelper = null;
+        }
+    }
+
     private synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
             // Initialize the restore task before opening the DB
