@@ -106,7 +106,9 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         currentJob?.cancel()
 
         val prefs = PreferenceManager.getInstance(context)
-        val historyEnabled = prefs.searchResulRecentSuggestion.get()
+        // With the drawer's suggestion tabs on, the empty search box keeps the drawer and its tabs.
+        val historyEnabled = prefs.searchResulRecentSuggestion.get() &&
+            !PreferenceManager2.getInstance(context).drawerSuggestionTabs.firstCached()
 
         if (!historyEnabled) {
             callback.clearSearchResult()
