@@ -649,6 +649,11 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getString(R.string.custom),
     )
 
+    val showWebSearchSuggestions = preference(
+        key = booleanPreferencesKey(name = "show_web_search_suggestions"),
+        defaultValue = true,
+    )
+
     val maxAppSearchResultCount = preference(
         key = intPreferencesKey(name = "max_search_result_count"),
         defaultValue = resourceProvider.getInt(R.dimen.config_default_search_max_result_count),
