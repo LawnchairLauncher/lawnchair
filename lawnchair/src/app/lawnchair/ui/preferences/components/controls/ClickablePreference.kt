@@ -50,6 +50,8 @@ fun ClickablePreference(
         disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
     ),
     hapticToken: MSDLToken? = MSDLToken.TAP_LOW_EMPHASIS,
+    startWidget: (@Composable () -> Unit)? = null,
+    endWidget: (@Composable () -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     val bottomSheetHandler = bottomSheetHandler
@@ -58,6 +60,8 @@ fun ClickablePreference(
         title = { Text(text = label) },
         modifier = modifier,
         description = subtitle?.let { { Text(text = it) } },
+        startWidget = startWidget,
+        endWidget = endWidget,
         onClick = {
             if (confirmationText != null) {
                 mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)

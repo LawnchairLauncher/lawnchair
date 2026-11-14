@@ -35,8 +35,14 @@ import kotlinx.coroutines.flow.stateIn
 internal val iconPackIntents = listOf(
     Intent("com.novalauncher.THEME"),
     Intent("org.adw.launcher.icons.ACTION_PICK_ICON"),
+    Intent("org.adw.launcher.THEMES"),
     Intent("com.dlto.atom.launcher.THEME"),
     Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"),
+    Intent("com.anddoes.launcher.THEME"),
+    Intent("com.teslacoilsw.launcher.THEME"),
+    Intent("com.fede.launcher.THEME_ICONPACK"),
+    Intent("com.gau.go.launcherex.theme"),
+    Intent("ch.deletescape.lawnchair.ICONPACK"),
 )
 
 class PreferenceViewModel(private val app: Application) :
@@ -46,7 +52,8 @@ class PreferenceViewModel(private val app: Application) :
     private val themedIconPackIntents = listOf(Intent(app.getString(R.string.icon_packs_intent_name)))
     override val iconPacks = flow {
         val pm = app.packageManager
-        val iconPacks = iconPackIntents
+        val allIconPackIntents = iconPackIntents + themedIconPackIntents
+        val iconPacks = allIconPackIntents
             .flatMap { pm.queryIntentActivities(it, 0) }
             .associateBy { it.activityInfo.packageName }
             .mapTo(mutableSetOf()) { (_, info) ->

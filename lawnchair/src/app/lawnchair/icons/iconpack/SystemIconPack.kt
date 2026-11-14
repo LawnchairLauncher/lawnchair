@@ -53,8 +53,21 @@ class SystemIconPack(context: Context, pkg: String) : IconPack(context, pkg) {
 
     override fun getIcon(iconEntry: IconEntry, iconDpi: Int): Drawable? {
         val key = ComponentKey.fromString(iconEntry.name)
-        val app = appMap[key] ?: return null
-        return app.getIcon(iconDpi)
+        val app = appMap[key]
+        if (app != null) {
+            return app.getIcon(iconDpi)
+        }
+        if (key != null) {
+            return try {
+                val launcherApps: LauncherApps = context.requireSystemService()
+                val info = launcherApps.getActivityList(key.componentName.packageName, key.user)
+                    .firstOrNull { it.componentName == key.componentName }
+                info?.getIcon(iconDpi)
+            } catch (_: Throwable) {
+                null
+            }
+        }
+        return null
     }
 
     override fun loadInternal() {
