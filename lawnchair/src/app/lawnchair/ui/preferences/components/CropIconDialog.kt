@@ -64,6 +64,7 @@ fun CropIconDialog(
     iconShape: IconShape,
     onDismissRequest: () -> Unit,
     onConfirm: (Bitmap) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val view = LocalView.current
     var userScale by remember { mutableFloatStateOf(1f) }
@@ -81,7 +82,7 @@ fun CropIconDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .wrapContentHeight(),

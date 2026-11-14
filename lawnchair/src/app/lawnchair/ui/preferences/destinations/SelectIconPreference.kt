@@ -56,7 +56,10 @@ import kotlinx.coroutines.withContext
 private const val TAG = "SelectIconPreference"
 
 @Composable
-fun SelectIconPreference(componentKey: ComponentKey) {
+fun SelectIconPreference(
+    componentKey: ComponentKey,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
     val label = remember(componentKey) {
@@ -147,7 +150,10 @@ fun SelectIconPreference(componentKey: ComponentKey) {
         )
     }
 
-    PreferenceLayoutLazyColumn(label = label) {
+    PreferenceLayoutLazyColumn(
+        label = label,
+        modifier = modifier,
+    ) {
         if (hasOverride) {
             preferenceGroupItems(1, isFirstChild = true) {
                 ClickablePreference(

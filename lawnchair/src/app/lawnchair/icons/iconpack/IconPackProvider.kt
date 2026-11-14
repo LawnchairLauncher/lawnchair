@@ -24,8 +24,10 @@ class IconPackProvider @Inject constructor(
 ) : SafeCloseable {
 
     private val iconPacks = mutableMapOf<String, IconPack?>()
+
     @Volatile
     private var systemIconPack: SystemIconPack? = null
+
     @Volatile
     private var localIconPack: LocalIconPack? = null
 

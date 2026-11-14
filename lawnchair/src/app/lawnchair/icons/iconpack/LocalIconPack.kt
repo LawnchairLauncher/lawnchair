@@ -10,11 +10,11 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
-import com.android.launcher3.R
 import app.lawnchair.icons.ClockMetadata
 import app.lawnchair.icons.LocalAdaptiveIconDrawable
 import app.lawnchair.icons.picker.IconEntry
 import app.lawnchair.icons.picker.IconPickerCategory
+import com.android.launcher3.R
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
