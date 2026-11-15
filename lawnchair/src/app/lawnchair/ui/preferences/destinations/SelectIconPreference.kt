@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +53,7 @@ import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -83,9 +85,16 @@ fun SelectIconPreference(
     val prefs2 = preferenceManager2()
     val currentIconShape by prefs2.iconShape.asState()
 
-    var croppingBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var currentCropSession by remember { mutableStateOf<CropSession?>(null) }
+    var nextSessionId by remember { mutableIntStateOf(1) }
     var cropJob by remember { mutableStateOf<Job?>(null) }
-    var cropSessionId by remember { mutableIntStateOf(0) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            cropJob?.cancel()
+            currentCropSession?.cancelAndRecycle()
+        }
+    }
 
     val repo = IconOverrideRepository.INSTANCE.get(context)
     OnResult<IconPickerItem> { item ->
@@ -112,42 +121,57 @@ fun SelectIconPreference(
     ) { uri: Uri? ->
         if (uri != null) {
             cropJob?.cancel()
+            currentCropSession?.cancelAndRecycle()
+            currentCropSession = null
             cropJob = scope.launch {
                 val loadedBitmap = withContext(Dispatchers.IO) {
                     LocalIconPack.loadBitmapForCropping(context, uri)
                 }
+                if (!isActive) {
+                    if (loadedBitmap != null && !loadedBitmap.isRecycled) {
+                        loadedBitmap.recycle()
+                    }
+                    return@launch
+                }
                 if (loadedBitmap != null) {
-                    croppingBitmap?.recycle()
-                    croppingBitmap = loadedBitmap
-                    cropSessionId++
+                    currentCropSession = CropSession(nextSessionId++, loadedBitmap)
                 }
             }
         }
     }
 
-    if (croppingBitmap != null) {
+    val activeSession = currentCropSession
+    if (activeSession != null && !activeSession.isCancelled && !activeSession.isSaving) {
         CropIconDialog(
-            bitmap = croppingBitmap!!,
+            bitmap = activeSession.sourceBitmap,
             iconShape = currentIconShape,
             onDismissRequest = {
                 cropJob?.cancel()
-                croppingBitmap?.recycle()
-                croppingBitmap = null
-                cropSessionId++
+                activeSession.cancelAndRecycle()
+                if (currentCropSession === activeSession) {
+                    currentCropSession = null
+                }
             },
             onConfirm = { croppedSquareBitmap ->
-                val currentSessionId = cropSessionId
-                val sourceBitmap = croppingBitmap
-                croppingBitmap = null
+                if (activeSession.isCancelled || activeSession.isSaving) {
+                    if (!croppedSquareBitmap.isRecycled) {
+                        croppedSquareBitmap.recycle()
+                    }
+                    return@CropIconDialog
+                }
+                activeSession.isSaving = true
                 cropJob = scope.launch {
                     try {
                         val fileName = withContext(Dispatchers.IO) {
                             LocalIconPack.saveSquareBitmap(context, croppedSquareBitmap)
                         }
-                        if (cropSessionId != currentSessionId) {
+                        if (activeSession.isCancelled || currentCropSession !== activeSession) {
                             return@launch
                         }
-                        sourceBitmap?.recycle()
+                        activeSession.cancelAndRecycle()
+                        if (currentCropSession === activeSession) {
+                            currentCropSession = null
+                        }
                         if (fileName != null) {
                             val item = IconPickerItem(
                                 packPackageName = LocalIconPack.PACKAGE_NAME,
@@ -171,7 +195,12 @@ fun SelectIconPreference(
                             ).show()
                         }
                     } finally {
-                        croppedSquareBitmap.recycle()
+                        if (!croppedSquareBitmap.isRecycled) {
+                            croppedSquareBitmap.recycle()
+                        }
+                        if (activeSession.isCancelled || currentCropSession !== activeSession) {
+                            activeSession.cancelAndRecycle()
+                        }
                     }
                 }
             },
@@ -225,6 +254,7 @@ fun SelectIconPreference(
                     }
                 },
                 onClick = {
+                    if (currentCropSession?.isSaving == true) return@ClickablePreference
                     mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
                     try {
                         imagePickerLauncher.launch("image/*")
@@ -287,4 +317,21 @@ private fun resolveAppLabel(launcherApps: LauncherApps, componentKey: ComponentK
         Log.w(TAG, "getActivityList failed for $componentKey", t)
     }
     return componentName.shortClassName?.trimStart('.') ?: componentName.packageName
+}
+
+private class CropSession(
+    val id: Int,
+    val sourceBitmap: Bitmap,
+) {
+    var isCancelled: Boolean = false
+    var isSaving: Boolean = false
+
+    fun cancelAndRecycle() {
+        if (!isCancelled) {
+            isCancelled = true
+            if (!sourceBitmap.isRecycled) {
+                sourceBitmap.recycle()
+            }
+        }
+    }
 }
