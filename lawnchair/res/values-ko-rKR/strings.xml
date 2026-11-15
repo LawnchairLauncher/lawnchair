@@ -574,6 +574,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">홈 화면 회전</string>
     <string name="home_screen_rotation_description">기기 회전 때 홈 화면 회전 허용</string>
+    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
+    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
+    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
     <string name="auto_updater_label">업데이트 자동 확인</string>
     <string name="auto_updater_description">정보 화면을 열 때 Nightly 업데이트 확인</string>
     <string name="live_information_label">실시간 정보</string>
