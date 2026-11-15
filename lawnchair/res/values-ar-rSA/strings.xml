@@ -31,8 +31,8 @@
     <string name="action_lock">قفل</string>
     <string name="action_apply">تطبيق</string>
     <string name="action_customize">تخصيص</string>
-    <string name="always_choice">دائماً</string>
-    <string name="never_choice">أبداً</string>
+    <string name="always_choice">دائمًا</string>
+    <string name="never_choice">أبدًا</string>
     <string name="clipboard">الحافظة</string>
     <string name="action_copy_link">نسخ الرابط</string>
     <string name="action_copy">نسخ</string>
@@ -156,7 +156,7 @@
     <string name="apps_in_folder_label">إخفاء تطبيقات المجلدات</string>
     <string name="apps_in_folder_description">تُستبعد التطبيقات الموجودة في المجلدات من قوائم التطبيقات</string>
     <string name="folders_filter_duplicates">إخفاء التطبيقات الموجودة في مجلدات أخرى</string>
-    <string name="folder_manage_apps">Manage apps</string>
+    <string name="folder_manage_apps">إدارة التطبيقات</string>
     <string name="my_folder_label">مجلدي</string>
     <string name="sort_active_items_action">فرز العناصر النشطة</string>
     <!-- A11y description -->
@@ -214,8 +214,8 @@
     <string name="smartspace_calendar_description">السماح بعرض التاريخ بأنظمة تقويم غير ميلادية</string>
     <string name="workspace_increase_max_grid_size_label">رفع الحد الأقصى لحجم الشبكة</string>
     <string name="workspace_increase_max_grid_size_description">زيادة الحد الأقصى المسموح به لحجم شبكة الشاشة الرئيسية من 10 &#xd7; 10 إلى 20 &#xd7; 20</string>
-    <string name="always_reload_icons_label">إعادة تحميل الأيقونات دائماً</string>
-    <string name="always_reload_icons_description">إعادة تحميل الأيقونات فورًا عند تغيير المظهر أو لون التمييز، بدون حفظها مؤقتًا</string>
+    <string name="always_reload_icons_label">إعادة تحميل الأيقونات دائمًا</string>
+    <string name="always_reload_icons_description">إعادة تحميل الأيقونات فورًا عند تغيير المظهر أو لون التمييز، دون حفظها مؤقتًا</string>
     <string name="always_reload_icons_warning">سيؤدي ذلك إلى تحديث الأيقونات بانتظام، مما يؤثر على الأداء. أوقِف تشغيل هذه المِيزة إذا لم يتم تحديث حُزْمَة الأيقونات بانتظام.</string>
     <string name="show_deck_layout">تخطيط Deck</string>
     <string name="show_deck_layout_description">إظهار خيار تخطيط لإخفاء درج التطبيقات وإضافة التطبيقات الجديدة تلقائيًا إلى الشاشة الرئيسية</string>
@@ -314,7 +314,7 @@
     <string name="icon_shape_squircle">مربع دائري</string>
     <string name="icon_shape_teardrop">دمعة</string>
     <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">مشمس جداً</string>
+    <string name="icon_shape_very_sunny">مشمس جدًا</string>
     <string name="icon_shape_complex_clover">بِرسيم معقد</string>
     <string name="icon_shape_four_sided_cookie">كعكة رباعية</string>
     <string name="icon_shape_seven_sided_cookie">كعكة سباعية</string>
@@ -378,7 +378,7 @@
     <string name="fontBodyMedium">النص الأساسي (متوسط)</string>
     <string name="font_variant_italic">مائل</string>
     <string name="font_weight_thin">رفيع</string>
-    <string name="font_weight_extra_light">خفيف جداً</string>
+    <string name="font_weight_extra_light">خفيف جدًا</string>
     <string name="font_weight_light">خفيف</string>
     <string name="font_weight_regular">عادي</string>
     <string name="font_weight_medium">متوسط</string>
@@ -461,10 +461,10 @@
     <string name="torch_action_off">انقر لإيقاف التشغيل</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">إعداد Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">اضغط مطولاً على الشاشة الرئيسية لفتح الإعدادات</string>
+    <string name="onboarding_open_settings_subtitle">اضغط مطولًا على الشاشة الرئيسية لفتح الإعدادات</string>
     <string name="onboarding_major_upgrade_title">تعرّف على Lawnchair الجديد</string>
     <string name="onboarding_major_upgrade_subtitle">اطلع على الجديد</string>
-    <string name="onboarding_welcome">مرحباً بك في Lawnchair!</string>
+    <string name="onboarding_welcome">مرحبًا بك في Lawnchair!</string>
     <string name="onboarding_swipe_up">اسحب للأعلى لفتح درج التطبيقات</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">الحد الأقصى لعدد الأهداف</string>
@@ -507,9 +507,9 @@
     <string name="contributor_status_active">نشط</string>
     <string name="update_check_failed">فشل التحقق من وجود تحديثات</string>
     <string name="major_update_label">التحديث إلى إصدار رئيسي؟</string>
-    <string name="major_update_description">أنت تُحدّث من الإصدار <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. هذا الإصدار الأحدث هو تحديث رئيسي وقد يكون أقل استقراراً.</string>
+    <string name="major_update_description">أنت تُحدّث من الإصدار <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. هذا الإصدار الأحدث هو تحديث رئيسي وقد يكون أقل استقرارًا.</string>
     <string name="pro_disabled_by_unknown">التحديثات غير متوفرة</string>
-    <string name="pro_disabled_by_major_is_newer">أنت تستخدم بالفعل إصداراً أحدث</string>
+    <string name="pro_disabled_by_major_is_newer">أنت تستخدم بالفعل إصدارًا أحدث</string>
     <string name="updater">التحديثات</string>
     <!--
 
@@ -538,7 +538,7 @@
     <string name="nova_shortcut_label">اختصارات</string>
     <string name="nova_icon_pack_label">حُزمة الأيقونات</string>
     <string name="create_backup_description">تصدير الإعدادات وتخطيط المشغل</string>
-    <string name="restore_backup_description">استيراد نسخة احتياطية تم إنشاؤها مسبقاً</string>
+    <string name="restore_backup_description">استيراد نسخة احتياطية تم إنشاؤها مسبقًا</string>
     <string name="restore_nova_backup_description">استيراد التخطيط من نسخة Nova Launcher الاحتياطية</string>
     <!--
 
@@ -554,7 +554,7 @@
     <string name="gesture_back_tap">زر العودة</string>
     <string name="gesture_swipe_left">السحب لليسار</string>
     <string name="gesture_swipe_right">السحب لليمين</string>
-    <string name="gesture_handler_no_op">لا تفعل شيئاً</string>
+    <string name="gesture_handler_no_op">لا تفعل شيئًا</string>
     <string name="gesture_handler_sleep">السكون</string>
     <string name="gesture_handler_recents">فتح شاشة التطبيقات الأخيرة</string>
     <string name="gesture_handler_open_notifications">فتح لوحة الإشعارات</string>
@@ -603,6 +603,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسية</string>
     <string name="home_screen_rotation_description">السماح بتدوير الشاشة الرئيسية عند تدوير الجهاز</string>
+    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
+    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">حساسية الإمالة</string>
+    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
     <string name="auto_updater_label">التحقق التلقائي من وجود تحديثات</string>
     <string name="auto_updater_description">التحقق من تحديثات Nightly عند فتح شاشة حول التطبيق</string>
     <string name="live_information_label">المعلومات المباشرة</string>
@@ -651,7 +655,7 @@
     <string name="show_status_bar">إظهار شريط الحالة</string>
     <string name="dark_status_bar_label">شريط الحالة الداكن</string>
     <string name="status_bar_clock_label">ساعة شريط الحالة</string>
-    <string name="status_bar_clock_description">إخفاء ساعة شريط الحالة ديناميكياً في الشاشة الأولى</string>
+    <string name="status_bar_clock_description">إخفاء ساعة شريط الحالة ديناميكيًا في الشاشة الأولى</string>
     <string name="home_screen_text_color">لون النص</string>
     <string name="color_light">فاتح</string>
     <string name="color_dark">داكن</string>
@@ -748,7 +752,7 @@
     <string name="max_folder_columns">أقصى عدد من الأعمدة في المجلد</string>
     <string name="max_folder_rows">أقصى عدد من الصفوف في المجلد</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">سيتم تجاهل هذه الإعدادات لأن Lawnchair ليس معيّناً كمزود شاشة التطبيقات الأخيرة</string>
+    <string name="quickswitch_ignored_warning">سيتم تجاهل هذه الإعدادات لأن Lawnchair ليس معيّنًا كمزود شاشة التطبيقات الأخيرة</string>
     <string name="quickstep_incompatible">تكامل النظام غير متوافق</string>
     <string name="quickstep_incompatible_description">جهازك مُهيَّأ لاستخدام إيماءات النظام المعروفة باسم Quickstep، والتي يوفرها %1$s، لكن هذا الإصدار من %1$s غير متوافق مع إصدار أندرويد لديك. لمواصلة استخدام جهازك، أزِل تحديثات %1$s أو عطّل %1$s كمزود لإيماءات النظام.</string>
     <string name="translucent_background">خلفية شبه شفافة</string>

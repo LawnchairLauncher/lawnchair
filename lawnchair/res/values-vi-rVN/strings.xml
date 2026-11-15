@@ -573,6 +573,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Xoay màn hình chính</string>
     <string name="home_screen_rotation_description">Cho phép xoay màn hình chính khi thiết bị được xoay</string>
+    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
+    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
+    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
     <string name="auto_updater_label">Tự động kiểm tra cập nhật</string>
     <string name="auto_updater_description">Kiểm tra các bản cập nhật hàng đêm khi mở màn hình Giới thiệu</string>
     <string name="live_information_label">Thông tin trực tiếp</string>

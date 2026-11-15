@@ -132,7 +132,7 @@
     <string name="apps_in_folder_label">Απόκρυψη εφαρμογών φακέλων</string>
     <string name="apps_in_folder_description">Οι εφαρμογές που έχουν εκχωρηθεί σε φακέλους εξαιρούνται από τις λίστες εφαρμογών</string>
     <string name="folders_filter_duplicates">Εμφάνιση μόνο ιδιαίτερων εφαρμογών</string>
-    <string name="folder_manage_apps">Manage apps</string>
+    <string name="folder_manage_apps">Διαχείριση εφαρμογών</string>
     <string name="my_folder_label">Ο φάκελός μου</string>
     <string name="sort_active_items_action">Ταξινόμηση ενεργών στοιχείων</string>
     <!-- A11y description -->
@@ -155,7 +155,7 @@
     -->
     <string name="settings">Ρυθμίσεις</string>
     <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
-    <string name="settings_pick_a_page">Pick a setting from the menu</string>
+    <string name="settings_pick_a_page">Επιλέξτε μια ρύθμιση από το μενού</string>
     <string name="general_label">Γενικά</string>
     <string name="general_description">Χρώματα, πακέτα εικονιδίων, κουκκίδες ειδοποίησης</string>
     <string name="home_screen_label">Αρχική οθόνη</string>
@@ -579,6 +579,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Περιστροφή αρχικής οθόνης</string>
     <string name="home_screen_rotation_description">Να επιτρέπεται η περιστροφή της αρχικής οθόνης κατά την περιστροφή της συσκευής</string>
+    <string name="pan_to_move_icon_label">Κλίση για σάρωση σελίδων</string>
+    <string name="pan_to_move_icon_description">Κλίση του τηλεφώνου σας αριστερά ή δεξιά για μετακίνηση μεταξύ των σελίδων κατά την αναδιάταξη των εφαρμογών/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Ευαισθησία κλίσης</string>
+    <string name="pan_to_move_sensor_unavailable">Η μετακίνηση με μετατόπιση δεν είναι διαθέσιμη, καθώς δεν κατέστη δυνατή η καταχώριση αισθητήρα κίνησης.</string>
     <string name="auto_updater_label">Αυτόματος έλεγχος για ενημερώσεις</string>
     <string name="auto_updater_description">Ελέγχει για πρώιμες ενημερώσεις κατά το άνοιγμα της οθόνης \"Πληροφορίες\"</string>
     <string name="live_information_label">Πληροφορίες ζωντανά</string>
