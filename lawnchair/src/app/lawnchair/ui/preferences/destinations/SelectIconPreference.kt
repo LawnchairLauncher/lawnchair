@@ -6,6 +6,7 @@ import android.content.pm.LauncherApps
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -25,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.findActivity
@@ -66,6 +66,13 @@ fun SelectIconPreference(
         resolveAppLabel(context.requireSystemService(), componentKey)
     }
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
+    val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsStateWithLifecycle()
+
+    val allIconPacks = remember(iconPacks, themedIconPacks) {
+        val nonSystemThemed = themedIconPacks.filter { it.packageName.isNotEmpty() }
+        (iconPacks + nonSystemThemed).distinctBy { it.packageName }
+    }
+
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
     val launcherAppState = LauncherAppState.getInstance(context)
@@ -96,10 +103,6 @@ fun SelectIconPreference(
     val overrideItem by repo.observeTarget(componentKey).collectAsStateWithLifecycle(initialValue = null)
     val hasOverride = overrideItem != null
 
-    val (systemIcons, otherIconPacks) = remember(iconPacks) {
-        iconPacks.partition { it.packageName.isEmpty() }
-    }
-
     val imagePickerLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent(),
     ) { uri: Uri? ->
@@ -124,12 +127,13 @@ fun SelectIconPreference(
                 croppingBitmap = null
             },
             onConfirm = { croppedSquareBitmap ->
-                croppingBitmap = null
                 scope.launch {
                     val fileName = withContext(Dispatchers.IO) {
                         LocalIconPack.saveSquareBitmap(context, croppedSquareBitmap)
                     }
                     if (fileName != null) {
+                        croppingBitmap?.recycle()
+                        croppingBitmap = null
                         val item = IconPickerItem(
                             packPackageName = LocalIconPack.PACKAGE_NAME,
                             drawableName = fileName,
@@ -144,6 +148,12 @@ fun SelectIconPreference(
                             setResult(Activity.RESULT_OK)
                             finish()
                         }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.icon_picker_load_failed),
+                            Toast.LENGTH_SHORT,
+                        ).show()
                     }
                 }
             },
@@ -207,68 +217,23 @@ fun SelectIconPreference(
             )
         }
 
-        if (systemIcons.isNotEmpty()) {
-            preferenceGroupItems(
-                items = systemIcons,
-                isFirstChild = false,
-                heading = { stringResource(id = R.string.system_icons) },
-            ) { _, iconPack ->
-                AppItem(
-                    label = iconPack.name,
-                    icon = remember(iconPack) { iconPack.icon.toBitmap() },
-                    onClick = {
-                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+        preferenceGroupItems(
+            items = allIconPacks,
+            isFirstChild = false,
+            heading = { stringResource(id = R.string.pick_icon_from_label) },
+        ) { _, iconPack ->
+            AppItem(
+                label = iconPack.name,
+                icon = remember(iconPack) { iconPack.icon.toBitmap() },
+                onClick = {
+                    mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+                    if (iconPack.packageName.isEmpty()) {
                         navController.navigate(IconPicker())
-                    },
-                )
-            }
-        }
-
-        if (otherIconPacks.isNotEmpty()) {
-            preferenceGroupItems(
-                items = otherIconPacks,
-                isFirstChild = false,
-                heading = { stringResource(id = R.string.other_icon_apps) },
-            ) { _, iconPack ->
-                AppItem(
-                    label = iconPack.name,
-                    icon = remember(iconPack) { iconPack.icon.toBitmap() },
-                    onClick = {
-                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+                    } else {
                         navController.navigate(IconPicker(iconPack.packageName))
-                    },
-                )
-            }
-        } else {
-            preferenceGroupItems(
-                count = 1,
-                isFirstChild = false,
-                heading = { stringResource(id = R.string.other_icon_apps) },
-            ) {
-                ClickablePreference(
-                    label = stringResource(id = R.string.get_more_icon_packs),
-                    onClick = {
-                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            "market://search?q=icon+pack&c=apps".toUri(),
-                        )
-                        try {
-                            context.startActivity(intent)
-                        } catch (_: Exception) {
-                            try {
-                                context.startActivity(
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        "https://play.google.com/store/search?q=icon+pack&c=apps".toUri(),
-                                    ),
-                                )
-                            } catch (_: Exception) {
-                            }
-                        }
-                    },
-                )
-            }
+                    }
+                },
+            )
         }
     }
 }
@@ -292,10 +257,16 @@ private fun resolveAppLabel(launcherApps: LauncherApps, componentKey: ComponentK
         val activities = launcherApps.getActivityList(componentName.packageName, user)
         activities
             .firstOrNull { it.componentName == componentName }
-            ?.label?.toString()
+            ?.label
+            ?.toString()
+            ?.let { return it }
+        activities
+            .firstOrNull()
+            ?.label
+            ?.toString()
             ?.let { return it }
     } catch (t: Throwable) {
         Log.w(TAG, "getActivityList failed for $componentKey", t)
     }
-    return componentName.className.substringAfterLast('.')
+    return componentName.shortClassName?.trimStart('.') ?: componentName.packageName
 }

@@ -25,6 +25,7 @@ import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.ui.preferences.destinations.icons.IconPackInfo
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.getPackageVersionCode
+import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -63,6 +64,21 @@ class PreferenceViewModel(private val app: Application) :
                     CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm)),
                 )
             }
+        if (app.packageManager.isPackageInstalled(LAWNICONS_PACKAGE_NAME) &&
+            iconPacks.none { it.packageName == LAWNICONS_PACKAGE_NAME }
+        ) {
+            try {
+                val info = app.packageManager.getApplicationInfo(LAWNICONS_PACKAGE_NAME, 0)
+                iconPacks.add(
+                    IconPackInfo(
+                        name = pm.getApplicationLabel(info).toString(),
+                        packageName = info.packageName,
+                        icon = CustomAdaptiveIconDrawable.wrapNonNull(pm.getApplicationIcon(info)),
+                    ),
+                )
+            } catch (_: Exception) {
+            }
+        }
         val lawnchairIcon = CustomAdaptiveIconDrawable.wrapNonNull(
             ContextCompat.getDrawable(app, R.drawable.ic_launcher_home)!!,
         )

@@ -344,15 +344,12 @@
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Icons</string>
     <string name="icon_picker_reset_to_default">Reset to default</string>
-    <string name="icon_pack_external_picker">Select image from local folder</string>
+    <string name="icon_pack_external_picker">Open external picker</string>
     <string name="select_image_from_local_folder">Select image from local folder</string>
     <string name="crop_icon">Crop icon</string>
     <string name="crop_icon_description">Move and zoom to frame the icon</string>
     <string name="crop_icon_save">Save</string>
-    <string name="crop_icon_reset">Reset</string>
-    <string name="crop_icon_magnetic_guides">Magnetic guides</string>
     <string name="pick_icon_from_label">Pick icon from</string>
-    <string name="other_icon_apps">Other icon apps</string>
     <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
 
     <!-- Icon shapes  -->

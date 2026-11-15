@@ -25,23 +25,8 @@ class IconPackProvider @Inject constructor(
 
     private val iconPacks = mutableMapOf<String, IconPack?>()
 
-    @Volatile
-    private var systemIconPack: SystemIconPack? = null
-
-    @Volatile
-    private var localIconPack: LocalIconPack? = null
-
     fun getIconPackOrSystem(packageName: String): IconPack? {
-        if (packageName.isEmpty()) {
-            return systemIconPack ?: synchronized(this) {
-                systemIconPack ?: SystemIconPack(context, "").also { systemIconPack = it }
-            }
-        }
-        if (packageName == LocalIconPack.PACKAGE_NAME) {
-            return localIconPack ?: synchronized(this) {
-                localIconPack ?: LocalIconPack(context).also { localIconPack = it }
-            }
-        }
+        if (packageName.isEmpty()) return SystemIconPack(context, packageName)
         return getIconPack(packageName)
     }
 
@@ -50,9 +35,7 @@ class IconPackProvider @Inject constructor(
             return null
         }
         if (packageName == LocalIconPack.PACKAGE_NAME) {
-            return localIconPack ?: synchronized(this) {
-                localIconPack ?: LocalIconPack(context).also { localIconPack = it }
-            }
+            return iconPacks.getOrPut(packageName) { LocalIconPack(context) }
         }
         return iconPacks.getOrPut(packageName) {
             try {
@@ -98,9 +81,7 @@ class IconPackProvider @Inject constructor(
     }
 
     override fun close() {
-        iconPacks.clear()
-        systemIconPack = null
-        localIconPack = null
+        TODO("Not yet implemented")
     }
 
     companion object {

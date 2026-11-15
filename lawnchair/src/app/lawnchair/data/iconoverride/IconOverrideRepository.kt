@@ -54,30 +54,30 @@ class IconOverrideRepository @Inject constructor(
 
     suspend fun setOverride(target: ComponentKey, item: IconPickerItem) {
         val existing = _overridesMap[target]
+        dao.insert(IconOverride(target, item))
+        // Keep the in-memory map in sync before any icon reload. The Room Flow update is
+        // async and can race with onAppIconChanged / forceReload, leaving stale icons cached.
+        _overridesMap = _overridesMap + (target to item)
+        updatePackageQueue.offer(target)
         if (existing?.packPackageName == LocalIconPack.PACKAGE_NAME && existing.drawableName != item.drawableName) {
             val oldFile = java.io.File(context.filesDir, "${LocalIconPack.CUSTOM_ICONS_DIR}/${existing.drawableName}")
             if (oldFile.exists()) {
                 oldFile.delete()
             }
         }
-        dao.insert(IconOverride(target, item))
-        // Keep the in-memory map in sync before any icon reload. The Room Flow update is
-        // async and can race with onAppIconChanged / forceReload, leaving stale icons cached.
-        _overridesMap = _overridesMap + (target to item)
-        updatePackageQueue.offer(target)
     }
 
     suspend fun deleteOverride(target: ComponentKey) {
         val existing = _overridesMap[target]
+        dao.delete(target)
+        _overridesMap = _overridesMap - target
+        updatePackageQueue.offer(target)
         if (existing?.packPackageName == LocalIconPack.PACKAGE_NAME) {
             val oldFile = java.io.File(context.filesDir, "${LocalIconPack.CUSTOM_ICONS_DIR}/${existing.drawableName}")
             if (oldFile.exists()) {
                 oldFile.delete()
             }
         }
-        dao.delete(target)
-        _overridesMap = _overridesMap - target
-        updatePackageQueue.offer(target)
     }
 
     fun observeTarget(target: ComponentKey) = dao.observeTarget(target)
@@ -100,9 +100,9 @@ class IconOverrideRepository @Inject constructor(
     }
 
     suspend fun deleteAll() {
+        dao.deleteAll()
         val customIconsDir = java.io.File(context.filesDir, LocalIconPack.CUSTOM_ICONS_DIR)
         customIconsDir.deleteRecursively()
-        dao.deleteAll()
         _overridesMap = emptyMap()
         LauncherAppState.getInstance(context).model.reloadIfActive()
     }

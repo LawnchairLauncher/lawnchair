@@ -88,11 +88,16 @@ class LocalIconPack(context: Context) : IconPack(context, PACKAGE_NAME) {
                 val customIconsDir = File(context.filesDir, CUSTOM_ICONS_DIR).apply { mkdirs() }
                 val fileName = "${UUID.randomUUID()}.png"
                 val file = File(customIconsDir, fileName)
+                var success = false
                 FileOutputStream(file).use { out ->
-                    finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    success = finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
                 }
                 if (finalBitmap != bitmap) {
                     finalBitmap.recycle()
+                }
+                if (!success) {
+                    file.delete()
+                    return null
                 }
                 fileName
             } catch (t: Throwable) {
@@ -109,8 +114,9 @@ class LocalIconPack(context: Context) : IconPack(context, PACKAGE_NAME) {
                 val customIconsDir = File(context.filesDir, CUSTOM_ICONS_DIR).apply { mkdirs() }
                 val fileName = "${UUID.randomUUID()}.png"
                 val file = File(customIconsDir, fileName)
+                var success = false
                 FileOutputStream(file).use { out ->
-                    squareBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    success = squareBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
                 }
                 if (orientedBitmap != bitmap) {
                     bitmap.recycle()
@@ -119,6 +125,10 @@ class LocalIconPack(context: Context) : IconPack(context, PACKAGE_NAME) {
                     orientedBitmap.recycle()
                 }
                 squareBitmap.recycle()
+                if (!success) {
+                    file.delete()
+                    return null
+                }
                 fileName
             } catch (t: Throwable) {
                 Log.e(TAG, "Failed to save local icon from $uri", t)
@@ -177,10 +187,25 @@ class LocalIconPack(context: Context) : IconPack(context, PACKAGE_NAME) {
             val matrix = Matrix()
             when (orientation) {
                 ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+
                 ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+
                 ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+
                 ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.postScale(-1f, 1f)
+
                 ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.postScale(1f, -1f)
+
+                ExifInterface.ORIENTATION_TRANSPOSE -> {
+                    matrix.postRotate(90f)
+                    matrix.postScale(-1f, 1f)
+                }
+
+                ExifInterface.ORIENTATION_TRANSVERSE -> {
+                    matrix.postRotate(270f)
+                    matrix.postScale(-1f, 1f)
+                }
+
                 else -> return bitmap
             }
             return try {

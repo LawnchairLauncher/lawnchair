@@ -1,11 +1,9 @@
 package app.lawnchair.ui.preferences.destinations
 
-import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.LauncherApps
 import android.graphics.drawable.Drawable
 import android.os.Process
-import android.util.Log
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,7 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.IntentCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.icons.iconpack.CustomIconPack
 import app.lawnchair.icons.iconpack.IconPack
@@ -77,32 +74,16 @@ fun IconPickerPreference(
     val onClickItem = resultSender<IconPickerItem>()
 
     val pickerComponent = remember {
-        if (iconPack !is CustomIconPack || iconPack.packPackageName.isEmpty()) return@remember null
-        val intent = Intent("com.novalauncher.THEME")
-            .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
-            .setPackage(iconPack.packPackageName)
-        context.packageManager.queryIntentActivities(intent, 0).firstOrNull()?.activityInfo?.let {
-            ComponentName(it.packageName, it.name)
-        }
+        val launcherApps: LauncherApps = context.requireSystemService()
+        launcherApps
+            .getActivityList(iconPack.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName
     }
     val pickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        try {
-            val data = it.data ?: return@rememberLauncherForActivityResult
-            val icon = IntentCompat.getParcelableExtra(
-                data,
-                Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource::class.java,
-            ) ?: return@rememberLauncherForActivityResult
-            val entry = (iconPack as? CustomIconPack)?.createFromExternalPicker(icon)
-                ?: run {
-                    val resName = icon.resourceName ?: return@rememberLauncherForActivityResult
-                    val simpleName = resName.substringAfterLast(':').substringAfterLast('/')
-                    IconPickerItem(icon.packageName, simpleName, simpleName, app.lawnchair.icons.picker.IconType.Normal)
-                }
-            onClickItem(entry)
-        } catch (t: Throwable) {
-            Log.e("IconPickerPreference", "Failed to handle icon picker result", t)
-        }
+        val icon = it.data?.getParcelableExtra<Intent.ShortcutIconResource>(
+            Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+        ) ?: return@rememberLauncherForActivityResult
+        val entry = (iconPack as CustomIconPack).createFromExternalPicker(icon) ?: return@rememberLauncherForActivityResult
+        onClickItem(entry)
     }
 
     PreferenceSearchScaffold(
@@ -116,17 +97,13 @@ fun IconPickerPreference(
             )
         },
         actions = {
-            if (iconPack is CustomIconPack && pickerComponent != null) {
+            if (pickerComponent != null) {
                 OverflowMenu {
                     DropdownMenuItem(onClick = {
-                        try {
-                            val intent = Intent("com.novalauncher.THEME")
-                                .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
-                                .setComponent(pickerComponent)
-                            pickerLauncher.launch(intent)
-                        } catch (t: Throwable) {
-                            Log.e("IconPickerPreference", "Failed to launch custom icon picker", t)
-                        }
+                        val intent = Intent("com.novalauncher.THEME")
+                            .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
+                            .setComponent(pickerComponent)
+                        pickerLauncher.launch(intent)
                         hideMenu()
                     }, text = {
                         Text(text = stringResource(id = R.string.icon_pack_external_picker))

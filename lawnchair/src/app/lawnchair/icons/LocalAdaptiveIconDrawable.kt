@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
@@ -84,6 +85,16 @@ class LocalAdaptiveIconDrawable private constructor(
         canvas.clipPath(transformedMask)
         canvas.drawBitmap(bitmap, null, b, paint)
         canvas.restoreToCount(saveCount)
+    }
+
+    override fun setAlpha(alpha: Int) {
+        super.setAlpha(alpha)
+        paint.alpha = alpha
+    }
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        super.setColorFilter(colorFilter)
+        paint.colorFilter = colorFilter
     }
 
     override fun getIconMask(): Path {
