@@ -451,10 +451,8 @@ dependencies {
     implementation libs.compose.runtime.livedata
     implementation libs.compose.material3
     implementation libs.compose.material3.windowSizeClass
-    implementation libs.androidx.activity.compose
     implementation libs.androidx.lifecycle.viewmodel.compose
     implementation libs.androidx.navigation.compose
-    implementation libs.androidx.constraintlayout
     implementation libs.androidx.palette.ktx
     implementation libs.androidx.slice.core
     implementation libs.bundles.accompanist
