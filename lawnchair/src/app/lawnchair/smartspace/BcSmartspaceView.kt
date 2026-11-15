@@ -111,7 +111,8 @@ class BcSmartspaceView @JvmOverloads constructor(
         val res = context.resources
         val textHeight = res.getDimensionPixelSize(R.dimen.enhanced_smartspace_title_line_height) +
             res.getDimensionPixelSize(R.dimen.enhanced_smartspace_subtitle_margin_top) +
-            res.getDimensionPixelSize(R.dimen.enhanced_smartspace_subtitle_line_height)
+            res.getDimensionPixelSize(R.dimen.enhanced_smartspace_subtitle_line_height) *
+            adapter.maxSubtitleLines
         val bottomReserve = if (adapter.count > 1) {
             // Keep the text clear of the page indicator dots.
             res.getDimensionPixelSize(R.dimen.page_indicator_dot_size) +

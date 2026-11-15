@@ -26,6 +26,15 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
             }
         }
 
+    /** The most subtitle lines any of the current cards may show. */
+    val maxSubtitleLines: Int
+        get() {
+            val multipleCards = smartspaceTargets.size > 1
+            return smartspaceTargets.maxOfOrNull {
+                BcSmartspaceCard.getMaxSubtitleLines(it, multipleCards)
+            } ?: 1
+        }
+
     fun setTargets(newTargets: List<SmartspaceTarget>) {
         targets.clear()
         targets.addAll(newTargets)

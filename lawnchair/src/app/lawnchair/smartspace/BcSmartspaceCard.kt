@@ -186,7 +186,7 @@ class BcSmartspaceCard @JvmOverloads constructor(
             null,
             null,
         )
-        subtitleTextView!!.maxLines = if (target.featureType == SmartspaceTarget.FeatureType.FEATURE_TIPS && !usePageIndicatorUi) 2 else 1
+        subtitleTextView!!.maxLines = getMaxSubtitleLines(target, usePageIndicatorUi)
         setFormattedContentDescription(subtitleTextView!!, subtitle, charSequence2)
     }
 
@@ -213,6 +213,14 @@ class BcSmartspaceCard @JvmOverloads constructor(
         when (target.featureType) {
             SmartspaceTarget.FeatureType.FEATURE_WEATHER -> icon.setTintList(null)
             else -> icon.setTint(iconTintColor)
+        }
+    }
+
+    companion object {
+        /** A lone tips card may wrap its subtitle onto a second line. */
+        fun getMaxSubtitleLines(target: SmartspaceTarget, multipleCards: Boolean): Int {
+            val isTips = target.featureType == SmartspaceTarget.FeatureType.FEATURE_TIPS
+            return if (isTips && !multipleCards) 2 else 1
         }
     }
 }
