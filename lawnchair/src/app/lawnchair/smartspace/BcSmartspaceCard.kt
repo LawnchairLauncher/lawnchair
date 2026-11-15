@@ -217,10 +217,11 @@ class BcSmartspaceCard @JvmOverloads constructor(
     }
 
     companion object {
-        /** A lone tips card may wrap its subtitle onto a second line. */
+        /** A lone tips card may wrap its subtitle, if it has one, onto a second line. */
         fun getMaxSubtitleLines(target: SmartspaceTarget, multipleCards: Boolean): Int {
             val isTips = target.featureType == SmartspaceTarget.FeatureType.FEATURE_TIPS
-            return if (isTips && !multipleCards) 2 else 1
+            val hasSubtitle = !target.headerAction?.subtitle.isNullOrEmpty()
+            return if (isTips && !multipleCards && hasSubtitle) 2 else 1
         }
     }
 }
