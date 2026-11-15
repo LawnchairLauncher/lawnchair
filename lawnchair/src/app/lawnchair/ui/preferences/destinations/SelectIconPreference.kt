@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,6 +51,7 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -82,6 +84,8 @@ fun SelectIconPreference(
     val currentIconShape by prefs2.iconShape.asState()
 
     var croppingBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var cropJob by remember { mutableStateOf<Job?>(null) }
+    var cropSessionId by remember { mutableIntStateOf(0) }
 
     val repo = IconOverrideRepository.INSTANCE.get(context)
     OnResult<IconPickerItem> { item ->
@@ -107,12 +111,15 @@ fun SelectIconPreference(
         ActivityResultContracts.GetContent(),
     ) { uri: Uri? ->
         if (uri != null) {
-            scope.launch {
+            cropJob?.cancel()
+            cropJob = scope.launch {
                 val loadedBitmap = withContext(Dispatchers.IO) {
                     LocalIconPack.loadBitmapForCropping(context, uri)
                 }
                 if (loadedBitmap != null) {
+                    croppingBitmap?.recycle()
                     croppingBitmap = loadedBitmap
+                    cropSessionId++
                 }
             }
         }
@@ -123,37 +130,48 @@ fun SelectIconPreference(
             bitmap = croppingBitmap!!,
             iconShape = currentIconShape,
             onDismissRequest = {
+                cropJob?.cancel()
                 croppingBitmap?.recycle()
                 croppingBitmap = null
+                cropSessionId++
             },
             onConfirm = { croppedSquareBitmap ->
-                scope.launch {
-                    val fileName = withContext(Dispatchers.IO) {
-                        LocalIconPack.saveSquareBitmap(context, croppedSquareBitmap)
-                    }
-                    if (fileName != null) {
-                        croppingBitmap?.recycle()
-                        croppingBitmap = null
-                        val item = IconPickerItem(
-                            packPackageName = LocalIconPack.PACKAGE_NAME,
-                            drawableName = fileName,
-                            label = "Local image",
-                            type = IconType.Normal,
-                        )
-                        repo.setOverride(componentKey, item)
-                        withContext(Dispatchers.IO) {
-                            model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
+                val currentSessionId = cropSessionId
+                val sourceBitmap = croppingBitmap
+                croppingBitmap = null
+                cropJob = scope.launch {
+                    try {
+                        val fileName = withContext(Dispatchers.IO) {
+                            LocalIconPack.saveSquareBitmap(context, croppedSquareBitmap)
                         }
-                        context.findActivity()?.run {
-                            setResult(Activity.RESULT_OK)
-                            finish()
+                        if (cropSessionId != currentSessionId) {
+                            return@launch
                         }
-                    } else {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.icon_picker_load_failed),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        sourceBitmap?.recycle()
+                        if (fileName != null) {
+                            val item = IconPickerItem(
+                                packPackageName = LocalIconPack.PACKAGE_NAME,
+                                drawableName = fileName,
+                                label = "Local image",
+                                type = IconType.Normal,
+                            )
+                            repo.setOverride(componentKey, item)
+                            withContext(Dispatchers.IO) {
+                                model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
+                            }
+                            context.findActivity()?.run {
+                                setResult(Activity.RESULT_OK)
+                                finish()
+                            }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.icon_picker_load_failed),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        }
+                    } finally {
+                        croppedSquareBitmap.recycle()
                     }
                 }
             },

@@ -75,7 +75,7 @@ fun CropIconDialog(
         Surface(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = 24.dp, vertical = 16.dp)
                 .wrapContentHeight(),
             shape = MaterialTheme.shapes.extraLarge,
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
