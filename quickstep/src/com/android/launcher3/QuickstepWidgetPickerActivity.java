@@ -507,7 +507,8 @@ public class QuickstepWidgetPickerActivity extends
             final boolean isVerticallyResizable =
                     (info.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
             if (mDesiredWidgetHeight > 0 && isVerticallyResizable) {
-                if (info.maxResizeHeight > 0
+                // LC-Note: Support Android 11 and older with SDK check
+                if (Utilities.ATLEAST_S && info.maxResizeHeight > 0
                         && info.maxResizeHeight >= info.minHeight
                         && info.maxResizeHeight < mDesiredWidgetHeight) {
                     return rejectWidget(
