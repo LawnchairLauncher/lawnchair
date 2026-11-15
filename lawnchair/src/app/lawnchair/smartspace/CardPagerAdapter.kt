@@ -17,6 +17,15 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
     private var smartspaceTargets = targets
     private val holders = SparseArray<ViewHolder>()
 
+    var cardTopPadding = context.resources.getDimensionPixelSize(R.dimen.enhanced_smartspace_padding_top)
+        set(value) {
+            if (field == value) return
+            field = value
+            for (i in 0 until holders.size()) {
+                holders.valueAt(i).card.setTopPadding(value)
+            }
+        }
+
     fun setTargets(newTargets: List<SmartspaceTarget>) {
         targets.clear()
         targets.addAll(newTargets)
@@ -26,6 +35,7 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
     override fun instantiateItem(container: ViewGroup, position: Int): ViewHolder {
         val target = smartspaceTargets[position]
         val card = createBaseCard(container, getFeatureType(target))
+        card.setTopPadding(cardTopPadding)
         val viewHolder = ViewHolder(position, card, target)
         onBindViewHolder(viewHolder)
         container.addView(card)

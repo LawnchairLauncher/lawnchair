@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.layoutDirection
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -35,6 +36,7 @@ class BcSmartspaceCard @JvmOverloads constructor(
     private lateinit var target: SmartspaceTarget
     private var titleTextView: TextView? = null
     private var topPadding = 0
+    private var topPaddingSpace: View? = null
     private var usePageIndicatorUi = false
 
     override fun onFinishInflate() {
@@ -45,6 +47,7 @@ class BcSmartspaceCard @JvmOverloads constructor(
         baseActionIconSubtitleView = findViewById(R.id.base_action_icon_subtitle)
         extrasGroup = findViewById(R.id.smartspace_extras_group)
         topPadding = paddingTop
+        topPaddingSpace = findViewById(R.id.top_padding)
         extrasGroup?.let {
             dndImageView = it.findViewById(R.id.dnd_icon)
             nextAlarmImageView = it.findViewById(R.id.alarm_icon)
@@ -118,6 +121,27 @@ class BcSmartspaceCard @JvmOverloads constructor(
             else -> {
                 BcSmartSpaceUtil.setOnClickListener(this, headerAction, null, "BcSmartspaceCard")
             }
+        }
+    }
+
+    /**
+     * Sets the gap above the title. The card is laid out for a fixed design height, so
+     * [BcSmartspaceView] shrinks this gap when the workspace row is shorter than that.
+     */
+    fun setTopPadding(padding: Int) {
+        val space = topPaddingSpace
+        if (space == null) {
+            if (paddingTop != padding) {
+                setPaddingRelative(paddingStart, padding, paddingEnd, paddingBottom)
+            }
+            return
+        }
+        // A max of 0 means "no limit", which is harmless here: the padding only reaches 0
+        // when the card has no spare height left to give to the space.
+        val lp = space.layoutParams as ConstraintLayout.LayoutParams
+        if (lp.matchConstraintMaxHeight != padding) {
+            lp.matchConstraintMaxHeight = padding
+            space.layoutParams = lp
         }
     }
 

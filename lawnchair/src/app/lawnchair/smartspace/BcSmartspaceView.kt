@@ -16,6 +16,7 @@ import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.util.repeatOnAttached
 import com.android.launcher3.R
+import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -74,26 +75,57 @@ class BcSmartspaceView @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val res = context.resources
         val height = MeasureSpec.getSize(heightMeasureSpec)
-        val smartspaceHeight =
-            context.resources.getDimensionPixelSize(R.dimen.enhanced_smartspace_height)
+        val smartspaceHeight = res.getDimensionPixelSize(R.dimen.enhanced_smartspace_height)
+        val designTopPadding = res.getDimensionPixelSize(R.dimen.enhanced_smartspace_padding_top)
         if (height <= 0 || height >= smartspaceHeight) {
+            setCardSize(smartspaceHeight, designTopPadding)
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             scaleX = 1f
             scaleY = 1f
             return
         }
 
-        val scale = height.toFloat() / smartspaceHeight.toFloat()
+        // The row is shorter than the design height (dense workspace grids). Give up the
+        // spare padding around the text first, and only scale the whole view down once the
+        // text itself no longer fits.
+        val minHeight = getMinCardHeight()
+        val cardHeight = max(height, minHeight)
+        setCardSize(cardHeight, ((cardHeight - minHeight) / 2).coerceAtMost(designTopPadding))
+
+        val scale = height.toFloat() / cardHeight.toFloat()
         val width = (MeasureSpec.getSize(widthMeasureSpec).toFloat() / scale).roundToInt()
         super.onMeasure(
             makeMeasureSpec(width, EXACTLY),
-            makeMeasureSpec(smartspaceHeight, EXACTLY),
+            makeMeasureSpec(cardHeight, EXACTLY),
         )
         scaleX = scale
         scaleY = scale
         pivotX = 0f
-        pivotY = smartspaceHeight.toFloat() / 2f
+        pivotY = cardHeight.toFloat() / 2f
+    }
+
+    /** Height of the title and subtitle lines plus the room that has to stay free below them. */
+    private fun getMinCardHeight(): Int {
+        val res = context.resources
+        val textHeight = res.getDimensionPixelSize(R.dimen.enhanced_smartspace_title_line_height) +
+            res.getDimensionPixelSize(R.dimen.enhanced_smartspace_subtitle_margin_top) +
+            res.getDimensionPixelSize(R.dimen.enhanced_smartspace_subtitle_line_height)
+        val bottomReserve = if (adapter.count > 1) {
+            // Keep the text clear of the page indicator dots.
+            res.getDimensionPixelSize(R.dimen.page_indicator_dot_size) +
+                res.getDimensionPixelSize(R.dimen.page_indicator_padding_top_bottom)
+        } else {
+            res.getDimensionPixelSize(R.dimen.enhanced_smartspace_extras_margin_top)
+        }
+        return textHeight + bottomReserve
+    }
+
+    private fun setCardSize(height: Int, topPadding: Int) {
+        // Picked up by the measure pass that follows, so no requestLayout is needed.
+        viewPager.layoutParams.height = height
+        adapter.cardTopPadding = topPadding
     }
 
     override fun setOnLongClickListener(l: OnLongClickListener?) {

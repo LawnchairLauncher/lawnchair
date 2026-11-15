@@ -42,7 +42,7 @@
         android:id="@+id/smartspace_extras_group"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/enhanced_smartspace_extras_margin_top"
         android:gravity="top"
         android:orientation="horizontal"
         android:visibility="invisible"
