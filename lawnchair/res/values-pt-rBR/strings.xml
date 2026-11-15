@@ -580,6 +580,10 @@ Essa nova versão é atualização Major e pode ser menos estável\".</string>
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotação da tela inicial</string>
     <string name="home_screen_rotation_description">Permitir a rotação da tela inicial quando o dispositivo for girado</string>
+    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
+    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
+    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
     <string name="auto_updater_label">Automaticamente procurar por atualizações</string>
     <string name="auto_updater_description">Procura por atualizações Nightly quando abrir a tela de sobre</string>
     <string name="live_information_label">Informação ao vivo</string>

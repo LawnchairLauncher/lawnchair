@@ -52,7 +52,7 @@
     <string name="changes_dialog_error">無法載入更新</string>
     <string name="changes_dialog_no_changes">沒有發現變更</string>
     <string name="changes_dialog_build_format">組建 #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">由 %1$s  · %2$s · %3$s</string>
+    <string name="changes_dialog_commit_info">由 %1$s．%2$s．%3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">現在</string>
     <plurals name="time_minutes_ago">
@@ -99,7 +99,7 @@
     <string name="grid">網格</string>
     <string name="layout">版面</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">顯示壁紙</string>
+    <string name="show_wallpaper">顯示桌布</string>
     <string name="wallpaper">桌布</string>
     <string name="style">樣式</string>
     <string name="background_opacity">背景不透明度</string>
@@ -110,11 +110,11 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">要顯示什麼</string>
     <string name="wallpapers">桌布</string>
-    <string name="caddy_beta">Caddy (beta)</string>
+    <string name="caddy_beta">罐裝（測試版）</string>
     <string name="caddy">罐裝</string>
     <string name="app_drawer_folder">應用程式抽屜資料夾</string>
     <string name="selected_apps">已選取應用程式</string>
-    <string name="add_apps">增加應用程式</string>
+    <string name="add_apps">新增應用程式</string>
     <string name="app_drawer_folder_settings">應用程式抽屜資料夾</string>
     <string name="add_folder">建立資料夾</string>
     <string name="edit_folder">編輯資料夾</string>
@@ -122,15 +122,15 @@
     <string name="edit_label">編輯</string>
     <string name="apply_label">套用</string>
     <string name="delete_label">刪除</string>
-    <string name="folder_list_note">向左滑動進行編輯，向右滑動進行刪除，或是輕觸以更新項目</string>
+    <string name="folder_list_note">左滑編輯，右滑刪除，或者輕觸以更新項目</string>
     <string name="apps_in_folder_label">隱藏應用程式資料夾</string>
     <string name="apps_in_folder_description">分配至資料夾的應用程式將會從抽屜中排除</string>
     <string name="folders_filter_duplicates">僅顯示單一應用程式</string>
-    <string name="folder_manage_apps">Manage apps</string>
+    <string name="folder_manage_apps">管理應用程式</string>
     <string name="my_folder_label">我的資料夾</string>
     <string name="sort_active_items_action">排序使用中項目</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">當您使用手勢執行某些操作（如鎖定手機）時，Lawnchair 需要無障礙權限。 \n\nLawnchair 不會監視您的操作，儘管所有無障礙服務都要求此項權限。 Lawnchair 會丟棄系統發送的任何事件。 \n\n若要鎖定手機或開啟最近使用畫面，Lawnchair 會使用 performGlobalAction 無障礙服務。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -177,9 +177,9 @@
     <string name="workspace_label">工作空間</string>
     <string name="smartspace_label">智慧空間</string>
     <string name="internal_label">內部</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
+    <string name="internal_description">內部版本可能較其他實驗版本不穩定</string>
     <string name="font_picker_label">自訂字體</string>
-    <string name="font_picker_description">部分文字維持原樣</string>
+    <string name="font_picker_description">部分文字保持不變</string>
     <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
     <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
     <string name="workspace_increase_max_grid_size_label">增加主畫面網格數量上限</string>
@@ -188,7 +188,7 @@
     <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
     <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
     <string name="show_deck_layout">平面模式</string>
-    <string name="show_deck_layout_description">顯示版面選項以隱藏應用程式抽屜並自動將項目加到主畫面</string>
+    <string name="show_deck_layout_description">顯示版面選項以隱藏抽屜並自動將新應用程式加到主畫面</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
     <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
     <string name="folder_shape_label">資料夾形狀</string>
@@ -217,11 +217,11 @@
     <string name="global_predictions_label">Show suggestion features</string>
     <string name="app_predictions_label">App suggestions</string>
     <string name="prediction_mode_label">Suggestions provider</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="app_predictions_disable_reason_pre_q_description">此功能需要Android 10以上</string>
     <string name="prediction_mode_system">系統</string>
     <string name="prediction_mode_none">關閉</string>
     <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
-    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
+    <string name="prediction_weighted_usage_stats_description">利用您裝置的統計資料使建議更加準確</string>
     <string name="dismissed_prediction_apps_label">Blocked apps</string>
     <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
     <string name="prediction_system_settings">Manage system suggestions</string>
@@ -232,13 +232,13 @@
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">將 Lawnchair 設為預設啟動器來存取捷徑和更多功能</string>
+    <string name="set_default_launcher_tip">若要使用捷徑及額外功能，請將 Lawnchair 設為預設啟動器</string>
     <string name="notification_dots">通知圓點</string>
-    <string name="show_notification_count">顯示通知圖示數字</string>
+    <string name="show_notification_count">顯示通知數量</string>
     <string name="notification_dots_color">通知圓點顏色</string>
     <string name="notification_dots_text_color">通知數量顏色</string>
-    <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">通知圓點與數字的顏色對比度不足</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">通知圓點與數字的顏色對比度有時可能不足</string>
     <!--
 
     Icons
@@ -246,22 +246,22 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">圖示主題</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
+    <string name="apply_icon_pack_title">使用圖示套件</string>
     <string name="icon_shape_label">圖示形狀</string>
     <string name="icon_sizes">圖示尺寸</string>
     <string name="show_labels">顯示名稱</string>
     <string name="label_size">名稱長度</string>
     <string name="twoline_label">啟用換行</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
+    <string name="transparent_background_icons_label">透明圖示背景</string>
     <string name="auto_adaptive_icons_label">自適應圖示</string>
     <string name="shadow_bg_icons_label">圖示後方顯示陰影</string>
     <string name="background_lightness_label">背景亮度</string>
-    <string name="adaptive_icon_background_description">白色使用 100% 背景亮度</string>
+    <string name="adaptive_icon_background_description">背景亮度 100% 將會設為白色</string>
     <string name="reset_custom_icons">重設自訂圖示</string>
-    <string name="reset_custom_icons_confirmation">將會重設所有自訂圖示。要繼續嗎？</string>
-    <string name="remove_all_views_from_home_screen">清除主畫面</string>
-    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
+    <string name="reset_custom_icons_confirmation">即將重設所有自訂圖示。要繼續嗎？</string>
+    <string name="remove_all_views_from_home_screen">清空主畫面</string>
+    <string name="remove_all_views_from_home_screen_desc">主畫面將清空。是否繼續？</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">圖示</string>
     <string name="icon_picker_reset_to_default">還原預設設定</string>
@@ -272,7 +272,7 @@
     <string name="icon_shape_system">系統</string>
     <string name="icon_shape_circle">圓形</string>
     <string name="icon_shape_cylinder">圓柱形</string>
-    <string name="icon_shape_diamond">鑽石形</string>
+    <string name="icon_shape_diamond">菱形</string>
     <string name="icon_shape_egg">蛋形</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">八角形</string>
@@ -288,7 +288,7 @@
     <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">四邊形曲奇</string>
     <string name="icon_shape_seven_sided_cookie">七邊形曲奇</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_arch">拱形</string>
     <!-- Additional icon shapes -->
     <string name="icon_shape_cloudy">Cloudy</string>
     <string name="icon_shape_flower">Flower</string>
@@ -303,9 +303,9 @@
     <string name="custom_icon_shape">自訂圖示形狀</string>
     <string name="custom_icon_shape_create">建立自訂圖示形狀</string>
     <string name="custom_icon_shape_edit">編輯自訂圖示形狀</string>
-    <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape">自訂資料夾形狀</string>
+    <string name="custom_folder_shape_create">建立自訂資料夾形狀</string>
+    <string name="custom_folder_shape_edit">編輯自訂資料夾形狀</string>
     <string name="custom_icon_shape_corner">邊角形狀</string>
     <string name="custom_icon_shape_corner_round">圓角</string>
     <string name="custom_icon_shape_corner_squircle">方圓角</string>
@@ -323,7 +323,7 @@
     <string name="fallback_icon_source_title">Fallback icon source</string>
     <string name="system_icons">系統圖示</string>
     <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
+    <string name="force_monochrome_description">使用當前強調色給不支援的圖示重新著色。</string>
     <string name="enforce_themed_icons_title">Enforce themed icons</string>
     <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
     <string name="themed_icon_title">主題圖示</string>
@@ -406,7 +406,7 @@
     <string name="smartspace_battery_fast_charging">快速充電</string>
     <string name="smartspace_battery_slow_charging">緩慢充電</string>
     <string name="smartspace_battery_charging">充電中</string>
-    <string name="smartspace_battery_full">已完全充飽</string>
+    <string name="smartspace_battery_full">已充飽</string>
     <string name="smartspace_battery_low">低電量</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s 分鐘後充飽"</string>
     <string name="smartspace_widget">資訊一覽</string>
@@ -431,7 +431,7 @@
     <string name="torch_action_off">點擊關閉</string>
     <!-- Onboarding strings -->
     <string name="onboarding_open_settings_title">Set up Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">在桌面長按空白處以開啟設定</string>
+    <string name="onboarding_open_settings_subtitle">長按桌面空白處以開啟設定</string>
     <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
     <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
     <string name="onboarding_welcome">Welcome to Lawnchair!</string>
@@ -442,12 +442,12 @@
     <string name="smartspacer_settings">Smartspacer 設定</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">輕觸以設定</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
+    <string name="event_provider_missing_notification_dots">若要使用<xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，請開啟通知圓點</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">在主畫面顯示</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">資訊一覽可透過 Lawnchair 小工具新增至主畫面</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">資訊一覽提供者</string>
+    <string name="smartspace_mode_label">資訊一覽提供方</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google 搜尋</string>
     <!-- Miscellaneous Smartspace strings -->
@@ -461,7 +461,7 @@
     -->
     <string name="support">支援</string>
     <string name="translate">翻譯</string>
-    <string name="donate">捐贈</string>
+    <string name="donate">捐款</string>
     <string name="product">產品</string>
     <string name="design_and_development">開發與設計</string>
     <string name="development">開發</string>
@@ -469,7 +469,7 @@
     <string name="devops">DevOps</string>
     <string name="support_and_pr">支援與提取</string>
     <string name="community">社群</string>
-    <string name="telegram">Telegram </string>
+    <string name="telegram">Telegram</string>
     <string name="news">新聞</string>
     <string name="legal">Legal</string>
     <string name="acknowledgements">銘謝</string>
@@ -562,7 +562,7 @@
     <string name="action_upload_error">上傳失敗</string>
     <string name="dogbin_uploading">正在上傳…</string>
     <string name="bugreport_channel_name">回報問題</string>
-    <string name="status_channel_name">上傳狀態</string>
+    <string name="status_channel_name">上傳進度</string>
     <string name="bugreport_group_summary">%d 個新問題</string>
     <string name="bugreport_group_summary_multiple">多個新問題</string>
     <!--
@@ -572,22 +572,26 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">旋轉主畫面</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
-    <string name="auto_updater_label">Automatically check for updates</string>
+    <string name="home_screen_rotation_description">允許裝置旋轉時旋轉主螢幕</string>
+    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
+    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
+    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
+    <string name="auto_updater_label">自動檢查更新</string>
     <string name="auto_updater_description">開啟關於時檢查Nightly更新</string>
     <string name="live_information_label">Live information</string>
     <string name="live_information_description">Displays announcement, and set the default feature flags</string>
     <string name="wallpaper_blur">模糊桌布 (實驗性)</string>
     <string name="wallpaper_background_blur">模糊強度</string>
-    <string name="wallpaper_background_blur_factor">係數閥值</string>
+    <string name="wallpaper_background_blur_factor">係數閾值</string>
     <string name="home_lawn_deck_label">平面</string>
     <string name="home_lawn_deck_label_beta">平面 (測試版)</string>
     <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
-    <string name="auto_add_shortcuts_label">新增新應用程式至主畫面</string>
+    <string name="auto_add_shortcuts_label">新增應用程式至主畫面</string>
     <string name="minus_one_enable">顯示訂閱</string>
     <string name="minus_one_unavailable">尚未安裝訂閱應用程式</string>
     <string name="minus_one">Feed</string>
-    <string name="feed_provider">訂閱提供者</string>
+    <string name="feed_provider">訂閱提供方</string>
     <string name="wallpaper_scrolling_label">捲動桌布</string>
     <string name="wallpaper_depth_effect_label">桌布景深效果</string>
     <string name="wallpaper_depth_effect_description">切換主畫面區域時縮放桌布</string>
@@ -628,7 +632,7 @@
     <string name="force_rounded_widgets">圓角</string>
     <string name="allow_widget_overlap">允許重疊</string>
     <string name="force_widget_resize_label">強制調整小工具大小</string>
-    <string name="force_widget_resize_description">允許強制調整原先尺寸固定的小工具</string>
+    <string name="force_widget_resize_description">允許強制調整尺寸固定的小工具大小</string>
     <string name="widget_unlimited_size_label">移除尺寸限制</string>
     <string name="widget_unlimited_size_description">移除小工具的最小和最大尺寸限制</string>
     <!-- Dock settings -->
@@ -644,7 +648,7 @@
     <string name="qsb_hotseat_stroke_color">外框顏色</string>
     <string name="corner_radius_label">圓角大小</string>
     <string name="apply_accent_color_label">套用強調色</string>
-    <string name="search_provider">搜尋提供者</string>
+    <string name="search_provider">搜尋提供方</string>
     <string name="hotseat_background">顯示背景</string>
     <string name="hotseat_bg_horizontal_inset_left">左邊距</string>
     <string name="hotseat_bg_horizontal_inset_right">右邊距</string>

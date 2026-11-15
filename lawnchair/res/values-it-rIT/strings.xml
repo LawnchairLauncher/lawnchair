@@ -581,6 +581,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotazione della schermata Home</string>
     <string name="home_screen_rotation_description">Permetti la rotazione della schermata home quando il dispositivo è ruotato</string>
+    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
+    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
+    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
     <string name="auto_updater_label">Controlla automaticamente la disponibilità di aggiornamenti</string>
     <string name="auto_updater_description">Controlla la disponibilità di aggiornamenti nighly quando apri la pagina \'about\'</string>
     <string name="live_information_label">Informazioni live</string>
