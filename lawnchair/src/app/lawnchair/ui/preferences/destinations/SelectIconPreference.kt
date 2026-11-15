@@ -70,12 +70,6 @@ fun SelectIconPreference(
         resolveAppLabel(context.requireSystemService(), componentKey)
     }
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
-    val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsStateWithLifecycle()
-
-    val allIconPacks = remember(iconPacks, themedIconPacks) {
-        val nonSystemThemed = themedIconPacks.filter { it.packageName.isNotEmpty() }
-        (iconPacks + nonSystemThemed).distinctBy { it.packageName }
-    }
 
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
@@ -266,7 +260,7 @@ fun SelectIconPreference(
         }
 
         preferenceGroupItems(
-            items = allIconPacks,
+            items = iconPacks,
             isFirstChild = false,
             heading = { stringResource(id = R.string.pick_icon_from_label) },
         ) { _, iconPack ->

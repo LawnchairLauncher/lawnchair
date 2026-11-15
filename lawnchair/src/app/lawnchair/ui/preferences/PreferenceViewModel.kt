@@ -25,7 +25,6 @@ import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.ui.preferences.destinations.icons.IconPackInfo
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.getPackageVersionCode
-import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,14 +35,8 @@ import kotlinx.coroutines.flow.stateIn
 internal val iconPackIntents = listOf(
     Intent("com.novalauncher.THEME"),
     Intent("org.adw.launcher.icons.ACTION_PICK_ICON"),
-    Intent("org.adw.launcher.THEMES"),
     Intent("com.dlto.atom.launcher.THEME"),
     Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"),
-    Intent("com.anddoes.launcher.THEME"),
-    Intent("com.teslacoilsw.launcher.THEME"),
-    Intent("com.fede.launcher.THEME_ICONPACK"),
-    Intent("com.gau.go.launcherex.theme"),
-    Intent("ch.deletescape.lawnchair.ICONPACK"),
 )
 
 class PreferenceViewModel(private val app: Application) :
@@ -53,8 +46,7 @@ class PreferenceViewModel(private val app: Application) :
     private val themedIconPackIntents = listOf(Intent(app.getString(R.string.icon_packs_intent_name)))
     override val iconPacks = flow {
         val pm = app.packageManager
-        val allIconPackIntents = iconPackIntents + themedIconPackIntents
-        val iconPacks = allIconPackIntents
+        val iconPacks = iconPackIntents
             .flatMap { pm.queryIntentActivities(it, 0) }
             .associateBy { it.activityInfo.packageName }
             .mapTo(mutableSetOf()) { (_, info) ->
@@ -64,21 +56,6 @@ class PreferenceViewModel(private val app: Application) :
                     CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm)),
                 )
             }
-        if (app.packageManager.isPackageInstalled(LAWNICONS_PACKAGE_NAME) &&
-            iconPacks.none { it.packageName == LAWNICONS_PACKAGE_NAME }
-        ) {
-            try {
-                val info = app.packageManager.getApplicationInfo(LAWNICONS_PACKAGE_NAME, 0)
-                iconPacks.add(
-                    IconPackInfo(
-                        name = pm.getApplicationLabel(info).toString(),
-                        packageName = info.packageName,
-                        icon = CustomAdaptiveIconDrawable.wrapNonNull(pm.getApplicationIcon(info)),
-                    ),
-                )
-            } catch (_: Exception) {
-            }
-        }
         val lawnchairIcon = CustomAdaptiveIconDrawable.wrapNonNull(
             ContextCompat.getDrawable(app, R.drawable.ic_launcher_home)!!,
         )
