@@ -41,7 +41,7 @@
     <string name="select_all">Seleccionar tudo</string>
     <string name="deselect_all">Desseleccionar tudo</string>
     <string name="inverse_selection">Inverter seleção</string>
-    <string name="loading">A carregar</string>
+    <string name="loading">A carregar...</string>
     <string name="dismiss">Esquecer</string>
     <string name="download_update">Descarregar atualização</string>
     <string name="install_update">Instalar atualização</string>
@@ -132,7 +132,7 @@
     <string name="apps_in_folder_label">Ocultar aplicações da pasta</string>
     <string name="apps_in_folder_description">As aplicações atribuídas a pastas são excluídas das listas de aplicações</string>
     <string name="folders_filter_duplicates">Mostrar apenas aplicações únicas</string>
-    <string name="folder_manage_apps">Manage apps</string>
+    <string name="folder_manage_apps">Gerir aplicações</string>
     <string name="my_folder_label">A minha pasta</string>
     <string name="sort_active_items_action">Ordenar itens ativos</string>
     <!-- A11y description -->
@@ -155,7 +155,7 @@
     -->
     <string name="settings">Definições</string>
     <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
-    <string name="settings_pick_a_page">Pick a setting from the menu</string>
+    <string name="settings_pick_a_page">Escolha uma configuração a partir do menu</string>
     <string name="general_label">Geral</string>
     <string name="general_description">Cores, pacotes de ícones, pontos de notificação</string>
     <string name="home_screen_label">Ecrã principal</string>
@@ -191,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Aumentar o limite máximo do tamanho da grelha</string>
     <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grelha do ecrã inicial de 10 &#xd7; 10 para 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Recarregar sempre os ícones</string>
-    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
+    <string name="always_reload_icons_description">Evitar cache para recarregar ícones imediatamente quando o tema ou a cor de destaque mudar</string>
     <string name="always_reload_icons_warning">Isso fará com que os ícones atualizem regularmente, afetando o desempenho. Desative se o pacote de ícones não for atualizado regularmente.</string>
     <string name="show_deck_layout">Ambiente do Deck</string>
     <string name="show_deck_layout_description">Exibir uma opção de layout para ocultar o menu de aplicações e adicionar automaticamente novos aplicativos à página inicial</string>
@@ -291,20 +291,20 @@
     <string name="icon_shape_teardrop">Lágrima</string>
     <!-- Icon shapes (Material 3 Expressive) -->
     <string name="icon_shape_very_sunny">Muito ensolarado</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_complex_clover">Trevo complexo</string>
+    <string name="icon_shape_four_sided_cookie">Biscoito de quatro lados</string>
+    <string name="icon_shape_seven_sided_cookie">Biscoito de sete lados</string>
+    <string name="icon_shape_arch">Arco</string>
     <!-- Additional icon shapes -->
-    <string name="icon_shape_cloudy">Cloudy</string>
-    <string name="icon_shape_flower">Flower</string>
-    <string name="icon_shape_heart">Heart</string>
-    <string name="icon_shape_leaf">Leaf</string>
-    <string name="icon_shape_meow">Meow</string>
-    <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
-    <string name="icon_shape_stretched">Stretched</string>
-    <string name="icon_shape_vessel">Vessel</string>
+    <string name="icon_shape_cloudy">Nublado</string>
+    <string name="icon_shape_flower">Flor</string>
+    <string name="icon_shape_heart">Coração</string>
+    <string name="icon_shape_leaf">Folha</string>
+    <string name="icon_shape_meow">Miau</string>
+    <string name="icon_shape_pebble">Bolha</string>
+    <string name="icon_shape_roundedhexagon">Hexágono arredondado</string>
+    <string name="icon_shape_stretched">Esticado</string>
+    <string name="icon_shape_vessel">Embarcação</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Formato de ícone personalizado</string>
     <string name="custom_icon_shape_create">Criar formato de ícone personalizado</string>
@@ -325,23 +325,23 @@
     <string name="icon_shape_clipboard_import_error">A área de transferência não contém um formato de ícone válido</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Pacote de ícones</string>
-    <string name="get_more_icon_packs">Get more icons</string>
-    <string name="fallback_icon_source_title">Fallback icon source</string>
+    <string name="get_more_icon_packs">Obter mais ícones</string>
+    <string name="fallback_icon_source_title">Fonte do ícone Reverter</string>
     <string name="system_icons">Ícones do sistema</string>
     <string name="force_monochrome_label">Forçar monocromático</string>
     <string name="force_monochrome_description">Recolorir aplicativos não suportados com a cor de destaque atual.</string>
-    <string name="enforce_themed_icons_title">Enforce themed icons</string>
-    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
+    <string name="enforce_themed_icons_title">Forçar ícones temáticos</string>
+    <string name="enforce_themed_icons_description">Mesmo para apps não suportados (não recomendado)</string>
     <string name="themed_icon_title">Ícones temáticos</string>
-    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
+    <string name="themed_icons_description">Adapte os ícones de aplicativos suportados para corresponder ao esquema de temas e cores do seu dispositivo. Estes ícones são aplicados em cima dos pacotes de ícones existentes.</string>
     <string name="themed_icons_off_label">Desligado</string>
     <string name="themed_icons_home_label">Ecrã principal</string>
     <string name="themed_icons_home_and_drawer_label">Área de trabalho e menu de aplicações</string>
-    <string name="themed_icons_no_fallback">No fallback</string>
+    <string name="themed_icons_no_fallback">Sem alternativa</string>
     <string name="lawnicons_not_installed_description">Sem pacotes de ícones suportados</string>
-    <string name="advanced_icon_settings_title">Advanced icon settings</string>
-    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
-    <string name="reshape_unthemed_icons_description">By adding a background</string>
+    <string name="advanced_icon_settings_title">Configurações avançadas de ícone</string>
+    <string name="reshape_unthemed_icons_title">Remoldar ícones não temáticos</string>
+    <string name="reshape_unthemed_icons_description">Adicionando um fundo</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Adicionar fontes</string>
     <string name="pref_fonts_add_fonts_summary">São suportadas fontes OTF e TTF</string>
@@ -551,7 +551,7 @@
     <string name="quick_settings_a11y_hint">abrir o painel de definições rápidas</string>
     <string name="recents_screen_a11y_hint">abrir os itens recentes</string>
     <string name="generic_a11y_hint">Para usar o %1$s, ative o serviço de Acessibilidade do Lawnchair. Toque em \"Abrir Definições,\" depois selecione \"Lawnchair\" e ative \"Utilizar Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="generic_a11y_disclaimer">Lawnchair usa o método `performGlobalAction` da Accessibilidade para executar esta ação. Esta é uma permissão sensível que permite monitorar outros aplicativos. No entanto, o Lawnchair não está configurado para essa funcionalidade e não recebe eventos.</string>
     <string name="sleep_mode_label">Suspender</string>
     <string name="sleep_mode_auto">Automático</string>
     <string name="sleep_mode_root">Raíz</string>
@@ -579,16 +579,20 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotação do ecrã principal</string>
     <string name="home_screen_rotation_description">Permitir a rotação do ecrã inicial quando rodar o dispositivo</string>
+    <string name="pan_to_move_icon_label">Inclinar páginas ao deslizar</string>
+    <string name="pan_to_move_icon_description">Incline seu telefone para a esquerda ou direita para se mover entre as páginas durante a reorganização de aplicativos/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Sensibilidade de inclinação</string>
+    <string name="pan_to_move_sensor_unavailable">Pan para mover está indisponível porque nenhum sensor de movimento pode ser registrado.</string>
     <string name="auto_updater_label">Verificar atualizações automaticamente</string>
     <string name="auto_updater_description">Verificar atualizações automaticamente ao abrir o ecrã Sobre</string>
     <string name="live_information_label">Informação em direto</string>
-    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
+    <string name="live_information_description">Exibe o anúncio e define as feature flags padrão</string>
     <string name="wallpaper_blur">Desfocar o papel de parede (experimental)</string>
     <string name="wallpaper_background_blur">Intensidade do desfoque</string>
     <string name="wallpaper_background_blur_factor">Limite do fator</string>
     <string name="home_lawn_deck_label">Biblioteca</string>
     <string name="home_lawn_deck_label_beta">Biblioteca (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_description">Aceda às suas aplicações na Biblioteca, desenhada para a simplicidade e organização</string>
     <string name="auto_add_shortcuts_label">Adicionar novas aplicações ao ecrã principal</string>
     <string name="minus_one_enable">Mostrar feed</string>
     <string name="minus_one_unavailable">Sem aplicações de feed instaladas</string>
@@ -657,7 +661,7 @@
     <string name="hotseat_bg_vertical_inset_top">Margem superior</string>
     <string name="hotseat_bg_vertical_inset_bottom">Margem inferior</string>
     <string name="hotseat_bg_color_label">Cor de fundo</string>
-    <string name="hotseat_bg_corner_radius">Background corner radius</string>
+    <string name="hotseat_bg_corner_radius">Raio do canto do ecrã</string>
     <string name="hotseat_bg_alpha">Opacidade De Fundo</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pausar</string>
@@ -677,7 +681,7 @@
     <string name="when_folded_label">Quando dobrado</string>
     <string name="when_unfolded_label">Quando desdobrado</string>
     <string name="unfolded_grid_description">O Lawnchair junta duas páginas para preencher um ecrã maior</string>
-    <string name="foldable_columns_error">The folded value must be less than or equal to the unfolded value. It will be automatically adjusted if needed.</string>
+    <string name="foldable_columns_error">O valor dobrado deve ser menor ou igual ao valor de desdobrado. Ele será automaticamente ajustado se necessário.</string>
     <string name="hotseat_bottom_space_label">Preenchimento inferior</string>
     <string name="page_indicator_height">Altura do indicador de página</string>
     <!-- Search providers -->
@@ -722,7 +726,7 @@
     <!-- Quickstep settings -->
     <string name="quickswitch_ignored_warning">Estas definições serão ignoradas, pois o Lawnchair não está seleccionado como o launcher predefinido</string>
     <string name="quickstep_incompatible">Integração incompatível com o sistema</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
+    <string name="quickstep_incompatible_description">O seu dispositivo está configurado para ter gestos do sistema, conhecidos como Quickstep, fornecidos por %1$s, mas esta versão de %1$s não é compatível com a versão do seu Android. Para continuar a usar o seu dispositivo, desinstale as atualizações de %1$s ou desative %1$s como fornecedor de gestos do sistema.</string>
     <string name="translucent_background">Fundo translúcido</string>
     <string name="translucent_background_alpha">Opacidade do fundo</string>
     <string name="recents_actions_label">Ações rápidas</string>
@@ -732,7 +736,7 @@
     <string name="task_menu_force_stop">Forçar encerramento</string>
     <string name="window_corner_radius_label">Raio do canto do ecrã</string>
     <string name="override_window_corner_radius_label">Raio de canto do ecrã personalizado</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Ao deslizar para cima para abrir os Recentes, a aplicação atual segue o seu dedo, reduzindo-se para um cartão. Use este controlo deslizante para ajustar o raio dos cantos do cartão quando este estiver quase em ecrã completo, de modo a corresponder aos cantos do seu ecrã.</string>
     <string name="taskbar_label">Barra de tarefas</string>
     <string name="enable_taskbar_experimental">Mostrar barra de tarefas (experimental)</string>
     <!--
@@ -775,9 +779,9 @@
     <string name="search_algorithm_global_search_via_asi">Pesquisa global (via ASI)</string>
     <string name="custom_search_label">Nome do motor de pesquisa</string>
     <string name="custom_search_url">Endereço do motor de pesquisa</string>
-    <string name="custom_search_suggestions_url">Search suggestions URL</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_suggestions_url">Procurar URL das sugestões</string>
+    <string name="custom_search_input_hint">&#37;s será substituído pelo texto da pesquisa</string>
+    <string name="custom_search_suggestions_hint">&#37;s será substituído pelo texto da pesquisa. Resultados precisam estar no formato JSON de Opensearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Mostrar nos resultados de pesquisa</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Aplicações e atalhos</string>
@@ -799,8 +803,7 @@
     <string name="search_pref_files_search_on">Pesquisa ligada</string>
     <string name="search_pref_result_files_description">Média e outros ficheiros</string>
     <string name="search_pref_result_contacts_description">Contactos e mais</string>
-    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g>
-    </string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g>    </string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Número máximo de aplicações</string>
     <string name="max_people_result_count_title">Número máximo de pessoas</string>
@@ -813,31 +816,30 @@
     <string name="missing_notification_access_label">Necessário acesso às notificações</string>
     <string name="missing_notification_access_desc">Para mostrar os pontos de notificação, ative as notificações para <xliff:g id="name" example="Meu aplicativo">%1$s</xliff:g>    </string>
     <string name="warn_contact_permission_title">Necessária permissão de acesso aos contactos</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g>
-    </string>
+    <string name="warn_contact_permission_content">Para pesquisar contactos, conceda ao Lawnchair as permissões de acesso a <xliff:g id="name" example="My App">%1$s</xliff:g>    </string>
     <string name="permissions_music_audio">Necessária permissão de acesso às músicas</string>
     <string name="permissions_music_audio_description">Para pesquisar músicas e outros arquivos de áudio, <xliff:g id="name" example="My App">%1$s</xliff:g> precisa de conceder permissões de acesso a Música e Audio</string>
     <!-- Photos and videos -->
     <string name="permissions_photos_videos">Necessária permissão de acesso às fotografias</string>
     <string name="permissions_photos_videos_description">Para pesquisar fotos e videos, <xliff:g id="name" example="My App">%1$s</xliff:g> precisa de conceder permissões de acesso a Fotos e Vídeos</string>
     <string name="permissions_photos_videos_full">Conceder permissão total de acesso à livraria multimédia?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library</string>
+    <string name="permissions_photos_videos_full_description">Para pesquisar fotos e videos, <xliff:g id="name" example="My App">%1$s</xliff:g> precisa de conceder permissões de acesso a Fotos e Vídeos</string>
     <string name="permissions_photos_videos_grant_full">Permitir acesso total à multimédia</string>
     <string name="permissions_photos_videos_manage_selected">Gerir os itens selecionados</string>
     <!-- External storage -->
     <string name="permissions_external_storage">Necessária permissão de acesso ao armazenamento interno</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage</string>
+    <string name="permissions_external_storage_description">Para pesquisar os seus arquivos, <xliff:g id="name" example="My App">%1$s</xliff:g> precisa de conceder permissões de acesso ao armazenamento externo do seu dispositivo</string>
     <string name="permissions_manage_storage">Necessário acesso ao armazenamento interno</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
+    <string name="permissions_manage_storage_description">Para mostrar os seus arquivos nos resultados da pesquisa, <xliff:g id="name" example="My App">%1$s</xliff:g> requer permissão de acesso a todos os arquivos no seu dispositivo. Esta permissão é usada exclusivamente para listar arquivos e não será usada para ler ou alterar o conteúdo dos mesmos.</string>
     <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
     <string name="permission_desc_ending_read_all_files">para ler todos os arquivos no seu dispositivo</string>
     <string name="permission_desc_ending_manage_all_files">gerir todos os ficheiros no dispositivo</string>
     <string name="permission_desc_wallpaper_multiple">Necessárias várias permissões</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Para mostrar papéis de parede pré-visualizações e incluí-los em backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requer as seguintes permissões. Isso deve-se a limitações do sistema para aceder aos ficheiros de papel de parede.</string>
     <string name="permission_label_manage_all_files">Gerir todos os ficheiros no dispositivo</string>
     <string name="permission_label_read_photos_videos">Aceder a fotos e vídeos</string>
     <string name="manage_storage_access_denied_title">Não é possível aceder ao armazenamento interno</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="manage_storage_access_denied_description">Devido à política da Play Store, <xliff:g id="name" example="My App">%1$s</xliff:g> não pode solicitar acesso total ao armazenamento aqui. Para acessar todos os arquivos, faça o download de <xliff:g id="name" example="My App">%1$s</xliff:g> do GitHub. Como alternativa, você pode conceder acesso a fotos, vídeos e arquivos de áudio individualmente nas configurações.</string>
     <string name="open_permission_settings">Abrir definições</string>
     <string name="grant_requested_permissions">Conceder permissões</string>
     <string name="permissions_needed">Permissões negadas</string>

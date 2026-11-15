@@ -122,15 +122,15 @@
     <string name="edit_label">编辑</string>
     <string name="apply_label">应用</string>
     <string name="delete_label">删除</string>
-    <string name="folder_list_note">向左滑动用来编辑, 向右滑动用来删除, 或点击用来更新内容</string>
+    <string name="folder_list_note">左滑编辑，右滑删除，或点击以更新内容</string>
     <string name="apps_in_folder_label">隐藏应用文件夹</string>
-    <string name="apps_in_folder_description">分配给文件夹的应用程序被排除在应用程序列表之外</string>
+    <string name="apps_in_folder_description">分配给文件夹的应用程序被排除在应用抽屜之外</string>
     <string name="folders_filter_duplicates">仅显示唯一应用</string>
-    <string name="folder_manage_apps">Manage apps</string>
+    <string name="folder_manage_apps">管理应用程式</string>
     <string name="my_folder_label">我的文件夹</string>
     <string name="sort_active_items_action">排序活跃项目</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">当您使用手势执行某些操作（如锁定手机）时，Lawnchair 需要辅助功能权限。\n\nLawnchair 不会监视您的操作，尽管所有辅助功能服务都要求此项权限。Lawnchair 会丢弃系统发送的任何事件。\n\n要锁定手机或打开最近任务屏幕，Lawnchair 会使用 performGlobalAction 辅助功能服务。</string>
+    <string name="accessibility_service_description">当您使用手势执行某些操作（如锁定手机）时，Lawnchair 需要辅助功能权限。\n\nLawnchair 不会监视您的操作，尽管所有辅助功能服务都要求此项权限。Lawnchair 会丢弃系统发送的任何事件。\n\n要锁定手机或打开最近任务界面，Lawnchair 会使用 performGlobalAction 辅助功能服务。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -182,7 +182,7 @@
     <string name="font_picker_description">部分文字保持不变</string>
     <string name="smartspace_calendar_label">自定义资讯一览日历</string>
     <string name="smartspace_calendar_description">允许显示非公历系统的日期</string>
-    <string name="workspace_increase_max_grid_size_label">增加最大网格大小限制</string>
+    <string name="workspace_increase_max_grid_size_label">增加网格大小上限</string>
     <string name="workspace_increase_max_grid_size_description">主屏幕网格最大尺寸从 10 &#xd7; 10 提升至 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">始终重载图标</string>
     <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
@@ -217,11 +217,11 @@
     <string name="global_predictions_label">显示建议功能</string>
     <string name="app_predictions_label">应用建议</string>
     <string name="prediction_mode_label">建议提供商</string>
-    <string name="app_predictions_disable_reason_pre_q_description">这个功能需要Android 10或更高</string>
+    <string name="app_predictions_disable_reason_pre_q_description">此功能需要Android 10以上</string>
     <string name="prediction_mode_system">跟随系统</string>
     <string name="prediction_mode_none">关</string>
     <string name="prediction_weighted_usage_stats_label">使用设备使用数据</string>
-    <string name="prediction_weighted_usage_stats_description">使用你设备使用统计数据为了使建议更加准确</string>
+    <string name="prediction_weighted_usage_stats_description">使用您设备使用统计数据使建议更加准确</string>
     <string name="dismissed_prediction_apps_label">锁定应用</string>
     <string name="dismissed_prediction_apps_label_with_count">锁定应用 (%1$d)</string>
     <string name="prediction_system_settings">管理系统建议</string>
@@ -255,13 +255,13 @@
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">透明图标背景</string>
     <string name="auto_adaptive_icons_label">自适应图标</string>
-    <string name="shadow_bg_icons_label">在图标后显示阴影</string>
+    <string name="shadow_bg_icons_label">图标后方显示阴影</string>
     <string name="background_lightness_label">背景亮度</string>
-    <string name="adaptive_icon_background_description">使用 100% 背景亮度为白色</string>
+    <string name="adaptive_icon_background_description">背景亮度 100% 将会设为白色</string>
     <string name="reset_custom_icons">重置自定义图标</string>
     <string name="reset_custom_icons_confirmation">所有自定义图标将被重置。您想要继续吗？</string>
     <string name="remove_all_views_from_home_screen">清除主屏幕</string>
-    <string name="remove_all_views_from_home_screen_desc">主屏幕将被清除。您确定要继续吗？</string>
+    <string name="remove_all_views_from_home_screen_desc">主屏幕将被清除。是否继续？</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">图标</string>
     <string name="icon_picker_reset_to_default">重置为默认</string>
@@ -573,6 +573,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotation_description">允许在设备旋转时旋转主屏幕</string>
+    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
+    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
+    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
     <string name="auto_updater_label">自动检查更新</string>
     <string name="auto_updater_description">打开关于屏幕时检查每日更新</string>
     <string name="live_information_label">实时信息</string>
