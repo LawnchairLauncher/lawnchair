@@ -1632,8 +1632,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             }
             int bottomMargin = bottomPadding + bottomOffset;
             View indicator = mHorizontalContainer.findViewById(R.id.all_apps_page_indicator);
-            if (indicator != null && indicator.getLayoutParams() instanceof FrameLayout.LayoutParams) {
-                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) indicator.getLayoutParams();
+            if (indicator != null && indicator.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) indicator.getLayoutParams();
                 lp.bottomMargin = bottomMargin + Utilities.dpToPx(8);
                 indicator.setLayoutParams(lp);
             }
