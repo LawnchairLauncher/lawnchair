@@ -7,6 +7,7 @@ import app.lawnchair.gestures.DirectionalGestureListener
 import app.lawnchair.launcherNullable
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.LauncherState
 import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.model.data.WorkspaceItemInfo
@@ -25,15 +26,19 @@ fun firstAppIcon(icon: FolderIcon): Drawable? {
     return firstApp(icon)?.newIcon(icon.context)
 }
 
-private fun firstApp(icon: FolderIcon): WorkspaceItemInfo? = icon.mInfo.getContents().minByOrNull { it.rank } as? WorkspaceItemInfo
-
-fun swipeUpOpensFolder(icon: FolderIcon): Boolean {
-    val launcher = icon.context.launcherNullable ?: return false
-    return tapOpensFirstApp(icon) && !launcher.isInState(LauncherState.EDIT_MODE)
+private fun firstApp(icon: FolderIcon): WorkspaceItemInfo? {
+    val first = icon.mInfo.getContents().minByOrNull { it.rank }
+    return if (first?.itemType == ITEM_TYPE_APPLICATION) first as? WorkspaceItemInfo else null
 }
 
-private fun tapOpensFirstApp(icon: FolderIcon): Boolean = !icon.isInAppDrawer &&
-    PreferenceManager2.getInstance(icon.context).folderTapOpensFirstApp.firstCached()
+fun swipeUpOpensFolder(icon: FolderIcon): Boolean = tapOpensFirstApp(icon)
+
+private fun tapOpensFirstApp(icon: FolderIcon): Boolean {
+    val launcher = icon.context.launcherNullable ?: return false
+    return !icon.isInAppDrawer &&
+        !launcher.isInState(LauncherState.EDIT_MODE) &&
+        PreferenceManager2.getInstance(icon.context).folderTapOpensFirstApp.firstCached()
+}
 
 class FolderSwipeUpListener(private val icon: FolderIcon) : DirectionalGestureListener(icon.context) {
     override fun onSwipeTop(velocity: Float): Boolean {

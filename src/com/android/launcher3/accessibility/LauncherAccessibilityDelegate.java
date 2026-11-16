@@ -39,6 +39,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.KeyboardDragAndDropView;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.AppPairInfo;
@@ -51,6 +52,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -68,6 +70,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import app.lawnchair.folder.FolderFirstApp;
+
 public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Launcher> {
 
     private static final String TAG = "LauncherAccessibilityDelegate";
@@ -84,6 +88,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
     protected static final int RESIZE = R.id.action_resize;
     public static final int DEEP_SHORTCUTS = R.id.action_deep_shortcuts;
     public static final int CLOSE = R.id.action_close;
+    private static final int OPEN_FOLDER = R.id.action_open_folder;
 
     public LauncherAccessibilityDelegate(Launcher launcher) {
         super(launcher);
@@ -108,6 +113,8 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                 R.string.action_deep_shortcut, KeyEvent.KEYCODE_S));
         mActions.put(CLOSE, new LauncherAction(CLOSE,
                 R.string.action_close, KeyEvent.KEYCODE_X));
+        mActions.put(OPEN_FOLDER, new LauncherAction(OPEN_FOLDER,
+                R.string.action_open_folder, KeyEvent.KEYCODE_O));
     }
 
     private static boolean isNotInShortcutMenu(@Nullable View view) {
@@ -146,6 +153,11 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
 
         if (host instanceof AppWidgetResizeFrame) {
             out.add(mActions.get(CLOSE));
+        }
+
+        if (host instanceof FolderIcon
+                && FolderFirstApp.appLaunchedByTap((FolderIcon) host) != null) {
+            out.add(mActions.get(OPEN_FOLDER));
         }
 
         if (supportAddToWorkSpace(item)) {
@@ -225,6 +237,9 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
                     : (host instanceof BubbleTextHolder
                             ? ((BubbleTextHolder) host).getBubbleText() : null);
             return btv != null && PopupContainerWithArrow.showForIcon(btv) != null;
+        } else if (action == OPEN_FOLDER && host instanceof FolderIcon) {
+            ItemClickHandler.openFolder((FolderIcon) host);
+            return true;
         } else if (action == CLOSE) {
             if (host instanceof AppWidgetResizeFrame) {
                 AbstractFloatingView.closeOpenViews(mContext, /* animate= */ false,

@@ -151,6 +151,7 @@
     <string name="folder_tap_opens_first_app_description">Swipe up on a folder to open it</string>
     <string name="folder_shows_first_app_icon">Show first app\'s icon</string>
     <string name="folder_shows_first_app_icon_description">Folders look like the first app inside them</string>
+    <string name="action_open_folder">Open folder</string>
     <string name="add_label">Add</string>
     <string name="edit_label">Edit</string>
     <string name="apply_label">Apply</string>
