@@ -599,10 +599,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             if (!PreferenceCacheExtensionsKt.firstCached(pref2.getRememberPosition())) {
                 mHorizontalPager.setCurrentPage(0);
             }
-            if (mSearchUiManager.getEditText() != null) {
-                mSearchUiManager.getEditText().clearFocus();
+            if (exitSearch) {
+                if (mSearchUiManager.getEditText() != null) {
+                    mSearchUiManager.getEditText().clearFocus();
+                }
+                mSearchUiManager.setBackgroundVisibility(true, 1f);
             }
-            mSearchUiManager.setBackgroundVisibility(true, 1f);
         }
         if (isSearching()) {
             mWorkManager.reset();
@@ -694,6 +696,18 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mHeader.setActiveRV(currentActivePage);
         reset(true /* animate */, !isSearching() && !keepSearchFocus /* exitSearch */);
 
+        if (isDrawerHorizontal() && mHorizontalPager != null
+                && (currentActivePage == AdapterHolder.MAIN || currentActivePage == AdapterHolder.WORK)) {
+            boolean isWork = currentActivePage == AdapterHolder.WORK;
+            mHorizontalPager.setAppsList(
+                    mAH.get(currentActivePage).mAppsList,
+                    mAH.get(currentActivePage).mAdapter,
+                    isWork);
+            if (mHeader != null && mHeader.getTabLayout() != null) {
+                mHeader.getTabLayout().setActiveMarker(currentActivePage);
+            }
+        }
+
         mWorkManager.onActivePageChanged(currentActivePage);
     }
 
@@ -733,35 +747,21 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                     false);
 
             if (mUsingTabs) {
+                if (mHeader != null && mHeader.getTabLayout() != null) {
+                    mHeader.getTabLayout().setOnActivePageChangedListener(this);
+                }
                 View tabPersonal = findViewById(R.id.tab_personal);
                 if (tabPersonal != null) {
-                    tabPersonal.setOnClickListener((View view) -> {
-                        if (mHorizontalPager != null) {
-                            mHorizontalPager.setAppsList(
-                                    mAH.get(AdapterHolder.MAIN).mAppsList,
-                                    mAH.get(AdapterHolder.MAIN).mAdapter,
-                                    false);
-                        }
-                        if (mHeader != null && mHeader.getTabLayout() != null) {
-                            mHeader.getTabLayout().setActiveMarker(AdapterHolder.MAIN);
-                        }
-                    });
+                    tabPersonal.setOnClickListener((View view) -> switchToTab(AdapterHolder.MAIN));
                 }
                 View tabWork = findViewById(R.id.tab_work);
                 if (tabWork != null) {
-                    tabWork.setOnClickListener((View view) -> {
-                        if (mHorizontalPager != null) {
-                            mHorizontalPager.setAppsList(
-                                    mAH.get(AdapterHolder.WORK).mAppsList,
-                                    mAH.get(AdapterHolder.WORK).mAdapter,
-                                    true);
-                        }
-                        if (mHeader != null && mHeader.getTabLayout() != null) {
-                            mHeader.getTabLayout().setActiveMarker(AdapterHolder.WORK);
-                        }
-                    });
+                    tabWork.setOnClickListener((View view) -> switchToTab(AdapterHolder.WORK));
                 }
                 setDeviceManagementResources();
+                if (mHeader != null && mHeader.isSetUp()) {
+                    onActivePageChanged(AdapterHolder.MAIN);
+                }
             }
 
             if (mFastScroller != null) {
@@ -1487,14 +1487,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     public void switchToTab(int tab) {
         if (mUsingTabs) {
             if (isDrawerHorizontal() && mHorizontalPager != null) {
-                boolean isWork = tab == AdapterHolder.WORK;
-                mHorizontalPager.setAppsList(
-                        mAH.get(tab).mAppsList,
-                        mAH.get(tab).mAdapter,
-                        isWork);
-                if (mHeader != null && mHeader.getTabLayout() != null) {
-                    mHeader.getTabLayout().setActiveMarker(tab);
-                }
+                onActivePageChanged(tab);
             } else if (mViewPager != null) {
                 mViewPager.setCurrentPage(tab);
             }

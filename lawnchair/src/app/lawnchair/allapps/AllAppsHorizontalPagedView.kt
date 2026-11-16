@@ -2,10 +2,12 @@ package app.lawnchair.allapps
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.DeviceProfile
@@ -176,6 +178,29 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
     fun rebuildPages() {
         val list = appsList ?: return
         val dp: DeviceProfile = activityContext.deviceProfile
+
+        val hasWorkPausedCard = list.adapterItems.any { it.viewType == BaseAllAppsAdapter.VIEW_TYPE_WORK_DISABLED_CARD }
+        if (hasWorkPausedCard) {
+            unregisterIconContainers()
+            removeAllViews()
+            val pausedCard = LayoutInflater.from(context).inflate(R.layout.work_apps_paused, this, false)
+            val container = FrameLayout(context).apply {
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                val cardParams = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    Gravity.CENTER,
+                )
+                addView(pausedCard, cardParams)
+            }
+            addView(container)
+            mPageIndicator?.visibility = GONE
+            currentRows = 0
+            currentCols = 0
+            currentItemCount = 0
+            return
+        }
+
         val (cols, rows) = calculateGridDimensions()
         val itemsPerPage = maxOf(1, rows * cols)
 
@@ -187,7 +212,60 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
         val pageCount = if (totalItems == 0) 1 else ((totalItems + itemsPerPage - 1) / itemsPerPage)
 
         // Fast-path: If grid dimensions and total item count match, update existing views in-place without re-inflation
-        val canReuseViews = rows == currentRows && cols == currentCols && pageCount == childCount && totalItems == currentItemCount
+        var canReuseViews = rows == currentRows && cols == currentCols && pageCount == childCount && totalItems == currentItemCount
+        if (canReuseViews) {
+            outer@ for (pageIdx in 0 until pageCount) {
+                val pageGrid = getChildAt(pageIdx) as? AllAppsPageGrid ?: run {
+                    canReuseViews = false
+                    break@outer
+                }
+                val startIdx = pageIdx * itemsPerPage
+                val endIdx = minOf(startIdx + itemsPerPage, totalItems)
+                if (pageGrid.childCount != (endIdx - startIdx)) {
+                    canReuseViews = false
+                    break@outer
+                }
+                var childIdx = 0
+                for (i in startIdx until endIdx) {
+                    val item = adapterItems[i]
+                    val child = pageGrid.getChildAt(childIdx)
+                    val isExpectedFolder = item.viewType == BaseAllAppsAdapter.VIEW_TYPE_FOLDER
+                    val isFolder = child is FolderIcon
+                    val isApp = child is BubbleTextView
+                    if ((isExpectedFolder && !isFolder) || (!isExpectedFolder && !isApp)) {
+                        canReuseViews = false
+                        break@outer
+                    }
+                    childIdx++
+                }
+            }
+        }
+
+        if (canReuseViews) {
+            outer@ for (pageIdx in 0 until pageCount) {
+                val pageGrid = getChildAt(pageIdx) as? AllAppsPageGrid ?: run { canReuseViews = false; break@outer }
+                val startIdx = pageIdx * itemsPerPage
+                val endIdx = minOf(startIdx + itemsPerPage, totalItems)
+                if (pageGrid.childCount != (endIdx - startIdx)) {
+                    canReuseViews = false
+                    break@outer
+                }
+                var childIdx = 0
+                for (i in startIdx until endIdx) {
+                    val item = adapterItems[i]
+                    val child = pageGrid.getChildAt(childIdx)
+                    val isExpectedFolder = item.viewType == BaseAllAppsAdapter.VIEW_TYPE_FOLDER
+                    val isFolder = child is FolderIcon
+                    val isApp = child is BubbleTextView
+                    if ((isExpectedFolder && !isFolder) || (!isExpectedFolder && !isApp)) {
+                        canReuseViews = false
+                        break@outer
+                    }
+                    childIdx++
+                }
+            }
+        }
+
         if (canReuseViews) {
             for (pageIdx in 0 until pageCount) {
                 val pageGrid = getChildAt(pageIdx) as? AllAppsPageGrid ?: continue

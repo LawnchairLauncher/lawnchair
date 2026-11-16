@@ -240,7 +240,9 @@ public class PrivateProfileManager extends UserProfileManager {
         Trace.beginSection("PrivateProfileManager#reset");
         // Ensure the state of the header view is what it should be before animating.
         updateView();
-        getMainRecyclerView().setChildAttachedConsumer(null);
+        if (getMainRecyclerView() != null) {
+            getMainRecyclerView().setChildAttachedConsumer(null);
+        }
         int previousState = getCurrentState();
         boolean isEnabled = !mAllApps.getAppsStore()
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
@@ -685,7 +687,9 @@ public class PrivateProfileManager extends UserProfileManager {
         mAnimatorSet.addListener(forEndCallback(() -> {
             mIsStateTransitioning = false;
             setAnimationRunning(false);
-            getMainRecyclerView().setChildAttachedConsumer(child -> child.setAlpha(1));
+            if (getMainRecyclerView() != null) {
+                getMainRecyclerView().setChildAttachedConsumer(child -> child.setAlpha(1));
+            }
             mStatsLogManager.logger().sendToInteractionJankMonitor(
                     expand
                             ? LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_END
@@ -703,7 +707,9 @@ public class PrivateProfileManager extends UserProfileManager {
                 }
                 if (isPrivateSpaceHidden()) {
                     // TODO (b/325455879): Figure out if we can avoid this.
-                    getMainRecyclerView().getAdapter().notifyDataSetChanged();
+                    if (getMainRecyclerView() != null && getMainRecyclerView().getAdapter() != null) {
+                        getMainRecyclerView().getAdapter().notifyDataSetChanged();
+                    }
                 }
             }
         }));
@@ -871,8 +877,9 @@ public class PrivateProfileManager extends UserProfileManager {
         mPSHeader.getLocationOnScreen(psHeaderLocation);
         int psHeaderBottomY = psHeaderLocation[1] + mPsHeaderHeight;
         // Calculate the topY of the floatingMaskView as if it was added.
+        int paddingBottom = getMainRecyclerView() != null ? getMainRecyclerView().getPaddingBottom() : 0;
         int floatingMaskViewBottomBoxTopY =
-                (int) (mAllApps.getBottom() - getMainRecyclerView().getPaddingBottom());
+                (int) (mAllApps.getBottom() - paddingBottom);
         // Don't attach if the header will be clipped by the floating mask view.
         if (psHeaderBottomY > floatingMaskViewBottomBoxTopY) {
             mFloatingMaskView = null;
@@ -907,7 +914,8 @@ public class PrivateProfileManager extends UserProfileManager {
     }
 
     private float getFloatingMaskViewHeight() {
-        return mFloatingMaskViewCornerRadius + getMainRecyclerView().getPaddingBottom();
+        int paddingBottom = getMainRecyclerView() != null ? getMainRecyclerView().getPaddingBottom() : 0;
+        return mFloatingMaskViewCornerRadius + paddingBottom;
     }
 
     AllAppsRecyclerView getMainRecyclerView() {
