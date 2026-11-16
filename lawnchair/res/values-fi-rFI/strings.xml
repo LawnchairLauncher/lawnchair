@@ -579,6 +579,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Aloitusnäytön kierto</string>
     <string name="home_screen_rotation_description">Salli aloitusnäytön kierto, kun laitetta käännetään</string>
+    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
+    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
+    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
     <string name="auto_updater_label">Tarkista päivityksiä automaattisesti</string>
     <string name="auto_updater_description">Tarkistaa Nightly päivitykset avattaessa Tietoja Näyttö</string>
     <string name="live_information_label">Live-tiedot</string>

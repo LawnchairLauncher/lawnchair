@@ -579,6 +579,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Startscherm-rotatie</string>
     <string name="home_screen_rotation_description">Startscherm-rotatie toestaan wanneer het apparaat wordt gedraaid</string>
+    <string name="pan_to_move_icon_label">Kantelen om door pagina\'s te bladeren</string>
+    <string name="pan_to_move_icon_description">Kantel je telefoon naar links of rechts om tussen pagina\'s te bewegen tijdens het opnieuw inrichten van apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Kantelgevoeligheid</string>
+    <string name="pan_to_move_sensor_unavailable">Niet beschikbaar omdat er geen bewegingssensor geregistreerd kon worden.</string>
     <string name="auto_updater_label">Automatisch op updates controleren</string>
     <string name="auto_updater_description">Controleert op Nightly-updates bij het openen van het Over scherm</string>
     <string name="live_information_label">Huidige informatie</string>

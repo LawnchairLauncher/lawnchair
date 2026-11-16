@@ -132,7 +132,7 @@
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">Foldery w szufladzie aplikacji</string>
     <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
+    <string name="add_apps">Dodaj aplikacje</string>
     <string name="app_drawer_folder_settings">Folder szuflady aplikacji</string>
     <string name="add_folder">Utwórz folder</string>
     <string name="edit_folder">Edytuj folder</string>
@@ -144,9 +144,9 @@
     <string name="apps_in_folder_label">Ukryj aplikacje folderu</string>
     <string name="apps_in_folder_description">Aplikacje przypisane do folderów są wykluczone z list aplikacji</string>
     <string name="folders_filter_duplicates">Pokaż tylko niedodane aplikacje</string>
-    <string name="folder_manage_apps">Manage apps</string>
+    <string name="folder_manage_apps">Zarządzaj aplikacjami</string>
     <string name="my_folder_label">Mój folder</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="sort_active_items_action">Sortuj aktywne elementy</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -154,10 +154,10 @@
     <string name="x_and_y">%1$s i %2$s</string>
     <string name="advanced">Zaawansowane</string>
     <!-- Draggable -->
-    <string name="reorderable_move_up">Move up</string>
-    <string name="reorderable_move_down">Move down</string>
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
+    <string name="reorderable_move_up">Przenieś w górę</string>
+    <string name="reorderable_move_down">Przenieś w dół</string>
+    <string name="reorderable_active_items">Aktywne elementy</string>
+    <string name="reorderable_disabled_items">Inne elementy</string>
     <string name="reorderable_disabled_hint">Disabled items will appear here</string>
     <string name="reorderable_add_hint_items">Active items will appear here</string>
     <!--
@@ -172,7 +172,7 @@
     <string name="general_description">Kolory, zestawy ikon, kropki powiadomień</string>
     <string name="home_screen_label">Ekran główny</string>
     <string name="home_screen_description">Wiadomości, siatka, ikony</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">Akcje ekranu głównego</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Pasek wyszukiwania, liczba ikon</string>
     <string name="app_drawer_label">Szuflada aplikacji</string>
@@ -217,10 +217,10 @@
     <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
     <string name="vibration_feedback_level_label">Vibration feedback level</string>
     <string name="vibration_feedback_no_feedback_choice">Brak</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="vibration_feedback_minimal_choice">Minimalny</string>
     <string name="vibration_feedback_default_choice">Domyślnie</string>
     <string name="vibration_feedback_expressive_choice">Ekspresywny</string>
-    <string name="recents_lock_unlock">App locking</string>
+    <string name="recents_lock_unlock">Blokowanie aplikacji</string>
     <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
     <!--Overlay-->
     <string name="app_closing_animation">Animacja zamykania aplikacji</string>
@@ -233,15 +233,15 @@
     -->
     <string name="suggestion_pref_screen_title">Sugestie</string>
     <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
+    <string name="app_predictions_label">Sugestie aplikacji</string>
     <string name="prediction_mode_label">Suggestions provider</string>
     <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
     <string name="prediction_mode_system">System</string>
     <string name="prediction_mode_none">Wyłączono</string>
     <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
     <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
-    <string name="dismissed_prediction_apps_label">Blocked apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
+    <string name="dismissed_prediction_apps_label">Zablokowane aplikacje</string>
+    <string name="dismissed_prediction_apps_label_with_count">Zablokowane aplikacje (%1$d)</string>
     <string name="prediction_system_settings">Manage system suggestions</string>
     <string name="missing_usage_access_label">Usage access needed</string>
     <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
@@ -591,6 +591,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Obrót ekranu głównego</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
+    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
+    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
+    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
     <string name="auto_updater_label">Automatically check for updates</string>
     <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
     <string name="live_information_label">Live information</string>
