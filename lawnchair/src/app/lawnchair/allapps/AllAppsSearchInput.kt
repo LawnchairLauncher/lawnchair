@@ -73,6 +73,7 @@ import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.BlurUtils
 import java.util.Locale
 import kotlin.math.max
+import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
 class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
@@ -190,8 +191,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     ColorTokens.SearchboxHighlight.resolveColor(context)
                 }
 
+                val drawerOpacity = prefs.drawerOpacity.get()
+                val targetAlpha = ((drawerOpacity + 0.20f) * 100).roundToInt().coerceIn(0, 100)
                 val backgroundAlpha by animateIntAsState(
-                    if (isFocused || !queryEmpty) 0 else 100,
+                    if (isFocused || !queryEmpty) 0 else targetAlpha,
                 )
 
                 // Ignore other theme attributes to preserve existing behavior

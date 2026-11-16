@@ -98,6 +98,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AnalogClock;
 import android.widget.TextClock;
 import android.window.BackEvent;
@@ -1598,29 +1599,38 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
         if (isInState(LauncherState.ALL_APPS)) {
             AllAppsRecyclerView activeRecyclerView = getAppsView().getActiveRecyclerView();
             View v = null;
-            if (svi != null) {
-                // Preferred item match
-                v = activeRecyclerView.findViewByPredicate(view ->
-                        view.isAggregatedVisible()
-                                && view.getTag() instanceof ItemInfo info && svi.matches(info));
-            }
-            if (v == null) {
-                // Package user match
-                v = activeRecyclerView.findViewByPredicate(view ->
+            if (activeRecyclerView != null) {
+                if (svi != null) {
+                    // Preferred item match
+                    v = activeRecyclerView.findViewByPredicate(view ->
+                            view.isAggregatedVisible()
+                                    && view.getTag() instanceof ItemInfo info && svi.matches(info));
+                }
+                if (v == null) {
+                    // Package user match
+                    v = activeRecyclerView.findViewByPredicate(view ->
+                            view.isAggregatedVisible() && view.getTag() instanceof ItemInfo info
+                                    && info.itemType == ITEM_TYPE_APPLICATION
+                                    && info.user.equals(user)
+                                    && TextUtils.equals(info.getTargetPackage(), packageName));
+                }
+
+                if (v != null && activeRecyclerView.computeVerticalScrollOffset() > 0) {
+                    RectF locationBounds = new RectF();
+                    FloatingIconView.getLocationBoundsForView(this, v, false, locationBounds,
+                            new Rect());
+                    if (locationBounds.top < getAppsView().getHeaderBottom()) {
+                        // Icon is covered by scrim, return null to play fallback animation.
+                        return null;
+                    }
+                }
+            } else if (getAppsView().getAppsRecyclerViewContainer() != null) {
+                ViewGroup container = getAppsView().getAppsRecyclerViewContainer();
+                v = Utilities.findViewByPredicate(container, view ->
                         view.isAggregatedVisible() && view.getTag() instanceof ItemInfo info
                                 && info.itemType == ITEM_TYPE_APPLICATION
                                 && info.user.equals(user)
                                 && TextUtils.equals(info.getTargetPackage(), packageName));
-            }
-
-            if (v != null && activeRecyclerView.computeVerticalScrollOffset() > 0) {
-                RectF locationBounds = new RectF();
-                FloatingIconView.getLocationBoundsForView(this, v, false, locationBounds,
-                        new Rect());
-                if (locationBounds.top < getAppsView().getHeaderBottom()) {
-                    // Icon is covered by scrim, return null to play fallback animation.
-                    return null;
-                }
             }
             return v;
         }

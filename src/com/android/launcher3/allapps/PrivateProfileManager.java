@@ -449,6 +449,9 @@ public class PrivateProfileManager extends UserProfileManager {
     /** Finds the private space header to smooth scroll to. */
     private void collapse() {
         AllAppsRecyclerView allAppsRecyclerView = mAllApps.getActiveRecyclerView();
+        if (allAppsRecyclerView == null) {
+            return;
+        }
         List<BaseAllAppsAdapter.AdapterItem> appListAdapterItems =
                 allAppsRecyclerView.getApps().getAdapterItems();
         for (int i = appListAdapterItems.size() - 1; i > 0; i--) {
@@ -534,7 +537,8 @@ public class PrivateProfileManager extends UserProfileManager {
     private ValueAnimator animateCollapseAnimation() {
         float from = 1;
         float to = 0;
-        RecyclerViewFastScroller scrollBar = mAllApps.getActiveRecyclerView().getScrollbar();
+        AllAppsRecyclerView rv = mAllApps.getActiveRecyclerView();
+        RecyclerViewFastScroller scrollBar = rv != null ? rv.getScrollbar() : null;
         ValueAnimator collapseAnim = ValueAnimator.ofFloat(from, to);
         collapseAnim.setDuration(EXPAND_COLLAPSE_DURATION);
         collapseAnim.addListener(new AnimatorListenerAdapter() {
@@ -562,8 +566,11 @@ public class PrivateProfileManager extends UserProfileManager {
         float from = isExpanding ? 0 : 1;
         float to = isExpanding ? 1 : 0;
         AllAppsRecyclerView allAppsRecyclerView = mAllApps.getActiveRecyclerView();
+        if (allAppsRecyclerView == null) {
+            return ValueAnimator.ofFloat(from, to);
+        }
         List<BaseAllAppsAdapter.AdapterItem> allAppsAdapterItems =
-                mAllApps.getActiveRecyclerView().getApps().getAdapterItems();
+                allAppsRecyclerView.getApps().getAdapterItems();
         ValueAnimator alphaAnim = ObjectAnimator.ofFloat(from, to);
         alphaAnim.setDuration(APP_OPACITY_DURATION)
                 .setStartDelay(isExpanding ? APP_OPACITY_DELAY : NO_DELAY);

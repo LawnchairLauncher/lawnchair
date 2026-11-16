@@ -62,7 +62,7 @@ public class QuickstepAccessibilityDelegate extends LauncherAccessibilityDelegat
             return;
         }
         AllAppsRecyclerView contentView = mLauncher.getAppsView().getActiveRecyclerView();
-        if (contentView instanceof SearchRecyclerView) {
+        if (contentView == null || contentView instanceof SearchRecyclerView) {
             return;
         }
         LinearLayoutManager layoutManager = (LinearLayoutManager) contentView.getLayoutManager();

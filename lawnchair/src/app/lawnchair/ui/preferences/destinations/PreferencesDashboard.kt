@@ -117,12 +117,12 @@ fun PreferencesDashboard(
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu(currentRoute = currentRoute, onNavigate = onNavigate) },
     ) {
-        AnnouncementPreference()
+        // AnnouncementPreference()
 
-        if (BuildConfig.APPLICATION_ID.contains("nightly") || BuildConfig.DEBUG) {
-            PreferencesDebugWarning()
-            Spacer(modifier = Modifier.height(8.dp))
-        }
+        // if (BuildConfig.APPLICATION_ID.contains("nightly") || BuildConfig.DEBUG) {
+        //     PreferencesDebugWarning()
+        //     Spacer(modifier = Modifier.height(8.dp))
+        // }
 
         if (!context.isDefaultLauncher()) {
             PreferencesSetDefaultLauncherWarning()

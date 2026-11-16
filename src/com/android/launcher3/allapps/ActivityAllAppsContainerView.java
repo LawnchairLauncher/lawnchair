@@ -61,6 +61,7 @@ import android.view.ViewOutlineProvider;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -180,6 +181,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     private final Path mTmpPath = new Path();
     private final RectF mTmpRectF = new RectF();
     protected AllAppsPagedView mViewPager;
+    protected ViewGroup mHorizontalContainer;
+    protected app.lawnchair.allapps.AllAppsHorizontalPagedView mHorizontalPager;
     protected FloatingHeaderView mHeader;
     protected final List<AllAppsRow> mAdditionalHeaderRows = new ArrayList<>();
     protected View mBottomSheetBackground;
@@ -266,8 +269,14 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         // This is a focus listener that proxies focus from a view into the list view.  This is to
         // work around the search box from getting first focus and showing the cursor.
         setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus && getActiveRecyclerView() != null) {
-                getActiveRecyclerView().requestFocus();
+            if (hasFocus) {
+                if (getActiveRecyclerView() != null) {
+                    getActiveRecyclerView().requestFocus();
+                } else if (mHorizontalPager != null) {
+                    mHorizontalPager.requestFocus();
+                } else if (getAppsRecyclerViewContainer() != null) {
+                    getAppsRecyclerViewContainer().requestFocus();
+                }
             }
         });
         mSearchUiDelegate = createSearchUiDelegate();
@@ -586,6 +595,15 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // Reset the search bar and search RV after transitioning home.
             MAIN_EXECUTOR.getHandler().post(mSearchUiManager::resetSearch);
         }
+        if (isDrawerHorizontal() && mHorizontalPager != null) {
+            if (!PreferenceCacheExtensionsKt.firstCached(pref2.getRememberPosition())) {
+                mHorizontalPager.setCurrentPage(0);
+            }
+            if (mSearchUiManager.getEditText() != null) {
+                mSearchUiManager.getEditText().clearFocus();
+            }
+            mSearchUiManager.setBackgroundVisibility(true, 1f);
+        }
         if (isSearching()) {
             mWorkManager.reset();
         }
@@ -703,6 +721,66 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         replaceAppsRVContainer(showTabs);
         mUsingTabs = showTabs;
 
+        if (isDrawerHorizontal() && mHorizontalPager != null) {
+            mAH.get(AdapterHolder.MAIN).updateFilterOnly(mPersonalMatcher);
+            mAH.get(AdapterHolder.WORK).updateFilterOnly(mWorkManager.getItemInfoMatcher());
+            mAH.get(AdapterHolder.MAIN).mRecyclerView = null;
+            mAH.get(AdapterHolder.WORK).mRecyclerView = null;
+
+            mHorizontalPager.setAppsList(
+                    mAH.get(AdapterHolder.MAIN).mAppsList,
+                    mAH.get(AdapterHolder.MAIN).mAdapter,
+                    false);
+
+            if (mUsingTabs) {
+                View tabPersonal = findViewById(R.id.tab_personal);
+                if (tabPersonal != null) {
+                    tabPersonal.setOnClickListener((View view) -> {
+                        if (mHorizontalPager != null) {
+                            mHorizontalPager.setAppsList(
+                                    mAH.get(AdapterHolder.MAIN).mAppsList,
+                                    mAH.get(AdapterHolder.MAIN).mAdapter,
+                                    false);
+                        }
+                        if (mHeader != null && mHeader.getTabLayout() != null) {
+                            mHeader.getTabLayout().setActiveMarker(AdapterHolder.MAIN);
+                        }
+                    });
+                }
+                View tabWork = findViewById(R.id.tab_work);
+                if (tabWork != null) {
+                    tabWork.setOnClickListener((View view) -> {
+                        if (mHorizontalPager != null) {
+                            mHorizontalPager.setAppsList(
+                                    mAH.get(AdapterHolder.WORK).mAppsList,
+                                    mAH.get(AdapterHolder.WORK).mAdapter,
+                                    true);
+                        }
+                        if (mHeader != null && mHeader.getTabLayout() != null) {
+                            mHeader.getTabLayout().setActiveMarker(AdapterHolder.WORK);
+                        }
+                    });
+                }
+                setDeviceManagementResources();
+            }
+
+            if (mFastScroller != null) {
+                mFastScroller.setVisibility(View.GONE);
+            }
+
+            if (mSearchUiManager.getEditText() != null) {
+                mSearchUiManager.getEditText().clearFocus();
+            }
+            mSearchUiManager.setBackgroundVisibility(true, 1f);
+            mHorizontalPager.setFocusable(true);
+            mHorizontalPager.setFocusableInTouchMode(true);
+            mHorizontalPager.requestFocus();
+
+            setupHeader();
+            mHorizontalPager.registerIconContainers(mAllAppsStore);
+            return;
+        }
+
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.SEARCH).mRecyclerView);
@@ -800,10 +878,32 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         View oldView = getAppsRecyclerViewContainer();
         int index = indexOfChild(oldView);
         removeView(oldView);
-        int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
-        final View rvContainer = getLayoutInflater().inflate(layout, this, false);
+        final View rvContainer;
+        if (isDrawerHorizontal()) {
+            rvContainer = getLayoutInflater().inflate(R.layout.all_apps_horizontal_container, this, false);
+            mHorizontalContainer = (ViewGroup) rvContainer;
+            mHorizontalPager = rvContainer.findViewById(R.id.all_apps_horizontal_pager);
+            mViewPager = null;
+            if (mHorizontalPager != null) {
+                mHorizontalPager.setFocusable(true);
+                mHorizontalPager.setFocusableInTouchMode(true);
+                mHorizontalPager.requestFocus();
+            }
+        } else {
+            mHorizontalContainer = null;
+            mHorizontalPager = null;
+            int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
+            rvContainer = getLayoutInflater().inflate(layout, this, false);
+        }
         addView(rvContainer, index);
-        if (showTabs) {
+        if (mHorizontalPager != null) {
+            mHorizontalPager.initParentViews(rvContainer);
+            if (showTabs) {
+                mWorkManager.reset();
+            } else {
+                mWorkManager.detachWorkUtilityViews();
+            }
+        } else if (showTabs) {
             mViewPager = (AllAppsPagedView) rvContainer;
             mViewPager.initParentViews(this);
             mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
@@ -1073,6 +1173,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     private boolean isAppDrawerSearchBarHidden() {
         return PreferenceCacheExtensionsKt.firstCached(pref2.getHideAppDrawerSearchBar());
+    }
+
+    public boolean isDrawerHorizontal() {
+        return pref2.isDrawerHorizontal();
     }
 
     private void layoutBelowSearchContainer(View v, boolean includeTabsMargin) {
@@ -1358,6 +1462,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * hidden while searching.
      */
     public ViewGroup getAppsRecyclerViewContainer() {
+        if (mHorizontalContainer != null) {
+            return mHorizontalContainer;
+        }
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
     }
 
@@ -1367,6 +1474,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     protected boolean isPersonalTab() {
+        if (isDrawerHorizontal() && mHorizontalPager != null) {
+            return !mHorizontalPager.isWorkProfile();
+        }
         return mViewPager == null || mViewPager.getNextPage() == 0;
     }
 
@@ -1376,7 +1486,18 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      */
     public void switchToTab(int tab) {
         if (mUsingTabs) {
-            mViewPager.setCurrentPage(tab);
+            if (isDrawerHorizontal() && mHorizontalPager != null) {
+                boolean isWork = tab == AdapterHolder.WORK;
+                mHorizontalPager.setAppsList(
+                        mAH.get(tab).mAppsList,
+                        mAH.get(tab).mAdapter,
+                        isWork);
+                if (mHeader != null && mHeader.getTabLayout() != null) {
+                    mHeader.getTabLayout().setActiveMarker(tab);
+                }
+            } else if (mViewPager != null) {
+                mViewPager.setCurrentPage(tab);
+            }
         }
     }
 
@@ -1478,6 +1599,29 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             adapterHolder.mPadding.right = grid.allAppsPadding.right;
             adapterHolder.applyPadding();
         });
+        if (mHorizontalContainer != null) {
+            int bottomOffset = 0;
+            if (isSearchBarFloating()) {
+                bottomOffset += mSearchContainer.getHeight();
+            }
+            int bottomMargin = bottomPadding + bottomOffset;
+            View indicator = mHorizontalContainer.findViewById(R.id.all_apps_page_indicator);
+            if (indicator != null && indicator.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) indicator.getLayoutParams();
+                lp.bottomMargin = bottomMargin + Utilities.dpToPx(8);
+                indicator.setLayoutParams(lp);
+            }
+            if (mHorizontalPager != null) {
+                int topPadding = mHeader != null && mHeader.getVisibility() == VISIBLE
+                        ? mHeader.getMaxTranslation() : 0;
+                int indicatorSpace = Utilities.dpToPx(32);
+                mHorizontalPager.setPadding(
+                        grid.allAppsPadding.left,
+                        topPadding,
+                        grid.allAppsPadding.right,
+                        bottomMargin + indicatorSpace);
+            }
+        }
     }
 
     private void setDeviceManagementResources() {
@@ -1573,9 +1717,13 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     /** The current page visible in all apps. */
     public int getCurrentPage() {
-        return isSearching()
-                ? SEARCH
-                : mViewPager == null ? AdapterHolder.MAIN : mViewPager.getNextPage();
+        if (isSearching()) {
+            return SEARCH;
+        }
+        if (isDrawerHorizontal() && mHorizontalPager != null) {
+            return mHorizontalPager.isWorkProfile() ? AdapterHolder.WORK : AdapterHolder.MAIN;
+        }
+        return mViewPager == null ? AdapterHolder.MAIN : mViewPager.getNextPage();
     }
 
     public PrivateProfileManager getPrivateProfileManager() {
@@ -1848,6 +1996,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             mAdapter = createAdapter(mAppsList);
             mAppsList.setAdapter(mAdapter);
             mLayoutManager = mAdapter.getLayoutManager();
+        }
+
+        void updateFilterOnly(@Nullable Predicate<ItemInfo> matcher) {
+            mAppsList.updateItemFilter(matcher);
         }
 
         void setup(@NonNull View rv, @Nullable Predicate<ItemInfo> matcher) {

@@ -284,7 +284,9 @@ public class FloatingHeaderView extends LinearLayout implements
         mCurrentRV =
                 rvType == AdapterHolder.MAIN ? mMainRV
                 : rvType == AdapterHolder.WORK ? mWorkRV : mSearchRV;
-        mCurrentRV.addOnScrollListener(mOnScrollListener);
+        if (mCurrentRV != null) {
+            mCurrentRV.addOnScrollListener(mOnScrollListener);
+        }
         maybeSetTabVisibility(rvType == AdapterHolder.SEARCH ? GONE : VISIBLE);
     }
 
@@ -349,7 +351,8 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     protected void applyVerticalMove() {
-        int maxTranslation = mMaxTranslation - mCurrentRV.getSavedScrollPosition();
+        int savedScroll = mCurrentRV != null ? mCurrentRV.getSavedScrollPosition() : 0;
+        int maxTranslation = mMaxTranslation - savedScroll;
         int uncappedTranslationY = mTranslationY;
         mTranslationY = Math.max(mTranslationY, -maxTranslation);
 
@@ -417,7 +420,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
         mHeaderCollapsed = false;
         mSnappedScrolledY = -mMaxTranslation;
-        if (!PreferenceCacheExtensionsKt.firstCached(pref2.getRememberPosition())) {
+        if (mCurrentRV != null && !PreferenceCacheExtensionsKt.firstCached(pref2.getRememberPosition())) {
             mCurrentRV.scrollToTop();
         }
     }
@@ -458,6 +461,9 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mCurrentRV == null) {
+            return super.onInterceptTouchEvent(ev);
+        }
         calcOffset(mTempOffset);
         ev.offsetLocation(mTempOffset.x, mTempOffset.y);
         mForwardToRecyclerView = mCurrentRV.onInterceptTouchEvent(ev);
@@ -467,7 +473,7 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mForwardToRecyclerView) {
+        if (mForwardToRecyclerView && mCurrentRV != null) {
             // take this view's and parent view's (view pager) location into account
             calcOffset(mTempOffset);
             event.offsetLocation(mTempOffset.x, mTempOffset.y);
@@ -482,6 +488,11 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     private void calcOffset(Point p) {
+        if (mCurrentRV == null || !(mCurrentRV.getParent() instanceof ViewGroup)) {
+            p.x = 0;
+            p.y = 0;
+            return;
+        }
         p.x = getLeft() - mCurrentRV.getLeft() - ((ViewGroup) mCurrentRV.getParent()).getLeft();
         p.y = getTop() - mCurrentRV.getTop() - ((ViewGroup) mCurrentRV.getParent()).getTop();
     }

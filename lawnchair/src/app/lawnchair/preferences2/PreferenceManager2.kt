@@ -28,6 +28,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.lawnchair.allapps.AppDrawerMode
 import app.lawnchair.data.Converters
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -442,6 +443,17 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_system_settings_entry_on_popup),
         onSet = { reloadHelper.reloadGrid() },
     )
+
+    val drawerMode = preference(
+        key = stringPreferencesKey(name = "drawer_mode"),
+        defaultValue = AppDrawerMode.fromString(context.getString(R.string.config_default_app_drawer_mode)),
+        parse = { AppDrawerMode.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
+    )
+
+    val isDrawerHorizontal: Boolean
+        get() = drawerMode.firstBlocking() == AppDrawerMode.HORIZONTAL
 
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
