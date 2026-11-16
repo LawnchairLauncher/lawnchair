@@ -126,7 +126,9 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
         val cols = maxOf(1, dp.numShownAllAppsColumns)
         val h = if (measuredHeight > 0) measuredHeight else height
         val availHeight = h - paddingTop - paddingBottom
-        val minCellHeight = dp.allAppsProfile.iconSizePx + Utilities.dpToPx(16f)
+        val lineCount = if (dp.inv.enableTwoLinesInAllApps) 2 else 1
+        val textHeight = Utilities.calculateTextHeight(dp.allAppsProfile.iconTextSizePx) * lineCount
+        val minCellHeight = dp.allAppsProfile.iconSizePx + dp.allAppsProfile.iconDrawablePaddingPx + textHeight
         val rows = if (availHeight <= 0 || availHeight >= minCellHeight * 6) {
             6
         } else {
