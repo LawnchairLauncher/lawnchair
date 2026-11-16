@@ -243,7 +243,10 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
 
         if (canReuseViews) {
             outer@ for (pageIdx in 0 until pageCount) {
-                val pageGrid = getChildAt(pageIdx) as? AllAppsPageGrid ?: run { canReuseViews = false; break@outer }
+                val pageGrid = getChildAt(pageIdx) as? AllAppsPageGrid ?: run {
+                    canReuseViews = false
+                    break@outer
+                }
                 val startIdx = pageIdx * itemsPerPage
                 val endIdx = minOf(startIdx + itemsPerPage, totalItems)
                 if (pageGrid.childCount != (endIdx - startIdx)) {

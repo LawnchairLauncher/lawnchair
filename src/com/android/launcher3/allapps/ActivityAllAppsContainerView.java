@@ -200,6 +200,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     /** {@code true} when rendered view is in search state instead of the scroll state. */
     private boolean mIsSearching;
     private boolean mSearchExitInProgress;
+    private boolean mIsChangingActivePage;
     boolean showFastScroller;
     private boolean mRebindAdaptersAfterSearchAnimation;
     private int mNavBarScrimHeight = 0;
@@ -681,34 +682,42 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     private void onActivePageChanged(int currentActivePage, boolean keepSearchFocus) {
-        if (mSearchTransitionController.isRunning()) {
-            // Will be called at the end of the animation.
+        if (mIsChangingActivePage) {
             return;
         }
-        if (currentActivePage != SEARCH && !keepSearchFocus) {
-            mActivityContext.hideKeyboard();
-        }
-        if (mAH.get(currentActivePage).mRecyclerView != null) {
-            mAH.get(currentActivePage).mRecyclerView.bindFastScrollbar(mFastScroller,
-                    ALL_APPS_SCROLLER);
-        }
-        // Header keeps track of active recycler view to properly render header protection.
-        mHeader.setActiveRV(currentActivePage);
-        reset(true /* animate */, !isSearching() && !keepSearchFocus /* exitSearch */);
-
-        if (isDrawerHorizontal() && mHorizontalPager != null
-                && (currentActivePage == AdapterHolder.MAIN || currentActivePage == AdapterHolder.WORK)) {
-            boolean isWork = currentActivePage == AdapterHolder.WORK;
-            mHorizontalPager.setAppsList(
-                    mAH.get(currentActivePage).mAppsList,
-                    mAH.get(currentActivePage).mAdapter,
-                    isWork);
-            if (mHeader != null && mHeader.getTabLayout() != null) {
-                mHeader.getTabLayout().setActiveMarker(currentActivePage);
+        mIsChangingActivePage = true;
+        try {
+            if (mSearchTransitionController.isRunning()) {
+                // Will be called at the end of the animation.
+                return;
             }
-        }
+            if (currentActivePage != SEARCH && !keepSearchFocus) {
+                mActivityContext.hideKeyboard();
+            }
+            if (mAH.get(currentActivePage).mRecyclerView != null) {
+                mAH.get(currentActivePage).mRecyclerView.bindFastScrollbar(mFastScroller,
+                        ALL_APPS_SCROLLER);
+            }
+            // Header keeps track of active recycler view to properly render header protection.
+            mHeader.setActiveRV(currentActivePage);
+            reset(true /* animate */, !isSearching() && !keepSearchFocus /* exitSearch */);
 
-        mWorkManager.onActivePageChanged(currentActivePage);
+            if (isDrawerHorizontal() && mHorizontalPager != null
+                    && (currentActivePage == AdapterHolder.MAIN || currentActivePage == AdapterHolder.WORK)) {
+                boolean isWork = currentActivePage == AdapterHolder.WORK;
+                mHorizontalPager.setAppsList(
+                        mAH.get(currentActivePage).mAppsList,
+                        mAH.get(currentActivePage).mAdapter,
+                        isWork);
+                if (mHeader != null && mHeader.getTabLayout() != null) {
+                    mHeader.getTabLayout().updateTabTextColor(currentActivePage);
+                }
+            }
+
+            mWorkManager.onActivePageChanged(currentActivePage);
+        } finally {
+            mIsChangingActivePage = false;
+        }
     }
 
     protected void rebindAdapters() {

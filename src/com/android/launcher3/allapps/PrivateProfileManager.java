@@ -296,6 +296,9 @@ public class PrivateProfileManager extends UserProfileManager {
     @VisibleForTesting
     void addPrivateSpaceDecorator() {
         ActivityAllAppsContainerView<?>.AdapterHolder mainAdapterHolder = mAllApps.mAH.get(MAIN);
+        if (mainAdapterHolder.mRecyclerView == null) {
+            return;
+        }
         // Create a new decorator instance if not already available.
         if (mPrivateAppsSectionDecorator == null) {
             mPrivateAppsSectionDecorator = new PrivateAppsSectionDecorator(
@@ -515,6 +518,9 @@ public class PrivateProfileManager extends UserProfileManager {
                     break;
                 }
             }
+        }
+        if (allAppsRecyclerView == null) {
+            return itemToScrollTo;
         }
         if (itemToScrollTo != -1) {
             // Note: SmoothScroller is meant to be used once.
@@ -744,6 +750,9 @@ public class PrivateProfileManager extends UserProfileManager {
         int to = 0; // No opacity.
         ValueAnimator alphaAnim = ObjectAnimator.ofInt(from, to);
         AllAppsRecyclerView allAppsRecyclerView = mAllApps.getActiveRecyclerView();
+        if (allAppsRecyclerView == null) {
+            return ValueAnimator.ofInt(from, to).setDuration(0);
+        }
         List<BaseAllAppsAdapter.AdapterItem> allAppsAdapterItems =
                 allAppsRecyclerView.getApps().getAdapterItems();
         alphaAnim.setDuration(CONTAINER_OPACITY_DURATION);
@@ -848,8 +857,10 @@ public class PrivateProfileManager extends UserProfileManager {
             // Animate the text and settings icon.
             DeviceProfile deviceProfile =
                     ActivityContext.lookupContext(mAllApps.getContext()).getDeviceProfile();
-            scrollForHeaderToBeVisibleInContainer(mainAdapterHolder.mRecyclerView, adapterItems,
-                    getPsHeaderHeight(), deviceProfile.getAllAppsProfile().getCellHeightPx());
+            if (mainAdapterHolder.mRecyclerView != null) {
+                scrollForHeaderToBeVisibleInContainer(mainAdapterHolder.mRecyclerView, adapterItems,
+                        getPsHeaderHeight(), deviceProfile.getAllAppsProfile().getCellHeightPx());
+            }
             updatePrivateStateAnimator(true);
         }
         Trace.endSection();
