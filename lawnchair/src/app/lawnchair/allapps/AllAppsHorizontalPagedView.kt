@@ -34,7 +34,7 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
     private var appsAdapter: BaseAllAppsAdapter<*>? = null
     var isWorkProfile: Boolean = false
         private set
-    var onAppsRebuiltListener: (() -> Unit)? = null
+    var onAppsRebuiltListener: Runnable? = null
     private var adapterObserver: RecyclerView.AdapterDataObserver? = null
     private var registeredStore: AllAppsStore<*>? = null
 
@@ -199,7 +199,7 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
             currentRows = 0
             currentCols = 0
             currentItemCount = 0
-            onAppsRebuiltListener?.invoke()
+            onAppsRebuiltListener?.run()
             return
         }
 
@@ -289,7 +289,7 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
                     childIdx++
                 }
             }
-            onAppsRebuiltListener?.invoke()
+            onAppsRebuiltListener?.run()
             return
         }
 
@@ -359,7 +359,7 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
             setCurrentPage(maxOf(0, pageCount - 1))
         }
         requestLayout()
-        onAppsRebuiltListener?.invoke()
+        onAppsRebuiltListener?.run()
     }
 }
 
