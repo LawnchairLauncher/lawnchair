@@ -712,11 +712,32 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 if (mHeader != null && mHeader.getTabLayout() != null) {
                     mHeader.getTabLayout().updateTabTextColor(currentActivePage);
                 }
+                updateHorizontalPrivateSpaceHeader(isWork);
             }
 
             mWorkManager.onActivePageChanged(currentActivePage);
         } finally {
             mIsChangingActivePage = false;
+        }
+    }
+
+    private void updateHorizontalPrivateSpaceHeader(boolean isWork) {
+        if (!isDrawerHorizontal() || mHorizontalContainer == null) {
+            return;
+        }
+        RelativeLayout psHeader = mHorizontalContainer.findViewById(R.id.ps_header_layout);
+        if (psHeader == null) {
+            return;
+        }
+        boolean hasPsHeader = !isWork && mPrivateProfileManager != null
+                && mAH.get(AdapterHolder.MAIN).mAppsList != null
+                && mAH.get(AdapterHolder.MAIN).mAppsList.getAdapterItems().stream()
+                        .anyMatch(item -> item.viewType == BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER);
+        if (hasPsHeader) {
+            psHeader.setVisibility(VISIBLE);
+            mPrivateProfileManager.bindPrivateSpaceHeaderViewElements(psHeader);
+        } else {
+            psHeader.setVisibility(GONE);
         }
     }
 
@@ -754,6 +775,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                     mAH.get(AdapterHolder.MAIN).mAppsList,
                     mAH.get(AdapterHolder.MAIN).mAdapter,
                     false);
+            updateHorizontalPrivateSpaceHeader(false);
 
             if (mUsingTabs) {
                 if (mHeader != null && mHeader.getTabLayout() != null) {
@@ -907,6 +929,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         addView(rvContainer, index);
         if (mHorizontalPager != null) {
             mHorizontalPager.initParentViews(rvContainer);
+            mHorizontalPager.setOnAppsRebuiltListener(() ->
+                    updateHorizontalPrivateSpaceHeader(mHorizontalPager.isWorkProfile()));
             if (showTabs) {
                 mWorkManager.reset();
             } else {

@@ -661,10 +661,8 @@ public class PrivateProfileManager extends UserProfileManager {
             return;
         }
         if (mPSHeader == null) {
-            mOnPSHeaderAdded = () -> updatePrivateStateAnimator(expand);
-            // Set animation to true, because onBind will be called after this return where we want
-            // the views to be updated accordingly so animation can happen.
-            setAnimationRunning(true);
+            setAnimationRunning(false);
+            mOnPSHeaderAdded = null;
             return;
         }
         attachFloatingMaskView(expand);
