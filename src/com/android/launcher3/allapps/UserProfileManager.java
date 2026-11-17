@@ -36,6 +36,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.function.Predicate;
 
+import timber.log.Timber;
+
 /**
  * A Generic User Profile Manager which abstract outs the common functionality required
  * by user-profiles supported by Launcher
@@ -95,6 +97,11 @@ public abstract class UserProfileManager {
             }
         } catch (SecurityException ex) {
             ApiWrapper.INSTANCE.get(context).assignDefaultHomeRole(context);
+        } catch (IllegalArgumentException ex) {
+            // Some ROMs list a user that is not a profile (a "dual apps" or "second space" user,
+            // id 999), and UserManager refuses it. Nothing to toggle there.
+            // With a throwable, the host app's Timber tree records it as a Crashlytics non-fatal.
+            Timber.w(ex, "Cannot set quiet mode for %s", userHandle);
         }
     }
 

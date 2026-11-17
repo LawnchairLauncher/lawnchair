@@ -200,6 +200,7 @@ dependencies {
     implementation libs.androidx.preference.ktx
 
     implementation libs.javax.inject
+    implementation libs.timber
     implementation libs.kotlinx.coroutines.android
     implementation libs.kotlinx.serialization.json
 
