@@ -48,6 +48,7 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
     private var currentRows: Int = 0
     private var currentCols: Int = 0
     private var currentItemCount: Int = 0
+    private var currentPrivateRows: Int = 0
 
     init {
         importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
@@ -144,11 +145,33 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
         return Pair(cols, rows)
     }
 
+    private fun calculatePrivateRows(rows: Int): Int {
+        val dp: DeviceProfile = activityContext.deviceProfile
+        val psHeaderHeight = context.resources.getDimensionPixelSize(R.dimen.ps_header_height)
+        val h = if (measuredHeight > 0) measuredHeight else height
+        val availHeight = h - paddingTop - paddingBottom
+        if (availHeight <= 0) return maxOf(1, rows - 1)
+        val lineCount = if (dp.inv.enableTwoLinesInAllApps) 2 else 1
+        val textHeight = Utilities.calculateTextHeight(dp.allAppsProfile.iconTextSizePx) * lineCount
+        val minCellHeight = dp.allAppsProfile.iconSizePx + dp.allAppsProfile.iconDrawablePaddingPx + textHeight
+        val privateAvailHeight = maxOf(0, availHeight - psHeaderHeight)
+        return if (privateAvailHeight >= minCellHeight * rows) {
+            rows
+        } else {
+            maxOf(1, privateAvailHeight / minCellHeight)
+        }
+    }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         if (w <= 0 || h <= 0) return
+        if (oldw == 0 && oldh == 0) {
+            post { rebuildPages() }
+            return
+        }
         val (cols, rows) = calculateGridDimensions()
-        if (rows != currentRows || cols != currentCols) {
+        val privateRows = calculatePrivateRows(rows)
+        if (rows != currentRows || cols != currentCols || privateRows != currentPrivateRows) {
             post { rebuildPages() }
         }
     }
@@ -266,17 +289,7 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
 
         val personalPageCount = if (personalItems.isEmpty()) 1 else ((personalItems.size + itemsPerPage - 1) / itemsPerPage)
 
-        val psHeaderHeight = context.resources.getDimensionPixelSize(R.dimen.ps_header_height)
-        val h = if (measuredHeight > 0) measuredHeight else height
-        val availHeight = h - paddingTop - paddingBottom
-        val lineCount = if (dp.inv.enableTwoLinesInAllApps) 2 else 1
-        val textHeight = Utilities.calculateTextHeight(dp.allAppsProfile.iconTextSizePx) * lineCount
-        val minCellHeight = dp.allAppsProfile.iconSizePx + dp.allAppsProfile.iconDrawablePaddingPx + textHeight
-        val privateRows = if ((availHeight - psHeaderHeight) >= minCellHeight * rows) {
-            rows
-        } else {
-            maxOf(1, (availHeight - psHeaderHeight) / minCellHeight)
-        }
+        val privateRows = calculatePrivateRows(rows)
         val privateItemsPerPage = maxOf(1, privateRows * cols)
 
         val privatePageCount = if (hasPrivateSpace) {
@@ -343,6 +356,7 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
         currentRows = rows
         currentCols = cols
         currentItemCount = totalItems
+        currentPrivateRows = privateRows
 
         unregisterIconContainers()
         removeAllViews()
@@ -389,7 +403,6 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
                     }
                     val psHeader = inflater.inflate(R.layout.private_space_header, pageContainer, false) as? RelativeLayout
                     if (psHeader != null) {
-                        psHeader.setPadding(dp.allAppsPadding.left, 0, dp.allAppsPadding.right, 0)
                         launcher.appsView?.privateProfileManager?.bindPrivateSpaceHeaderViewElements(psHeader)
                         pageContainer.addView(
                             psHeader,

@@ -657,7 +657,8 @@ public class PrivateProfileManager extends UserProfileManager {
      * here.
      */
     private void updatePrivateStateAnimator(boolean expand) {
-        if (!Flags.enablePrivateSpace() || !Flags.privateSpaceAnimation()) {
+        if (!Flags.enablePrivateSpace() || !Flags.privateSpaceAnimation()
+                || mAllApps.isDrawerHorizontal()) {
             return;
         }
         if (mPSHeader == null) {
@@ -851,7 +852,7 @@ public class PrivateProfileManager extends UserProfileManager {
                 mainAdapterHolder.mAppsList.getAdapterItems();
         Trace.beginSection("PrivateProfileManager#expandPrivateSpace");
         if (Flags.enablePrivateSpace() && Flags.privateSpaceAnimation()
-                && mAllApps.isPersonalTab()) {
+                && mAllApps.isPersonalTab() && !mAllApps.isDrawerHorizontal()) {
             // Animate the text and settings icon.
             DeviceProfile deviceProfile =
                     ActivityContext.lookupContext(mAllApps.getContext()).getDeviceProfile();
@@ -877,7 +878,8 @@ public class PrivateProfileManager extends UserProfileManager {
 
     private void attachFloatingMaskView(boolean expand) {
         // Floating mask can't block the transparent background if blur is enabled, so don't add it.
-        if (!Flags.privateSpaceAddFloatingMaskView() || mAllApps.isBackgroundBlurEnabled()) {
+        if (!Flags.privateSpaceAddFloatingMaskView() || mAllApps.isBackgroundBlurEnabled()
+                || mAllApps.isDrawerHorizontal()) {
             return;
         }
         // Use getLocationOnScreen() as simply checking for mPSHeader.getBottom() is only relative
