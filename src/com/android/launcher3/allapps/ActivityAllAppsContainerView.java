@@ -724,32 +724,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 if (mHeader != null && mHeader.getTabLayout() != null) {
                     mHeader.getTabLayout().updateTabTextColor(currentActivePage);
                 }
-                updateHorizontalPrivateSpaceHeader(isWork);
+                mAH.get(currentActivePage).applyPadding();
             }
 
             mWorkManager.onActivePageChanged(currentActivePage);
         } finally {
             mIsChangingActivePage = false;
-        }
-    }
-
-    private void updateHorizontalPrivateSpaceHeader(boolean isWork) {
-        if (!isDrawerHorizontal() || mHorizontalContainer == null) {
-            return;
-        }
-        RelativeLayout psHeader = mHorizontalContainer.findViewById(R.id.ps_header_layout);
-        if (psHeader == null) {
-            return;
-        }
-        boolean hasPsHeader = !isWork && mPrivateProfileManager != null
-                && mAH.get(AdapterHolder.MAIN).mAppsList != null
-                && mAH.get(AdapterHolder.MAIN).mAppsList.getAdapterItems().stream()
-                        .anyMatch(item -> item.viewType == BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER);
-        if (hasPsHeader) {
-            psHeader.setVisibility(VISIBLE);
-            mPrivateProfileManager.bindPrivateSpaceHeaderViewElements(psHeader);
-        } else {
-            psHeader.setVisibility(GONE);
         }
     }
 
@@ -789,7 +769,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                     mAH.get(AdapterHolder.MAIN).mAppsList,
                     mAH.get(AdapterHolder.MAIN).mAdapter,
                     false);
-            updateHorizontalPrivateSpaceHeader(false);
 
             if (mUsingTabs) {
                 if (mHeader != null && mHeader.getTabLayout() != null) {
@@ -946,13 +925,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         addView(rvContainer, index);
         if (mHorizontalPager != null) {
             mHorizontalPager.initParentViews(rvContainer);
-            mHorizontalPager.setOnAppsRebuiltListener(() ->
-                    updateHorizontalPrivateSpaceHeader(mHorizontalPager.isWorkProfile()));
             if (showTabs) {
                 mWorkManager.reset();
             } else {
                 mWorkManager.detachWorkUtilityViews();
             }
+            applyAdapterSideAndBottomPaddings(mActivityContext.getDeviceProfile());
         } else if (showTabs) {
             mViewPager = (AllAppsPagedView) rvContainer;
             mViewPager.initParentViews(this);
@@ -1658,6 +1636,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 indicator.setLayoutParams(lp);
             }
             if (mHorizontalPager != null) {
+                int workBottomOffset = 0;
+                if (mHorizontalPager.isWorkProfile() && mWorkManager.getWorkUtilityView() != null
+                        && mWorkManager.getWorkUtilityView().getVisibility() == VISIBLE) {
+                    workBottomOffset = mWorkManager.getWorkUtilityView().getHeight();
+                }
                 int topPadding = mHeader != null && mHeader.getVisibility() == VISIBLE
                         ? mHeader.getMaxTranslation() : 0;
                 int indicatorSpace = Utilities.dpToPx(32);
@@ -1665,7 +1648,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                         grid.allAppsPadding.left,
                         topPadding,
                         grid.allAppsPadding.right,
-                        bottomMargin + indicatorSpace);
+                        bottomMargin + indicatorSpace + workBottomOffset);
             }
         }
     }
@@ -2097,6 +2080,29 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 }
                 mRecyclerView.setPadding(mPadding.left, mPadding.top, mPadding.right,
                         mPadding.bottom + bottomOffset);
+            } else if (isDrawerHorizontal() && mHorizontalPager != null) {
+                if (isWork() == mHorizontalPager.isWorkProfile()) {
+                    int workBottomOffset = 0;
+                    if (mHorizontalPager.isWorkProfile() && mWorkManager.getWorkUtilityView() != null
+                            && mWorkManager.getWorkUtilityView().getVisibility() == VISIBLE) {
+                        workBottomOffset = mWorkManager.getWorkUtilityView().getHeight();
+                    }
+                    int bottomPadding = Math.max(mInsets.bottom, mNavBarScrimHeight);
+                    int bottomOffset = 0;
+                    if (isSearchBarFloating()) {
+                        bottomOffset += mSearchContainer.getHeight();
+                    }
+                    int bottomMargin = bottomPadding + bottomOffset;
+                    int indicatorSpace = Utilities.dpToPx(32);
+                    int topPadding = mHeader != null && mHeader.getVisibility() == VISIBLE
+                            ? mHeader.getMaxTranslation() : 0;
+                    DeviceProfile grid = mActivityContext.getDeviceProfile();
+                    mHorizontalPager.setPadding(
+                            grid.allAppsPadding.left,
+                            topPadding,
+                            grid.allAppsPadding.right,
+                            bottomMargin + indicatorSpace + workBottomOffset);
+                }
             }
         }
 
