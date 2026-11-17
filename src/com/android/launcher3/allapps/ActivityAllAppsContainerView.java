@@ -490,14 +490,26 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             return;
         }
         mSearchExitInProgress = !goingToSearch;
-        mFastScroller.setVisibility(goingToSearch ? INVISIBLE : VISIBLE);
+        if (mFastScroller != null) {
+            if (isDrawerHorizontal()) {
+                mFastScroller.setVisibility(GONE);
+            } else {
+                mFastScroller.setVisibility(goingToSearch ? INVISIBLE : (showFastScroller ? VISIBLE : INVISIBLE));
+            }
+        }
         if (goingToSearch) {
             // Fade out the button to pause work apps.
             mWorkManager.onActivePageChanged(SEARCH);
         } else if (mAllAppsTransitionController != null) {
             // If exiting search, revert predictive back scale on all apps
             mAllAppsTransitionController.animateAllAppsToNoScale();
-            mFastScroller.setVisibility(showFastScroller ? VISIBLE : INVISIBLE);
+            if (mFastScroller != null) {
+                if (isDrawerHorizontal()) {
+                    mFastScroller.setVisibility(GONE);
+                } else {
+                    mFastScroller.setVisibility(showFastScroller ? VISIBLE : INVISIBLE);
+                }
+            }
         }
         mSearchTransitionController.animateToState(goingToSearch, durationMs,
                 /* onEndRunnable = */ () -> {
@@ -766,6 +778,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mUsingTabs = showTabs;
 
         if (isDrawerHorizontal() && mHorizontalPager != null) {
+            mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
+            mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
             mAH.get(AdapterHolder.MAIN).updateFilterOnly(mPersonalMatcher);
             mAH.get(AdapterHolder.WORK).updateFilterOnly(mWorkManager.getItemInfoMatcher());
             mAH.get(AdapterHolder.MAIN).mRecyclerView = null;
@@ -799,16 +813,19 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 mFastScroller.setVisibility(View.GONE);
             }
 
-            if (mSearchUiManager.getEditText() != null) {
-                mSearchUiManager.getEditText().clearFocus();
+            if (!mIsSearching) {
+                if (mSearchUiManager.getEditText() != null) {
+                    mSearchUiManager.getEditText().clearFocus();
+                }
+                mSearchUiManager.setBackgroundVisibility(true, 1f);
+                mHorizontalPager.setFocusable(true);
+                mHorizontalPager.setFocusableInTouchMode(true);
+                mHorizontalPager.requestFocus();
             }
-            mSearchUiManager.setBackgroundVisibility(true, 1f);
-            mHorizontalPager.setFocusable(true);
-            mHorizontalPager.setFocusableInTouchMode(true);
-            mHorizontalPager.requestFocus();
 
             setupHeader();
             mHorizontalPager.registerIconContainers(mAllAppsStore);
+            mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.SEARCH).mRecyclerView);
             return;
         }
 
