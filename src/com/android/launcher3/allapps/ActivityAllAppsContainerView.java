@@ -1319,6 +1319,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             if (currentPage == AdapterHolder.WORK && mViewPager != null) {
                 mViewPager.setCurrentPage(currentPage);
                 rebindAdapters();
+            } else if (currentPage == AdapterHolder.WORK && isDrawerHorizontal() && mHorizontalPager != null) {
+                switchToTab(AdapterHolder.WORK);
+                rebindAdapters();
             } else {
                 reset(true);
             }
