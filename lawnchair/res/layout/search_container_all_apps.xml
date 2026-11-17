@@ -36,7 +36,6 @@
         android:layout_gravity="center"
         android:background="@android:color/transparent"
         android:clickable="false"
-        android:focusable="true"
         android:padding="0dp"
         android:paddingStart="@dimen/qsb_g_icon_marginStart"
         android:paddingEnd="@dimen/search_result_padding">
