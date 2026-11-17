@@ -436,11 +436,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
         if (wasKeyboardVisible && !isKeyboardVisible) {
             if (input.hasFocus()) {
-                if (input.text.isNullOrEmpty()) {
-                    resetSearch()
-                } else {
-                    input.hideKeyboard()
-                }
+                input.clearFocus()
             }
         }
         wasKeyboardVisible = isKeyboardVisible
