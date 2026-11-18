@@ -617,6 +617,22 @@ public class LoaderCursor extends CursorWrapper {
      * check & update map of what's occupied; used to discard overlapping/invalid items
      */
     protected boolean checkItemPlacement(ItemInfo item) {
+        if (checkItemPlacementInternal(item)) {
+            return true;
+        }
+        // Lawnchair: a large folder that no longer fits (e.g. after a grid change) falls back to
+        // a regular 1x1 folder instead of being deleted along with its contents.
+        if (item instanceof FolderInfo folderInfo && (item.spanX > 1 || item.spanY > 1)) {
+            Log.w(TAG, "Large folder doesn't fit, shrinking to 1x1: " + item);
+            item.spanX = 1;
+            item.spanY = 1;
+            folderInfo.options &= ~FolderInfo.FLAG_LARGE_FOLDER;
+            return checkItemPlacementInternal(item);
+        }
+        return false;
+    }
+
+    private boolean checkItemPlacementInternal(ItemInfo item) {
         int containerIndex = item.screenId;
         if (item.container == Favorites.CONTAINER_HOTSEAT) {
             final GridOccupancy hotseatOccupancy =

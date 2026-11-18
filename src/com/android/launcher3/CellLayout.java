@@ -67,6 +67,7 @@ import com.android.launcher3.celllayout.ReorderParameters;
 import com.android.launcher3.celllayout.ReorderPreviewAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -964,6 +965,13 @@ public class CellLayout extends ViewGroup {
      * Returns the max distance from the center of a cell that can accept a drop to create a folder.
      */
     public float getFolderCreationRadius(int[] targetCell) {
+        // Lawnchair: a large folder accepts drops anywhere over the cells it covers. Its center
+        // sits between cells, so the regular per-cell radius would reject most drops.
+        if (targetCell != null && targetCell[0] >= 0 && targetCell[1] >= 0
+                && getChildAt(targetCell[0], targetCell[1]) instanceof FolderIcon folderIcon
+                && folderIcon.isLargeFolderMode()) {
+            return Float.MAX_VALUE;
+        }
         DeviceProfile grid = mActivity.getDeviceProfile();
         float iconVisibleRadius = ICON_VISIBLE_AREA_FACTOR * grid.iconSizePx / 2;
         // Halfway between reorder radius and icon.

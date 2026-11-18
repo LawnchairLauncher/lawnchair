@@ -146,6 +146,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import app.lawnchair.folder.LargeFolderController;
 import app.lawnchair.hotseat.HotseatPagedView;
 import app.lawnchair.gestures.PanToMoveController;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
@@ -2005,6 +2006,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
             return null;
         }
+        // Lawnchair: long-pressing a desktop folder offers switching between regular / large.
+        if (child instanceof FolderIcon folderIcon && !dragOptions.isAccessibleDrag
+                && dragOptions.preDragCondition == null
+                && LargeFolderController.canResize(folderIcon)) {
+            dragOptions.preDragCondition =
+                    LargeFolderController.showResizePopup(mLauncher, folderIcon);
+        }
         if (dragOptions.preDragCondition != null) {
             int xDragOffSet = dragOptions.preDragCondition.getDragOffset().x;
             int yDragOffSet = dragOptions.preDragCondition.getDragOffset().y;
@@ -2055,6 +2063,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public boolean acceptDrop(DragObject d) {
         // If it's an external drop (e.g. from All Apps), check if it should be accepted
         CellLayout dropTargetLayout = mDropToLayout;
+        // Lawnchair: large folders only live on the desktop.
+        if (dropTargetLayout != null && mLauncher.isHotseatLayout(dropTargetLayout)
+                && d.dragInfo instanceof FolderInfo folderInfo && folderInfo.isLargeFolder()) {
+            return false;
+        }
         if (d.dragSource != this) {
             // Don't accept the drop if we're not over a valid drop target at time of drop
             if (dropTargetLayout == null) {

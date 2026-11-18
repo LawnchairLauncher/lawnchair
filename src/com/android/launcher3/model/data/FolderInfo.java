@@ -59,6 +59,34 @@ public class FolderInfo extends CollectionInfo {
     public static final int FLAG_MANUAL_FOLDER_NAME = 0x00000008;
 
     /**
+     * Lawnchair: the folder is shown on the workspace as a "large folder" spanning
+     * {@link #spanX} x {@link #spanY} cells, with its first apps directly launchable.
+     */
+    public static final int FLAG_LARGE_FOLDER = 0x00000100;
+
+    /**
+     * Lawnchair: a large folder with more apps than slots scrolls inside its tile instead of
+     * showing an overflow slot that opens the folder.
+     */
+    public static final int FLAG_LARGE_FOLDER_SCROLL = 0x00000200;
+
+    /** Lawnchair: a scrolling large folder scrolls horizontally (page by page). */
+    public static final int FLAG_LARGE_FOLDER_SCROLL_HORIZONTAL = 0x00000400;
+
+    /** Lawnchair: a scrolling large folder doesn't show its scroll bar. */
+    public static final int FLAG_LARGE_FOLDER_HIDE_SCROLL_BAR = 0x00000800;
+
+    /** Lawnchair: largest supported span (per axis) for a large folder. */
+    public static final int LARGE_FOLDER_MAX_SPAN = 5;
+
+    /**
+     * Lawnchair: Returns true if this folder is currently displayed as a large folder.
+     */
+    public boolean isLargeFolder() {
+        return hasOption(FLAG_LARGE_FOLDER) && (spanX > 1 || spanY > 1);
+    }
+
+    /**
      * Different states of folder label.
      */
     public enum LabelState {

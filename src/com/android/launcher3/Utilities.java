@@ -237,6 +237,10 @@ public final class Utilities {
                 return bi.newIcon(context);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            if (info.spanX > 1 || info.spanY > 1) {
+                // Lawnchair: large folders are dragged as a snapshot of their tile.
+                return null;
+            }
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
                     activity, info.id, new Point(width, height));
             if (icon == null) {
@@ -809,6 +813,10 @@ public final class Utilities {
                 }
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            if (info.spanX > 1 || info.spanY > 1) {
+                // Lawnchair: large folders are dragged as a snapshot of their tile.
+                return null;
+            }
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
                     context, info.id, new Point(width, height));
             if (icon == null) {
