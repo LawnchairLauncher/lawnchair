@@ -41,12 +41,16 @@ sealed interface SearchResultView {
 
     fun shouldHandleClick(targetCompat: SearchTargetCompat): Boolean {
         val packageName = targetCompat.packageName
-        return (packageName in listOf(START_PAGE, MARKET_STORE, WEB_SUGGESTION, CONTACT, FILES)) &&
+        return (packageName in listOf(START_PAGE, MARKET_STORE, WEB_SUGGESTION, CONTACT, FILES, app.lawnchair.search.PrivateSpaceSearchUtils.PRIVATE_SPACE_PACKAGE)) &&
             targetCompat.layoutType != LayoutType.SMALL_ICON_HORIZONTAL_TEXT &&
             targetCompat.resultType != SearchTargetCompat.RESULT_TYPE_SHORTCUT
     }
 
     fun handleSearchTargetClick(context: Context, searchTargetIntent: Intent) {
+        if (searchTargetIntent.action == app.lawnchair.search.PrivateSpaceSearchUtils.PRIVATE_SPACE_ACTION) {
+            app.lawnchair.search.PrivateSpaceSearchUtils.unlockOrOpenPrivateSpace(context)
+            return
+        }
         searchTargetIntent.resolveActivity(context.packageManager)?.let {
             context.startActivity(searchTargetIntent)
         } ?: run {

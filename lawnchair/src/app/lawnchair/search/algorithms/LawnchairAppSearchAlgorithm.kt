@@ -106,6 +106,14 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
         }
 
+        if (app.lawnchair.search.PrivateSpaceSearchUtils.shouldShowPrivateSpaceInSearch(context, query)) {
+            val isLocked = app.lawnchair.search.PrivateSpaceSearchUtils.isPrivateSpaceLocked(context)
+            searchTargets.add(0, searchTargetFactory.createPrivateSpaceTarget(isLocked))
+            if (appResults.isNotEmpty()) {
+                searchTargets.add(1, searchTargetFactory.createHeaderTarget(SPACE))
+            }
+        }
+
         searchTargetFactory.createMarketSearchTarget(query)?.let { searchTargets.add(it) }
 
         setFirstItemQuickLaunch(searchTargets)

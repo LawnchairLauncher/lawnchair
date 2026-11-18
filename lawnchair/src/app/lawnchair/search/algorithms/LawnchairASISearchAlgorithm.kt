@@ -108,7 +108,11 @@ class LawnchairASISearchAlgorithm(context: Context) :
 
         override fun accept(platformTargets: List<SearchTarget>) {
             if (!canceled) {
-                val targets = platformTargets.map { SearchTargetCompat.wrap(it) }
+                val targets = platformTargets.map { SearchTargetCompat.wrap(it) }.toMutableList()
+                if (app.lawnchair.search.PrivateSpaceSearchUtils.shouldShowPrivateSpaceInSearch(context, query)) {
+                    val isLocked = app.lawnchair.search.PrivateSpaceSearchUtils.isPrivateSpaceLocked(context)
+                    targets.add(0, app.lawnchair.search.PrivateSpaceSearchUtils.createPrivateSpaceTarget(context, isLocked))
+                }
                 setFirstItemQuickLaunch(targets)
                 val adapterItems = transformSearchResults(targets)
                 callback.onSearchResult(

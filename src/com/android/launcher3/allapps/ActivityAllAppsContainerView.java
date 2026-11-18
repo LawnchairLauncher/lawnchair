@@ -1504,6 +1504,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         return mSearchRecyclerView;
     }
 
+    /** The horizontal paged view when horizontal drawer is enabled. */
+    public app.lawnchair.allapps.AllAppsHorizontalPagedView getHorizontalPager() {
+        return mHorizontalPager;
+    }
+
     protected boolean isPersonalTab() {
         if (isDrawerHorizontal() && mHorizontalPager != null) {
             return !mHorizontalPager.isWorkProfile();

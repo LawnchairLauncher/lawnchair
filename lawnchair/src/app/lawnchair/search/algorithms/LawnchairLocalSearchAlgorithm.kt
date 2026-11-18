@@ -14,6 +14,7 @@ import app.lawnchair.search.algorithms.engine.ContactsSectionBuilder
 import app.lawnchair.search.algorithms.engine.EmptyStateSectionBuilder
 import app.lawnchair.search.algorithms.engine.FilesSectionBuilder
 import app.lawnchair.search.algorithms.engine.HistorySectionBuilder
+import app.lawnchair.search.algorithms.engine.PrivateSpaceSectionBuilder
 import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
 import app.lawnchair.search.algorithms.engine.SearchSettingsSectionBuilder
@@ -175,10 +176,16 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
         actions.add(SearchResult.Action.SearchSettings)
 
+        if (app.lawnchair.search.PrivateSpaceSearchUtils.shouldShowPrivateSpaceInSearch(context, query)) {
+            val isLocked = app.lawnchair.search.PrivateSpaceSearchUtils.isPrivateSpaceLocked(context)
+            actions.add(0, SearchResult.Action.PrivateSpace(isLocked))
+        }
+
         return actions
     }
 
     private val sectionBuilders: List<SectionBuilder> = listOf(
+        PrivateSpaceSectionBuilder,
         AppsAndShortcutsSectionBuilder,
         CalculationSectionBuilder,
         WebSuggestionsSectionBuilder,

@@ -844,7 +844,7 @@ public class PrivateProfileManager extends UserProfileManager {
         return alphaAnim;
     }
 
-    void expandPrivateSpace() {
+    public void expandPrivateSpace() {
         // If we are on main adapter view, we apply the PS Container expansion animation and
         // scroll down to load the entire container, making animation visible.
         ActivityAllAppsContainerView<?>.AdapterHolder mainAdapterHolder = mAllApps.mAH.get(MAIN);
@@ -861,6 +861,17 @@ public class PrivateProfileManager extends UserProfileManager {
                         getPsHeaderHeight(), deviceProfile.getAllAppsProfile().getCellHeightPx());
             }
             updatePrivateStateAnimator(true);
+        }
+        if (mAllApps.isDrawerHorizontal()) {
+            app.lawnchair.allapps.AllAppsHorizontalPagedView pager = mAllApps.getHorizontalPager();
+            if (pager != null) {
+                pager.post(() -> {
+                    int targetPage = pager.getPersonalPageCount();
+                    if (targetPage < pager.getPageCount()) {
+                        pager.snapToPage(targetPage);
+                    }
+                });
+            }
         }
         Trace.endSection();
     }

@@ -49,6 +49,8 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
     private var currentCols: Int = 0
     private var currentItemCount: Int = 0
     private var currentPrivateRows: Int = 0
+    var personalPageCount: Int = 0
+        private set
 
     init {
         importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
@@ -288,6 +290,7 @@ class AllAppsHorizontalPagedView @JvmOverloads constructor(
         }
 
         val personalPageCount = if (personalItems.isEmpty()) 1 else ((personalItems.size + itemsPerPage - 1) / itemsPerPage)
+        this.personalPageCount = personalPageCount
 
         val privateRows = calculatePrivateRows(rows)
         val privateItemsPerPage = maxOf(1, privateRows * cols)

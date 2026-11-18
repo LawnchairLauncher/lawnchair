@@ -351,10 +351,8 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     protected void applyVerticalMove() {
-        int savedScroll = mCurrentRV != null ? mCurrentRV.getSavedScrollPosition() : 0;
-        int maxTranslation = mMaxTranslation - savedScroll;
         int uncappedTranslationY = mTranslationY;
-        mTranslationY = Math.max(mTranslationY, -maxTranslation);
+        mTranslationY = Math.max(mTranslationY, -mMaxTranslation);
 
         if (mFloatingRowsCollapsed || uncappedTranslationY < mTranslationY - getPaddingTop()) {
             // we hide it completely if already capped (for opening search anim)
