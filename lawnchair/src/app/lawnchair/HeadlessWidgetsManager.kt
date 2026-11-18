@@ -18,6 +18,7 @@ import com.android.launcher3.util.SafeCloseable
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -59,7 +60,9 @@ class HeadlessWidgetsManager @Inject constructor(
     }
 
     override fun close() {
-        TODO("Not yet implemented")
+        scope.cancel()
+        host.stopListening()
+        widgetsMap.clear()
     }
 
     private class HeadlessAppWidgetHost(context: Context) : AppWidgetHost(context, 1028) {
@@ -94,7 +97,7 @@ class HeadlessWidgetsManager @Inject constructor(
             val view = host.createView(context, widgetId, info) as HeadlessAppWidgetHostView
             trySend(view)
             view.updateCallback = { trySend(it) }
-            awaitClose()
+            awaitClose { view.updateCallback = null }
         }
             .onStart { if (!isBound) throw WidgetNotBoundException() }
             .shareIn(
