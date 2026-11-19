@@ -472,8 +472,7 @@ class SystemUiProxy @Inject constructor(@ApplicationContext private val context:
 
     fun takeScreenshot(request: ScreenshotRequest) =
         executeWithErrorLog({ "Failed call takeScreenshot" }) {
-            // LC-Ignored
-            //systemUiProxy?.takeScreenshot(request)
+            systemUiProxy?.takeScreenshot(request)
         }
 
     fun expandNotificationPanel() =
