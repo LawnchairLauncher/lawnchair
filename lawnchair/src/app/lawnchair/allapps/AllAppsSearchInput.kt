@@ -211,7 +211,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                             searchAlgorithm?.doZeroStateSearch(this@AllAppsSearchInput)
                         }
                         input.requestFocus()
-                        input.showKeyboard()
+                        postShowKeyboard()
                     },
                     onStartIconClick = if (shouldShowIcons) {
                         {
@@ -281,9 +281,12 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     input.setHint(R.string.all_apps_search_bar_hint)
                 }
 
-                if (input.text.toString().isEmpty() && isDirectFocus) {
-                    searchAlgorithm?.doZeroStateSearch(this)
+                if (isDirectFocus) {
+                    if (input.text.toString().isEmpty()) {
+                        searchAlgorithm?.doZeroStateSearch(this)
+                    }
                     setDirectFocus(false)
+                    postShowKeyboard()
                 }
 
                 setBackgroundVisibility(false, 0f)
@@ -469,6 +472,17 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     override fun setDirectFocus(directFocus: Boolean) {
         isDirectFocus = directFocus
+    }
+
+    /**
+     * Posts IME show until after focus/layout settle so InputMethodManager has bound [input].
+     */
+    private fun postShowKeyboard() {
+        input.post {
+            if (input.hasFocus()) {
+                input.showKeyboard()
+            }
+        }
     }
 
     override fun preDispatchKeyEvent(event: KeyEvent) {
