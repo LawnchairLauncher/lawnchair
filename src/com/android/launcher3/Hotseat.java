@@ -102,6 +102,7 @@ public class Hotseat extends FrameLayout implements Insettable {
     private Workspace<?> mWorkspace;
     private boolean mSendTouchToWorkspace;
     private boolean mSendTouchToPager;
+    private boolean mDisallowWorkspaceInterceptForIconSwipe;
     private final MultiValueAlpha mIconsAlphaChannels;
     private final MultiValueAlpha mQsbAlphaChannels;
 
@@ -159,6 +160,8 @@ public class Hotseat extends FrameLayout implements Insettable {
         mPagedView = new HotseatPagedView(context);
         mPagedView.setLayoutParams(new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mPagedView.setClipChildren(false);
+        mPagedView.setClipToPadding(false);
         mIconsContainer.addView(mPagedView);
 
         mPageIndicatorHeight = Math.round(
@@ -223,8 +226,18 @@ public class Hotseat extends FrameLayout implements Insettable {
         background.setColor(finalColor);
         background.setCornerRadius(cornerRadius);
         InsetDrawable bg = new InsetDrawable(background,
-                insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
+                insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom) {
+            @Override
+            public boolean getPadding(Rect padding) {
+                if (padding != null) {
+                    padding.set(0, 0, 0, 0);
+                }
+                return false;
+            }
+        };
         setBackground(bg);
+        setClipChildren(false);
+        setClipToPadding(false);
     }
 
     /** Provides translation X for hotseat icons for the channel. */
@@ -240,6 +253,11 @@ public class Hotseat extends FrameLayout implements Insettable {
 
     public HotseatPagedView getPagedView() {
         return mPagedView;
+    }
+
+    /** Returns the container holding the hotseat paged view and indicator. */
+    public FrameLayout getIconsContainer() {
+        return mIconsContainer;
     }
 
     /** Returns the CellLayout for the given dock page. */
@@ -262,6 +280,75 @@ public class Hotseat extends FrameLayout implements Insettable {
             pages[i] = mPagedView.getPageAt(i);
         }
         return pages;
+    }
+
+    /**
+     * Returns true if the touch coordinates fall on a dock icon with a configured swipe gesture.
+     */
+    public boolean isTouchOnIconWithSwipeGesture(float x, float y, boolean vertical) {
+        BubbleTextView touchedIcon = findIconAtPosition(x, y);
+        if (touchedIcon != null) {
+            return vertical
+                    ? touchedIcon.hasConfiguredVerticalIconSwipeGesture()
+                    : touchedIcon.hasConfiguredHorizontalIconSwipeGesture();
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the MotionEvent falls on a dock icon with any configured swipe gesture.
+     */
+    public boolean isTouchOnIconWithSwipeGesture(MotionEvent ev) {
+        return isTouchOnIconWithSwipeGesture(ev, false) || isTouchOnIconWithSwipeGesture(ev, true);
+    }
+
+    /**
+     * Returns true if the MotionEvent falls on a dock icon with a configured directional swipe gesture.
+     */
+    public boolean isTouchOnIconWithSwipeGesture(MotionEvent ev, boolean vertical) {
+        return isTouchOnIconWithSwipeGesture(ev.getX(), ev.getY(), vertical)
+                || isTouchOnIconWithSwipeGesture(ev.getRawX(), ev.getRawY(), vertical);
+    }
+
+    /**
+     * Finds the BubbleTextView at the specified Hotseat-local coordinates, or null if none found.
+     */
+    @Nullable
+    public BubbleTextView findIconAtPosition(float x, float y) {
+        if (mIconsContainer == null || mPagedView == null) {
+            return null;
+        }
+        if (x >= 0 && x <= getWidth() && y >= 0 && y <= getHeight()) {
+            float pagerX = x - mIconsContainer.getLeft() - mPagedView.getLeft();
+            float pagerY = y - mIconsContainer.getTop() - mPagedView.getTop();
+            BubbleTextView icon = mPagedView.findIconAtPosition(pagerX, pagerY);
+            if (icon != null) {
+                return icon;
+            }
+        }
+        CellLayout page = mPagedView.getCurrentCellLayout();
+        if (page != null) {
+            ShortcutAndWidgetContainer container = page.getShortcutsAndWidgets();
+            if (container != null) {
+                int[] hotseatLocation = new int[2];
+                getLocationOnScreen(hotseatLocation);
+                int screenX = Math.round(x + hotseatLocation[0]);
+                int screenY = Math.round(y + hotseatLocation[1]);
+                int[] location = new int[2];
+                for (int i = container.getChildCount() - 1; i >= 0; i--) {
+                    View child = container.getChildAt(i);
+                    if (!(child instanceof BubbleTextView btv) || child.getVisibility() != VISIBLE) {
+                        continue;
+                    }
+                    child.getLocationOnScreen(location);
+                    if (screenX >= location[0] && screenX < location[0] + child.getWidth()
+                            && screenY >= location[1] && screenY < location[1] + child.getHeight()) {
+                        return btv;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /** Whether {@code layout} is one of this hotseat's page CellLayouts. */
@@ -426,6 +513,8 @@ public class Hotseat extends FrameLayout implements Insettable {
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);
+        setClipChildren(false);
+        setClipToPadding(false);
     }
 
     public void setWorkspace(Workspace<?> w) {
@@ -454,6 +543,26 @@ public class Hotseat extends FrameLayout implements Insettable {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mDisallowWorkspaceInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(ev, true);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                boolean disallow = mDisallowWorkspaceInterceptForIconSwipe;
+                mDisallowWorkspaceInterceptForIconSwipe = false;
+                if (disallow) {
+                    return false;
+                }
+                break;
+            default:
+                break;
+        }
+
+        if (mDisallowWorkspaceInterceptForIconSwipe) {
+            return false;
+        }
+
         int yThreshold = getMeasuredHeight() - getPaddingBottom();
         if (ev.getY() > yThreshold || isTouchOnQsb(ev)) {
             return false;

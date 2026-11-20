@@ -53,6 +53,7 @@ class IconGestureListener(
                     isAnimating = false
                 }
                 scrollLock = if (absX > absY) ScrollLock.HORIZONTAL else ScrollLock.VERTICAL
+                view.translationZ = GESTURE_TRANSLATION_Z
             } else {
                 return
             }
@@ -77,7 +78,13 @@ class IconGestureListener(
             PhysicsAnimator.getInstance(view)
                 .spring(DynamicAnimation.TRANSLATION_X, 0f, 0f, SpringForce.STIFFNESS_HIGH, SpringForce.DAMPING_RATIO_NO_BOUNCY)
                 .spring(DynamicAnimation.TRANSLATION_Y, 0f, 0f, SpringForce.STIFFNESS_HIGH, SpringForce.DAMPING_RATIO_NO_BOUNCY)
+                .withEndActions({
+                    view.translationZ = 0f
+                    isAnimating = false
+                })
                 .start()
+        } else if (!handled) {
+            view.translationZ = 0f
         }
     }
 
@@ -146,9 +153,13 @@ class IconGestureListener(
             GestureType.SWIPE_UP, GestureType.SWIPE_DOWN -> 0f to (velocity * VELOCITY_FACTOR)
         }
 
+        view.translationZ = GESTURE_TRANSLATION_Z
         PhysicsAnimator.getInstance(view)
             .spring(DynamicAnimation.TRANSLATION_X, 0f, velX, SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_NO_BOUNCY)
             .spring(DynamicAnimation.TRANSLATION_Y, 0f, velY, SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_NO_BOUNCY)
+            .withEndActions({
+                view.translationZ = 0f
+            })
             .start()
     }
 
@@ -158,5 +169,9 @@ class IconGestureListener(
         val currentComponentKey = componentKey ?: return null
         val gesture = prefs.getGestureForAppCached(currentComponentKey, gestureType)
         return gesture.takeUnless { it is GestureHandlerConfig.NoOp }
+    }
+
+    companion object {
+        private const val GESTURE_TRANSLATION_Z = 100f
     }
 }

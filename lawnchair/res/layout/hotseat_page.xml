@@ -21,6 +21,8 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:importantForAccessibility="no"
     android:hapticFeedbackEnabled="false"
     launcher:containerType="hotseat" />
