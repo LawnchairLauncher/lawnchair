@@ -13,6 +13,16 @@ val isGestureNavContractCompatible = checkGestureNavContract()
 
 val isNothingOs = checkNothingStock()
 
+/** Generic check to identify if the device is using Android 16 QPR1 build.
+ *
+ * (excluding Developer Preview/Beta/Milestone Stability build)
+ *
+ * Note: This MUST be in sync with [isAndroidBaklavaFirstQuarterlyRelease] in [com.android.wm.shell.shared.split.SplitBounds] */
+val isAndroidBaklavaFirstQuarterlyRelease = checkGenericBaklavaFirstQuarterlyRelease()
+
+/** Generic check to identify if the device is using Android 16 Initial build.
+ *
+ * (excluding Developer Preview/Beta/Milestone Stability build) */
 val isAndroidBaklavaInitial = checkGenericBaklavaInitial()
 
 /** Generic check to identify if the device is using Android 15 QPR1 build.
@@ -70,6 +80,11 @@ private fun checkNothingStock(): Boolean = when {
     getSystemProperty("ro.nothing.version.id", "").isNotEmpty() -> true
     getSystemProperty("ro.build.nothing.version", "").isNotEmpty() -> true
     getSystemProperty("ro.build.nothing.feature.base", "").isNotEmpty() -> true
+    else -> false
+}
+
+private fun checkGenericBaklavaFirstQuarterlyRelease(): Boolean = when {
+    Utilities.ATLEAST_BAKLAVA && Build.FINGERPRINT.contains("BD3A") -> true
     else -> false
 }
 
