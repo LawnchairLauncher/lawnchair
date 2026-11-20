@@ -142,8 +142,8 @@ class HotseatPagedView @JvmOverloads constructor(
                 if (child !is BubbleTextView || child.visibility != View.VISIBLE) {
                     continue
                 }
-                val childX = containerX - child.left
-                val childY = containerY - child.top
+                val childX = containerX - child.left - child.translationX
+                val childY = containerY - child.top - child.translationY
                 if (childX >= child.paddingLeft && childX < child.width - child.paddingRight &&
                     childY >= child.paddingTop && childY < child.height - child.paddingBottom
                 ) {

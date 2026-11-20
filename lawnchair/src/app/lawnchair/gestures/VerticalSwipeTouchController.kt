@@ -120,8 +120,6 @@ class VerticalSwipeTouchController(
         val isIconSwipeOnHotseat = launcher.hotseat?.let {
             val coord = floatArrayOf(ev.x, ev.y)
             launcher.dragLayer.mapCoordInSelfToDescendant(it, coord)
-            coord[0] -= it.iconsContainer.translationX
-            coord[1] -= it.iconsContainer.translationY
             it.isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)
         } ?: false
         if (isIconSwipeOnWorkspace || isIconSwipeOnHotseat) {
