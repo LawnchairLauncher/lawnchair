@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.ViewConfiguration
 import androidx.datastore.preferences.core.Preferences
 import androidx.dynamicanimation.animation.DynamicAnimation
+import androidx.dynamicanimation.animation.FloatPropertyCompat
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.animation.PhysicsAnimator
@@ -30,6 +31,7 @@ class IconGestureListener(
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     private var scrollLock = ScrollLock.NONE
     private var isAnimating = false
+    private var animationGeneration = 0
     private var cachedPreferences: Preferences? = null
     private var configuredGestures = emptySet<GestureType>()
     private var mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
@@ -53,6 +55,7 @@ class IconGestureListener(
                     isAnimating = false
                 }
                 scrollLock = if (absX > absY) ScrollLock.HORIZONTAL else ScrollLock.VERTICAL
+                animationGeneration++
                 view.translationZ = GESTURE_TRANSLATION_Z
             } else {
                 return
@@ -75,12 +78,21 @@ class IconGestureListener(
         scrollLock = ScrollLock.NONE
         if (!handled && (view.translationX != 0f || view.translationY != 0f)) {
             isAnimating = true
+            val currentGeneration = ++animationGeneration
             PhysicsAnimator.getInstance(view)
                 .spring(DynamicAnimation.TRANSLATION_X, 0f, 0f, SpringForce.STIFFNESS_HIGH, SpringForce.DAMPING_RATIO_NO_BOUNCY)
                 .spring(DynamicAnimation.TRANSLATION_Y, 0f, 0f, SpringForce.STIFFNESS_HIGH, SpringForce.DAMPING_RATIO_NO_BOUNCY)
+                .addSpringEndListener { allEnded ->
+                    if (allEnded && animationGeneration == currentGeneration) {
+                        view.translationZ = 0f
+                        isAnimating = false
+                    }
+                }
                 .withEndActions({
-                    view.translationZ = 0f
-                    isAnimating = false
+                    if (animationGeneration == currentGeneration) {
+                        view.translationZ = 0f
+                        isAnimating = false
+                    }
                 })
                 .start()
         } else if (!handled) {
@@ -153,12 +165,20 @@ class IconGestureListener(
             GestureType.SWIPE_UP, GestureType.SWIPE_DOWN -> 0f to (velocity * VELOCITY_FACTOR)
         }
 
+        val currentGeneration = ++animationGeneration
         view.translationZ = GESTURE_TRANSLATION_Z
         PhysicsAnimator.getInstance(view)
             .spring(DynamicAnimation.TRANSLATION_X, 0f, velX, SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_NO_BOUNCY)
             .spring(DynamicAnimation.TRANSLATION_Y, 0f, velY, SpringForce.STIFFNESS_MEDIUM, SpringForce.DAMPING_RATIO_NO_BOUNCY)
+            .addSpringEndListener { allEnded ->
+                if (allEnded && animationGeneration == currentGeneration) {
+                    view.translationZ = 0f
+                }
+            }
             .withEndActions({
-                view.translationZ = 0f
+                if (animationGeneration == currentGeneration) {
+                    view.translationZ = 0f
+                }
             })
             .start()
     }
@@ -174,4 +194,24 @@ class IconGestureListener(
     companion object {
         private const val GESTURE_TRANSLATION_Z = 100f
     }
+}
+
+private fun PhysicsAnimator<BubbleTextView>.addSpringEndListener(
+    action: (allEnded: Boolean) -> Unit,
+): PhysicsAnimator<BubbleTextView> {
+    return addEndListener(
+        object : PhysicsAnimator.EndListener<BubbleTextView> {
+            override fun onAnimationEnd(
+                target: BubbleTextView,
+                property: FloatPropertyCompat<in BubbleTextView>,
+                wasFling: Boolean,
+                canceled: Boolean,
+                finalValue: Float,
+                finalVelocity: Float,
+                allRelevantPropertyAnimsEnded: Boolean,
+            ) {
+                action(allRelevantPropertyAnimsEnded)
+            }
+        },
+    )
 }

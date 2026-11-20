@@ -319,8 +319,8 @@ public class Hotseat extends FrameLayout implements Insettable {
             return null;
         }
         if (x >= 0 && x <= getWidth() && y >= 0 && y <= getHeight()) {
-            float pagerX = x - mIconsContainer.getLeft() - mPagedView.getLeft();
-            float pagerY = y - mIconsContainer.getTop() - mPagedView.getTop();
+            float pagerX = x - mIconsContainer.getLeft() - mPagedView.getLeft() - mIconsContainer.getTranslationX();
+            float pagerY = y - mIconsContainer.getTop() - mPagedView.getTop() - mIconsContainer.getTranslationY();
             BubbleTextView icon = mPagedView.findIconAtPosition(pagerX, pagerY);
             if (icon != null) {
                 return icon;
@@ -341,8 +341,11 @@ public class Hotseat extends FrameLayout implements Insettable {
                         continue;
                     }
                     child.getLocationOnScreen(location);
-                    if (screenX >= location[0] && screenX < location[0] + child.getWidth()
-                            && screenY >= location[1] && screenY < location[1] + child.getHeight()) {
+                    int left = location[0] + child.getPaddingLeft();
+                    int right = location[0] + child.getWidth() - child.getPaddingRight();
+                    int top = location[1] + child.getPaddingTop();
+                    int bottom = location[1] + child.getHeight() - child.getPaddingBottom();
+                    if (screenX >= left && screenX < right && screenY >= top && screenY < bottom) {
                         return btv;
                     }
                 }
@@ -545,7 +548,7 @@ public class Hotseat extends FrameLayout implements Insettable {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                mDisallowWorkspaceInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(ev, true);
+                mDisallowWorkspaceInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(ev);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
