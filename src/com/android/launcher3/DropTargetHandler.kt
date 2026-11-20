@@ -79,7 +79,9 @@ class DropTargetHandler(launcher: Launcher) {
         }
         val pageIds =
             if (pageItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP)
-                IntSet.wrap(pageItem.screenId)
+                // LC-Note: the page to return to is a presenter id (the inner item set of
+                // "Independent" stores model ids from 1,000,000).
+                IntSet.wrap(mLauncher.cellPosMapper.toPresenterScreenId(pageItem))
             else mLauncher.workspace.currentPageScreenIds
         val onUndoClicked = Runnable {
             mLauncher.setPagesToBindSynchronously(pageIds)

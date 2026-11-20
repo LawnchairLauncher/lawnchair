@@ -498,7 +498,10 @@ public class DragLayer extends BaseDragLayer<Launcher> implements LauncherOverla
         float alpha = 1 - Interpolators.DECELERATE_3.getInterpolation(progress);
         float transX = getMeasuredWidth() * progress;
 
-        if (mIsRtl) {
+        // LC-Note: slide the way the pages run, which follows the hinge on a foldable's large
+        // screen (the overlay edge is next to the first page), not only the UI language.
+        Workspace<?> workspace = mContainer.getWorkspace();
+        if (workspace != null ? workspace.isPageOrderRtl() : mIsRtl) {
             transX = -transX;
         }
         setTranslationX(transX);

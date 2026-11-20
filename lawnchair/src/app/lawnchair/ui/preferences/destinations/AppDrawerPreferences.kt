@@ -41,12 +41,14 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppDrawerHapticFeedbackPreference
+import app.lawnchair.ui.preferences.components.FoldMirrorNote
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreferenceWithPreview
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
+import app.lawnchair.ui.preferences.components.isFoldHomeMirrored
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -124,12 +126,17 @@ fun AppDrawerPreferences(
                     step = 1,
                     valueRange = 3..10,
                 )
+                val homeMirrored = isFoldHomeMirrored()
                 SliderPreference(
                     label = stringResource(id = R.string.state_unfolded, stringResource(id = R.string.app_drawer_columns)),
                     adapter = drawerColumnsUnfoldedAdapter,
                     step = 1,
                     valueRange = 3..10,
+                    enabled = !homeMirrored,
                 )
+                if (homeMirrored) {
+                    FoldMirrorNote()
+                }
                 ExpandAndShrink(
                     visible = drawerColumnsAdapter.state.value > drawerColumnsUnfoldedAdapter.state.value,
                 ) {

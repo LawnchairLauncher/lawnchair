@@ -35,6 +35,7 @@ import app.lawnchair.ui.preferences.destinations.DockPreferences
 import app.lawnchair.ui.preferences.destinations.DummyPreference
 import app.lawnchair.ui.preferences.destinations.ExperimentalFeaturesPreferences
 import app.lawnchair.ui.preferences.destinations.FeatureFlagsPreference
+import app.lawnchair.ui.preferences.destinations.FoldablePreferences
 import app.lawnchair.ui.preferences.destinations.FolderPreferences
 import app.lawnchair.ui.preferences.destinations.FontSelection
 import app.lawnchair.ui.preferences.destinations.GeneralPreferences
@@ -202,6 +203,9 @@ fun PreferenceNavigation(
         composable<Quickstep>(
             deepLinks = getDeepLink(Quickstep),
         ) { QuickstepPreferences() }
+        composable<Foldable>(
+            deepLinks = getDeepLink(Foldable),
+        ) { FoldablePreferences() }
         composable<BackupAndRestore>(
             deepLinks = getDeepLink(BackupAndRestore),
         ) { BackupAndRestorePreference() }

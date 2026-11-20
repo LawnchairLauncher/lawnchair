@@ -13,6 +13,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.animation.Interpolator;
 
+import app.lawnchair.fold.FoldWallpaperOffsets;
 import app.lawnchair.preferences.PreferenceManager;
 import androidx.annotation.AnyThread;
 
@@ -34,7 +35,7 @@ public class WallpaperOffsetInterpolator {
 
     private final SimpleBroadcastReceiver mWallpaperChangeReceiver;
     private final Workspace<?> mWorkspace;
-    private final boolean mIsRtl;
+    private boolean mIsRtl;
     private final Handler mHandler;
 
     private boolean mRegistered = false;
@@ -43,6 +44,9 @@ public class WallpaperOffsetInterpolator {
 
     private boolean mLockedToDefaultPage;
     private int mNumScreens;
+
+    // LC-Note: foldable screen at the last sync (FoldWallpaperOffsets.getSizeClass, -1: none)
+    private int mFoldSizeClass = -1;
 
     private PreferenceManager prefs;
 
@@ -53,6 +57,14 @@ public class WallpaperOffsetInterpolator {
         mIsRtl = Utilities.isRtl(workspace.getResources());
         mHandler = new OffsetHandler(workspace.getContext());
         prefs = PreferenceManager.getInstance(workspace.getContext());
+    }
+
+    /**
+     * Sets whether the workspace pages are ordered right to left, when it differs from the UI
+     * language.
+     */
+    public void setIsRtl(boolean isRtl) {
+        mIsRtl = isRtl;
     }
 
     /**
@@ -78,6 +90,11 @@ public class WallpaperOffsetInterpolator {
         // or right edge on initialization
         if (!prefs.getWallpaperScrolling().get() || mLockedToDefaultPage || numScrollableScreens <= 1) {
             out[0] = mIsRtl ? 1 : 0;
+            if (!mWallpaperIsLiveWallpaper) {
+                // LC-Note: on a foldable's cover, rest on the fixed half's side so a spanning
+                // wallpaper stays continuous across a fold (FoldWallpaper.SPAN)
+                out[0] = FoldWallpaperOffsets.getRestingOffset(mWorkspace.getContext(), out[0]);
+            }
             return;
         }
 
@@ -167,12 +184,18 @@ public class WallpaperOffsetInterpolator {
 
     public void syncWithScroll() {
         int numScreens = getNumScrollableScreensExcludingEmpty();
+        // LC-Note: a fold or unfold switches screens: the wallpaper jumps to its new offset
+        // instead of gliding there on the new screen
+        int foldSizeClass = FoldWallpaperOffsets.getSizeClass(mWorkspace.getContext());
+        boolean screensSwitched = mFoldSizeClass >= 0 && foldSizeClass >= 0
+                && foldSizeClass != mFoldSizeClass;
+        mFoldSizeClass = foldSizeClass;
         // LC-Note: Use wrap-aware scroll to preserve wallpaper parallax during infinite scrolling.
         wallpaperOffsetForScroll(mWorkspace.getScrollForWallpaper(), numScreens, sTempInt);
         Message msg = Message.obtain(mHandler, MSG_UPDATE_OFFSET, sTempInt[0], sTempInt[1],
                 mWindowToken);
         if (numScreens != mNumScreens) {
-            if (mNumScreens > 0) {
+            if (mNumScreens > 0 && !screensSwitched) {
                 // Don't animate if we're going from 0 screens
                 msg.what = MSG_START_ANIMATION;
             }
@@ -180,6 +203,9 @@ public class WallpaperOffsetInterpolator {
             updateOffset();
         }
         msg.sendToTarget();
+        if (screensSwitched) {
+            jumpToFinal();
+        }
     }
 
     /** Returns the number of pages used for the wallpaper parallax. */

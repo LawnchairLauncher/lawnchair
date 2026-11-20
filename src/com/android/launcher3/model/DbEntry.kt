@@ -18,6 +18,7 @@ package com.android.launcher3.model
 import android.content.ContentValues
 import android.content.Intent
 import android.util.Log
+import app.lawnchair.fold.FoldItemSets
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.LauncherSettings.Favorites.CELLX
 import com.android.launcher3.LauncherSettings.Favorites.CELLY
@@ -39,6 +40,10 @@ class DbEntry : ItemInfo(), Comparable<DbEntry> {
 
     /** Id of the specific widget. */
     @JvmField var appWidgetId: Int = NO_ID
+
+    // LC-Note: whether this entry belongs to the inner item set (see
+    // app.lawnchair.fold.FoldItemSets); screenId is numbered from 0 within its set.
+    @JvmField var innerItemSet: Boolean = false
 
     /** Comparator according to the reading order */
     override fun compareTo(other: DbEntry): Int {
@@ -65,7 +70,8 @@ class DbEntry : ItemInfo(), Comparable<DbEntry> {
      */
     fun updateContentValues(values: ContentValues) =
         values.apply {
-            put(SCREEN, screenId)
+            // LC-Note: back to the model id within this entry's item set.
+            put(SCREEN, FoldItemSets.toModelScreenId(screenId, innerItemSet))
             put(CELLX, cellX)
             put(CELLY, cellY)
             put(SPANX, spanX)

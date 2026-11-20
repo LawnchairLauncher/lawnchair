@@ -177,7 +177,8 @@ public class WorkspaceStateTransitionAnimation {
         PageTranslationProvider pageTranslationProvider = state.getWorkspacePageTranslationProvider(
                 mLauncher);
 
-        if (!FOLDABLE_SINGLE_PAGE.get()) {
+        // LC-Note: a wide "Expand" page has no second panel to move apart.
+        if (!FOLDABLE_SINGLE_PAGE.get() && !mLauncher.getDeviceProfile().isTwoPanelSinglePage) {
             for (int i = 0; i < childCount; i++) {
                 applyPageTranslation((CellLayout) mWorkspace.getChildAt(i), i,
                         pageTranslationProvider,

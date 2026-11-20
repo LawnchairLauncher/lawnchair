@@ -283,6 +283,10 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_IDS, "")
         @JvmField val OLD_APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_OLD_IDS, "")
         @JvmField val WORKSPACE_SCREEN_ORDER = backedUpItem("workspace_screen_order", "")
+        // LC-Note: page order of the inner item set of the "Independent" home layout, numbered
+        // from 0 like WORKSPACE_SCREEN_ORDER (see FoldItemSets).
+        @JvmField
+        val INNER_WORKSPACE_SCREEN_ORDER = backedUpItem("lc_inner_workspace_screen_order", "")
 
         @JvmField
         val GRID_NAME =

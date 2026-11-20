@@ -43,6 +43,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -62,6 +63,8 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
+
+import app.lawnchair.fold.FoldItemSets;
 
 /**
  * SqLite database for launcher home-screen model
@@ -498,10 +501,117 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
      * existing screen IDs
      */
     public int getNewScreenId() {
-        return getMaxId(getWritableDatabase(),
-                "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= 0",
+        return getNewScreenId(false);
+    }
+
+    /**
+     * LC-Note: new screen id within one item set of the "Independent" home layout, numbered from
+     * 0 in each set (see FoldItemSets). The cover set ignores the inner screens, so a database
+     * without inner items gives the same id as before.
+     */
+    public int getNewScreenId(boolean innerSet) {
+        return FoldItemSets.toPresenterScreenId(getMaxId(getWritableDatabase(),
+                "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= 0 AND %5$s",
                 Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
-                Favorites.CONTAINER_DESKTOP) + 1;
+                Favorites.CONTAINER_DESKTOP, FoldItemSets.whereItemSet(innerSet))) + 1;
+    }
+
+    /**
+     * LC-Note: creates the inner item set of the "Independent" home layout (see FoldItemSets) as
+     * a copy of the cover set, in one transaction, if the inner set has no items yet:
+     * <ul>
+     *   <li>every desktop page and dock item is copied with its screen id (or dock rank) moved
+     *   into the inner set, at the same cell;</li>
+     *   <li>folders and app pairs are deep-copied: their contents (two levels, for an app pair in
+     *   a folder) point at the copied container;</li>
+     *   <li>app widgets are copied as pending widgets (no widget id, FLAG_ID_NOT_VALID): the
+     *   loader allocates an id and binds it, or shows "tap to set up".</li>
+     * </ul>
+     * Copies get new ids above every existing id, so the cover rows are never written.
+     *
+     * @return the number of rows copied, 0 if the inner set already had items.
+     */
+    public int cloneCoverItemSetToInnerSet() {
+        SQLiteDatabase db = getWritableDatabase();
+        int copied;
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+            String topLevel = Favorites.CONTAINER + " IN (" + Favorites.CONTAINER_DESKTOP + ","
+                    + Favorites.CONTAINER_HOTSEAT + ")";
+            if (DatabaseUtils.queryNumEntries(db, Favorites.TABLE_NAME,
+                    topLevel + " AND " + FoldItemSets.whereItemSet(true)) > 0) {
+                return 0;
+            }
+            String coverTopLevel = topLevel + " AND " + Favorites.SCREEN + " >= 0 AND "
+                    + FoldItemSets.whereItemSet(false);
+            String level1 = Favorites.CONTAINER + " IN (SELECT " + Favorites._ID + " FROM "
+                    + Favorites.TABLE_NAME + " WHERE " + coverTopLevel + ")";
+            String level2 = Favorites.CONTAINER + " IN (SELECT " + Favorites._ID + " FROM "
+                    + Favorites.TABLE_NAME + " WHERE " + level1 + ")";
+            // Above every id in use (ModelWriter hands out ids before it writes the rows): the
+            // copies get offset + their id, offset = max(current, dbMax) + 1, and every id up to
+            // offset + dbMax is reserved at once, so an id handed out meanwhile can't be one.
+            int dbMax = initializeMaxItemId(db);
+            int reserved = mMaxItemId.updateAndGet(current -> Math.max(current, dbMax) + 1 + dbMax);
+            int offset = reserved - dbMax;
+            String appWidget = Favorites.ITEM_TYPE + " = " + Favorites.ITEM_TYPE_APPWIDGET
+                    + " AND " + Favorites.APPWIDGET_ID + " > "
+                    + LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
+
+            StringBuilder columns = new StringBuilder();
+            StringBuilder values = new StringBuilder();
+            try (Cursor c = db.rawQuery("PRAGMA table_info(" + Favorites.TABLE_NAME + ")", null)) {
+                int nameIndex = c.getColumnIndexOrThrow("name");
+                while (c.moveToNext()) {
+                    String column = c.getString(nameIndex);
+                    String value;
+                    switch (column) {
+                        case Favorites._ID:
+                            value = Favorites._ID + " + " + offset;
+                            break;
+                        case Favorites.CONTAINER:
+                            // Folder contents point at the copied folder.
+                            value = "CASE WHEN " + Favorites.CONTAINER + " >= 0 THEN "
+                                    + Favorites.CONTAINER + " + " + offset + " ELSE "
+                                    + Favorites.CONTAINER + " END";
+                            break;
+                        case Favorites.SCREEN:
+                            value = "CASE WHEN " + topLevel + " THEN " + Favorites.SCREEN + " + "
+                                    + FoldItemSets.INNER_SCREEN_BASE + " ELSE " + Favorites.SCREEN
+                                    + " END";
+                            break;
+                        case Favorites.APPWIDGET_ID:
+                            value = "CASE WHEN " + appWidget + " THEN -1 ELSE "
+                                    + Favorites.APPWIDGET_ID + " END";
+                            break;
+                        case Favorites.RESTORED:
+                            value = "CASE WHEN " + appWidget + " THEN ((" + Favorites.RESTORED
+                                    + " | " + LauncherAppWidgetInfo.FLAG_ID_NOT_VALID + ") & ~"
+                                    + (LauncherAppWidgetInfo.FLAG_ID_ALLOCATED
+                                            | LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG)
+                                    + ") ELSE " + Favorites.RESTORED + " END";
+                            break;
+                        default:
+                            value = column;
+                    }
+                    if (columns.length() > 0) {
+                        columns.append(", ");
+                        values.append(", ");
+                    }
+                    columns.append(column);
+                    values.append(value);
+                }
+            }
+            db.execSQL("INSERT INTO " + Favorites.TABLE_NAME + " (" + columns + ") SELECT "
+                    + values + " FROM " + Favorites.TABLE_NAME + " WHERE (" + coverTopLevel
+                    + ") OR (" + level1 + ") OR (" + level2 + ")");
+            copied = (int) DatabaseUtils.queryNumEntries(db, Favorites.TABLE_NAME,
+                    Favorites._ID + " >= " + offset);
+            t.commit();
+        }
+        // Never back: ids handed out meanwhile may not be written yet.
+        mMaxItemId.accumulateAndGet(initializeMaxItemId(db), Math::max);
+        FileLog.d(TAG, "Copied " + copied + " cover items into the inner item set");
+        return copied;
     }
 
     public int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {

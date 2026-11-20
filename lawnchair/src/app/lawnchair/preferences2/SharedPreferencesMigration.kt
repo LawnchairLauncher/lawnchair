@@ -47,6 +47,8 @@ class SharedPreferencesMigration(private val context: Context) {
         "pref_enableMinusOne" to "enable_feed", "pref_enableIconSelection" to "enable_icon_selection",
         "pref_showComponentName" to "show_component_names", "pref_allAppsColumns" to "drawer_columns",
         "pref_folderColumns" to "folder_columns",
+        // Same key: the unfolded folder rows moved to the datastore, next to the unfolded columns
+        "pref_folderRowsUnfolded" to "pref_folderRowsUnfolded",
         "pref_maxSearchResultCount" to "max_search_result_count",
     )
 

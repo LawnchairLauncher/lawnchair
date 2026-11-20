@@ -29,6 +29,16 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.Converters
+import app.lawnchair.fold.FoldAfterFold
+import app.lawnchair.fold.FoldDock
+import app.lawnchair.fold.FoldDrawerLayout
+import app.lawnchair.fold.FoldHomeLayout
+import app.lawnchair.fold.FoldItemSets
+import app.lawnchair.fold.FoldLandscape
+import app.lawnchair.fold.FoldOption
+import app.lawnchair.fold.FoldPageOrder
+import app.lawnchair.fold.FoldTransitionStyle
+import app.lawnchair.fold.FoldWallpaper
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
@@ -107,6 +117,22 @@ class PreferenceManager2 @Inject constructor(
         key = key,
         defaultSelector = defaultSelector,
         preferencesDataStore = preferencesDataStore,
+        onSet = onSet,
+    )
+
+    /**
+     * A foldable option, stored as its [FoldOption.key]; a missing or unknown key reads as
+     * [defaultValue].
+     */
+    private inline fun <reified E> foldOptionPreference(
+        name: String,
+        defaultValue: E,
+        noinline onSet: (E) -> Unit = {},
+    ) where E : Enum<E>, E : FoldOption = preference(
+        key = stringPreferencesKey(name),
+        defaultValue = defaultValue,
+        parse = { key -> enumValues<E>().firstOrNull { it.key == key } ?: defaultValue },
+        save = { it.key },
         onSet = onSet,
     )
 
@@ -726,6 +752,24 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    /** Folder columns on the unfolded screen of a foldable. Defaults to one more than [folderColumns]. */
+    val folderColumnsUnfolded = idpPreference(
+        key = intPreferencesKey(name = "folder_columns_unfolded"),
+        defaultSelector = { folderColumns.firstCached(gridOption = this, prefs2 = this@PreferenceManager2) + 1 },
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    /**
+     * Folder rows on the unfolded screen of a foldable. Defaults to the folded rows (the old
+     * preferences' folderRows): the unfolded screen is about as tall as the cover. Its key is the
+     * one it had in the old preferences, from which [SharedPreferencesMigration] moves it.
+     */
+    val folderRowsUnfolded = idpPreference(
+        key = intPreferencesKey(name = "pref_folderRowsUnfolded"),
+        defaultSelector = { LawnchairPreferenceManager.getInstance(context).folderRows.get(this) },
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val additionalFonts = preference(
         key = stringPreferencesKey(name = "additional_fonts"),
         defaultValue = "",
@@ -739,6 +783,99 @@ class PreferenceManager2 @Inject constructor(
             reloadHelper.reloadTaskbar()
             reloadHelper.recreate()
         },
+    )
+
+    val foldHomeLayout = foldOptionPreference(
+        name = "fold_home_layout",
+        defaultValue = FoldHomeLayout.PAGES,
+        // "Same as cover" changes the device profiles of the large screen.
+        onSet = {
+            val previous = lastFoldHomeLayout
+            lastFoldHomeLayout = it
+            if (it == FoldHomeLayout.INDEPENDENT) {
+                // The inner screen starts as a copy of the cover layout. If the copy fails, the
+                // previous layout comes back rather than an empty inner screen.
+                FoldItemSets.createInnerSetIfEmpty(
+                    context,
+                    revertTo = if (previous == FoldHomeLayout.INDEPENDENT) FoldHomeLayout.PAGES else previous,
+                )
+            }
+            reloadHelper.reloadGrid()
+        },
+    )
+
+    // The last value of foldHomeLayout, for its onSet (the cache may already hold the new one).
+    @Volatile
+    private var lastFoldHomeLayout: FoldHomeLayout = foldHomeLayout.firstCached(this)
+
+    // The reload rebinds the pages in the new order and maps "Expand" pages again.
+    val foldPageOrder = foldOptionPreference(
+        name = "fold_page_order",
+        defaultValue = FoldPageOrder.OPENING,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val foldDrawerLayout = foldOptionPreference(
+        name = "fold_drawer_layout",
+        defaultValue = FoldDrawerLayout.EXPAND,
+        // "Book" and "zoom" change the device profiles of the large screen.
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val foldTransitionStyle = foldOptionPreference(
+        name = "fold_transition_style",
+        defaultValue = FoldTransitionStyle.WINDOW,
+    )
+
+    val foldAfterFold = foldOptionPreference(
+        name = "fold_after_fold",
+        defaultValue = FoldAfterFold.LAST_PANEL,
+    )
+
+    val foldDock = foldOptionPreference(
+        name = "fold_dock",
+        defaultValue = FoldDock.MERGE,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    // OWN changes the device profile of the large screen in landscape.
+    val foldLandscape = foldOptionPreference(
+        name = "fold_landscape",
+        defaultValue = FoldLandscape.AUTO,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    /**
+     * [FoldLandscape.OWN]: home icon size factor of the large screen in landscape. A negative value
+     * (the default) means the same as [homeIconSizeFactor].
+     */
+    val foldLandscapeIconSizeFactor = preference(
+        key = floatPreferencesKey("fold_landscape_icon_size_factor"),
+        defaultValue = -1f,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    /** Like [foldLandscapeIconSizeFactor], for [homeIconLabelSizeFactor]. */
+    val foldLandscapeIconLabelSizeFactor = preference(
+        key = floatPreferencesKey("fold_landscape_icon_label_size_factor"),
+        defaultValue = -1f,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val foldWallpaper = foldOptionPreference(
+        name = "fold_wallpaper",
+        defaultValue = FoldWallpaper.SPAN,
+    )
+
+    val foldTrackHinge = preference(
+        key = booleanPreferencesKey("fold_track_hinge"),
+        defaultValue = true,
+    )
+
+    /** Debug override: shows the foldable settings entry on devices that are not foldable. */
+    val foldForceShowSettings = preference(
+        key = booleanPreferencesKey("fold_force_show_settings"),
+        defaultValue = false,
     )
 
     val smartspaceMode = preference(
