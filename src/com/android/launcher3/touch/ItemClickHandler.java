@@ -81,6 +81,8 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import app.lawnchair.folder.FolderCoverMode;
+
 /**
  * Class for handling clicks on workspace and all-apps items
  */
@@ -140,6 +142,11 @@ public class ItemClickHandler {
     private static void onClickFolderIcon(View v) {
         Folder folder = ((FolderIcon) v).getFolder();
         if (!folder.isOpen() && !folder.isDestroyed()) {
+            // Lawnchair: a tap on a cover-mode folder launches its cover app directly instead of
+            // opening the folder; swiping up opens it (see FolderCoverModeGestureListener).
+            if (FolderCoverMode.INSTANCE.launchCoverApp(v, (FolderIcon) v)) {
+                return;
+            }
             // Open the requested folder
             folder.animateOpen();
             StatsLogManager.newInstance(v.getContext()).logger().withItemInfo(folder.mInfo)
