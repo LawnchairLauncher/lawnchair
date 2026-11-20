@@ -84,7 +84,7 @@ private fun checkNothingStock(): Boolean = when {
 }
 
 private fun checkGenericBaklavaFirstQuarterlyRelease(): Boolean = when {
-    Utilities.ATLEAST_BAKLAVA && Build.FINGERPRINT.contains("BD3A") -> true
+    Utilities.ATLEAST_BAKLAVA && arrayOf("BP3A.", "BD3A.").any { prefix -> Build.FINGERPRINT.contains(prefix) } -> true
     else -> false
 }
 

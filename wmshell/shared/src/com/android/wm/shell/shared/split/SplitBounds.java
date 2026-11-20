@@ -165,7 +165,7 @@ public class SplitBounds implements Parcelable {
     /** LC-Note: This MUST be in sync with [isAndroidBaklavaFirstQuarterlyRelease] in [Compatibility.kt], see it for description */
     private static boolean isAndroidBaklavaFirstQuarterlyRelease() {
         return Build.VERSION.SDK_INT >= VERSION_CODES.BAKLAVA
-            && Build.FINGERPRINT.contains("BD3A");
+            && (Build.FINGERPRINT.contains("BP3A.") || Build.FINGERPRINT.contains("BD3A."));
     }
 
     public SplitBounds(Parcel parcel) {
