@@ -20,7 +20,9 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import android.annotation.NonNull;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.os.Build.VERSION_CODES_FULL;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -153,6 +155,29 @@ public class SplitBounds implements Parcelable {
         return appsStackedVertically ? dividerHeightPercent : dividerWidthPercent;
     }
 
+    /** LC-Note: This MUST be in sync with [isAndroidCinnamonbunInitial] in [Compatibility.kt], see it for description */
+    private static boolean isAndroidCinnamonbunInitial() {
+        return Build.VERSION.SDK_INT >= 37;
+    }
+    
+    /** LC-Note: This MUST be in sync with [isAndroidBaklavaThirdQuarterlyRelease] in [Compatibility.kt], see it for description */
+    private static boolean isAndroidBaklavaThirdQuarterlyRelease() {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.BAKLAVA
+            && (VERSION.SDK_INT_FULL >= 3600001) && (Build.FINGERPRINT.contains("CP1A."));
+    }
+
+    /** LC-Note: This MUST be in sync with [isAndroidBaklavaSecondQuarterlyRelease] in [Compatibility.kt], see it for description */
+    private static boolean isAndroidBaklavaSecondQuarterlyRelease() {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.BAKLAVA
+            && (VERSION.SDK_INT_FULL >= 3600001);
+    }
+    
+    /** LC-Note: This MUST be in sync with [isAndroidBaklavaFirstQuarterlyRelease] in [Compatibility.kt], see it for description */
+    private static boolean isAndroidBaklavaFirstQuarterlyRelease() {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.BAKLAVA
+            && (Build.FINGERPRINT.contains("BP3A.") || Build.FINGERPRINT.contains("BD3A."));
+    }
+
     /**
      * Returns the percentage size of the right/bottom task (compared to the full width/height
      * of the split pair). E.g. if the left task is 4 units wide, the divider is 2 units, and
@@ -162,16 +187,14 @@ public class SplitBounds implements Parcelable {
         return 1 - (getLeftTopTaskPercent() + getDividerPercent());
     }
 
-    /** LC-Note: This MUST be in sync with [isAndroidBaklavaFirstQuarterlyRelease] in [Compatibility.kt], see it for description */
-    private static boolean isAndroidBaklavaFirstQuarterlyRelease() {
-        return Build.VERSION.SDK_INT >= VERSION_CODES.BAKLAVA
-            && (Build.FINGERPRINT.contains("BP3A.") || Build.FINGERPRINT.contains("BD3A."));
-    }
-
     public SplitBounds(Parcel parcel) {
         // LC-Note: Split screen support
-        if (isAndroidBaklavaFirstQuarterlyRelease()) {
-            // LC-Note: Android 16 (QPR1) format
+        if (isAndroidCinnamonbunInitial() || 
+            isAndroidBaklavaThirdQuarterlyRelease() || 
+            isAndroidBaklavaSecondQuarterlyRelease() || 
+            isAndroidBaklavaFirstQuarterlyRelease()) 
+        {
+            // LC-Note: Android 17 Initial, Android 16 (QPR3), Android 16 (QPR2), Android 16 (QPR1) format
             leftTopBounds = parcel.readTypedObject(Rect.CREATOR);
             rightBottomBounds = parcel.readTypedObject(Rect.CREATOR);
             visualDividerBounds = parcel.readTypedObject(Rect.CREATOR);
@@ -220,8 +243,12 @@ public class SplitBounds implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         // LC-Note: Split screen support
-        if (isAndroidBaklavaFirstQuarterlyRelease()) {
-            // LC-Note: Android 16 (QPR1) format
+        if (isAndroidCinnamonbunInitial() ||
+            isAndroidBaklavaThirdQuarterlyRelease() ||
+            isAndroidBaklavaSecondQuarterlyRelease() ||
+            isAndroidBaklavaFirstQuarterlyRelease())
+        {
+            // LC-Note: Android 17 Initial, Android 16 (QPR3), Android 16 (QPR2), Android 16 (QPR1) format
             parcel.writeTypedObject(leftTopBounds, flags);
             parcel.writeTypedObject(rightBottomBounds, flags);
             parcel.writeTypedObject(visualDividerBounds, flags);

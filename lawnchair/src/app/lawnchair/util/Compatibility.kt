@@ -13,6 +13,27 @@ val isGestureNavContractCompatible = checkGestureNavContract()
 
 val isNothingOs = checkNothingStock()
 
+/** Generic check to identify if the device is using Android 17 Initial build.
+ *
+ * (excluding Developer Preview/Beta/Milestone Stability build)
+ *
+ * Note: This MUST be in sync with [isAndroidCinnamonbunInitial] in [com.android.wm.shell.shared.split.SplitBounds] */
+val isAndroidCinnamonbunInitial = checkGenericCinnamonbunInitial()
+
+/** Generic check to identify if the device is using Android 16 QPR3 build.
+ *
+ * (excluding Developer Preview/Beta/Milestone Stability build)
+ *
+ * Note: This MUST be in sync with [isAndroidBaklavaThirdQuarterlyRelease] in [com.android.wm.shell.shared.split.SplitBounds] */
+val isAndroidBaklavaThirdQuarterlyRelease = checkGenericBaklavaThirdQuarterlyRelease()
+
+/** Generic check to identify if the device is using Android 16 QPR2 build.
+ *
+ * (excluding Developer Preview/Beta/Milestone Stability build)
+ *
+ * Note: This MUST be in sync with [isAndroidBaklavaSecondQuarterlyRelease] in [com.android.wm.shell.shared.split.SplitBounds] */
+val isAndroidBaklavaSecondQuarterlyRelease = checkGenericBaklavaSecondQuarterlyRelease()
+
 /** Generic check to identify if the device is using Android 16 QPR1 build.
  *
  * (excluding Developer Preview/Beta/Milestone Stability build)
@@ -83,8 +104,17 @@ private fun checkNothingStock(): Boolean = when {
     else -> false
 }
 
+private fun checkGenericCinnamonbunInitial(): Boolean = Utilities.ATLEAST_CINNAMON_BUN
+
 private fun checkGenericBaklavaFirstQuarterlyRelease(): Boolean = when {
     Utilities.ATLEAST_BAKLAVA && arrayOf("BP3A.", "BD3A.").any { prefix -> Build.FINGERPRINT.contains(prefix) } -> true
+    else -> false
+}
+
+private fun checkGenericBaklavaSecondQuarterlyRelease(): Boolean = Utilities.ATLEAST_BAKLAVA_1
+
+private fun checkGenericBaklavaThirdQuarterlyRelease(): Boolean = when {
+    Utilities.ATLEAST_BAKLAVA_1 && Build.FINGERPRINT.contains("CP1A.") -> true
     else -> false
 }
 
