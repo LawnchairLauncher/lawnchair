@@ -137,8 +137,10 @@ class HotseatPagedView @JvmOverloads constructor(
             val container = page.shortcutsAndWidgets ?: continue
             val containerX = localX - container.left
             val containerY = localY - container.top
-            for (j in container.childCount - 1 downTo 0) {
-                val child = container.getChildAt(j)
+            val children = (container.childCount - 1 downTo 0)
+                .map { container.getChildAt(it) }
+                .sortedByDescending { it.z }
+            for (child in children) {
                 if (child !is BubbleTextView || child.visibility != View.VISIBLE) {
                     continue
                 }
