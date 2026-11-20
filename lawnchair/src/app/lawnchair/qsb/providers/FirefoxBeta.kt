@@ -12,6 +12,7 @@ data object FirefoxBeta : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "org.mozilla.firefox_beta",
     action = "org.mozilla.fenix.OPEN_TAB",
+    privateAction = "org.mozilla.fenix.OPEN_PRIVATE_TAB",
     className = "org.mozilla.fenix.IntentReceiverActivity",
     website = "https://play.google.com/store/apps/details?id=org.mozilla.firefox_beta",
     type = QsbSearchProviderType.APP,

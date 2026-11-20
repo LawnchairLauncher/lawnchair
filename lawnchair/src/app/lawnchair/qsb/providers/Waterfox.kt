@@ -12,6 +12,7 @@ data object Waterfox : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "net.waterfox.android.release",
     action = "org.mozilla.fenix.OPEN_TAB",
+    privateAction = "org.mozilla.fenix.OPEN_PRIVATE_TAB",
     className = "org.mozilla.fenix.IntentReceiverActivity",
     website = "https://github.com/BrowserWorks/Waterfox",
     type = QsbSearchProviderType.APP,

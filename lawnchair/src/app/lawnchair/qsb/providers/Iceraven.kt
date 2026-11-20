@@ -12,6 +12,7 @@ data object Iceraven : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "io.github.forkmaintainers.iceraven",
     action = "org.mozilla.fenix.OPEN_TAB",
+    privateAction = "org.mozilla.fenix.OPEN_PRIVATE_TAB",
     className = "org.mozilla.fenix.IntentReceiverActivity",
     website = "https://github.com/fork-maintainers/iceraven-browser/releases/latest",
     type = QsbSearchProviderType.APP,

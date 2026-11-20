@@ -12,6 +12,7 @@ data object Fennec : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "org.mozilla.fennec_fdroid",
     action = "org.mozilla.fenix.OPEN_TAB",
+    privateAction = "org.mozilla.fenix.OPEN_PRIVATE_TAB",
     className = "org.mozilla.fenix.IntentReceiverActivity",
     website = "https://f-droid.org/packages/org.mozilla.fennec_fdroid/",
     type = QsbSearchProviderType.APP,
