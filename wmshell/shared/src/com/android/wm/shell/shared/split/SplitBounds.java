@@ -19,6 +19,10 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 
 import android.annotation.NonNull;
 import android.graphics.Rect;
+import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
+import android.os.Build.VERSION_CODES_FULL;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -151,6 +155,29 @@ public class SplitBounds implements Parcelable {
         return appsStackedVertically ? dividerHeightPercent : dividerWidthPercent;
     }
 
+    /** LC-Note: This MUST be in sync with [isAndroidCinnamonbunInitial] in [Compatibility.kt], see it for description */
+    private static boolean isAndroidCinnamonbunInitial() {
+        return Build.VERSION.SDK_INT >= 37;
+    }
+    
+    /** LC-Note: This MUST be in sync with [isAndroidBaklavaThirdQuarterlyRelease] in [Compatibility.kt], see it for description */
+    private static boolean isAndroidBaklavaThirdQuarterlyRelease() {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.BAKLAVA
+            && (VERSION.SDK_INT_FULL >= 3600001) && (Build.FINGERPRINT.contains("CP1A."));
+    }
+
+    /** LC-Note: This MUST be in sync with [isAndroidBaklavaSecondQuarterlyRelease] in [Compatibility.kt], see it for description */
+    private static boolean isAndroidBaklavaSecondQuarterlyRelease() {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.BAKLAVA
+            && (VERSION.SDK_INT_FULL >= 3600001);
+    }
+    
+    /** LC-Note: This MUST be in sync with [isAndroidBaklavaFirstQuarterlyRelease] in [Compatibility.kt], see it for description */
+    private static boolean isAndroidBaklavaFirstQuarterlyRelease() {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.BAKLAVA
+            && (Build.FINGERPRINT.contains("BP3A.") || Build.FINGERPRINT.contains("BD3A."));
+    }
+
     /**
      * Returns the percentage size of the right/bottom task (compared to the full width/height
      * of the split pair). E.g. if the left task is 4 units wide, the divider is 2 units, and
@@ -161,51 +188,100 @@ public class SplitBounds implements Parcelable {
     }
 
     public SplitBounds(Parcel parcel) {
-        leftTopBounds = parcel.readTypedObject(Rect.CREATOR);
-        rightBottomBounds = parcel.readTypedObject(Rect.CREATOR);
-        visualDividerBounds = parcel.readTypedObject(Rect.CREATOR);
-        topTaskPercent = parcel.readFloat();
-        leftTaskPercent = parcel.readFloat();
-        appsStackedVertically = parcel.readBoolean();
-        initiatedFromSeascape = parcel.readBoolean();
-        dividerWidthPercent = parcel.readFloat();
-        dividerHeightPercent = parcel.readFloat();
-        snapPosition = parcel.readInt();
-        leftTopTaskId = parcel.readInt();
-        rightBottomTaskId = parcel.readInt();
-        int size = parcel.readInt();
-        leftTopTaskIds = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            leftTopTaskIds.add(parcel.readInt());
-        }
-        size = parcel.readInt();
-        rightBottomTaskIds = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            rightBottomTaskIds.add(parcel.readInt());
+        // LC-Note: Split screen support
+        if (isAndroidCinnamonbunInitial() || 
+            isAndroidBaklavaThirdQuarterlyRelease() || 
+            isAndroidBaklavaSecondQuarterlyRelease() || 
+            isAndroidBaklavaFirstQuarterlyRelease()) 
+        {
+            // LC-Note: Android 17 Initial, Android 16 (QPR3), Android 16 (QPR2), Android 16 (QPR1) format
+            leftTopBounds = parcel.readTypedObject(Rect.CREATOR);
+            rightBottomBounds = parcel.readTypedObject(Rect.CREATOR);
+            visualDividerBounds = parcel.readTypedObject(Rect.CREATOR);
+            topTaskPercent = parcel.readFloat();
+            leftTaskPercent = parcel.readFloat();
+            appsStackedVertically = parcel.readBoolean();
+            initiatedFromSeascape = parcel.readBoolean();
+            dividerWidthPercent = parcel.readFloat();
+            dividerHeightPercent = parcel.readFloat();
+            snapPosition = parcel.readInt();
+            leftTopTaskId = parcel.readInt();
+            rightBottomTaskId = parcel.readInt();
+            int size = parcel.readInt();
+            leftTopTaskIds = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                leftTopTaskIds.add(parcel.readInt());
+            }
+            size = parcel.readInt();
+            rightBottomTaskIds = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                rightBottomTaskIds.add(parcel.readInt());
+            }
+        } else {
+            // LC-Note: Android 16 (Initial) format
+            leftTopBounds = parcel.readTypedObject(Rect.CREATOR);
+            rightBottomBounds = parcel.readTypedObject(Rect.CREATOR);
+            visualDividerBounds = parcel.readTypedObject(Rect.CREATOR);
+            topTaskPercent = parcel.readFloat();
+            leftTaskPercent = parcel.readFloat();
+            appsStackedVertically = parcel.readBoolean();
+            leftTopTaskId = parcel.readInt();
+            rightBottomTaskId = parcel.readInt();
+            dividerWidthPercent = parcel.readFloat();
+            dividerHeightPercent = parcel.readFloat();
+            snapPosition = parcel.readInt();
+            leftTopTaskIds = Collections.singletonList(leftTopTaskId);
+            rightBottomTaskIds = Collections.singletonList(rightBottomTaskId);
+            if (appsStackedVertically) {
+                initiatedFromSeascape = false;
+            } else {
+                initiatedFromSeascape = rightBottomBounds.width() > leftTopBounds.width();
+            }
         }
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeTypedObject(leftTopBounds, flags);
-        parcel.writeTypedObject(rightBottomBounds, flags);
-        parcel.writeTypedObject(visualDividerBounds, flags);
-        parcel.writeFloat(topTaskPercent);
-        parcel.writeFloat(leftTaskPercent);
-        parcel.writeBoolean(appsStackedVertically);
-        parcel.writeBoolean(initiatedFromSeascape);
-        parcel.writeFloat(dividerWidthPercent);
-        parcel.writeFloat(dividerHeightPercent);
-        parcel.writeInt(snapPosition);
-        parcel.writeInt(leftTopTaskId);
-        parcel.writeInt(rightBottomTaskId);
-        parcel.writeInt(leftTopTaskIds.size());
-        for (Integer id : leftTopTaskIds) {
-            parcel.writeInt(id); // Write each Integer in the List
-        }
-        parcel.writeInt(rightBottomTaskIds.size());
-        for (Integer id : rightBottomTaskIds) {
-            parcel.writeInt(id); // Write each Integer in the List
+        // LC-Note: Split screen support
+        if (isAndroidCinnamonbunInitial() ||
+            isAndroidBaklavaThirdQuarterlyRelease() ||
+            isAndroidBaklavaSecondQuarterlyRelease() ||
+            isAndroidBaklavaFirstQuarterlyRelease())
+        {
+            // LC-Note: Android 17 Initial, Android 16 (QPR3), Android 16 (QPR2), Android 16 (QPR1) format
+            parcel.writeTypedObject(leftTopBounds, flags);
+            parcel.writeTypedObject(rightBottomBounds, flags);
+            parcel.writeTypedObject(visualDividerBounds, flags);
+            parcel.writeFloat(topTaskPercent);
+            parcel.writeFloat(leftTaskPercent);
+            parcel.writeBoolean(appsStackedVertically);
+            parcel.writeBoolean(initiatedFromSeascape);
+            parcel.writeFloat(dividerWidthPercent);
+            parcel.writeFloat(dividerHeightPercent);
+            parcel.writeInt(snapPosition);
+            parcel.writeInt(leftTopTaskId);
+            parcel.writeInt(rightBottomTaskId);
+            parcel.writeInt(leftTopTaskIds.size());
+            for (Integer id : leftTopTaskIds) {
+                parcel.writeInt(id); // Write each Integer in the List
+            }
+            parcel.writeInt(rightBottomTaskIds.size());
+            for (Integer id : rightBottomTaskIds) {
+                parcel.writeInt(id); // Write each Integer in the List
+            }
+        } else {
+            // LC-Note: Android 16 (Initial) format
+            parcel.writeTypedObject(leftTopBounds, flags);
+            parcel.writeTypedObject(rightBottomBounds, flags);
+            parcel.writeTypedObject(visualDividerBounds, flags);
+            parcel.writeFloat(topTaskPercent);
+            parcel.writeFloat(leftTaskPercent);
+            parcel.writeBoolean(appsStackedVertically);
+            parcel.writeInt(leftTopTaskId);
+            parcel.writeInt(rightBottomTaskId);
+            parcel.writeFloat(dividerWidthPercent);
+            parcel.writeFloat(dividerHeightPercent);
+            parcel.writeInt(snapPosition);
         }
     }
 
