@@ -1379,10 +1379,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     private boolean isEventOverQsb(float x, float y) {
-        CellLayout target = (CellLayout) getChildAt(mCurrentPage);
-        if (target.getShortcutsAndWidgets() == null)
+        View childAt = getChildAt(mCurrentPage);
+        if (!(childAt instanceof CellLayout))
             return false;
+        CellLayout target = (CellLayout) childAt;
         ShortcutAndWidgetContainer container = target.getShortcutsAndWidgets();
+        if (container == null)
+            return false;
         mTempFXY[0] = x;
         mTempFXY[1] = y;
         Utilities.mapCoordInSelfToDescendant(container, this, mTempFXY);
@@ -1392,7 +1395,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (!(tag instanceof LauncherAppWidgetInfo))
                 continue;
             LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) tag;
-            if (!info.providerName.equals(SmartspaceAppWidgetProvider.componentName))
+            if (!SmartspaceAppWidgetProvider.componentName.equals(info.providerName))
                 continue;
 
             boolean isOverQsb = child.getLeft() <= mTempFXY[0] && child.getRight() >= mTempFXY[0]

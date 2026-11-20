@@ -22,19 +22,24 @@ public class ActivityOptionsCompatVQ implements ActivityOptionsCompat {
             @NonNull final Handler callbackHandler,
             @Nullable final Runnable startedListener,
             @Nullable final Runnable finishedListener) {
-        return ActivityOptions.makeCustomAnimation(
-                context,
-                enterResId,
-                exitResId,
-                callbackHandler,
-                new ActivityOptions.OnAnimationStartedListener() {
-                    @Override
-                    public void onAnimationStarted() {
-                        if (startedListener != null) {
-                            startedListener.run();
+        try {
+            return ActivityOptions.makeCustomAnimation(
+                    context,
+                    enterResId,
+                    exitResId,
+                    callbackHandler,
+                    new ActivityOptions.OnAnimationStartedListener() {
+                        @Override
+                        public void onAnimationStarted() {
+                            if (startedListener != null) {
+                                startedListener.run();
+                            }
                         }
-                    }
-                });
+                    });
+        } catch (Throwable t) {
+            return ActivityOptionsCompat.makeCustomAnimationFallback(
+                    context, enterResId, exitResId, callbackHandler, startedListener, finishedListener);
+        }
     }
 
     @NonNull

@@ -20,26 +20,31 @@ public class ActivityOptionsCompatVR extends ActivityOptionsCompatVQ {
             @NonNull final Handler callbackHandler,
             @Nullable final Runnable startedListener,
             @Nullable final Runnable finishedListener) {
-        return ActivityOptions.makeCustomAnimation(
-                context,
-                enterResId,
-                exitResId,
-                callbackHandler,
-                new ActivityOptions.OnAnimationStartedListener() {
-                    @Override
-                    public void onAnimationStarted() {
-                        if (startedListener != null) {
-                            startedListener.run();
+        try {
+            return ActivityOptions.makeCustomAnimation(
+                    context,
+                    enterResId,
+                    exitResId,
+                    callbackHandler,
+                    new ActivityOptions.OnAnimationStartedListener() {
+                        @Override
+                        public void onAnimationStarted() {
+                            if (startedListener != null) {
+                                startedListener.run();
+                            }
                         }
-                    }
-                },
-                new ActivityOptions.OnAnimationFinishedListener() {
-                    @Override
-                    public void onAnimationFinished() {
-                        if (finishedListener != null) {
-                            finishedListener.run();
+                    },
+                    new ActivityOptions.OnAnimationFinishedListener() {
+                        @Override
+                        public void onAnimationFinished() {
+                            if (finishedListener != null) {
+                                finishedListener.run();
+                            }
                         }
-                    }
-                });
+                    });
+        } catch (Throwable t) {
+            return app.lawnchair.compatlib.ActivityOptionsCompat.makeCustomAnimationFallback(
+                    context, enterResId, exitResId, callbackHandler, startedListener, finishedListener);
+        }
     }
 }

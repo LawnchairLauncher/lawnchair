@@ -19,27 +19,32 @@ public class ActivityOptionsCompatVV extends ActivityOptionsCompatVU {
             @NonNull final Handler callbackHandler,
             @Nullable final Runnable startedListener,
             @Nullable final Runnable finishedListener) {
-        return ActivityOptions.makeCustomAnimation(
-                context,
-                enterResId,
-                exitResId,
-                0,
-                callbackHandler,
-                new ActivityOptions.OnAnimationStartedListener() {
-                    @Override
-                    public void onAnimationStarted(long elapsedRealTime) {
-                        if (startedListener != null) {
-                            startedListener.run();
+        try {
+            return ActivityOptions.makeCustomAnimation(
+                    context,
+                    enterResId,
+                    exitResId,
+                    0,
+                    callbackHandler,
+                    new ActivityOptions.OnAnimationStartedListener() {
+                        @Override
+                        public void onAnimationStarted(long elapsedRealTime) {
+                            if (startedListener != null) {
+                                startedListener.run();
+                            }
                         }
-                    }
-                },
-                new ActivityOptions.OnAnimationFinishedListener() {
-                    @Override
-                    public void onAnimationFinished(long elapsedRealTime) {
-                        if (finishedListener != null) {
-                            finishedListener.run();
+                    },
+                    new ActivityOptions.OnAnimationFinishedListener() {
+                        @Override
+                        public void onAnimationFinished(long elapsedRealTime) {
+                            if (finishedListener != null) {
+                                finishedListener.run();
+                            }
                         }
-                    }
-                });
+                    });
+        } catch (Throwable t) {
+            return app.lawnchair.compatlib.ActivityOptionsCompat.makeCustomAnimationFallback(
+                    context, enterResId, exitResId, callbackHandler, startedListener, finishedListener);
+        }
     }
 }

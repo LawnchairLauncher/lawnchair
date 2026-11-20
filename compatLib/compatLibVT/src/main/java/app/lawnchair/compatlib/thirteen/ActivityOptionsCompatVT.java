@@ -32,16 +32,21 @@ public class ActivityOptionsCompatVT extends ActivityOptionsCompatVS {
             @NonNull Handler callbackHandler,
             Runnable callback,
             Runnable finishedListener) {
-        return ActivityOptions.makeCustomTaskAnimation(
-                context,
-                enterResId,
-                exitResId,
-                callbackHandler,
-                elapsedRealTime -> {
-                    if (callback != null) {
-                        callbackHandler.post(callback);
-                    }
-                },
-                null /* finishedListener */);
+        try {
+            return ActivityOptions.makeCustomTaskAnimation(
+                    context,
+                    enterResId,
+                    exitResId,
+                    callbackHandler,
+                    elapsedRealTime -> {
+                        if (callback != null) {
+                            callbackHandler.post(callback);
+                        }
+                    },
+                    null /* finishedListener */);
+        } catch (Throwable t) {
+            return app.lawnchair.compatlib.ActivityOptionsCompat.makeCustomAnimationFallback(
+                    context, enterResId, exitResId, callbackHandler, callback, finishedListener);
+        }
     }
 }
