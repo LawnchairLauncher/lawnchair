@@ -32,6 +32,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
+import app.lawnchair.allapps.suggestions.AppLaunchStore
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
 import app.lawnchair.data.wallpaper.service.WallpaperService
@@ -63,6 +64,8 @@ import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.folder.FolderIcon
+import com.android.launcher3.logging.InstanceId
+import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.PredictedContainerInfo
 import com.android.launcher3.popup.SystemShortcut
@@ -424,6 +427,12 @@ class LawnchairLauncher : QuickstepLauncher() {
 
         Utilities.allowBGLaunch(options)
         return ActivityOptionsWrapper(options, callbacks)
+    }
+
+    override fun logAppLaunch(statsLogManager: StatsLogManager?, info: ItemInfo?, instanceId: InstanceId?) {
+        super.logAppLaunch(statsLogManager, info, instanceId)
+        // Called after each successful launch from the launcher; feeds the drawer's suggestion tabs.
+        AppLaunchStore.getInstance(this).recordLaunch(info)
     }
 
     override fun getActivityLaunchOptions(v: View?, item: ItemInfo?): ActivityOptionsWrapper {
