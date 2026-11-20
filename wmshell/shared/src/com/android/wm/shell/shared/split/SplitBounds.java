@@ -167,21 +167,19 @@ public class SplitBounds implements Parcelable {
         topTaskPercent = parcel.readFloat();
         leftTaskPercent = parcel.readFloat();
         appsStackedVertically = parcel.readBoolean();
-        initiatedFromSeascape = parcel.readBoolean();
+        // Android 16 base format (nts: taskIds come before divider percents)
+        leftTopTaskId = parcel.readInt();
+        rightBottomTaskId = parcel.readInt();
         dividerWidthPercent = parcel.readFloat();
         dividerHeightPercent = parcel.readFloat();
         snapPosition = parcel.readInt();
-        leftTopTaskId = parcel.readInt();
-        rightBottomTaskId = parcel.readInt();
-        int size = parcel.readInt();
-        leftTopTaskIds = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            leftTopTaskIds.add(parcel.readInt());
-        }
-        size = parcel.readInt();
-        rightBottomTaskIds = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            rightBottomTaskIds.add(parcel.readInt());
+        // Derive QPR1 fields from the base fields
+        leftTopTaskIds = Collections.singletonList(leftTopTaskId);
+        rightBottomTaskIds = Collections.singletonList(rightBottomTaskId);
+        if (appsStackedVertically) {
+            initiatedFromSeascape = false;
+        } else {
+            initiatedFromSeascape = rightBottomBounds.width() > leftTopBounds.width();
         }
     }
 
@@ -193,20 +191,12 @@ public class SplitBounds implements Parcelable {
         parcel.writeFloat(topTaskPercent);
         parcel.writeFloat(leftTaskPercent);
         parcel.writeBoolean(appsStackedVertically);
-        parcel.writeBoolean(initiatedFromSeascape);
+        // Android 16 base format (nts: taskIds come before divider percents)
+        parcel.writeInt(leftTopTaskId);
+        parcel.writeInt(rightBottomTaskId);
         parcel.writeFloat(dividerWidthPercent);
         parcel.writeFloat(dividerHeightPercent);
         parcel.writeInt(snapPosition);
-        parcel.writeInt(leftTopTaskId);
-        parcel.writeInt(rightBottomTaskId);
-        parcel.writeInt(leftTopTaskIds.size());
-        for (Integer id : leftTopTaskIds) {
-            parcel.writeInt(id); // Write each Integer in the List
-        }
-        parcel.writeInt(rightBottomTaskIds.size());
-        for (Integer id : rightBottomTaskIds) {
-            parcel.writeInt(id); // Write each Integer in the List
-        }
     }
 
     @Override
