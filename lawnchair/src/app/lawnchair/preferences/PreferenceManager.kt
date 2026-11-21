@@ -72,7 +72,6 @@ class PreferenceManager @Inject constructor(
 
     private val refreshHotseatBackground = {
         LawnchairLauncher.instance?.hotseat?.refreshBackground()
-        LawnchairLauncher.instance?.recreateIfNotScheduled()
         Unit
     }
 

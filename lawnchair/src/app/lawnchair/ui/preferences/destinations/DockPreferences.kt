@@ -259,7 +259,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
                         wallpaper = wallpaper,
                         modifier = Modifier.fillMaxSize(),
                     )
-                    key(layoutAdapters.map { it.state.value }.toTypedArray()) {
+                    key(layoutAdapters.map { it.state.value }) {
                         DummyLauncherLayout(
                             idp = createPreviewIdp { copy(numHotseatColumns = prefs.hotseatColumns.get()) },
                             modifier = Modifier.fillMaxSize(),

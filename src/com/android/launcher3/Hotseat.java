@@ -236,11 +236,16 @@ public class Hotseat extends FrameLayout implements Insettable {
                 : PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatBackgroundColor());
         int transparency = preferenceManager.getHotseatBGAlpha().get();
         int alphaValue = (transparency * 255) / 100;
-        int baseColor = Utilities.isDarkTheme(getContext())
-                ? bgColor.getColorPreferenceEntry().getDarkColor().invoke(getContext())
-                : bgColor.getColorPreferenceEntry().getLightColor().invoke(getContext());
-        if (baseColor == 0) {
+        int baseColor;
+        if (bgColor == null || bgColor instanceof ColorOption.Default) {
             baseColor = Themes.getColorBackgroundFloating(getContext());
+        } else {
+            baseColor = Utilities.isDarkTheme(getContext())
+                    ? bgColor.getColorPreferenceEntry().getDarkColor().invoke(getContext())
+                    : bgColor.getColorPreferenceEntry().getLightColor().invoke(getContext());
+            if (baseColor == 0) {
+                baseColor = Themes.getColorBackgroundFloating(getContext());
+            }
         }
         int finalColor = Color.argb(alphaValue, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor));
         int insetHorizontalLeft = preferenceManager.getHotseatBGHorizontalInsetLeft().get();

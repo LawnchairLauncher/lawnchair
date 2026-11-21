@@ -154,11 +154,27 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
 
     inner class StringPref(
         key: String,
-        defaultValue: String,
+        override val defaultValue: String = "",
         primaryListener: ChangeListener? = null,
-    ) : StringBasedPref<String>(key, defaultValue, primaryListener) {
-        override fun parse(stringValue: String) = stringValue
-        override fun stringify(value: String) = value
+    ) : BasePref<String>(key, primaryListener) {
+        private var currentValue = ""
+
+        init {
+            prefsMap[key] = this
+        }
+
+        override fun get(): String {
+            if (!loaded) {
+                currentValue = sp.getString(key, defaultValue) ?: defaultValue
+                loaded = true
+            }
+            return currentValue
+        }
+
+        override fun set(newValue: String) {
+            currentValue = newValue
+            editSp { putString(key, newValue) }
+        }
     }
 
     inner class BoolPref(

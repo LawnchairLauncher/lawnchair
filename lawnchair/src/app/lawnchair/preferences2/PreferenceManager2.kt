@@ -963,7 +963,9 @@ class PreferenceManager2 @Inject constructor(
             .drop(1)
             .distinctUntilChanged()
             .onEach {
-                LawnchairLauncher.instance?.hotseat?.refreshBackground()
+                withFreshCache {
+                    LawnchairLauncher.instance?.hotseat?.refreshBackground()
+                }
             }
             .launchIn(scope)
     }
