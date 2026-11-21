@@ -144,16 +144,12 @@ class HeadlessWidgetsManager @Inject constructor(
                     putString("attached-launcher-identifier", context.packageName)
                     putBoolean("com.google.android.apps.gsa.widget.PREINSTALLED", true)
                 }
-                val bound = widgetManager.bindAppWidgetIdIfAllowed(
+                widgetManager.bindAppWidgetIdIfAllowed(
                     widgetId,
                     info.profile,
                     info.provider,
                     options,
                 )
-                if (!bound) {
-                    host.deleteAppWidgetId(widgetId)
-                    widgetId = -1
-                }
             }
 
             prefs.edit { putInt(prefKey, widgetId) }

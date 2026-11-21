@@ -242,6 +242,11 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             } else if (provider == Google) {
                 val fallback = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
                     .addFlags(QsbSearchProvider.INTENT_FLAGS)
+                    .setPackage(Google.packageName)
+                    .putExtra(
+                        RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                        RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH,
+                    )
                 if (resolveIntent(context, fallback)) fallback else null
             } else {
                 null

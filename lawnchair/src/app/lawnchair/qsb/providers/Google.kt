@@ -39,8 +39,19 @@ data object Google : QsbSearchProvider(
     fun launchVoice(context: Context) {
         val intents = listOf(
             Intent(ACTION_CLASSIC_GSA_VOICE_SEARCH).addFlags(INTENT_FLAGS).setPackage(packageName),
-            Intent(RecognizerIntent.ACTION_WEB_SEARCH).addFlags(INTENT_FLAGS).setPackage(packageName),
-            Intent(RecognizerIntent.ACTION_WEB_SEARCH).addFlags(INTENT_FLAGS),
+            Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                .addFlags(INTENT_FLAGS)
+                .setPackage(packageName)
+                .putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH,
+                ),
+            Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                .addFlags(INTENT_FLAGS)
+                .putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH,
+                ),
         )
         for (intent in intents) {
             try {
@@ -53,10 +64,9 @@ data object Google : QsbSearchProvider(
         }
     }
 
-    override fun handleCreateVoiceIntent(): Intent =
-        Intent(ACTION_CLASSIC_GSA_VOICE_SEARCH)
-            .addFlags(INTENT_FLAGS)
-            .setPackage(packageName)
+    override fun handleCreateVoiceIntent(): Intent = Intent(ACTION_CLASSIC_GSA_VOICE_SEARCH)
+        .addFlags(INTENT_FLAGS)
+        .setPackage(packageName)
 
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         if (!forceWebsite) {
