@@ -52,6 +52,7 @@ import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 
 import java.io.PrintWriter;
@@ -65,6 +66,7 @@ import app.lawnchair.hotseat.LawnchairHotseat;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.theme.color.ColorOption;
 
 /**
  * View class that represents the bottom dock of the home screen.
@@ -201,14 +203,46 @@ public class Hotseat extends FrameLayout implements Insettable {
         setClipToPadding(false);
     }
 
-    private void setUpBackground() {
-        if(!preferenceManager.getHotseatBG().get()) return;
+    /** Refreshes the hotseat background drawable and insets. */
+    public void refreshBackground() {
+        setUpBackground(null);
+    }
 
-        var bgColor = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatBackgroundColor());
-        var transparency = preferenceManager.getHotseatBGAlpha().get();
-        var alphaValue = (transparency * 255) / 100;
-        var baseColor = bgColor.getColorPreferenceEntry().getLightColor().invoke(getContext());
-        var finalColor = Color.argb(alphaValue, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor));
+    /** Refreshes the hotseat background drawable with the specified color. */
+    public void refreshBackground(@Nullable ColorOption color) {
+        setUpBackground(color);
+    }
+
+    private void setUpBackground() {
+        setUpBackground(null);
+    }
+
+    private void setUpBackground(@Nullable ColorOption overrideColor) {
+        DeviceProfile grid = mActivity != null ? mActivity.getDeviceProfile() : null;
+        Rect layoutPadding = grid != null ? grid.getHotseatLayoutPadding(getContext()) : null;
+        int pl = layoutPadding != null ? layoutPadding.left : getPaddingLeft();
+        int pt = layoutPadding != null ? layoutPadding.top : getPaddingTop();
+        int pr = layoutPadding != null ? layoutPadding.right : getPaddingRight();
+        int pb = layoutPadding != null ? layoutPadding.bottom : getPaddingBottom();
+
+        if (!preferenceManager.getHotseatBG().get()) {
+            setBackground(null);
+            setPadding(pl, pt, pr, pb);
+            return;
+        }
+
+        ColorOption bgColor = overrideColor != null
+                ? overrideColor
+                : PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatBackgroundColor());
+        int transparency = preferenceManager.getHotseatBGAlpha().get();
+        int alphaValue = (transparency * 255) / 100;
+        int baseColor = Utilities.isDarkTheme(getContext())
+                ? bgColor.getColorPreferenceEntry().getDarkColor().invoke(getContext())
+                : bgColor.getColorPreferenceEntry().getLightColor().invoke(getContext());
+        if (baseColor == 0) {
+            baseColor = Themes.getColorBackgroundFloating(getContext());
+        }
+        int finalColor = Color.argb(alphaValue, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor));
         int insetHorizontalLeft = preferenceManager.getHotseatBGHorizontalInsetLeft().get();
         int insetHorizontalRight = preferenceManager.getHotseatBGHorizontalInsetRight().get();
         int insetVerticalTop = preferenceManager.getHotseatBGVerticalInsetTop().get();
@@ -223,8 +257,17 @@ public class Hotseat extends FrameLayout implements Insettable {
         background.setColor(finalColor);
         background.setCornerRadius(cornerRadius);
         InsetDrawable bg = new InsetDrawable(background,
-                insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
+                insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom) {
+            @Override
+            public boolean getPadding(Rect padding) {
+                if (padding != null) {
+                    padding.set(0, 0, 0, 0);
+                }
+                return false;
+            }
+        };
         setBackground(bg);
+        setPadding(pl, pt, pr, pb);
     }
 
     /** Provides translation X for hotseat icons for the channel. */
