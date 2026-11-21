@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.graphics.RectF
+import android.speech.RecognizerIntent
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -120,8 +121,14 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             onEndIconClick = { id ->
                                 runCatching {
                                     when (id) {
-                                        QsbIconId.MIC -> voiceIntent?.let { context.startActivity(it) }
+                                        QsbIconId.MIC -> if (searchProvider == Google) {
+                                            Google.launchVoice(context)
+                                        } else {
+                                            voiceIntent?.let { context.startActivity(it) }
+                                        }
+
                                         QsbIconId.LENS -> lensIntent?.let { context.startActivity(it) }
+
                                         else -> null
                                     }
                                 }
@@ -230,10 +237,14 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         ): Intent? {
             val intent = if (provider.supportVoiceIntent) provider.createVoiceIntent() else null
 
-            return if (intent == null || !resolveIntent(context, intent)) {
-                null
-            } else {
+            return if (intent != null && resolveIntent(context, intent)) {
                 intent
+            } else if (provider == Google) {
+                val fallback = Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                    .addFlags(QsbSearchProvider.INTENT_FLAGS)
+                if (resolveIntent(context, fallback)) fallback else null
+            } else {
+                null
             }
         }
 

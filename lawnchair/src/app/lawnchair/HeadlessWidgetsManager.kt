@@ -7,16 +7,20 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.widget.RemoteViews
 import androidx.core.content.edit
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppComponent
 import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
+import com.android.launcher3.widget.util.WidgetSizes
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
@@ -45,14 +49,20 @@ class HeadlessWidgetsManager @Inject constructor(
 
     @Synchronized
     fun getWidget(info: AppWidgetProviderInfo, prefKey: String): Widget {
-        val existing = widgetsMap[prefKey]
-        if (existing != null && existing.info.provider == info.provider) {
-            return existing
+        var widget = widgetsMap[prefKey]
+        if (widget == null || widget.info.provider != info.provider) {
+            widget = Widget(
+                context = context,
+                prefs = prefs,
+                widgetManager = widgetManager,
+                host = host,
+                scope = scope,
+                info = info,
+                prefKey = prefKey,
+            )
+            widgetsMap[prefKey] = widget
         }
-
-        return Widget(info, prefKey).also {
-            widgetsMap[prefKey] = it
-        }
+        return widget
     }
 
     fun subscribeUpdates(info: AppWidgetProviderInfo, prefKey: String): Flow<AppWidgetHostView> {
@@ -92,7 +102,15 @@ class HeadlessWidgetsManager @Inject constructor(
         }
     }
 
-    inner class Widget internal constructor(val info: AppWidgetProviderInfo, private val prefKey: String) {
+    class Widget internal constructor(
+        private val context: Context,
+        private val prefs: SharedPreferences,
+        private val widgetManager: AppWidgetManager,
+        private val host: AppWidgetHost,
+        private val scope: CoroutineScope,
+        val info: AppWidgetProviderInfo,
+        private val prefKey: String,
+    ) {
 
         private var widgetId = prefs.getInt(prefKey, -1)
         val isBound: Boolean
@@ -121,12 +139,21 @@ class HeadlessWidgetsManager @Inject constructor(
                 }
 
                 widgetId = host.allocateAppWidgetId()
-                widgetManager.bindAppWidgetIdIfAllowed(
+                val idp = LauncherAppState.getIDP(context)
+                val options = WidgetSizes.getWidgetSizeOptions(context, info.provider, idp.numColumns, 1).apply {
+                    putString("attached-launcher-identifier", context.packageName)
+                    putBoolean("com.google.android.apps.gsa.widget.PREINSTALLED", true)
+                }
+                val bound = widgetManager.bindAppWidgetIdIfAllowed(
                     widgetId,
                     info.profile,
                     info.provider,
-                    null,
+                    options,
                 )
+                if (!bound) {
+                    host.deleteAppWidgetId(widgetId)
+                    widgetId = -1
+                }
             }
 
             prefs.edit { putInt(prefKey, widgetId) }
