@@ -21,14 +21,17 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAP
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 
 import app.lawnchair.theme.color.tokens.ColorTokens;
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimColors;
 import com.android.quickstep.util.BaseDepthControllerImpl;
@@ -77,6 +80,13 @@ public class AllAppsState extends LauncherState {
         if (!InteractionJankMonitorWrapper.isInstrumenting(Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK)) {
             InteractionJankMonitorWrapper.begin(
                     launcher.getAppsView(), Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK);
+        }
+        ActivityAllAppsContainerView<?> appsView = launcher.getAppsView();
+        if (appsView != null && appsView.getSearchUiManager() != null) {
+            ExtendedEditText editText = appsView.getSearchUiManager().getEditText();
+            if (editText != null && !TextUtils.isEmpty(editText.getText())) {
+                appsView.getSearchUiManager().resetSearch();
+            }
         }
         super.onBackInvoked(launcher);
     }

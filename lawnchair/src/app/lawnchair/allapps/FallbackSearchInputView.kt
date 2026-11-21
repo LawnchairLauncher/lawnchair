@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.KeyEvent
 import androidx.core.graphics.ColorUtils
 import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.util.EditTextExtensions.setCursorColor
@@ -37,6 +38,15 @@ class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : Extended
         this.appsView = appsView
     }
 
+    override fun clearFocus() {
+        super.clearFocus()
+        val appsView = this.appsView
+        val activeList = appsView?.activeRecyclerView
+        if (activeList != null) {
+            activeList.requestFocus()
+        }
+    }
+
     override fun hideKeyboard() {
         super.hideKeyboard()
         // Prefer the active apps list over appsView itself. appsView has
@@ -50,6 +60,17 @@ class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : Extended
         } else {
             appsView?.requestFocus()
         }
+    }
+
+    override fun onKeyPreIme(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event?.action == KeyEvent.ACTION_UP) {
+            if (text.isNullOrEmpty()) {
+                hideKeyboard()
+                appsView?.searchUiManager?.resetSearch()
+                return true
+            }
+        }
+        return super.onKeyPreIme(keyCode, event)
     }
 
     override fun onAttachedToWindow() {
