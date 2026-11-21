@@ -140,7 +140,9 @@ public class LauncherRootView extends InsettableFrameLayout {
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
         mStatefulContainer.handleConfigurationChanged(
                 mStatefulContainer.asContext().getResources().getConfiguration());
-        return updateInsets(insets);
+        WindowInsets result = updateInsets(insets);
+        setDisallowBackGesture(mDisallowBackGesture);
+        return result;
     }
 
     private WindowInsets updateInsets(WindowInsets insets) {
@@ -198,7 +200,6 @@ public class LauncherRootView extends InsettableFrameLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(l, t, r, b);
         setDisallowBackGesture(mDisallowBackGesture);
         mSysUiScrim.setSize(r - l, b - t);
     }
@@ -214,10 +215,25 @@ public class LauncherRootView extends InsettableFrameLayout {
         }
         mDisallowBackGesture = disallowBackGesture;
         if (Utilities.ATLEAST_Q) {
+            // LC-Note: Don't exclude the bottom gesture area. Another recents provider cancels
+            // quick switch for swipes inside an excluded area, and back is never detected there.
+            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(0, 0, getWidth(),
+                    Math.max(0, getHeight() - getBottomSystemGestureInset()));
             setSystemGestureExclusionRects((mForceHideBackArrow || mDisallowBackGesture)
                     ? SYSTEM_GESTURE_EXCLUSION_RECT
                     : Collections.emptyList());
         }
+    }
+
+    private int getBottomSystemGestureInset() {
+        WindowInsets insets = getRootWindowInsets();
+        if (insets == null) {
+            return 0;
+        }
+        if (Utilities.ATLEAST_R) {
+            return insets.getInsets(WindowInsets.Type.mandatorySystemGestures()).bottom;
+        }
+        return insets.getMandatorySystemGestureInsets().bottom;
     }
 
     public SysUiScrim getSysUiScrim() {
