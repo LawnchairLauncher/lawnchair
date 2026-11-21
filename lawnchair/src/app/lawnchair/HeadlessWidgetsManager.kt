@@ -8,6 +8,7 @@ import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.core.content.edit
 import com.android.launcher3.LauncherAppState
@@ -139,16 +140,11 @@ class HeadlessWidgetsManager @Inject constructor(
                 }
 
                 widgetId = host.allocateAppWidgetId()
-                val idp = LauncherAppState.getIDP(context)
-                val options = WidgetSizes.getWidgetSizeOptions(context, info.provider, idp.numColumns, 1).apply {
-                    putString("attached-launcher-identifier", context.packageName)
-                    putBoolean("com.google.android.apps.gsa.widget.PREINSTALLED", true)
-                }
                 widgetManager.bindAppWidgetIdIfAllowed(
                     widgetId,
                     info.profile,
                     info.provider,
-                    options,
+                    createWidgetOptions(),
                 )
             }
 
@@ -158,6 +154,15 @@ class HeadlessWidgetsManager @Inject constructor(
         fun getBindIntent() = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
             .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
             .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider)
+            .putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, createWidgetOptions())
+
+        private fun createWidgetOptions(): Bundle {
+            val idp = LauncherAppState.getIDP(context)
+            return WidgetSizes.getWidgetSizeOptions(context, info.provider, idp.numColumns, 1).apply {
+                putString("attached-launcher-identifier", context.packageName)
+                putBoolean("com.google.android.apps.gsa.widget.PREINSTALLED", true)
+            }
+        }
     }
 
     private class WidgetNotBoundException : RuntimeException()
