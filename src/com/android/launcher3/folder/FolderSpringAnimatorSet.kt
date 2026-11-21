@@ -47,6 +47,8 @@ import com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN
 import com.android.launcher3.util.MultiPropertyFactory
 import com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE
 
+import app.lawnchair.util.getFolderAnimDurationDelta
+
 /** Holder for Animators created from [FolderAnimationSpringBuilderManager] */
 class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
 
@@ -92,7 +94,27 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                 addWallpaperZoomAnimator(folder.context, animatorSet, folderAnimData.isOpening, it)
             }
             iconAnimData.forEach { addContentIconAnimators(folder.context, animatorSet, it) }
+
+            // LC-Note: Custom folder animation duration
+            val delta = getFolderAnimDurationDelta(folder.context)
+            if (delta != 0) {
+                adjustAnimatorDurations(animatorSet, delta)
+            }
+
             return FolderSpringAnimatorSet(animatorSet)
+        }
+
+        /**
+         * Adjust duration of the animator based on delta
+         *
+         * LC-Note: Custom folder animation duration
+         */
+        private fun adjustAnimatorDurations(animator: Animator, delta: Int) {
+            if (animator is AnimatorSet) {
+                animator.childAnimations.forEach { adjustAnimatorDurations(it, delta) }
+            } else if (animator !is ObjectAnimator) {
+                animator.duration = (animator.duration + delta).coerceAtLeast(1L)
+            }
         }
 
         private fun <T : Any> playSpringAnimation(
