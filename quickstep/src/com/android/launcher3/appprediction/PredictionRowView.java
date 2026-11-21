@@ -122,7 +122,9 @@ public class PredictionRowView<T extends Context & ActivityContext>
     }
 
     private void updateVisibility() {
-        boolean enabled = mPredictionsEnabled && PreferenceCacheExtensionsKt.firstCached(prefs2.getShowSuggestedAppsInDrawer());
+        boolean enabled = mPredictionsEnabled
+                && !prefs2.isDrawerHorizontal()
+                && PreferenceCacheExtensionsKt.firstCached(prefs2.getShowSuggestedAppsInDrawer());
         setVisibility(enabled ? VISIBLE : GONE);
         if (mActivityContext.getAppsView() != null) {
             if (enabled) {
@@ -168,6 +170,9 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
     @Override
     public boolean hasVisibleContent() {
+        if (prefs2.isDrawerHorizontal()) {
+            return false;
+        }
         return mPredictionsEnabled;
     }
 
@@ -221,6 +226,10 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
     private void applyPredictionApps() {
         if (mPredictionUiUpdatePaused) {
+            return;
+        }
+        if (prefs2.isDrawerHorizontal()) {
+            setVisibility(GONE);
             return;
         }
         if (getChildCount() != mNumPredictedAppsPerRow) {

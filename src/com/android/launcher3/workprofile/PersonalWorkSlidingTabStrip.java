@@ -86,10 +86,11 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     public void setActiveMarker(int activePage) {
         updateTabTextColor(activePage);
-        if (mOnActivePageChangedListener != null && mLastActivePage != activePage) {
+        int prevPage = mLastActivePage;
+        mLastActivePage = activePage;
+        if (mOnActivePageChangedListener != null && prevPage != activePage) {
             mOnActivePageChangedListener.onActivePageChanged(activePage);
         }
-        mLastActivePage = activePage;
     }
 
     public void setOnActivePageChangedListener(OnActivePageChangedListener listener) {

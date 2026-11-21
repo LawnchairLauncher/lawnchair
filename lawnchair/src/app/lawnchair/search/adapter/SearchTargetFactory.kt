@@ -366,13 +366,17 @@ class SearchTargetFactory(
         }.build()
     }
 
+    fun createPrivateSpaceTarget(isLocked: Boolean): SearchTargetCompat {
+        return app.lawnchair.search.PrivateSpaceSearchUtils.createPrivateSpaceTarget(context, isLocked)
+    }
+
     companion object {
         private const val HASH_ALGORITHM = "SHA-256"
 
         // TODO find a way to properly provide tag/provide ids to search target
         private val messageDigest by lazy { MessageDigest.getInstance(HASH_ALGORITHM) }
 
-        private fun generateHashKey(input: String): String = ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
+        internal fun generateHashKey(input: String): String = ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
 
         fun createSearchTarget(
             id: String,

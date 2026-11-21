@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/all_apps_horizontal_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:clipChildren="true">
+
+    <app.lawnchair.allapps.AllAppsHorizontalPagedView
+        android:id="@+id/all_apps_horizontal_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:clipChildren="true"
+        launcher:pageIndicator="@+id/all_apps_page_indicator" />
+
+    <com.android.launcher3.pageindicators.PageIndicatorDots
+        android:id="@+id/all_apps_page_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/workspace_page_indicator_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp" />
+
+</RelativeLayout>

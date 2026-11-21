@@ -237,6 +237,10 @@ android {
 
         release {
             resValue("string", "derived_app_name", "Lawnchair")
+            manifestPlaceholders.quickstepMinSdk = "0"
+            manifestPlaceholders.quickstepMaxSdk = "100000"
+            buildConfigField "int", "QUICKSTEP_MIN_SDK", "0"
+            buildConfigField "int", "QUICKSTEP_MAX_SDK", "100000"
             minifyEnabled true
             shrinkResources true
             pseudoLocalesEnabled false
@@ -496,8 +500,8 @@ dependencies {
 
     implementation libs.androidx.exifinterface
 
-    debugImplementation libs.leakcanary.android
-    debugImplementation libs.leakcanary.androidstudio
+    // debugImplementation libs.leakcanary.android
+    // debugImplementation libs.leakcanary.androidstudio
 }
 
 ksp {
