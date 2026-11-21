@@ -11,6 +11,8 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.annotation.UiThread
+import app.lawnchair.theme.color.ColorOption
+import com.android.launcher3.Hotseat
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -38,6 +40,7 @@ class LauncherPreviewView(
     private var destroyed = false
 
     private var rendererView: View? = null
+    private var pendingColor: ColorOption? = null
 
     private val spinner = CircularProgressIndicator(context).apply {
         val themedContext = ContextThemeWrapper(context, Themes.getActivityThemeRes(context))
@@ -61,6 +64,14 @@ class LauncherPreviewView(
 
     fun addOnReadyCallback(runnable: Runnable) {
         onReadyCallbacks.add(runnable)
+    }
+
+    fun refreshHotseat(color: ColorOption? = null) {
+        if (color != null) {
+            pendingColor = color
+        }
+        val hotseat = rendererView?.findViewById<Hotseat>(R.id.hotseat)
+        hotseat?.refreshBackground(pendingColor)
     }
 
     @UiThread
@@ -117,6 +128,7 @@ class LauncherPreviewView(
         removeView(spinner)
         rendererView = view
         addView(view)
+        view.findViewById<Hotseat>(R.id.hotseat)?.refreshBackground(pendingColor)
         onReadyCallbacks.executeAllAndDestroy()
     }
 

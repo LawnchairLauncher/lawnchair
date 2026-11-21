@@ -53,6 +53,7 @@ fun DummyLauncherBox(
 fun DummyLauncherLayout(
     idp: InvariantDeviceProfile,
     modifier: Modifier = Modifier,
+    update: (View) -> Unit = {},
 ) {
     val previewView = createPreviewView(idp)
     Crossfade(targetState = previewView, label = "") {
@@ -61,6 +62,7 @@ fun DummyLauncherLayout(
             factory = { context ->
                 view ?: View(context)
             },
+            update = update,
             modifier = modifier,
         )
     }
