@@ -1,10 +1,10 @@
 [versions]
 jdkRelease = "21"
 
-agp = "9.5.1"
+agp = "9.5.2"
 kotlin = "2.4.21"
 androidx-room = "2.8.5"
-androidx-lifecycle = "2.11.0"
+androidx-lifecycle = "2.11.1"
 accompanist = "0.37.3"
 opto = "1.0.18"
 protobuf = "4.36.2"
@@ -35,7 +35,7 @@ google-ksp = "com.google.devtools.ksp:2.3.14"
 google-protobuf = "com.google.protobuf:0.10.0"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = "com.diffplug.spotless:8.11.0"
+diffplug-spotless = "com.diffplug.spotless:8.12.0"
 
 [libraries]
 # AndroidX
@@ -66,11 +66,11 @@ androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.1"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
-compose-bom = "androidx.compose:compose-bom:2026.09.00"
+compose-bom = "androidx.compose:compose-bom:2026.11.01"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-rc01"
+compose-material3 = "androidx.compose.material3:material3:1.5.0"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }

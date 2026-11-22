@@ -31,7 +31,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.appprediction.AppsDividerView;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.statemanager.StateManager;
@@ -106,7 +105,7 @@ public class QuickstepOnboardingPrefs {
                         return;
                     }
                     mShouldIncreaseCount = toState == HINT_STATE
-                            && launcher.getWorkspace().getNextPage() == Workspace.DEFAULT_PAGE
+                            && launcher.getWorkspace().getNextPage() == launcher.getWorkspace().getDefaultPage()
                             && launcher.isCanShowAllAppsEducationView();
                 }
 
