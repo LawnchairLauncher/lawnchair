@@ -23,6 +23,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.hotseat.DisabledHotseat
+import app.lawnchair.hotseat.GoogleSearchHotseat
 import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.hotseat.LawnchairHotseat
 import app.lawnchair.preferences.PreferenceAdapter
@@ -82,9 +83,10 @@ fun DockSearchPreference(
                 }
                 ExpandAndShrink(visible = hotseatModeAdapter.state.value != DisabledHotseat) {
                     Column {
+                        val isGoogleSearchHotseat = hotseatModeAdapter.state.value == GoogleSearchHotseat
                         DockSearchBarPreview(
-                            provider = hotseatQsbProviderAdapter,
-                            themed = themeQsbAdapter.state.value,
+                            provider = if (isGoogleSearchHotseat) Google else hotseatQsbProviderAdapter,
+                            themed = if (isGoogleSearchHotseat) false else themeQsbAdapter.state.value,
                             cornerRadiusFactor = qsbCornerAdapter.state.value,
                             transparency = qsbAlphaAdapter.state.value,
                             strokeWidth = qsbHotseatStrokeWidth.state.value,
