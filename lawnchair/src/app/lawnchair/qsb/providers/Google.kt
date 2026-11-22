@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetHostView
 import android.content.Context
 import android.content.Intent
+import android.speech.RecognizerIntent
 import android.view.View
 import androidx.core.view.descendants
 import app.lawnchair.HeadlessWidgetsManager
@@ -29,6 +30,44 @@ data object Google : QsbSearchProvider(
     supportVoiceIntent = true,
     website = "https://www.google.com/",
 ) {
+    private const val ACTION_CLASSIC_GSA_VOICE_SEARCH =
+        "com.google.android.googlequicksearchbox.action.CLASSIC_GSA_VOICE_SEARCH"
+
+    /**
+     * Launches the Google voice search action.
+     */
+    fun launchVoice(context: Context) {
+        val intents = listOf(
+            Intent(ACTION_CLASSIC_GSA_VOICE_SEARCH).addFlags(INTENT_FLAGS).setPackage(packageName),
+            Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                .addFlags(INTENT_FLAGS)
+                .setPackage(packageName)
+                .putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH,
+                ),
+            Intent(RecognizerIntent.ACTION_WEB_SEARCH)
+                .addFlags(INTENT_FLAGS)
+                .putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH,
+                ),
+        )
+        for (intent in intents) {
+            try {
+                if (context.packageManager.resolveActivity(intent, 0) != null) {
+                    context.startActivity(intent)
+                    return
+                }
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    override fun handleCreateVoiceIntent(): Intent = Intent(ACTION_CLASSIC_GSA_VOICE_SEARCH)
+        .addFlags(INTENT_FLAGS)
+        .setPackage(packageName)
+
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         if (!forceWebsite) {
             val subscription = getSearchIntent(launcher)
@@ -54,6 +93,9 @@ data object Google : QsbSearchProvider(
         super.launch(launcher, forceWebsite)
     }
 
+    /**
+     * Emits the pending search intent extracted from the Google search widget, if available.
+     */
     fun getSearchIntent(context: Context): Flow<PendingIntent?> {
         val info = QsbContainerView.getSearchWidgetProviderInfo(context, Google.packageName) ?: return flowOf(null)
         val headlessWidgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
