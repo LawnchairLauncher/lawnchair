@@ -23,7 +23,7 @@
     -->
     <string name="preview_label">Náhľad</string>
     <string name="action_create">Vytvoriť</string>
-    <string name="action_backup">Zálohovanie</string>
+    <string name="action_backup">Zálohovať</string>
     <string name="action_restore">Obnoviť</string>
     <string name="action_delete">Vymazať</string>
     <string name="action_reset">Reset</string>
@@ -56,46 +56,46 @@
     <!-- Time ago strings -->
     <string name="time_just_now">práve teraz</string>
     <plurals name="time_minutes_ago">
-        <item quantity="one">%d min</item>
-        <item quantity="few">%d min</item>
-        <item quantity="many">%d min</item>
-        <item quantity="other">%d min</item>
+        <item quantity="one">%dmin</item>
+        <item quantity="few">%dmin</item>
+        <item quantity="many">%dmin</item>
+        <item quantity="other">%dmin</item>
     </plurals>
     <plurals name="time_hours_ago">
-        <item quantity="one">%d h</item>
-        <item quantity="few">%d h</item>
-        <item quantity="many">%d h</item>
-        <item quantity="other">%d h</item>
+        <item quantity="one">%dh</item>
+        <item quantity="few">%dh</item>
+        <item quantity="many">%dh</item>
+        <item quantity="other">%dh</item>
     </plurals>
     <plurals name="time_days_ago">
-        <item quantity="one">%d d</item>
-        <item quantity="few">%d d</item>
-        <item quantity="many">%d d</item>
-        <item quantity="other">%d d</item>
+        <item quantity="one">%dd</item>
+        <item quantity="few">%dd</item>
+        <item quantity="many">%dd</item>
+        <item quantity="other">%dd</item>
     </plurals>
     <plurals name="time_weeks_ago">
-        <item quantity="one">%d týžd</item>
-        <item quantity="few">%d týžd</item>
-        <item quantity="many">%d týžd</item>
-        <item quantity="other">%d týžd</item>
+        <item quantity="one">%dtýžd</item>
+        <item quantity="few">%dtýžd</item>
+        <item quantity="many">%dtýžd</item>
+        <item quantity="other">%dtýžd</item>
     </plurals>
     <plurals name="time_months_ago">
-        <item quantity="one">%d mes.</item>
-        <item quantity="few">%d mes.</item>
-        <item quantity="many">%d mes.</item>
-        <item quantity="other">%d mes.</item>
+        <item quantity="one">%dmes</item>
+        <item quantity="few">%dmes</item>
+        <item quantity="many">%dmes</item>
+        <item quantity="other">%dmes</item>
     </plurals>
     <plurals name="time_years_ago">
-        <item quantity="one">%d r.</item>
-        <item quantity="few">%d r.</item>
-        <item quantity="many">%d r.</item>
-        <item quantity="other">%d r.</item>
+        <item quantity="one">%dr</item>
+        <item quantity="few">%dr</item>
+        <item quantity="many">%dr</item>
+        <item quantity="other">%dr</item>
     </plurals>
     <string name="managed_by_lawnchair">Spravované Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Predvoľby</string>
     <string name="settings_button_text">Nastavenia domovskej obrazovky</string>
-    <string name="system_settings">Systémove nastavenie</string>
+    <string name="system_settings">Systémové nastavenia</string>
     <string name="title_change_settings">Zmeniť nastavenia</string>
     <!--
 
@@ -130,36 +130,36 @@
     <string name="wallpapers">Tapety</string>
     <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="selected_apps">Selected apps</string>
-    <string name="add_apps">Add apps</string>
-    <string name="app_drawer_folder_settings">App drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="app_drawer_folder">Zložky zoznamu aplikácií</string>
+    <string name="selected_apps">Vybrané aplikácie</string>
+    <string name="add_apps">Pridať aplikácie</string>
+    <string name="app_drawer_folder_settings">Zložka v šuplíku aplikácií</string>
+    <string name="add_folder">Vytvoriť zložku</string>
+    <string name="edit_folder">Editovať zložku</string>
+    <string name="add_label">Pridať</string>
+    <string name="edit_label">Upraviť</string>
     <string name="apply_label">Použiť</string>
     <string name="delete_label">Vymazať</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="folder_manage_apps">Manage apps</string>
-    <string name="my_folder_label">My folder</string>
-    <string name="sort_active_items_action">Sort active items</string>
+    <string name="folder_list_note">Potiahnite doľava pre úpravu, potiahnite doprava pre odstránenie, alebo kliknite pre aktualizáciu položiek</string>
+    <string name="apps_in_folder_label">Skryť aplikácie v zložkách</string>
+    <string name="apps_in_folder_description">Aplikácie zaradené do zložiek sú vylúčené zo zoznamu aplikácií</string>
+    <string name="folders_filter_duplicates">Zobraziť iba unikátne aplikácie</string>
+    <string name="folder_manage_apps">Spravovať aplikácie</string>
+    <string name="my_folder_label">Moja zložka</string>
+    <string name="sort_active_items_action">Zoradiť aktívne položky</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions when you use a gesture, such as locking your phone, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch your actions, though all accessibility services require this privilege. Lawnchair discards any event sent by the system.\n\nTo lock your phone or open the Recents screen, Lawnchair uses the performGlobalAction accessibility service.</string>
+    <string name="accessibility_service_description">Na vykonanie určitých akcií keď použijete gesto (napr. pre uzamknutie telefónu), Lawnchair vyžaduje nastavenie prístupnosti.\n\nLawnchair vaše akcie nesleduje, hoci všetky služby prístupnosti toto oprávnenie vyžadujú. Lawnchair zahodí všetky udalosti odoslané systémom.\n\nPre uzamknutie telefónu alebo otvorenie posledných aplikácií, Lawnchair využíva službu prístupnosti performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d &#xd7; %2$d</string>
     <string name="x_and_y">%1$s a %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Pokročilé</string>
     <!-- Draggable -->
-    <string name="reorderable_move_up">Move up</string>
-    <string name="reorderable_move_down">Move down</string>
-    <string name="reorderable_active_items">Active items</string>
-    <string name="reorderable_disabled_items">Other items</string>
-    <string name="reorderable_disabled_hint">Disabled items will appear here</string>
-    <string name="reorderable_add_hint_items">Active items will appear here</string>
+    <string name="reorderable_move_up">Posunúť nahor</string>
+    <string name="reorderable_move_down">Posunúť dole</string>
+    <string name="reorderable_active_items">Aktívne položky</string>
+    <string name="reorderable_disabled_items">Ostatné položky</string>
+    <string name="reorderable_disabled_hint">Zakázané položky sa objavia tu</string>
+    <string name="reorderable_add_hint_items">Aktívne položky sa objavia tu</string>
     <!--
 
     Preference Dashboard
@@ -167,26 +167,26 @@
     -->
     <string name="settings">Nastavenia</string>
     <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
-    <string name="settings_pick_a_page">Pick a setting from the menu</string>
+    <string name="settings_pick_a_page">Vyberte nastavenie z ponuky</string>
     <string name="general_label">Všeobecné</string>
     <string name="general_description">Farby, Balíčky Ikon, Bodky Oznámenia</string>
     <string name="home_screen_label">Domovská obrazovka</string>
     <string name="home_screen_description">Feed, mriežka, ikony</string>
-    <string name="home_screen_actions">Home screen actions</string>
+    <string name="home_screen_actions">Akcie domovskej obrazovky</string>
     <string name="dock_label">Dok</string>
     <string name="dock_description">Vyhľadávací panel, počet ikon</string>
     <string name="app_drawer_label">Ponuka aplikácií</string>
     <string name="app_drawer_description">Skryté aplikácie, Počet stĺpcov, Ikony</string>
-    <string name="drawer_search_label">Vyhľadávania aplikácii</string>
-    <string name="drawer_search_description">Webové odporučenie, globálne vyhľadávanie</string>
+    <string name="drawer_search_label">Vyhľadávanie aplikácii</string>
+    <string name="drawer_search_description">Návrhy na webe, globálne vyhľadávanie</string>
     <string name="folders_label">Priečinky</string>
     <string name="folders_description">Počet riadkov a stĺpcov</string>
     <string name="gestures_label">Gestá</string>
     <string name="gestures_description">Klikni a potiahni nahor</string>
-    <string name="quickstep_label">Recents screen</string>
-    <string name="quickstep_description">Clear all button, corner radius</string>
-    <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="quickstep_label">Obrazovka nedávnych aplikácií</string>
+    <string name="quickstep_description">Tlačidlo zavrieť všetko, polomer rohu</string>
+    <string name="backup_and_restore_label">Zálohovať a obnoviť</string>
+    <string name="backup_and_restore_description">Uložiť aktuálne nastavenia, obnoviť zálohu</string>
     <string name="about_label">O aplikácii</string>
     <string name="app_info_drop_target_label">Informácie o aplikácii</string>
     <string name="debug_restart_launcher">Reštartovať Lawnchair</string>
@@ -194,69 +194,69 @@
     <!-- Experimental features -->
     <string name="workspace_label">Workspace</string>
     <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be less stable than other experimental groups</string>
+    <string name="internal_label">Interné</string>
+    <string name="internal_description">Interné môžu byť menej stabilné než ostatné experimentálne skupiny</string>
     <string name="font_picker_label">Prispôsobenie písma</string>
     <string name="font_picker_description">Niektoré texty ostávajú nezmenené</string>
     <string name="smartspace_calendar_label">Prispôsobenie kalendára Prehľadu udalostí</string>
     <string name="smartspace_calendar_description">Povoliť zobrazovanie dátumu v iných než gregoriánskych kalendárových systémoch</string>
     <string name="workspace_increase_max_grid_size_label">Zvýšenie limitu maximálnej veľkosti mriežky</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 &#xd7; 10 to 20 &#xd7; 20</string>
-    <string name="always_reload_icons_label">Vždy znovu načítať ikony</string>
-    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
-    <string name="always_reload_icons_warning">This will cause icons to refresh regularly, impacting performance. Turn off if the icon pack doesn\'t update regularly.</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="workspace_increase_max_grid_size_description">Zvýšiť maximálnu povolenú veľkosť mriežky na domovskej obrazovke z 10 &#xd7; 10 na 20 &#xd7; 20</string>
+    <string name="always_reload_icons_label">Vždy znova načítať ikony</string>
+    <string name="always_reload_icons_description">Vyhnite sa načítavaniu vyrovnávacej pamäte, aby sa ikony okamžite znova načítali pri zmene témy alebo farby zvýraznenia</string>
+    <string name="always_reload_icons_warning">Toto spôsobí pravidelné obnovenie ikon, ktoré ovplyvňuje výkon. Vypnite, pokiaľ sa balíček ikon neaktualizuje pravidelne.</string>
+    <string name="show_deck_layout">Rozvrhnutie Decku</string>
+    <string name="show_deck_layout_description">Zobraziť možnosť rozloženia na skrytie zásuvky aplikácií a automatické pridávanie nových aplikácií na domovskú obrazovku</string>
     <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in the workspace</string>
-    <string name="folder_shape_label">Folder shape</string>
-    <string name="folder_label">Folder</string>
+    <string name="material_expressive_description">Povoliť zmeny Material 3 Expressive vo workspace</string>
+    <string name="folder_shape_label">Tvar zložiek</string>
+    <string name="folder_label">Zložka</string>
     <string name="app_icon_shape_label">Aplikácia</string>
-    <string name="gesturenavcontract_label">Use GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Support Android\'s enhanced animations when using gesture navigation</string>
-    <string name="gesturenavcontract_warning_incompatibility">Your device isn\'t fully supported. This may cause visual issue for some animations.</string>
-    <string name="vibration_feedback_level_label">Vibration feedback level</string>
-    <string name="vibration_feedback_no_feedback_choice">None</string>
-    <string name="vibration_feedback_minimal_choice">Minimal</string>
+    <string name="gesturenavcontract_label">Použiť API GestureNavContract</string>
+    <string name="gesturenavcontract_description">Povoliť vylepšené animácie Androidu pri používaní navigácií gest</string>
+    <string name="gesturenavcontract_warning_incompatibility">Vaše zariadenie nie je podporované. Môžu sa objaviť vizuálne chyby pre niektoré animácie.</string>
+    <string name="vibration_feedback_level_label">Úroveň vibračnej odozvy</string>
+    <string name="vibration_feedback_no_feedback_choice">Žiadna</string>
+    <string name="vibration_feedback_minimal_choice">Minimálna</string>
     <string name="vibration_feedback_default_choice">Predvolené</string>
-    <string name="vibration_feedback_expressive_choice">Expressive</string>
-    <string name="recents_lock_unlock">App locking</string>
-    <string name="recents_lock_unlock_description">Prevent the selected app from closing when you tap \"Clear all\"</string>
+    <string name="vibration_feedback_expressive_choice">Výrazná</string>
+    <string name="recents_lock_unlock">Zamykanie aplikácií</string>
+    <string name="recents_lock_unlock_description">Zabráňte zatvoreniu vybranej aplikácie, keď kliknete na „Vymazať všetko“</string>
     <!--Overlay-->
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_fade_in">Fade in</string>
-    <string name="overlay_suck_in">Suck in</string>
-    <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="app_closing_animation">Animácia zatvárania aplikácie</string>
+    <string name="overlay_fade_in">Zosvetlenie</string>
+    <string name="overlay_suck_in">Vtiahnutie</string>
+    <string name="overlay_label">Prekrytie</string>
+    <string name="overlay_none">Žiadne</string>
     <!--
     App suggestions
     -->
     <string name="suggestion_pref_screen_title">Návrhy</string>
-    <string name="global_predictions_label">Show suggestion features</string>
-    <string name="app_predictions_label">App suggestions</string>
-    <string name="prediction_mode_label">Suggestions provider</string>
-    <string name="app_predictions_disable_reason_pre_q_description">This feature requires Android 10 or higher</string>
+    <string name="global_predictions_label">Zobraziť funkcie návrhov</string>
+    <string name="app_predictions_label">Návrhy aplikácií</string>
+    <string name="prediction_mode_label">Poskytovateľ návrhov</string>
+    <string name="app_predictions_disable_reason_pre_q_description">Táto funkcia vyžaduje Android 10 alebo novší</string>
     <string name="prediction_mode_system">Systém</string>
     <string name="prediction_mode_none">Vypnuté</string>
-    <string name="prediction_weighted_usage_stats_label">Use device usage data</string>
-    <string name="prediction_weighted_usage_stats_description">Use your device\'s usage statistics to make suggestions more accurate</string>
-    <string name="dismissed_prediction_apps_label">Blocked apps</string>
-    <string name="dismissed_prediction_apps_label_with_count">Blocked apps (%1$d)</string>
-    <string name="prediction_system_settings">Manage system suggestions</string>
-    <string name="missing_usage_access_label">Usage access needed</string>
-    <string name="missing_usage_access_desc">To improve app suggestions, turn on usage access for <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
+    <string name="prediction_weighted_usage_stats_label">Využívať údaje o používaní zariadenia</string>
+    <string name="prediction_weighted_usage_stats_description">Využívať štatistiky používania zariadenia na spresnenie návrhov</string>
+    <string name="dismissed_prediction_apps_label">Blokované aplikácie</string>
+    <string name="dismissed_prediction_apps_label_with_count">Blokované aplikácie (%1$d)</string>
+    <string name="prediction_system_settings">Spravovať systémové návrhy</string>
+    <string name="missing_usage_access_label">Vyžaduje sa prístup k údajom o používaní</string>
+    <string name="missing_usage_access_desc">Ak chcete zlepšiť návrhy aplikácií, povoľte prístup k údajom o používaní pre <xliff:g id="name" example="Lawnchair">%1$s</xliff:g></string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">Pre prístup k skratkám a ďalších funkcii nastavte Lawnchair ako predvolebný spúšťač</string>
+    <string name="set_default_launcher_tip">Pre prístup k skratkám a ďalším funkciám nastavte Lawnchair ako predvolený spúšťač</string>
     <string name="notification_dots">Bodky upozornení</string>
     <string name="show_notification_count">Zobraziť počet oznámení</string>
-    <string name="notification_dots_color">Farby bodky upozornenia</string>
+    <string name="notification_dots_color">Farba bodky upozornení</string>
     <string name="notification_dots_text_color">Farba počítadla upozornení</string>
-    <string name="notification_dots_color_contrast_warning_always">Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">Farba notifikačnej bodky a počítadla nemajú medzi sebou dostatočný kontrast</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Farba bodky a počítadla upozornení nemusia mať vždy navzájom dostatočný kontrast</string>
     <!--
 
     Icons
@@ -264,25 +264,25 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Štýl ikon</string>
-    <string name="apply_icon_pack_title">Apply icon pack</string>
+    <string name="apply_icon_pack_title">Použiť balík ikon</string>
     <string name="icon_shape_label">Tvar ikon</string>
     <string name="icon_sizes">Veľkosť ikon</string>
     <string name="show_labels">Ukázať štítky</string>
     <string name="label_size">Veľkosť štítkov</string>
-    <string name="twoline_label">Viacerých riadkov</string>
+    <string name="twoline_label">Použiť viacero riadkov</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent icon backgrounds</string>
-    <string name="auto_adaptive_icons_label">Automaticky Adaptívne Ikony</string>
-    <string name="shadow_bg_icons_label">Pridať tieň ikony</string>
-    <string name="background_lightness_label">Svietivosť pozadia</string>
-    <string name="adaptive_icon_background_description">Použiť 100% jas pozadia pre bielu</string>
+    <string name="transparent_background_icons_label">Priehľadné pozadie ikon</string>
+    <string name="auto_adaptive_icons_label">Automatické adaptívne ikony</string>
+    <string name="shadow_bg_icons_label">Zobraziť tiene za ikonami</string>
+    <string name="background_lightness_label">Svetlosť pozadia</string>
+    <string name="adaptive_icon_background_description">Použiť 100 % svetlosť pozadia pre bielu</string>
     <string name="reset_custom_icons">Obnoviť vlastné ikony</string>
-    <string name="reset_custom_icons_confirmation">Všetky vlastné ikony budú obnovené, naozaj chcete pokračovať?</string>
-    <string name="remove_all_views_from_home_screen">Clear home screen</string>
-    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
+    <string name="reset_custom_icons_confirmation">Všetky vlastné ikony budú obnovené. Chcete pokračovať?</string>
+    <string name="remove_all_views_from_home_screen">Vyčistiť domovskú obrazovku</string>
+    <string name="remove_all_views_from_home_screen_desc">Domovská obrazovka bude vyčistená. Chcete pokračovať?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Ikony</string>
-    <string name="icon_picker_reset_to_default">Obnoviť predvolené nastavenie</string>
+    <string name="icon_picker_reset_to_default">Obnoviť predvolenú</string>
     <string name="icon_pack_external_picker">Otvoriť externý výber</string>
     <string name="pick_icon_from_label">Vybrať ikonu z</string>
     <string name="icon_picker_load_failed">Nepodarilo sa načítať viac ikon</string>
@@ -294,7 +294,7 @@
     <string name="icon_shape_egg">Vajce</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Osemuholník</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">Šesťuholník</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Zaoblený štvorec</string>
     <string name="icon_shape_sharp_square">Ostrý štvorec</string>
@@ -302,28 +302,28 @@
     <string name="icon_shape_squircle">Zaoblený štvorec</string>
     <string name="icon_shape_teardrop">Slza</string>
     <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_very_sunny">Veľmi slnečno</string>
+    <string name="icon_shape_complex_clover">Zložitý štvorlístok</string>
+    <string name="icon_shape_four_sided_cookie">Štvorstranná sušienka</string>
+    <string name="icon_shape_seven_sided_cookie">Sedemstranná sušienka</string>
+    <string name="icon_shape_arch">Oblúk</string>
     <!-- Additional icon shapes -->
-    <string name="icon_shape_cloudy">Cloudy</string>
-    <string name="icon_shape_flower">Flower</string>
-    <string name="icon_shape_heart">Heart</string>
-    <string name="icon_shape_leaf">Leaf</string>
-    <string name="icon_shape_meow">Meow</string>
-    <string name="icon_shape_pebble">Pebble</string>
-    <string name="icon_shape_roundedhexagon">Rounded hexagon</string>
-    <string name="icon_shape_stretched">Stretched</string>
-    <string name="icon_shape_vessel">Vessel</string>
+    <string name="icon_shape_cloudy">Obláčik</string>
+    <string name="icon_shape_flower">Kvetina</string>
+    <string name="icon_shape_heart">Srdce</string>
+    <string name="icon_shape_leaf">List</string>
+    <string name="icon_shape_meow">Mňau</string>
+    <string name="icon_shape_pebble">Kamienok</string>
+    <string name="icon_shape_roundedhexagon">Zaoblený šesťuholník</string>
+    <string name="icon_shape_stretched">Natiahnuté</string>
+    <string name="icon_shape_vessel">Plavidlo</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Vytvoriť vlastný tvar ikon</string>
     <string name="custom_icon_shape_create">Vytvoriť vlastný tvar ikon</string>
     <string name="custom_icon_shape_edit">Upraviť vlastný tvar ikon</string>
-    <string name="custom_folder_shape">Custom folder shape</string>
-    <string name="custom_folder_shape_create">Create custom folder shape</string>
-    <string name="custom_folder_shape_edit">Edit custom folder shape</string>
+    <string name="custom_folder_shape">Vlastný tvar priečinka</string>
+    <string name="custom_folder_shape_create">Vytvoriť vlastný tvar priečinka</string>
+    <string name="custom_folder_shape_edit">Upraviť vlastný tvar priečinka</string>
     <string name="custom_icon_shape_corner">Tvar rohov</string>
     <string name="custom_icon_shape_corner_round">Okrúhly</string>
     <string name="custom_icon_shape_corner_squircle">Hladký</string>
@@ -333,27 +333,27 @@
     <string name="custom_icon_shape_bottom_left">Vľavo dole</string>
     <string name="custom_icon_shape_bottom_right">Vpravo dole</string>
     <string name="export_to_clipboard">Exportovať do schránky</string>
-    <string name="import_from_clipboard">Importovať zo stránky</string>
+    <string name="import_from_clipboard">Importovať zo schránky</string>
     <string name="icon_shape_clipboard_import_error">Schránka neobsahuje platný tvar ikony</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Balíček ikon</string>
-    <string name="get_more_icon_packs">Get more icons</string>
-    <string name="fallback_icon_source_title">Fallback icon source</string>
+    <string name="get_more_icon_packs">Získať ďalšie ikony</string>
+    <string name="fallback_icon_source_title">Náhradný zdroj ikony</string>
     <string name="system_icons">Systémové ikony</string>
-    <string name="force_monochrome_label">Force monochrome</string>
-    <string name="force_monochrome_description">Recolor unsupported apps with the current accent color.</string>
-    <string name="enforce_themed_icons_title">Enforce themed icons</string>
-    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
+    <string name="force_monochrome_label">Vynútiť monochromatický režim</string>
+    <string name="force_monochrome_description">​Prefarbiť nepodporované aplikácie aktuálnou zvýrazňovacou farbou.</string>
+    <string name="enforce_themed_icons_title">Vynútiť tematické ikony</string>
+    <string name="enforce_themed_icons_description">Dokonca aj pre nepodporované aplikácie (neodporúča sa)</string>
     <string name="themed_icon_title">Tematické ikony</string>
-    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
+    <string name="themed_icons_description">Prispôsobte ikony podporovaných aplikácií tak, aby ladili s témou a farebnou schémou vášho zariadenia. Tieto ikony sa aplikujú nad vaše existujúce balíky ikon.</string>
     <string name="themed_icons_off_label">Vypnuté</string>
     <string name="themed_icons_home_label">Domovská obrazovka</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
-    <string name="themed_icons_no_fallback">No fallback</string>
+    <string name="themed_icons_home_and_drawer_label">Domovská obrazovka a zoznam aplikácií</string>
+    <string name="themed_icons_no_fallback">Žiadna záložná možnosť</string>
     <string name="lawnicons_not_installed_description">Žiadne podporované balíky ikon</string>
-    <string name="advanced_icon_settings_title">Advanced icon settings</string>
-    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
-    <string name="reshape_unthemed_icons_description">By adding a background</string>
+    <string name="advanced_icon_settings_title">Rozšírené nastavenia ikon</string>
+    <string name="reshape_unthemed_icons_title">Prispôsobiť tvar ikon bez motívu</string>
+    <string name="reshape_unthemed_icons_description">Pridaním pozadia</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Pridať písma</string>
     <string name="pref_fonts_add_fonts_summary">OTF a TTF sú podporované písma</string>
@@ -384,17 +384,17 @@
     <string name="theme_light">Svetlý</string>
     <string name="theme_dark">Tmavý</string>
     <string name="theme_system_default">Systém</string>
-    <string name="theme_follow_wallpaper">Prispôsobiť sa pozadiu</string>
+    <string name="theme_follow_wallpaper">Prispôsobiť pozadiu</string>
     <!-- Color style -->
     <string name="color_style_label">Farebný štýl</string>
     <string name="color_style_spritz">Spritz</string>
     <string name="color_style_tonal_spot">Tónová škvrna</string>
     <string name="color_style_vibrant">Nasýtené</string>
-    <string name="color_style_expressive">Expressive</string>
+    <string name="color_style_expressive">Výrazné</string>
     <string name="color_style_rainbow">Dúha</string>
-    <string name="color_style_fruit_salad">Fruit Salad</string>
+    <string name="color_style_fruit_salad">Ovocný šalát</string>
     <string name="color_style_content">Obsah</string>
-    <string name="color_style_monochromatic">Monochromatic</string>
+    <string name="color_style_monochromatic">Monochromatický</string>
     <!-- Accent color and color picker -->
     <string name="colors">Farby</string>
     <string name="accent_color">Farebný akcent</string>
@@ -405,7 +405,7 @@
     <string name="rgb_blue">Modrá</string>
     <string name="hsb">HSB</string>
     <string name="hsb_hue">Odtieň</string>
-    <string name="hsb_saturation">Nasýtenie</string>
+    <string name="hsb_saturation">Sýtosť</string>
     <string name="hsb_brightness">Jas</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Posuvníky</string>
@@ -418,20 +418,20 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriánsky</string>
     <string name="smartspace_calendar_persian">Perzský</string>
-    <string name="smartspace_calendar_lunar">Lunar</string>
+    <string name="smartspace_calendar_lunar">Lunárny</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
+    <string name="smartspace_battery_fast_charging">Rýchle nabíjanie</string>
+    <string name="smartspace_battery_slow_charging">Pomalé nabíjanie</string>
     <string name="smartspace_battery_charging">Nabíja sa</string>
     <string name="smartspace_battery_full">Nabité</string>
     <string name="smartspace_battery_low">Nízka úroveň batérie</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Plná o %2$s"</string>
     <string name="smartspace_widget">Prehľad udalostí</string>
-    <string name="smartspace_widget_description">Čo ukázať</string>
+    <string name="smartspace_widget_description">​Čo zobraziť</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalendár</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">Dátum a čas</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_time_format">Formát hodín</string>
@@ -441,33 +441,33 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Počasie</string>
     <string name="smartspace_battery_status">Stav batérie</string>
-    <string name="smartspace_torch">Flashlight status</string>
-    <string name="smartspace_now_playing">Now playing</string>
-    <string name="smartspace_onboarding">Onboarding</string>
+    <string name="smartspace_torch">Stav svietidla</string>
+    <string name="smartspace_now_playing">Práve hrá</string>
+    <string name="smartspace_onboarding">Úvodný sprievodca</string>
     <!-- Torch strings -->
-    <string name="torch_status_on">Flashlight on</string>
-    <string name="torch_action_off">Tap to turn off</string>
+    <string name="torch_status_on">Svietidlo zapnuté</string>
+    <string name="torch_action_off">Kliknutím vypnete</string>
     <!-- Onboarding strings -->
-    <string name="onboarding_open_settings_title">Set up Lawnchair</string>
-    <string name="onboarding_open_settings_subtitle">Long-press on the home screen to open settings</string>
-    <string name="onboarding_major_upgrade_title">Meet the new Lawnchair</string>
-    <string name="onboarding_major_upgrade_subtitle">See what\'s new</string>
-    <string name="onboarding_welcome">Welcome to Lawnchair!</string>
-    <string name="onboarding_swipe_up">Swipe up to open the app drawer</string>
+    <string name="onboarding_open_settings_title">Nastaviť Lawnchair</string>
+    <string name="onboarding_open_settings_subtitle">Dlhým stlačením na domovskej obrazovke otvoríte nastavenia</string>
+    <string name="onboarding_major_upgrade_title">Zoznámte sa s Lawnchair</string>
+    <string name="onboarding_major_upgrade_subtitle">Pozrieť, čo je nové</string>
+    <string name="onboarding_welcome">Vitajte v Lawnchair!</string>
+    <string name="onboarding_swipe_up">Potiahnutím nahor otvoríte zoznam aplikácií</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maximálny počet cieľov</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="open_smartspacer_settings">Otvoriť nastavenia Smartspacer</string>
+    <string name="smartspacer_settings">Nastavenia Smartspacer</string>
     <!-- Setup settings -->
-    <string name="smartspace_requires_setup">Ťuknite pre nastavenie</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
+    <string name="smartspace_requires_setup">Kliknite pre nastavenie</string>
+    <string name="event_provider_missing_notification_dots">Ak chcete používať <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, zapnite bodky upozornení</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Ukázať na domovskej obrazovke</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be added to the home screen with the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">Funkciu „Prehľad udalostí“ možno pridať na domovskú obrazovku pomocou widgetu Lawnchair</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">Poskytovateľ Prehľadu udalostí</string>
     <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_google_search">Vyhľadávanie Google</string>
     <!-- Miscellaneous Smartspace strings -->
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="accessibility_smartspace_page">Strana %1$d z %2$d</string>
@@ -481,24 +481,24 @@
     <string name="translate">Preložiť</string>
     <string name="donate">Prispieť</string>
     <string name="product">Produkt</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">Dizajn a vývoj</string>
     <string name="development">Vývoj</string>
     <string name="quickswitch_maintenance">Údržba QuickSwitch</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support and PR</string>
-    <string name="community">Community</string>
+    <string name="support_and_pr">Podpora a PR</string>
+    <string name="community">Komunita</string>
     <string name="telegram">Telegram</string>
     <string name="news">Správy</string>
-    <string name="legal">Legal</string>
+    <string name="legal">Právne predpisy</string>
     <string name="acknowledgements">Poďakovania</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
-    <string name="major_update_label">Update to major version?</string>
-    <string name="major_update_description">You are updating from version <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. This newer version is a major update and may be less stable.</string>
-    <string name="pro_disabled_by_unknown">Updates are not available</string>
-    <string name="pro_disabled_by_major_is_newer">You are already running a newer version</string>
-    <string name="updater">Updates</string>
+    <string name="privacy_policy">Zásady ochrany osobných údajov</string>
+    <string name="contributor_status_active">Aktívny</string>
+    <string name="update_check_failed">Nepodarilo sa vyhľadať aktualizácie</string>
+    <string name="major_update_label">Aktualizovať na hlavnú verziu?</string>
+    <string name="major_update_description">Aktualizujete z verzie <xliff:g example="15" id="current_major_version">%1$s</xliff:g>. Táto novšia verzia predstavuje významnú aktualizáciu a môže byť menej stabilná.</string>
+    <string name="pro_disabled_by_unknown">Aktualizácie nie sú k dispozícii</string>
+    <string name="pro_disabled_by_major_is_newer">Už používate najnovšiu verziu</string>
+    <string name="updater">Aktualizácie</string>
     <!--
 
     Backup and restore
@@ -515,19 +515,19 @@
     <string name="backup_restore_success">Záloha bola obnovená</string>
     <string name="backup_restore_error">Nepodarilo sa obnoviť zálohu</string>
     <string name="invalid_backup_file">Neplatný súbor zálohy</string>
-    <string name="restore_nova_backup">Restore Nova backup</string>
-    <string name="invalid_nova_backup_file">Invalid Nova backup file</string>
+    <string name="restore_nova_backup">Obnoviť zálohu Nova</string>
+    <string name="invalid_nova_backup_file">Neplatný súbor zálohy Nova</string>
     <string name="nova_grid_label">Mriežka</string>
     <string name="nova_grid_value">%1$d × %2$d</string>
     <string name="nova_dock_label">Dok</string>
-    <string name="nova_app_label">Apps</string>
-    <string name="nova_widget_label">Widgets</string>
+    <string name="nova_app_label">Aplikácie</string>
+    <string name="nova_widget_label">Widgety</string>
     <string name="nova_folder_label">Priečinky</string>
-    <string name="nova_shortcut_label">Shortcuts</string>
+    <string name="nova_shortcut_label">Skratky</string>
     <string name="nova_icon_pack_label">Balíček ikon</string>
-    <string name="create_backup_description">Export settings and launcher layout</string>
-    <string name="restore_backup_description">Import a previously created backup</string>
-    <string name="restore_nova_backup_description">Import layout from a Nova Launcher backup</string>
+    <string name="create_backup_description">Exportovať nastavenia a rozloženie spúšťača</string>
+    <string name="restore_backup_description">Importovať skôr vytvorenú zálohu</string>
+    <string name="restore_nova_backup_description">Importovať rozloženie zo zálohy aplikácie Nova Launcher</string>
     <!--
 
     Gesture settings
@@ -536,52 +536,52 @@
     <string name="gesture_double_tap">Dvojité ťuknutie</string>
     <string name="gesture_swipe_up">Potiahnutie nahor</string>
     <string name="gesture_swipe_down">Potiahnutie nadol</string>
-    <string name="gesture_two_finger_swipe_down">Two-finger swipe down</string>
-    <string name="gesture_two_finger_swipe_up">Two-finger swipe up</string>
+    <string name="gesture_two_finger_swipe_down">Potiahnutie dvoma prstami nadol</string>
+    <string name="gesture_two_finger_swipe_up">Potiahnutie dvoma prstami nahor</string>
     <string name="gesture_home_tap">Tlačidlo Domov</string>
     <string name="gesture_back_tap">Tlačidlo Späť</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
+    <string name="gesture_swipe_left">Potiahni doľava</string>
+    <string name="gesture_swipe_right">Potiahni doprava</string>
     <string name="gesture_handler_no_op">Nič nerobiť</string>
     <string name="gesture_handler_sleep">Uspať</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">Obrazovka nedávnych položiek</string>
     <string name="gesture_handler_open_notifications">Otvoriť oznamovací panel</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
+    <string name="gesture_handler_open_quick_settings">Otvoriť rýchle nastavenia</string>
     <string name="gesture_handler_open_app_option">Otvoriť aplikáciu</string>
     <string name="gesture_handler_open_app_config">Otvoriť %1$s</string>
     <string name="gesture_handler_open_app_drawer">Otvoriť ponuku aplikácií</string>
     <string name="gesture_handler_open_app_search">Otvoriť vyhľadávanie aplikácií</string>
     <string name="gesture_handler_open_search">Otvoriť vyhľadávanie</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">Otvoriť asistenta</string>
     <string name="pick_app_for_gesture">Vybrať aplikáciu</string>
     <string name="dt2s_admin_hint_title">Nutné povolenia správcu</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">Ak chcete zariadenie uspať, nastavte Lawnchair ako aplikáciu správcu zariadenia. Klepnite na „Otvoriť nastavenia“ a následne na „Aktivovať túto aplikáciu ako správca zariadenia“.</string>
+    <string name="dt2s_admin_warning">Gestá na uvedenie zariadenia do režimu spánku budú vypnuté.</string>
     <string name="d2ts_recents_a11y_hint_title">Zapnúť službu prístupnosti</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", choose \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="sleep_mode_label">Sleep mode</string>
-    <string name="sleep_mode_auto">Automatic</string>
+    <string name="sleep_a11y_hint">prepnúť zariadenie do režimu spánku</string>
+    <string name="notifications_fallback_a11y_hint">otvoriť panel upozornení</string>
+    <string name="quick_settings_a11y_hint">otvorte panel Rýchle nastavenia</string>
+    <string name="recents_screen_a11y_hint">otvoriť obrazovku s nedávnymi položkami</string>
+    <string name="generic_a11y_hint">Pre %1$s zapnite službu prístupnosti Lawnchair. Kliknite na „Otvoriť nastavenia“, vyberte „Lawnchair“ a zapnite možnosť „Používať Lawnchair“.</string>
+    <string name="generic_a11y_disclaimer">Lawnchair využíva metódu `performGlobalAction` v rámci rozhrania pre sprístupnenie na vykonanie tejto akcie. Ide o citlivé oprávnenie, ktoré umožňuje monitorovať iné aplikácie. Aplikácia Lawnchair však na túto funkcionalitu nie je nakonfigurovaná a žiadne udalosti nezaznamenáva.</string>
+    <string name="sleep_mode_label">Režim spánku</string>
+    <string name="sleep_mode_auto">Automatický</string>
     <string name="sleep_mode_root">Root</string>
-    <string name="sleep_mode_accessibility">Accessibility service</string>
-    <string name="sleep_mode_device_admin">Device admin</string>
+    <string name="sleep_mode_accessibility">Služba prístupnosti</string>
+    <string name="sleep_mode_device_admin">Správca zariadenia</string>
     <!--
 
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Správa o chybe v Lawnchair-i</string>
+    <string name="lawnchair_bug_report">Správa o chybe v Lawnchair</string>
     <string name="crash_report_notif_title">%1$s Spadol</string>
     <string name="action_upload_crash_report">Nahrať výpis o páde</string>
     <string name="action_upload_error">Nahrávanie zlyhalo</string>
     <string name="dogbin_uploading">Nahrávanie…</string>
     <string name="bugreport_channel_name">Nahlásiť chybu</string>
     <string name="status_channel_name">Nahrať status</string>
-    <string name="bugreport_group_summary">%d Nových hlásení</string>
+    <string name="bugreport_group_summary">%d nových hlásení</string>
     <string name="bugreport_group_summary_multiple">Viacero nových hlásení</string>
     <!--
 
@@ -590,116 +590,116 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotácia domovskej obrazovky</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when the device is rotated</string>
-    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
-    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
-    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
-    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
-    <string name="auto_updater_label">Automatically check for updates</string>
-    <string name="auto_updater_description">Checks for Nightly updates when opening the About screen</string>
-    <string name="live_information_label">Live information</string>
-    <string name="live_information_description">Displays announcement, and set the default feature flags</string>
+    <string name="home_screen_rotation_description">Povoliť otáčanie domovskej obrazovky pri otočení zariadenia</string>
+    <string name="pan_to_move_icon_label">Naklonením prejdite na ďalšiu stránku</string>
+    <string name="pan_to_move_icon_description">Nakloňte telefón doľava alebo doprava, aby ste sa počas presúvania aplikácií či widgetov presunuli medzi stránkami</string>
+    <string name="pan_to_move_sensitivity_label">Citlivosť náklonu</string>
+    <string name="pan_to_move_sensor_unavailable">Pohyb do strán nie je k dispozícii, pretože sa nepodarilo zaregistrovať žiadny snímač pohybu.</string>
+    <string name="auto_updater_label">Automaticky kontrolovať aktualizácie</string>
+    <string name="auto_updater_description">Pri otvorení obrazovky „O aplikácii“ kontroluje dostupné aktualizácie z kanála Nightly</string>
+    <string name="live_information_label">Aktuálne informácie</string>
+    <string name="live_information_description">Zobrazí oznámenie a nastaví predvolené príznaky funkcií</string>
     <string name="wallpaper_blur">Rozmazať pozadie (experimentálne)</string>
     <string name="wallpaper_background_blur">Intenzita rozmazania</string>
-    <string name="wallpaper_background_blur_factor">Factor threshold</string>
+    <string name="wallpaper_background_blur_factor">Prahová hodnota faktora</string>
     <string name="home_lawn_deck_label">Deck</string>
     <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your apps with Deck, a drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_description">Získajte jednoduchý prístup k svojim aplikáciám pomocou funkcie Deck – rozhrania bez samostatnej ponuky aplikácií, navrhnutého s dôrazom na jednoduchosť a plynulé usporiadanie</string>
     <string name="auto_add_shortcuts_label">Pridať nové aplikácie na domovskú obrazovku</string>
-    <string name="minus_one_enable">Ukázať feed</string>
+    <string name="minus_one_enable">Zobraziť feed</string>
     <string name="minus_one_unavailable">Feed nie je nainštalovaný</string>
     <string name="minus_one">Feed</string>
     <string name="feed_provider">Poskytovateľ feedu</string>
     <string name="wallpaper_scrolling_label">Posúvať tapetu</string>
     <string name="wallpaper_depth_effect_label">Efekt hĺbky pozadia</string>
-    <string name="wallpaper_depth_effect_description">Priblížiť a oddialiť pozadie pri prechode medzi stavmi</string>
-    <string name="show_sys_ui_scrim">Vrchný tieň</string>
-    <string name="infinite_scrolling_label">Infinite scrolling</string>
-    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
+    <string name="wallpaper_depth_effect_description">Priblížiť a oddialiť tapetu pri prechode medzi obrazovkami spúšťača</string>
+    <string name="show_sys_ui_scrim">Horný tieň</string>
+    <string name="infinite_scrolling_label">Nekonečné posúvanie</string>
+    <string name="infinite_scrolling_description">Potiahnutím prejdete z poslednej strany na prvú (a naopak)</string>
     <string name="home_screen_grid">Mriežka na domovskej obrazovke</string>
     <string name="home_screen_lock">Uzamknúť domovskú obrazovku</string>
     <string name="home_screen_unlock">Odomknúť domovskú obrazovku</string>
     <string name="home_screen_locked">Domovská obrazovka je uzamknutá</string>
     <string name="home_screen_lock_description">Zabráni zmenám v rozložení domovskej obrazovky</string>
     <string name="horizontal_padding_label">Vodorovná medzera</string>
-    <string name="vertical_padding_label">Vertical padding</string>
-    <string name="top_padding_label">Top padding</string>
-    <string name="widget_padding_label">Widget padding</string>
-    <string name="set_default_home_page">Set as default page</string>
-    <string name="default_home_page_set">Default home page updated</string>
-    <string name="move_page_left">Move page left</string>
-    <string name="move_page_right">Move page right</string>
-    <string name="page_order_updated">Page order updated</string>
+    <string name="vertical_padding_label">Vertikálne odsadenie</string>
+    <string name="top_padding_label">Horné odsadenie</string>
+    <string name="widget_padding_label">Odsadenie widgetu</string>
+    <string name="set_default_home_page">Nastaviť ako predvolenú stránku</string>
+    <string name="default_home_page_set">Predvolená domovská stránka bola aktualizovaná</string>
+    <string name="move_page_left">Presunúť stránku doľava</string>
+    <string name="move_page_right">Presunúť stránku doprava</string>
+    <string name="page_order_updated">Poradie strán bolo aktualizované</string>
     <string name="edit_mode_page_strip_default">Predvolené</string>
-    <string name="edit_mode_page_strip_page">Page %1$d</string>
-    <string name="edit_mode_page_strip_set_home">Set as home page</string>
-    <string name="edit_mode_page_strip_home_selected">Default home page</string>
-    <string name="edit_mode_page_strip_tip">Drag pages to reorder. Tap the home icon to set your default page.</string>
-    <string name="popup_menu">Vyskakovacia ponuka</string>
-    <string name="popup_menu_items">Pop-up menu items</string>
-    <string name="edit_menu_items">Edit pop-up menu items</string>
-    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
+    <string name="edit_mode_page_strip_page">Strana %1$d</string>
+    <string name="edit_mode_page_strip_set_home">Nastaviť ako domovskú stránku</string>
+    <string name="edit_mode_page_strip_home_selected">Predvolená domovská stránka</string>
+    <string name="edit_mode_page_strip_tip">Potiahnutím zmeníte poradie stránok. Ťuknutím na ikonu domova nastavíte predvolenú stránku.</string>
+    <string name="popup_menu">Pop-up menu</string>
+    <string name="popup_menu_items">Položky pop-up menu</string>
+    <string name="edit_menu_items">Upraviť položky pop-up menu</string>
+    <string name="wallpaper_quick_picker">Rýchly výber tapety</string>
     <string name="status_bar_label">Stavový riadok</string>
     <string name="show_status_bar">Zobraziť stavový riadok</string>
     <string name="dark_status_bar_label">Tmavý stavový riadok</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
-    <string name="status_bar_clock_description">Dynamically hide the status bar clock on the first screen</string>
+    <string name="status_bar_clock_label">Hodiny na stavovom riadku</string>
+    <string name="status_bar_clock_description">Dynamicky skryť hodiny na stavovom riadku na prvej obrazovke</string>
     <string name="home_screen_text_color">Farba textu</string>
     <string name="color_light">Tenké</string>
     <string name="color_dark">Tmavý</string>
     <string name="force_rounded_widgets">Zaoblené rohy</string>
-    <string name="allow_widget_overlap">Allow overlap</string>
+    <string name="allow_widget_overlap">Povoliť prekrytie</string>
     <string name="force_widget_resize_label">Vynútiť zmenu veľkosti widgetu</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
+    <string name="force_widget_resize_description">Povoliť zmenu veľkosti widgetov, ktoré sú obmedzené na určitú veľkosť</string>
     <string name="widget_unlimited_size_label">Vymazať veľkosť kontrastu</string>
     <string name="widget_unlimited_size_description">Vymazať minimálne a maximálne obmedzenie veľkosť widgetu</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Zobraziť dok</string>
-    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the dock is visible. Tap to show the dock</string>
+    <string name="enable_dock_to_access_qsb_settings">Nastavenia vyhľadávacieho poľa sú k dispozícii, keď je dok viditeľný. Klepnutím zobrazíte dok</string>
     <string name="search_bar_label">Vyhľadávací panel</string>
-    <string name="search_bar_settings">Search bar settings</string>
+    <string name="search_bar_settings">Nastavenia vyhľadávacieho panelu</string>
     <string name="hotseat_mode_label">Widget vyhľadávacieho panelu</string>
     <string name="hotseat_mode_disabled">Vypnuté</string>
-    <string name="hotseat_mode_google_search">Google search bar</string>
+    <string name="hotseat_mode_google_search">Vyhľadávací bar Google</string>
     <string name="qsb_hotseat_background_transparency">Priehľadnosť pozadia</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_width">Šírka obrysov</string>
     <string name="qsb_hotseat_stroke_color">Obrysová farba</string>
     <string name="corner_radius_label">Polomer rohov</string>
     <string name="apply_accent_color_label">Použiť farebný akcent</string>
     <string name="search_provider">Poskytovateľ vyhľadávania</string>
-    <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
-    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
-    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
-    <string name="hotseat_bg_color_label">Background color</string>
-    <string name="hotseat_bg_corner_radius">Background corner radius</string>
+    <string name="hotseat_background">Zobraziť pozadie</string>
+    <string name="hotseat_bg_horizontal_inset_left">Ľavý okraj</string>
+    <string name="hotseat_bg_horizontal_inset_right">Pravý okraj</string>
+    <string name="hotseat_bg_vertical_inset_top">Horný okraj</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Spodný okraj</string>
+    <string name="hotseat_bg_color_label">Farba pozadia</string>
+    <string name="hotseat_bg_corner_radius">Polomer rohov pozadia</string>
     <string name="hotseat_bg_alpha">Sýtosť pozadia</string>
     <!-- Pause apps shortcut -->
-    <string name="pause">Pause</string>
-    <string name="pause_apps_dialog_title">Pause %1$s?</string>
-    <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
-    <string name="paused_apps_dialog_title">App paused</string>
-    <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
-    <string name="paused_apps_drop_target_label">Pause app</string>
-    <string name="open_in_store_drop_target_label">Open in store</string>
+    <string name="pause">Pozastaviť</string>
+    <string name="pause_apps_dialog_title">Pozastaviť %1$s?</string>
+    <string name="pause_apps_dialog_message">Oznámenia pre aplikáciu %1$s budú pozastavené</string>
+    <string name="paused_apps_dialog_title">Aplikácia pozastavená</string>
+    <string name="paused_apps_dialog_message">Aplikácia %1$s bola priamo pozastavená zo spúšťača</string>
+    <string name="paused_apps_drop_target_label">Pozastaviť aplikáciu</string>
+    <string name="open_in_store_drop_target_label">Otvoriť v obchode</string>
     <string name="dock_icons">Ikony v doku</string>
-    <string name="dock_rows">Dock rows</string>
-    <string name="dock_pages">Dock pages</string>
-    <string name="state_folded">%1$s (folded)</string>
-    <string name="state_unfolded">%1$s (unfolded)</string>
-    <string name="folded_label">Folded</string>
-    <string name="unfolded_label">Unfolded</string>
-    <string name="when_folded_label">When folded</string>
-    <string name="when_unfolded_label">When unfolded</string>
-    <string name="unfolded_grid_description">Lawnchair pairs two pages together to fill the larger display</string>
-    <string name="foldable_columns_error">The folded value must be less than or equal to the unfolded value. It will be automatically adjusted if needed.</string>
+    <string name="dock_rows">Rady dokov</string>
+    <string name="dock_pages">Stránky dokov</string>
+    <string name="state_folded">%1$s (zložený)</string>
+    <string name="state_unfolded">%1$s (rozvinutý)</string>
+    <string name="folded_label">Zložený</string>
+    <string name="unfolded_label">Rozvinutý</string>
+    <string name="when_folded_label">Keď je zložený</string>
+    <string name="when_unfolded_label">Keď je rozvinutý</string>
+    <string name="unfolded_grid_description">Lawnchair spája dve stránky dohromady, aby zaplnili väčšiu časť displeja</string>
+    <string name="foldable_columns_error">Hodnota zloženia musí byť menšia alebo rovná rozloženej hodnote. V prípade potreby sa automaticky upraví.</string>
     <string name="hotseat_bottom_space_label">Spodná medzera</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="page_indicator_height">Výška indikátoru stránok</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Vyhľadávanie aplikácií</string>
     <string name="search_provider_custom">Vlastné</string>
-    <string name="search_provider_sponsored_description">%1$s A Lawnchair má zmluvu o zdieľanie prijmú.\n\nVyhladavanie pomocou %1$s pomáha podporiť Lawnchair.</string>
+    <string name="search_provider_sponsored_description">​%1$s a Lawnchair majú zmluvu o zdieľaní príjmov.\n\nVyhľadávanie pomocou %1$s pomáha podporiť Lawnchair.</string>
     <string name="app_label">Aplikácia</string>
     <string name="website_label">Webová stránka</string>
     <string name="qsb_search_provider_app_required">Vyžaduje sa aplikácia</string>
@@ -710,18 +710,18 @@
     <!-- App drawer settings -->
     <string name="hidden_apps_label">Skryté aplikácie</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Hromadné načítanie aplikácií</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
-    <string name="pref_all_apps_remember_position_title">Remember scroll position</string>
-    <string name="pref_all_apps_remember_position_description">Save the last scrolled location when closing the app drawer</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Načítavať a zobrazovať ikony hromadne namiesto jednotlivo</string>
+    <string name="pref_all_apps_remember_position_title">Zapamätať pozíciu posunu</string>
+    <string name="pref_all_apps_remember_position_description">Pri zatváraní zásuvky aplikácií uložte poslednú pozíciu posunu</string>
     <string name="pref_all_apps_show_scrollbar_title">Zobraziť posuvník</string>
-    <string name="app_drawer_columns">Stĺpce v Ponuke aplikácií</string>
+    <string name="app_drawer_columns">Stĺpce v ponuke aplikácií</string>
     <string name="row_height_label">Výška riadka</string>
-    <string name="app_drawer_haptic_feedback_label">Haptic feedback</string>
+    <string name="app_drawer_haptic_feedback_label">Hmatová odozva</string>
     <string name="app_drawer_indent_label">Vodorovná medzera</string>
-    <string name="app_drawer_bg_color_label">Background color</string>
-    <string name="work_profile_tab_background_label">Tab background color</string>
-    <string name="pref_all_apps_search_bar_background">Show background behind search bar</string>
-    <string name="work_profile_tab_container_background_label">Show background behind tabs</string>
+    <string name="app_drawer_bg_color_label">Farba pozadia</string>
+    <string name="work_profile_tab_background_label">Farba pozadia karty</string>
+    <string name="pref_all_apps_search_bar_background">Zobraziť pozadie za vyhľadávacím panelom</string>
+    <string name="work_profile_tab_container_background_label">Zobraziť pozadie za kartami</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Skryť z ponuky aplikácií</string>
     <string name="hidden_apps_label_with_count">Skryté aplikácie (%1$d)</string>
@@ -732,15 +732,15 @@
         <item quantity="other">%1$d Aplikácie</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
-    <string name="folder_bg_opacity_label">Folder background opacity</string>
+    <string name="folder_preview_bg_opacity_label">Nepriehľadnosť pozadia náhľadu ikon</string>
+    <string name="folder_bg_opacity_label">Nepriehľadnosť pozadia zložky</string>
     <string name="folder_preview_bg_color_label">Farba pozadia ikon</string>
     <string name="max_folder_columns">Max. počet stĺpcov v priečinku</string>
     <string name="max_folder_rows">Max. počet stĺpcov v priečinku</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored because Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">Tieto nastavenia budú ignorované, pretože Lawnchair nie je nastavený ako poskytovateľ obrazovky nedávnych aplikácií</string>
     <string name="quickstep_incompatible">Nekompatibilná integrácia systému</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures, known as Quickstep, provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
+    <string name="quickstep_incompatible_description">Vaše zariadenie je nakonfigurované tak, že systémové gestá (známe ako Quickstep) poskytuje aplikácia %1$s, avšak táto verzia aplikácie %1$s nie je kompatibilná s vašou verziou systému Android. Ak chcete zariadenie naďalej používať, odinštalujte aktualizácie aplikácie %1$s alebo túto aplikáciu zakážte ako poskytovateľa systémových gest.</string>
     <string name="translucent_background">Priesvitné pozadie</string>
     <string name="translucent_background_alpha">Sýtosť pozadia</string>
     <string name="recents_actions_label">Rýchle akcie</string>
@@ -750,7 +750,7 @@
     <string name="task_menu_force_stop">Vynútiť ukončenie</string>
     <string name="window_corner_radius_label">Polomer rohov</string>
     <string name="override_window_corner_radius_label">Vlastný polomer rohov</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Keď potiahnete prstom nahor a otvoríte obrazovku s nedávno použitými aplikáciami, aktuálna aplikácia bude nasledovať váš prst a zmenší sa do podoby karty. Pomocou tohto posuvníka môžete upraviť polomer zaoblenia rohov karty v momente, keď zaberá takmer celú plochu obrazovky, aby sa zhodoval so zaoblením rohov samotného displeja.</string>
     <string name="taskbar_label">Panel úloh</string>
     <string name="enable_taskbar_experimental">Povoliť panel úloh (Experimentálne)</string>
     <!--
@@ -759,68 +759,65 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search web and more</string>
+    <string name="all_apps_device_search_hint">Prehľadávajte web a viac</string>
     <string name="all_apps_search_bar_hint">Vyhľadávať aplikácie</string>
-    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"
-    </string>
+    <string name="all_apps_no_search_results">Nenašli sa žiadne aplikácie zodpovedajúce výrazu „<xliff:g example="Android" id="query">%1$s</xliff:g>“    </string>
     <string name="all_apps_search_result_suggestions">Z webu</string>
     <string name="all_apps_search_result_contacts_from_device">Kontakty zo zariadenia</string>
     <string name="all_apps_search_result_files">Súbory zo zariadenia</string>
     <string name="all_apps_search_result_settings_entry_from_device">Nastavenia zo zariadenia</string>
     <string name="all_apps_search_market_message">Hľadať ďalšie aplikácie</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>
-    </string>
+    <string name="all_apps_search_on_web_message">Vyhľadať cez <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>    </string>
     <string name="error_no_market_or_browser_installed">Nie je nainštalovaný žiadny obchod s aplikáciami ani prehliadač</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">Hľadať na webe</string>
     <string name="clear_history">Vymazať históriu vyhľadávania</string>
     <string name="search_input_action_clear_results">Vymazať vyhľadávacie pole</string>
     <!-- Search settings -->
     <string name="pref_category_search">Vyhľadávanie</string>
     <string name="show_app_search_bar">Ukázať vyhľadávacie okno</string>
     <string name="pref_search_auto_show_keyboard">Automaticky ukázať klávesnicu</string>
-    <string name="fuzzy_search_title">Fuzzy search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
+    <string name="fuzzy_search_title">Približné vyhľadávanie</string>
+    <string name="fuzzy_search_desc">Približná zhoda pri vyhľadávaní aplikácií</string>
+    <string name="show_suggested_apps_at_drawer_top">Zobraziť odporúčané aplikácie v hornej časti zásuvky</string>
     <string name="perform_wide_search_title">Vyhľadávanie zariadení</string>
-    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
+    <string name="perform_wide_search_description">Vyhľadávanie kontaktov, súborov a nastavení</string>
     <string name="show_hidden_apps_in_search_results">Zobraziť skryté aplikácie vo vyhľadávaní</string>
     <string name="hidden_apps_show_name_typed">Ak je zadané celé meno</string>
     <string name="allapps_web_suggestion_provider_label">Poskytovateľ webových návrhov</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show the web suggestion provider icon in the search bar</string>
+    <string name="allapps_use_web_suggestion_icon_label">Zobraziť ikonu poskytovateľa webových návrhov vo vyhľadávacom paneli</string>
     <string name="allapps_match_qsb_style_label">Akcie vyhľadávacieho panela v doku</string>
-    <string name="allapps_match_qsb_style_description">Tapping the dock search bar opens the app drawer search view</string>
+    <string name="allapps_match_qsb_style_description">Klepnutím na vyhľadávací riadok v doku otvorí vyhľadávacie zobrazenie v ponuke aplikácií</string>
     <string name="app_search_algorithm">Spôsob vyhľadávania aplikácii</string>
     <string name="search_algorithm_app_search">Vyhľadávanie aplikácií</string>
-    <string name="search_algorithm_global_search_on_device">Spôsob globálneho vyhľadávania na zariadení (v zariadenie)</string>
+    <string name="search_algorithm_global_search_on_device">Globálne vyhľadávanie (v zariadení)</string>
     <string name="search_algorithm_global_search_via_asi">Globálne vyhľadávanie (prostredníctvom ASI)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Search suggestions URL</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_label">Názov vyhľadávača</string>
+    <string name="custom_search_url">URL vyhľadávača</string>
+    <string name="custom_search_suggestions_url">URL adresa návrhov vyhľadávania</string>
+    <string name="custom_search_input_hint">&#37;s bude nahradené vyhľadávacím dopytom</string>
+    <string name="custom_search_suggestions_hint">&#37;s bude nahradené vyhľadávacím dopytom. Výsledky musia byť vo formáte JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Ukázať vo výsledkoch vyhľadávania</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Aplikácie a skratky</string>
     <string name="search_pref_result_shortcuts_title">Skratky aplikácií</string>
     <string name="search_pref_result_people_title">Ľudia</string>
-    <string name="search_pref_result_tips_title">Pixel tips</string>
-    <string name="search_pref_result_settings_title">Nastavenie Androidu</string>
+    <string name="search_pref_result_tips_title">Tipy Pixel</string>
+    <string name="search_pref_result_settings_title">Nastavenia Androidu</string>
     <string name="search_pref_result_files_title">Súbory</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_visual_media_title">Fotografie a videá</string>
+    <string name="search_pref_result_audio_media_title">Zvukové súbory</string>
+    <string name="search_pref_result_all_files_title">Všetky súbory</string>
     <string name="search_pref_result_web_title">Návrhy webu</string>
     <string name="search_pref_result_history_title">História vyhľadávania</string>
     <string name="all_apps_search_result_calculator">Kalkulačka</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more</string>
+    <string name="search_empty_state_title">Zahájiť vyhľadávanie</string>
+    <string name="search_empty_state_no_history_subtitle">Nájsť aplikácie, kontakty a ďalšie. Vaše nedávne vyhľadávania sa objavia tu. </string>
+    <string name="search_empty_state_history_disabled_subtitle">Nájsť aplikácie, kontakty a ďalšie</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">Hľadať</string>
     <string name="search_pref_result_files_description">Média, súbory a ďalšie</string>
     <string name="search_pref_result_contacts_description">Kontakty a ďalšie</string>
-    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g>
-    </string>
+    <string name="search_pref_result_web_provider_description">Cez <xliff:g id="web_search_provider">%1$s</xliff:g>    </string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Maximálny počet aplikácií</string>
     <string name="max_people_result_count_title">Maximálny počet ľudí</string>
@@ -831,41 +828,39 @@
     <string name="max_web_suggestion_delay">Maximálne oneskorenie webovej ponuky</string>
     <!-- Permission management -->
     <string name="missing_notification_access_label">Potrebný prístup k oznámeniam</string>
-    <string name="missing_notification_access_desc">To show notification dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>
-    </string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g>
-    </string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
+    <string name="missing_notification_access_desc">Ak chcete zobrazovať bodky upozornení, zapnite upozornenia aplikácie pre <xliff:g id="name" example="My App">%1$s</xliff:g>    </string>
+    <string name="warn_contact_permission_title">Vyžaduje sa povolenie pre kontakty</string>
+    <string name="warn_contact_permission_content">Ak chcete vyhľadávať kontakty, udeľte aplikácii <xliff:g id="name" example="My App">%1$s</xliff:g> povolenia na prístup ku kontaktom a telefónu    </string>
+    <string name="permissions_music_audio">Vyžaduje sa prístup k hudbe a zvuku</string>
+    <string name="permissions_music_audio_description">Na vyhľadávanie vašej hudby a iných zvukových súborov potrebuje aplikácia <xliff:g id="name" example="My App">%1$s</xliff:g> povolenie na prístup k vašej knižnici médií</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">Vyžaduje sa prístup k fotografiám a videám</string>
+    <string name="permissions_photos_videos_description">Pre vyhľadávanie vašich fotografií a videí potrebuje aplikácia <xliff:g id="name" example="My App">%1$s</xliff:g> povolenie na prístup k vašej knižnici médií</string>
+    <string name="permissions_photos_videos_full">Získať prístup k celej vašej knižnici médií?</string>
+    <string name="permissions_photos_videos_full_description">Na vyhľadávanie všetkých vašich fotografií a videí potrebuje aplikácia <xliff:g id="name" example="My App">%1$s</xliff:g> úplný prístup k vašej knižnici médií</string>
+    <string name="permissions_photos_videos_grant_full">Udeľte úplné povolenia pre médiá</string>
+    <string name="permissions_photos_videos_manage_selected">Spravovať vybrané položky</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot turn on manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">Vyžaduje sa prístup k externému úložisku</string>
+    <string name="permissions_external_storage_description">Na vyhľadávanie vašich súborov potrebuje aplikácia <xliff:g id="name" example="My App">%1$s</xliff:g> povolenie na prístup k externému úložisku vášho zariadenia</string>
+    <string name="permissions_manage_storage">Spravovať potrebný prístup k úložisku</string>
+    <string name="permissions_manage_storage_description">Na zobrazenie vašich súborov vo výsledkoch vyhľadávania vyžaduje aplikácia <xliff:g id="name" example="My App">%1$s</xliff:g> povolenie na správu všetkých súborov vo vašom zariadení. Toto povolenie slúži výhradne na vytvorenie zoznamu súborov a nebude použité na čítanie ani úpravu obsahu vašich osobných súborov.</string>
+    <string name="permission_desc_wallpaper_base">Na zobrazenie ukážok tapiet a ich zahrnutie do záloh vyžaduje aplikácia <xliff:g id="name" example="My App">%1$s</xliff:g> povolenie %2$s. Dôvodom sú systémové obmedzenia týkajúce sa prístupu k údajom o tapetách.</string>
+    <string name="permission_desc_ending_read_all_files">na čítanie všetkých súborov vo vašom zariadení</string>
+    <string name="permission_desc_ending_manage_all_files">spravovať všetky súbory vo vašom zariadení</string>
+    <string name="permission_desc_wallpaper_multiple">Vyžaduje sa viacero povolení</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Na zobrazenie ukážok tapiet a ich zahrnutie do záloh vyžaduje aplikácia <xliff:g id="name" example="My App">%1$s</xliff:g> nasledujúce povolenia. Dôvodom sú systémové obmedzenia týkajúce sa prístupu k údajom o tapetách.</string>
+    <string name="permission_label_manage_all_files">Spravovať všetky súbory v zariadení</string>
+    <string name="permission_label_read_photos_videos">Načítať fotografie a videá</string>
+    <string name="manage_storage_access_denied_title">Nedá sa zapnúť prístup k správe úložiska</string>
+    <string name="manage_storage_access_denied_description">Vzhľadom na pravidlá obchodu Play nemôže aplikácia <xliff:g id="name" example="My App">%1$s</xliff:g> v tomto prostredí požiadať o úplný prístup k úložisku. Ak chcete získať prístup ku všetkým súborom, stiahnite si aplikáciu <xliff:g id="name" example="My App">%1$s</xliff:g> z platformy GitHub. Prípadne môžete v nastaveniach udeliť prístup k fotografiám, videám a zvukovým súborom jednotlivo.</string>
     <string name="open_permission_settings">Otvoriť nastavenia</string>
     <string name="grant_requested_permissions">Povoľte prístup</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">Vyžadujú sa povolenia</string>
+    <string name="grant_requested_permissions_tap">Kliknutím udeľte povolenia</string>
     <!-- Message shown when all home screen views are removed -->
-    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
-    <string name="lawnchair_actions">Actions</string>
-    <string name="lawnchair_action_failed">Failed to trigger action</string>
-    <string name="please_wait">Please wait…</string>
+    <string name="home_screen_all_views_removed_msg">Domovská obrazovka vymazaná</string>
+    <string name="lawnchair_actions">Akcie</string>
+    <string name="lawnchair_action_failed">Nepodarilo sa spustiť akciu</string>
+    <string name="please_wait">Prosím, čakajte…</string>
 </resources>
