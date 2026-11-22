@@ -1223,8 +1223,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private boolean shouldSkipPagedViewInterceptionForIconSwipe(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                // ev is in this view's coordinates; pages are laid out in scrolled content
+                // coordinates, so add the scroll offset (otherwise only page 0 matches).
                 mDisallowPagedViewInterceptForIconSwipe = isTouchOnIconWithSwipeGesture(
-                        ev.getX(), ev.getY(), false);
+                        ev.getX() + getScrollX(), ev.getY() + getScrollY(), false);
                 if (mDisallowPagedViewInterceptForIconSwipe) {
                     resetTouchState();
                     return true;

@@ -5,10 +5,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
+import com.android.launcher3.BubbleTextView
 import com.android.launcher3.CellLayout
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.PagedView
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.Workspace
 import com.android.launcher3.pageindicators.PageIndicatorDots
 
@@ -110,9 +112,53 @@ class HotseatPagedView @JvmOverloads constructor(
         }
     }
 
+    // LC: icon swipe gestures. A touch that starts on a dock icon with a horizontal swipe
+    // gesture belongs to the icon, not to the dock pager.
+    private var disallowInterceptForIconSwipe = false
+
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         if (!isPagingEnabled) return false
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                disallowInterceptForIconSwipe = isTouchOnIconWithHorizontalSwipeGesture(ev.x, ev.y)
+                if (disallowInterceptForIconSwipe) {
+                    resetTouchState()
+                    return false
+                }
+            }
+
+            MotionEvent.ACTION_MOVE -> if (disallowInterceptForIconSwipe) return false
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (disallowInterceptForIconSwipe) {
+                disallowInterceptForIconSwipe = false
+                resetTouchState()
+                return false
+            }
+        }
         return super.onInterceptTouchEvent(ev)
+    }
+
+    private fun isTouchOnIconWithHorizontalSwipeGesture(x: Float, y: Float): Boolean {
+        // Children are laid out in scrolled content coordinates.
+        val contentX = x + scrollX
+        val contentY = y + scrollY
+        for (i in childCount - 1 downTo 0) {
+            val page = getChildAt(i) as? CellLayout ?: continue
+            val pageX = contentX - page.left
+            val pageY = contentY - page.top
+            if (!Utilities.pointInView(page, pageX, pageY, 0f)) continue
+            val container = page.shortcutsAndWidgets
+            val containerX = pageX - container.left
+            val containerY = pageY - container.top
+            for (j in container.childCount - 1 downTo 0) {
+                val child = container.getChildAt(j)
+                if (child !is BubbleTextView || child.visibility != VISIBLE) continue
+                if (Utilities.pointInView(child, containerX - child.left, containerY - child.top, 0f)) {
+                    return child.hasConfiguredHorizontalIconSwipeGesture()
+                }
+            }
+        }
+        return false
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {

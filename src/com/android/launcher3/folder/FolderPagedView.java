@@ -180,8 +180,9 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     private boolean shouldSkipPagedViewInterceptionForIconSwipe(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                // ev is in this view's coordinates; add the scroll offset of the folder pager.
                 mDisallowPagedViewInterceptForIconSwipe = isTouchOnIconWithHorizontalSwipeGesture(
-                        ev.getX(), ev.getY());
+                        ev.getX() + getScrollX(), ev.getY() + getScrollY());
                 if (mDisallowPagedViewInterceptForIconSwipe) {
                     resetTouchState();
                     return true;
