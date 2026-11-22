@@ -87,10 +87,10 @@ fun DockSearchPreference(
                         DockSearchBarPreview(
                             provider = if (isGoogleSearchHotseat) Google else hotseatQsbProviderAdapter,
                             themed = if (isGoogleSearchHotseat) false else themeQsbAdapter.state.value,
-                            cornerRadiusFactor = qsbCornerAdapter.state.value,
-                            transparency = qsbAlphaAdapter.state.value,
-                            strokeWidth = qsbHotseatStrokeWidth.state.value,
-                            strokeColor = strokeColorStyleAdapter.state.value,
+                            cornerRadiusFactor = if (isGoogleSearchHotseat) 1f else qsbCornerAdapter.state.value,
+                            transparency = if (isGoogleSearchHotseat) 100 else qsbAlphaAdapter.state.value,
+                            strokeWidth = if (isGoogleSearchHotseat) 0f else qsbHotseatStrokeWidth.state.value,
+                            strokeColor = if (isGoogleSearchHotseat) ColorOption.Default else strokeColorStyleAdapter.state.value,
                         )
                     }
                 }
