@@ -23,6 +23,14 @@
 -keep,allowshrinking,allowoptimization class app.lawnchair.LawnchairLauncher { *; }
 -keep,allowshrinking,allowoptimization class app.lawnchair.compatlib.** { *; }
 
+-keepclassmembers class app.lawnchair.compatlib.** implements android.app.ActivityOptions$OnAnimationStartedListener {
+    public void onAnimationStarted(...);
+}
+
+-keepclassmembers class app.lawnchair.compatlib.** implements android.app.ActivityOptions$OnAnimationFinishedListener {
+    public void onAnimationFinished(...);
+}
+
 -keep,allowshrinking,allowoptimization class com.google.protobuf.Timestamp { *; }
 -keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
 
