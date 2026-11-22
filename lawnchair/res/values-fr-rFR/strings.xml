@@ -132,7 +132,7 @@
     <string name="apps_in_folder_label">Masquer les applis rangées dans un dossier</string>
     <string name="apps_in_folder_description">Les applis assignées à un dossier sont exclues des listes d\'applis</string>
     <string name="folders_filter_duplicates">Afficher seulement les applis uniques</string>
-    <string name="folder_manage_apps">Manage apps</string>
+    <string name="folder_manage_apps">Gérer les applis</string>
     <string name="my_folder_label">Mon dossier</string>
     <string name="sort_active_items_action">Trier les éléments actifs</string>
     <!-- A11y description -->
@@ -155,7 +155,7 @@
     -->
     <string name="settings">Paramètres</string>
     <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
-    <string name="settings_pick_a_page">Pick a setting from the menu</string>
+    <string name="settings_pick_a_page">Choisissez un paramètre dans le menu</string>
     <string name="general_label">Général</string>
     <string name="general_description">Couleurs, packs d\'icônes, pastilles de notification</string>
     <string name="home_screen_label">Écran d\'accueil</string>
@@ -191,7 +191,7 @@
     <string name="workspace_increase_max_grid_size_label">Augmenter la taille maximale de la grille de l\'écran d\'accueil</string>
     <string name="workspace_increase_max_grid_size_description">Augmenter la taille maximale autorisée de la grille de 10 &#xd7; 10 à 20 &#xd7; 20</string>
     <string name="always_reload_icons_label">Toujours recharger les icônes</string>
-    <string name="always_reload_icons_description">Avoid caching to reload icons immediately when theme or accent color changes</string>
+    <string name="always_reload_icons_description">Éviter la mise en cache pour recharger immédiatement les icônes lorsque le thème ou la couleur d\'accentuation change</string>
     <string name="always_reload_icons_warning">Cela entraînera le rechargement régulier des icônes, ce qui aura un impact sur les performances. Désactivez cette option si le pack d\'icônes n\'est pas mis à jour régulièrement.</string>
     <string name="show_deck_layout">Disposition Deck</string>
     <string name="show_deck_layout_description">Affichez une option de disposition permettant de masquer le tiroir des applis et d\'ajouter automatiquement les nouvelles applis à l\'écran d\'accueil</string>
@@ -325,23 +325,23 @@
     <string name="icon_shape_clipboard_import_error">Le presse-papiers ne contient pas une forme d\'icône valide</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Pack d\'icônes</string>
-    <string name="get_more_icon_packs">Get more icons</string>
-    <string name="fallback_icon_source_title">Fallback icon source</string>
+    <string name="get_more_icon_packs">Obtenir plus d\'icônes</string>
+    <string name="fallback_icon_source_title">Source d\'icônes de repli</string>
     <string name="system_icons">Icônes du système</string>
     <string name="force_monochrome_label">Forcer monochrome</string>
     <string name="force_monochrome_description">Utilisez la couleur d\'accentuation actuelle dans les applis non prises en charge.</string>
-    <string name="enforce_themed_icons_title">Enforce themed icons</string>
-    <string name="enforce_themed_icons_description">Even to unsupported apps (not recommended)</string>
+    <string name="enforce_themed_icons_title">Forcer les icônes à thème</string>
+    <string name="enforce_themed_icons_description">Même sur les applis non prises en charge (non recommandé)</string>
     <string name="themed_icon_title">Icônes à thème</string>
-    <string name="themed_icons_description">Adapt supported app icons to match your device\'s theme and color scheme. These icons are applied on top of your existing icon packs.</string>
+    <string name="themed_icons_description">Harmoniser les icônes des applis avec le thème et les couleurs de votre appareil. Ces icônes sont appliquées au-dessus de vos packs d\'icônes existants.</string>
     <string name="themed_icons_off_label">Désactivé</string>
     <string name="themed_icons_home_label">Écran d\'accueil</string>
     <string name="themed_icons_home_and_drawer_label">Écran d\'accueil et tiroir des applis</string>
-    <string name="themed_icons_no_fallback">No fallback</string>
+    <string name="themed_icons_no_fallback">Aucune solution de repli</string>
     <string name="lawnicons_not_installed_description">Aucun pack d\'icônes pris en charge</string>
-    <string name="advanced_icon_settings_title">Advanced icon settings</string>
-    <string name="reshape_unthemed_icons_title">Reshape unthemed icons</string>
-    <string name="reshape_unthemed_icons_description">By adding a background</string>
+    <string name="advanced_icon_settings_title">Paramètres avancés des icônes</string>
+    <string name="reshape_unthemed_icons_title">Modification de la forme des icônes sans thème</string>
+    <string name="reshape_unthemed_icons_description">En ajoutant un arrière-plan</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Ajouter des polices</string>
     <string name="pref_fonts_add_fonts_summary">Les polices sont prises en charge aux formats OTF et TTF</string>
@@ -579,10 +579,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
     <string name="home_screen_rotation_description">Autoriser la rotation de l\'écran d\'accueil lorsque l\'appareil est tourné</string>
-    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
-    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
-    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
-    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
+    <string name="pan_to_move_icon_label">Incliner pour changer de page</string>
+    <string name="pan_to_move_icon_description">Penchez votre téléphone vers la gauche ou la droite pour changer de page en réorganisant vos applis/widgets</string>
+    <string name="pan_to_move_sensitivity_label">Sensibilité à l\'inclinaison</string>
+    <string name="pan_to_move_sensor_unavailable">Incliner pour changer de page est indisponible car aucun capteur de mouvements n\'a pu être enregistré.</string>
     <string name="auto_updater_label">Rechercher automatiquement les mises à jour</string>
     <string name="auto_updater_description">Rechercher une mise à jour Nightly en ouvrant l\'écran À propos</string>
     <string name="live_information_label">Informations en direct</string>

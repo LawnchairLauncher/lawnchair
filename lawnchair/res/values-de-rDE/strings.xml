@@ -579,10 +579,10 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Startbildschirm-Drehung</string>
     <string name="home_screen_rotation_description">Drehung des Startbildschirms zulassen, wenn das Gerät gedreht wird</string>
-    <string name="pan_to_move_icon_label">Tilt to swipe pages</string>
-    <string name="pan_to_move_icon_description">Tilt your phone left or right to move between pages during rearrangement of apps/widgets</string>
-    <string name="pan_to_move_sensitivity_label">Tilt sensitivity</string>
-    <string name="pan_to_move_sensor_unavailable">Pan to move is unavailable because no motion sensor could be registered.</string>
+    <string name="pan_to_move_icon_label">Neigen für Seitenwechsel</string>
+    <string name="pan_to_move_icon_description">Neige dein Smartphone nach links oder rechts um während der Neuanordnung von Apps oder Widgets zwischen den Seiten zu wechseln</string>
+    <string name="pan_to_move_sensitivity_label">Neigungsempfindlichkeit</string>
+    <string name="pan_to_move_sensor_unavailable">Die Neigungsfunktion ist nicht verfügbar, da kein Bewegungssensor registriert werden konnte.</string>
     <string name="auto_updater_label">Automatisch nach Updates suchen</string>
     <string name="auto_updater_description">Beim Öffnen des Info-Bildschirms wird nach Nightly-Updates gesucht</string>
     <string name="live_information_label">Live-Informationen</string>
