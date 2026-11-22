@@ -192,6 +192,9 @@ data object SmartspaceWidget : PreferenceRoute
 @Serializable
 data object GesturesPickApp : PreferenceRoute
 
+@Serializable
+data object GesturesPickShortcut : PreferenceRoute
+
 // About section routes
 @Serializable
 data object AboutLicenses : PreferenceRoute, PreferenceDeepLink {

@@ -672,6 +672,10 @@
     <string name="gesture_handler_open_assistant">Open assistant</string>
 
     <string name="pick_app_for_gesture">Pick app</string>
+    <string name="gesture_handler_open_shortcut_option">Open app shortcut</string>
+    <string name="pick_shortcut_for_gesture">Pick app shortcut</string>
+    <string name="pick_shortcut_for_gesture_empty">No app shortcuts found. Lawnchair has to be the default home app.</string>
+    <string name="gesture_shortcut_unavailable">This shortcut is no longer available</string>
 
     <string name="dt2s_admin_hint_title">Admin permissions required</string>
     <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>

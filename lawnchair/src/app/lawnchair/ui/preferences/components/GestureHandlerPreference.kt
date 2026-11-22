@@ -89,7 +89,7 @@ fun GestureHandlerPreference(
                             if (index > 0) {
                                 PreferenceDivider(startIndent = 40.dp)
                             }
-                            val selected = currentConfig::class.java == option.configClass
+                            val selected = option.matches(currentConfig)
                             PreferenceTemplate(
                                 title = { Text(option.getLabel(context)) },
                                 onClick = {
