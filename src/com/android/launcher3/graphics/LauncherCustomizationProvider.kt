@@ -41,7 +41,9 @@ class LauncherCustomizationProvider : ContentProviderProxy() {
             return
 
         // Temporary change until the clients migrate to the new permission
-        val source = callingAttributionSource?.packageName ?: throw genericAccessException()
+        // callingAttributionSource requires API 31; callingPackage is validated against the
+        // calling UID on every supported API level.
+        val source = callingPackage ?: throw genericAccessException()
         val signatures =
             ctx.packageManager.getPackageInfo(source, PackageManager.GET_SIGNATURES)?.signatures
                 ?: throw genericAccessException()
