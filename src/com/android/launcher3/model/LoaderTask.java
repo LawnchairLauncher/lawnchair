@@ -45,6 +45,7 @@ import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
+import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.os.Trace;
 import android.os.UserHandle;
@@ -624,6 +625,13 @@ public class LoaderTask implements Runnable {
                 // Ref: https://issuetracker.google.com/issues/547643926
                 Log.e("LC-LoaderTask", "Failed to get activity list for user " + user, e);
                 apps = Collections.emptyList();
+            } catch (BadParcelableException e) {
+                // The parceled list can arrive truncated when the binder transaction fails
+                // partway. Treating that as an empty inventory would prune every installed
+                // app from the workspace, so abort this load instead; the existing model
+                // stays bound and the next reload re-queries.
+                Log.w(TAG, "Incomplete activity list for user " + user, e);
+                throw new CancellationException("Incomplete launcher activity list");
             }
             // Fail if we don't have any apps
             if (apps == null || apps.isEmpty()) {
