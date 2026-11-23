@@ -775,19 +775,21 @@ class WorkspaceItemProcessor(
                 .append("defaultHeight: ")
                 .append(widgetProviderInfo.minHeight)
                 .append("\n")
-            widgetDimension
-                .append("targetCellWidth: ")
-                .append(widgetProviderInfo.targetCellWidth)
-                .append("\n")
-                .append("targetCellHeight: ")
-                .append(widgetProviderInfo.targetCellHeight)
-                .append("\n")
-                .append("maxResizeWidth: ")
-                .append(widgetProviderInfo.maxResizeWidth)
-                .append("\n")
-                .append("maxResizeHeight: ")
-                .append(widgetProviderInfo.maxResizeHeight)
-                .append("\n")
+            if (Utilities.ATLEAST_S) { // LC-Note: Support Android 11 and older with SDK check
+                widgetDimension
+                    .append("targetCellWidth: ")
+                    .append(widgetProviderInfo.targetCellWidth)
+                    .append("\n")
+                    .append("targetCellHeight: ")
+                    .append(widgetProviderInfo.targetCellHeight)
+                    .append("\n")
+                    .append("maxResizeWidth: ")
+                    .append(widgetProviderInfo.maxResizeWidth)
+                    .append("\n")
+                    .append("maxResizeHeight: ")
+                    .append(widgetProviderInfo.maxResizeHeight)
+                    .append("\n")
+            }
             FileLog.d(TAG, widgetDimension.toString())
         }
     }

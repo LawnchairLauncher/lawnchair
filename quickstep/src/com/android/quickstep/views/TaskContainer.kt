@@ -111,14 +111,14 @@ class TaskContainer(
     val itemInfo: TaskViewItemInfo
         get() = TaskViewItemInfo(taskView, this)
 
-    fun bind() = {
+    fun bind() {
             digitalWellBeingToast?.bind(task, taskView, snapshotView, stagePosition)
             if (!enableRefactorTaskThumbnail()) {
                 thumbnailViewDeprecated.bind(task, overlay, taskView)
             }
         }
 
-    fun destroy() = {
+    fun destroy() {
             digitalWellBeingToast?.destroy()
             taskContentView.scaleX = 1f
             taskContentView.scaleY = 1f
@@ -152,7 +152,7 @@ class TaskContainer(
         }
     }
 
-    fun refreshOverlay(thumbnailPosition: ThumbnailPosition) = {
+    fun refreshOverlay(thumbnailPosition: ThumbnailPosition) {
             this.thumbnailPosition = thumbnailPosition
             if (overlayEnabledStatus) {
                 overlay.initOverlay(
@@ -182,7 +182,7 @@ class TaskContainer(
         hasHeader: Boolean,
         canShowAppTimer: Boolean,
         clickCloseListener: OnClickListener?,
-    ) = {
+    ) {
             if (enableRefactorTaskContentView()) {
                 (taskContentView as TaskContentView).setState(
                     TaskUiStateMapper.toTaskHeaderState(state, hasHeader, clickCloseListener),

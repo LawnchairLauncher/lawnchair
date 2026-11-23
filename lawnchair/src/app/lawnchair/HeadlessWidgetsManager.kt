@@ -18,6 +18,7 @@ import com.android.launcher3.util.SafeCloseable
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,12 +43,16 @@ class HeadlessWidgetsManager @Inject constructor(
         host.startListening()
     }
 
+    @Synchronized
     fun getWidget(info: AppWidgetProviderInfo, prefKey: String): Widget {
-        val widget = widgetsMap.getOrPut(prefKey) { Widget(info, prefKey) }
-        check(info.provider == widget.info.provider) {
-            "widget $prefKey was created with a different provider"
+        val existing = widgetsMap[prefKey]
+        if (existing != null && existing.info.provider == info.provider) {
+            return existing
         }
-        return widget
+
+        return Widget(this, info, prefKey).also {
+            widgetsMap[prefKey] = it
+        }
     }
 
     fun subscribeUpdates(info: AppWidgetProviderInfo, prefKey: String): Flow<AppWidgetHostView> {
@@ -59,7 +64,9 @@ class HeadlessWidgetsManager @Inject constructor(
     }
 
     override fun close() {
-        TODO("Not yet implemented")
+        scope.cancel()
+        host.stopListening()
+        widgetsMap.clear()
     }
 
     private class HeadlessAppWidgetHost(context: Context) : AppWidgetHost(context, 1028) {
@@ -85,20 +92,24 @@ class HeadlessWidgetsManager @Inject constructor(
         }
     }
 
-    inner class Widget internal constructor(val info: AppWidgetProviderInfo, private val prefKey: String) {
+    class Widget internal constructor(
+        private val manager: HeadlessWidgetsManager,
+        val info: AppWidgetProviderInfo,
+        private val prefKey: String,
+    ) {
 
-        private var widgetId = prefs.getInt(prefKey, -1)
+        private var widgetId = manager.prefs.getInt(prefKey, -1)
         val isBound: Boolean
-            get() = widgetManager.getAppWidgetInfo(widgetId)?.provider == info.provider
+            get() = widgetId > -1 && manager.widgetManager.getAppWidgetInfo(widgetId)?.provider == info.provider
         val updates = callbackFlow {
-            val view = host.createView(context, widgetId, info) as HeadlessAppWidgetHostView
+            val view = manager.host.createView(manager.context, widgetId, info) as HeadlessAppWidgetHostView
             trySend(view)
             view.updateCallback = { trySend(it) }
-            awaitClose()
+            awaitClose { view.updateCallback = null }
         }
             .onStart { if (!isBound) throw WidgetNotBoundException() }
             .shareIn(
-                scope,
+                manager.scope,
                 SharingStarted.WhileSubscribed(),
                 replay = 1,
             )
@@ -110,11 +121,11 @@ class HeadlessWidgetsManager @Inject constructor(
         fun bind() {
             if (!isBound) {
                 if (widgetId > -1) {
-                    host.deleteAppWidgetId(widgetId)
+                    manager.host.deleteAppWidgetId(widgetId)
                 }
 
-                widgetId = host.allocateAppWidgetId()
-                widgetManager.bindAppWidgetIdIfAllowed(
+                widgetId = manager.host.allocateAppWidgetId()
+                manager.widgetManager.bindAppWidgetIdIfAllowed(
                     widgetId,
                     info.profile,
                     info.provider,
@@ -122,7 +133,7 @@ class HeadlessWidgetsManager @Inject constructor(
                 )
             }
 
-            prefs.edit { putInt(prefKey, widgetId) }
+            manager.prefs.edit { putInt(prefKey, widgetId) }
         }
 
         fun getBindIntent() = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)

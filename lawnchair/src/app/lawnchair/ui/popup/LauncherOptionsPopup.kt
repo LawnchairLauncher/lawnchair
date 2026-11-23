@@ -13,6 +13,7 @@ import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.views.OptionsPopupView.OptionItem
 import com.patrykmichalik.opto.core.setBlocking
+import kotlinx.coroutines.flow.first
 
 object LauncherOptionsPopup {
     val DEFAULT_ORDER = listOf(
@@ -27,21 +28,22 @@ object LauncherOptionsPopup {
         LauncherOptionPopupItem("default_page", false),
     )
 
-    fun restoreMissingPopupOptions(
+    suspend fun restoreMissingPopupOptions(
         launcher: Launcher,
     ) {
         val prefs2 = getInstance(launcher)
 
-        val currentOrder = prefs2.launcherPopupOrder.firstCached()
+        val currentOrder = prefs2.launcherPopupOrder.get().first()
         val currentOptions = currentOrder.toLauncherOptions()
+        val existingIds = currentOptions.mapTo(HashSet()) { it.identifier }
 
-        // check for missing items in current options; if so, add them
+        // check for missing items in current options if so, add them
         val missingItems = DEFAULT_ORDER.filter { defaultItem ->
-            defaultItem.identifier !in currentOptions.map { it.identifier }
+            defaultItem.identifier !in existingIds
         }
 
         if (missingItems.isNotEmpty()) {
-            prefs2.launcherPopupOrder.setBlocking(
+            prefs2.launcherPopupOrder.set(
                 (currentOptions + missingItems).toOptionOrderString(),
             )
         }
@@ -215,36 +217,29 @@ object LauncherOptionsPopup {
         }
     }
 
-    fun migrateLegacyPreferences(
+    suspend fun migrateLegacyPreferences(
         launcher: Launcher,
     ) {
         val prefs2 = getInstance(launcher)
 
-        val lockHomeScreenButtonOnPopUp = prefs2.lockHomeScreenButtonOnPopUp.firstCached()
-        val editHomeScreenButtonOnPopUp = prefs2.editHomeScreenButtonOnPopUp.firstCached()
-        val showSystemSettingsEntryOnPopUp = prefs2.showSystemSettingsEntryOnPopUp.firstCached()
+        if (!prefs2.legacyPopupOptionsMigrated.get().first()) {
+            val lockHomeScreenButtonOnPopUp = prefs2.lockHomeScreenButtonOnPopUp.get().first()
+            val editHomeScreenButtonOnPopUp = prefs2.editHomeScreenButtonOnPopUp.get().first()
+            val showSystemSettingsEntryOnPopUp = prefs2.showSystemSettingsEntryOnPopUp.get().first()
 
-        val optionOrder = prefs2.launcherPopupOrder
-        val legacyPopupOptionsMigrated = prefs2.legacyPopupOptionsMigrated.firstCached()
+            val optionOrder = prefs2.launcherPopupOrder
+            val options = optionOrder.get().first().toLauncherOptions()
 
-        if (!legacyPopupOptionsMigrated) {
-            prefs2.legacyPopupOptionsMigrated.setBlocking(true)
-
-            val options = optionOrder.firstCached().toLauncherOptions()
-
-            options.forEachIndexed { index, item ->
-                if (item.identifier == "lock") {
-                    options[index].isEnabled = lockHomeScreenButtonOnPopUp
-                }
-                if (item.identifier == "edit_mode") {
-                    options[index].isEnabled = editHomeScreenButtonOnPopUp
-                }
-                if (item.identifier == "sys_settings") {
-                    options[index].isEnabled = showSystemSettingsEntryOnPopUp
+            options.forEach { item ->
+                when (item.identifier) {
+                    "lock" -> item.isEnabled = lockHomeScreenButtonOnPopUp
+                    "edit_mode" -> item.isEnabled = editHomeScreenButtonOnPopUp
+                    "sys_settings" -> item.isEnabled = showSystemSettingsEntryOnPopUp
                 }
             }
 
-            optionOrder.setBlocking(options.toOptionOrderString())
+            optionOrder.set(options.toOptionOrderString())
+            prefs2.legacyPopupOptionsMigrated.set(true)
         }
     }
 }

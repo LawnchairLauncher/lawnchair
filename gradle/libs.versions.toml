@@ -1,10 +1,10 @@
 [versions]
 jdkRelease = "21"
 
-agp = "9.5.1"
+agp = "9.5.2"
 kotlin = "2.4.21"
 androidx-room = "2.8.5"
-androidx-lifecycle = "2.11.0"
+androidx-lifecycle = "2.11.1"
 accompanist = "0.37.3"
 opto = "1.0.18"
 protobuf = "4.36.2"
@@ -35,7 +35,7 @@ google-ksp = "com.google.devtools.ksp:2.3.14"
 google-protobuf = "com.google.protobuf:0.10.0"
 cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = "com.diffplug.spotless:8.11.0"
+diffplug-spotless = "com.diffplug.spotless:8.12.0"
 
 [libraries]
 # AndroidX
@@ -66,11 +66,11 @@ androidx-uiautomator = "androidx.test.uiautomator:uiautomator:2.4.1"
 androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
-compose-bom = "androidx.compose:compose-bom:2026.09.00"
+compose-bom = "androidx.compose:compose-bom:2026.11.01"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = "androidx.compose.material3:material3:1.5.0-rc01"
+compose-material3 = "androidx.compose.material3:material3:1.5.0"
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
 compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 compose-ui = { module = "androidx.compose.ui:ui" }
@@ -130,7 +130,7 @@ hoko-blur = "io.github.hokofly:hoko-blur:1.5.5"
 javax-inject = "javax.inject:javax.inject:1"
 kdrag0n-colorkt = "dev.kdrag0n:colorkt:1.0.5"
 leakcanary-android = "com.squareup.leakcanary:leakcanary-android:2.14"
-leakcanary-androidstudio = "com.android.tools.studio.leakcanary:leakcanary:1.0.0"
+leakcanary-androidstudio = "com.android.tools.studio.leakcanary:leakcanary:1.1.0"
 libsu-core = { group = "com.github.topjohnwu.libsu", name = "core", version.ref = "libsu" }
 libsu-service = { group = "com.github.topjohnwu.libsu", name = "service", version.ref = "libsu" }
 material-motion-compose = "io.github.fornewid:material-motion-compose-core:2.0.1"
@@ -140,7 +140,7 @@ rikka-annotation-processor = { module = "dev.rikka.tools.refine:annotation-proce
 rikka-refine-runtime = { group = "dev.rikka.tools.refine", name = "runtime", version.ref = "refine" }
 smartspacer-sdk = "com.kieronquinn.smartspacer:sdk-client:1.2"
 xdrop-fuzzywuzzy = "me.xdrop:fuzzywuzzy:1.4.0"
-errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.52.0"
+errorprone-annotations = "com.google.errorprone:error_prone_annotations:2.53.0"
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.8.0"
 composeRules = "io.nlopez.compose.rules:ktlint:0.6.8"

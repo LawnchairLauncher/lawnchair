@@ -232,8 +232,10 @@ class LawnchairLauncher : QuickstepLauncher() {
             hasBackGesture = handler !is GestureHandlerConfig.NoOp
         }
 
-        LauncherOptionsPopup.restoreMissingPopupOptions(launcher)
-        LauncherOptionsPopup.migrateLegacyPreferences(launcher)
+        lifecycleScope.launch {
+            LauncherOptionsPopup.restoreMissingPopupOptions(launcher)
+            LauncherOptionsPopup.migrateLegacyPreferences(launcher)
+        }
 
         // Handle update from version 12 Alpha 4 to version 12 Alpha 5.
         if (
