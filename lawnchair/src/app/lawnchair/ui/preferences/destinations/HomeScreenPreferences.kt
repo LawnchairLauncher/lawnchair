@@ -208,6 +208,11 @@ fun HomeScreenPreferences(
                 label = stringResource(id = R.string.home_screen_lock),
                 description = stringResource(id = R.string.home_screen_lock_description),
             )
+            SwitchPreference(
+                adapter = prefs2.bigItemsPage.getAdapter(),
+                label = stringResource(id = R.string.big_items_page_label),
+                description = stringResource(id = R.string.big_items_page_description),
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.popup_menu)) {
             LauncherPopupPreferenceItem()

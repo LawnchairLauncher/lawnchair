@@ -48,6 +48,8 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.views.ActivityContext;
 
+import app.lawnchair.allapps.DrawerCategoryTabs;
+
 /**
  * Adapter for all the apps.
  *
@@ -74,6 +76,13 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
 
     // LC-Feature: Folder support in All Apps, can be any ID
     public static final int VIEW_TYPE_FOLDER = 1 << 10;
+
+    // LC-Feature: "Apps" / "Categories" tabs of the app drawer, see DrawerCategoryTabs
+    public static final int VIEW_TYPE_DRAWER_TABS = 1 << 20;
+    // LC-Feature: category / folder shown as a large folder in the Categories tab (2 per row)
+    public static final int VIEW_TYPE_LARGE_FOLDER = 1 << 21;
+    // LC-Feature: "New folder" button at the end of the Categories tab
+    public static final int VIEW_TYPE_NEW_FOLDER = 1 << 22;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
@@ -144,8 +153,19 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             return item;
         }
 
+        /** LC-Feature: a folder shown as a large folder (Categories tab). */
+        public static AdapterItem asLargeFolder(FolderInfo folderInfo) {
+            AdapterItem item = new AdapterItem(VIEW_TYPE_LARGE_FOLDER);
+            item.folderInfo = folderInfo;
+            return item;
+        }
+
+        // LC-Feature: state of items without an ItemInfo (e.g. the selected drawer tab)
+        public int extraState = 0;
+
         protected boolean isCountedForAccessibility() {
-            return viewType == VIEW_TYPE_ICON || viewType == VIEW_TYPE_FOLDER;
+            return viewType == VIEW_TYPE_ICON || viewType == VIEW_TYPE_FOLDER
+                    || viewType == VIEW_TYPE_LARGE_FOLDER;
         }
 
         /**
@@ -160,6 +180,13 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
          * as well. Returning true will prevent redrawing of thee item.
          */
         public boolean isContentSame(AdapterItem other) {
+            // LC: folders are rebuilt on every update, and the tabs change with the selection.
+            if (viewType == VIEW_TYPE_FOLDER || viewType == VIEW_TYPE_LARGE_FOLDER) {
+                return folderInfo == other.folderInfo;
+            }
+            if (viewType == VIEW_TYPE_DRAWER_TABS) {
+                return extraState == other.extraState;
+            }
             return itemInfo == null && other.itemInfo == null;
         }
 
@@ -261,6 +288,17 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                         R.layout.private_space_header, parent, false));
             case VIEW_TYPE_BOTTOM_VIEW_TO_SCROLL_TO:
                 return new ViewHolder(new View(mActivityContext));
+            case VIEW_TYPE_DRAWER_TABS:
+                return new ViewHolder(DrawerCategoryTabs.createTabsView(mActivityContext));
+            case VIEW_TYPE_NEW_FOLDER:
+                return new ViewHolder(DrawerCategoryTabs.createNewFolderView(mActivityContext));
+            case VIEW_TYPE_LARGE_FOLDER: {
+                FrameLayout largeFl = new FrameLayout(mActivityContext);
+                largeFl.setLayoutParams(new RecyclerView.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        DrawerCategoryTabs.getLargeFolderHeight(mActivityContext)));
+                return new ViewHolder(largeFl);
+            }
             case VIEW_TYPE_FOLDER:
                 // LC-Feature: Folder support in All Apps
                 FrameLayout fl = new FrameLayout(mActivityContext);
@@ -359,6 +397,24 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_WORK_EDU_CARD:
                 ((WorkEduCard) holder.itemView).setPosition(position);
                 break;
+            case VIEW_TYPE_DRAWER_TABS:
+                DrawerCategoryTabs.bindTabsView(holder.itemView, mApps);
+                break;
+            case VIEW_TYPE_NEW_FOLDER:
+                break;
+            case VIEW_TYPE_LARGE_FOLDER: {
+                FolderInfo largeInfo = mApps.getAdapterItems().get(position).folderInfo;
+                ViewGroup largeContainer = (ViewGroup) holder.itemView;
+                largeContainer.removeAllViews();
+                FolderIcon largeIcon = FolderIcon.inflateFolderAndIcon(
+                        R.layout.all_apps_folder_icon, mActivityContext, largeContainer,
+                        largeInfo);
+                largeIcon.setOnLongClickListener(mOnIconLongClickListener);
+                largeContainer.addView(largeIcon, new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+                break;
+            }
             case VIEW_TYPE_FOLDER:
                 // LC: Caddy/Folder in allapps 86b2b025a4f23a068818274020f37ad6d5268363
                 FolderInfo folderInfo = mApps.getAdapterItems().get(position).folderInfo;

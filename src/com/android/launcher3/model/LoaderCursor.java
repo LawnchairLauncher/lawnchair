@@ -629,6 +629,13 @@ public class LoaderCursor extends CursorWrapper {
             folderInfo.options &= ~FolderInfo.FLAG_LARGE_FOLDER;
             return checkItemPlacementInternal(item);
         }
+        // Lawnchair: same for an enlarged app of the big items page.
+        if (item instanceof WorkspaceItemInfo && (item.spanX > 1 || item.spanY > 1)) {
+            Log.w(TAG, "Large app doesn't fit, shrinking to 1x1: " + item);
+            item.spanX = 1;
+            item.spanY = 1;
+            return checkItemPlacementInternal(item);
+        }
         return false;
     }
 

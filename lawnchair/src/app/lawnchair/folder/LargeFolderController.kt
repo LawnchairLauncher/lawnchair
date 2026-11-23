@@ -227,7 +227,8 @@ object LargeFolderController {
     }
 
     /** Finds the vacant area closest to (cellX, cellY), preferring that cell. */
-    private fun findPlacement(
+    @JvmStatic
+    fun findPlacement(
         cellLayout: CellLayout,
         cellX: Int,
         cellY: Int,

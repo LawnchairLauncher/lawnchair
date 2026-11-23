@@ -173,8 +173,9 @@ class WorkspaceItemProcessor(
         c.applyCommonProperties(info)
         info.intent = intent
         info.rank = c.rank
-        info.spanX = 1
-        info.spanY = 1
+        // Lawnchair: apps can be enlarged on the big items page.
+        info.spanX = if (c.container == Favorites.CONTAINER_DESKTOP) c.spanX.coerceAtLeast(1) else 1
+        info.spanY = if (c.container == Favorites.CONTAINER_DESKTOP) c.spanY.coerceAtLeast(1) else 1
         info.runtimeStatusFlags = info.runtimeStatusFlags or disabledState
         if (isSafeMode && !appInfoWrapper.isSystem()) {
             info.runtimeStatusFlags =
@@ -429,8 +430,9 @@ class WorkspaceItemProcessor(
             c.applyCommonProperties(info)
             info.intent = intent
             info.rank = c.rank
-            info.spanX = 1
-            info.spanY = 1
+            // Lawnchair: shortcuts can be enlarged on the big items page.
+            info.spanX = if (c.container == Favorites.CONTAINER_DESKTOP) c.spanX.coerceAtLeast(1) else 1
+            info.spanY = if (c.container == Favorites.CONTAINER_DESKTOP) c.spanY.coerceAtLeast(1) else 1
             info.runtimeStatusFlags = info.runtimeStatusFlags or disabledState
             if (isSafeMode && !appInfoWrapper.isSystem()) {
                 info.runtimeStatusFlags =

@@ -1114,4 +1114,16 @@
     <string name="lawnchair_action_failed">Failed to trigger action</string>
 
     <string name="please_wait">Please wait…</string>
+
+    <!-- Big items page -->
+    <string name="big_items_page_label">Big items page</string>
+    <string name="big_items_page_description">Adds a last page for widgets and large folders, like on iPhone. Apps placed there can be resized to any size</string>
+    <string name="big_app_resize">Resize</string>
+
+    <!-- App drawer Apps / Categories tabs -->
+    <string name="drawer_category_tabs_label">Apps and Categories tabs</string>
+    <string name="drawer_category_tabs_description">Shows an Apps tab and a Categories tab with your folders and app categories as large folders</string>
+    <string name="drawer_tab_apps">Apps</string>
+    <string name="drawer_tab_categories">Categories</string>
+    <string name="drawer_new_folder">New folder</string>
 </resources>

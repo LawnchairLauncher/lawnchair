@@ -55,8 +55,18 @@ sealed class WorkspaceData : Iterable<ItemInfo> {
         if (smartspaceEnabled || screenSet.isEmpty) {
             screenSet.add(Workspace.FIRST_SCREEN_ID)
         }
+        // Lawnchair: the big items page always exists while enabled, and is always the last page.
+        val bigItemsPage = prefs2.bigItemsPage.firstCached()
+        if (bigItemsPage) {
+            screenSet.add(Workspace.BIG_ITEMS_SCREEN_ID)
+        }
         val persistedOrder = LauncherPrefs.get(context).get(LauncherPrefs.WORKSPACE_SCREEN_ORDER)
-        return mergeWorkspaceScreens(screenSet.array, persistedOrder)
+        val merged = mergeWorkspaceScreens(screenSet.array, persistedOrder)
+        if (merged.contains(Workspace.BIG_ITEMS_SCREEN_ID)) {
+            merged.removeValue(Workspace.BIG_ITEMS_SCREEN_ID)
+            merged.add(Workspace.BIG_ITEMS_SCREEN_ID)
+        }
+        return merged
     }
 
     /** Returns the [ItemInfo] associated with the [id] or null */

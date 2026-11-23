@@ -520,6 +520,16 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    /**
+     * Adds a page at the end of the home screen (like the last page on iPhone) that only holds
+     * widgets and large folders. Apps placed there can be resized to any size.
+     */
+    val bigItemsPage = preference(
+        key = booleanPreferencesKey(name = "big_items_page"),
+        defaultValue = false,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     /** Default for new large folders: scroll inside the tile instead of opening the folder. */
     val largeFolderScrollByDefault = preference(
         key = booleanPreferencesKey(name = "large_folder_scroll_by_default"),

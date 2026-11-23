@@ -16,6 +16,7 @@ import app.lawnchair.util.observeOnce
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
+import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
 import com.android.launcher3.allapps.PrivateProfileManager
 import com.android.launcher3.allapps.WorkProfileManager
@@ -94,6 +95,21 @@ class LawnchairAlphabeticalAppsList<T>(
         // Show app drawer folders only on main profile, to prevent state complexity
         if (isWorkOrPrivateSpace(appList)) return super.addAppsWithSections(appList, position)
 
+        // LC-Feature: "Apps" / "Categories" tabs
+        if (prefs.drawerCategoryTabs.get()) {
+            mAdapterItems.add(
+                AdapterItem(BaseAllAppsAdapter.VIEW_TYPE_DRAWER_TABS).apply {
+                    extraState = if (lastCategoriesTabSelected) 1 else 0
+                },
+            )
+            position++
+            return if (lastCategoriesTabSelected) {
+                addCategoryFolders(appList.filterNotNull(), position)
+            } else {
+                super.addAppsWithSections(appList, position)
+            }
+        }
+
         if (!drawerListDefault) {
             val validApps = appList.mapNotNull { it }
             val finalCategorizedApps = categorizeAppsWithSystemAndGoogle(validApps, context)
@@ -138,7 +154,77 @@ class LawnchairAlphabeticalAppsList<T>(
         return position
     }
 
+    /** True while the Categories tab (rather than the Apps tab) is shown. */
+    val isCategoriesTabSelected: Boolean
+        get() = lastCategoriesTabSelected
+
+    fun setCategoriesTabSelected(selected: Boolean) {
+        if (lastCategoriesTabSelected == selected) return
+        lastCategoriesTabSelected = selected
+        updateAdapterItems()
+        try {
+            context.launcher.appsView.activeRecyclerView?.scrollToTop()
+        } catch (t: Throwable) {
+            Log.w(TAG, "Failed to scroll the drawer to the top", t)
+        }
+    }
+
+    /**
+     * Adds the Categories tab: the user's drawer folders followed by the automatic categories,
+     * each shown as a large folder (two per row), and a "New folder" button.
+     */
+    private fun addCategoryFolders(apps: List<AppInfo>, startPosition: Int): Int {
+        var position = startPosition
+        var tileIndex = 0
+        fun addTile(folderInfo: FolderInfo) {
+            folderInfo.spanX = 2
+            folderInfo.spanY = 2
+            folderInfo.options = folderInfo.options or FolderInfo.FLAG_LARGE_FOLDER
+            mAdapterItems.add(
+                AdapterItem.asLargeFolder(folderInfo).apply { rowAppIndex = tileIndex++ },
+            )
+            position++
+        }
+
+        folderList.forEach { folderEntry ->
+            val resolvedApps = folderEntry.itemComponentKeys.mapNotNull { keyString ->
+                val componentKey = ComponentKey.fromString(keyString) ?: return@mapNotNull null
+                appsStore.getApp(componentKey) as? AppInfo
+            }.filter { app -> mItemFilter?.test(app) != false }
+            if (resolvedApps.isNotEmpty()) {
+                addTile(
+                    FolderInfo().apply {
+                        id = folderEntry.id
+                        title = folderEntry.title
+                        resolvedApps.forEach { add(it) }
+                    },
+                )
+            }
+        }
+
+        categorizeAppsWithSystemAndGoogle(apps, context).forEach { (category, categoryApps) ->
+            if (categoryApps.isEmpty()) return@forEach
+            addTile(
+                FolderInfo().apply {
+                    title = category
+                    categoryApps.forEach { add(it) }
+                },
+            )
+        }
+
+        mAdapterItems.add(AdapterItem(BaseAllAppsAdapter.VIEW_TYPE_NEW_FOLDER))
+        position++
+        return position
+    }
+
     override fun onIdpChanged(modelPropertiesChanged: Boolean) {
         onAppsUpdated()
+    }
+
+    companion object {
+        private const val TAG = "LawnchairAppsList"
+
+        // Kept across drawer re-creations (e.g. theme changes) for the lifetime of the process.
+        private var lastCategoriesTabSelected = false
     }
 }

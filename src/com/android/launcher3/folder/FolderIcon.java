@@ -81,6 +81,7 @@ import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppPairInfo;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.LabelState;
 import com.android.launcher3.model.data.ItemInfo;
@@ -729,6 +730,9 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         }
     }
 
+    // Lawnchair: whether the label is vertically centered outside of large folder mode.
+    private Boolean mLabelCenterVertically = null;
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         FrameLayout.LayoutParams nameLp =
@@ -741,8 +745,19 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
             int labelTop = mLargeTileRect.bottom
                     + mActivity.getDeviceProfile().iconDrawablePaddingPx;
             nameLp.topMargin = labelTop - getPaddingTop();
+            // The label has no icon here: centering it vertically (as for an icon + label)
+            // would push the text up into the tile.
+            if (mLabelCenterVertically == null) {
+                mLabelCenterVertically = mFolderName.isCenterVertically();
+            }
+            mFolderName.setCenterVertically(false);
+            mFolderName.setPadding(mFolderName.getPaddingLeft(), 0,
+                    mFolderName.getPaddingRight(), mFolderName.getPaddingBottom());
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
+        }
+        if (mLabelCenterVertically != null) {
+            mFolderName.setCenterVertically(mLabelCenterVertically);
         }
         nameLp.topMargin = mSmallLabelTopMargin;
         boolean shouldCenterIcon = mActivity.getDeviceProfile().iconCenterVertically;
@@ -972,8 +987,10 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
      * be launched directly.
      */
     public boolean isLargeFolderMode() {
+        // Also the categories / folders of the app drawer's Categories tab (container NO_ID).
         return mInfo != null && mInfo.isLargeFolder()
-                && mInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP;
+                && (mInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                        || mInfo.container == ItemInfo.NO_ID);
     }
 
     /** Returns true if this large folder scrolls inside its tile instead of overflowing. */
@@ -1013,14 +1030,24 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
      */
     @Nullable
     public WorkspaceItemInfo consumeLargeFolderTapTarget() {
+        return consumeLargeFolderTapItem() instanceof WorkspaceItemInfo wii ? wii : null;
+    }
+
+    /**
+     * Same as {@link #consumeLargeFolderTapTarget()}, but also returns the apps ({@code AppInfo})
+     * of the app drawer's large folders.
+     */
+    @Nullable
+    public ItemInfo consumeLargeFolderTapItem() {
         int slot = mLargeTouchedSlot;
         mLargeTouchedSlot = -1;
         if (!isLargeFolderMode() || slot < 0 || slot >= mLargeItems.size()) {
             return null;
         }
-        if (mLargeItems.get(slot).item instanceof WorkspaceItemInfo wii) {
+        ItemInfo item = mLargeItems.get(slot).item;
+        if (item instanceof WorkspaceItemInfo || item instanceof AppInfo) {
             mLargeLaunchSlot = slot;
-            return wii;
+            return item;
         }
         return null;
     }
@@ -1115,6 +1142,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                 : (int) Math.max(0, (cellHeight - contentHeight) / 2f);
         int iconLeft = (int) Math.max(0, (cellWidth - iconSize) / 2f);
         int tileBottom = Math.round(height - cellHeight + iconTop + iconSize);
+        if (mInfo.container == ItemInfo.NO_ID) {
+            // App drawer (Categories tab): keep the label below the tile inside this view.
+            tileBottom = Math.min(tileBottom,
+                    height - 2 * textHeight - 2 * dp.iconDrawablePaddingPx);
+        }
         mLargeTileRect.set(iconLeft, iconTop, width - iconLeft,
                 Math.max(iconTop + iconSize, Math.min(height, tileBottom)));
         int tileColor = LawnchairUtilsKt.resolveFolderPreviewColor(getContext());

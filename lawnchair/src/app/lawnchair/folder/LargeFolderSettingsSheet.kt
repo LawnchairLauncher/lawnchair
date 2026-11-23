@@ -193,7 +193,7 @@ fun LargeFolderSettingsSheet(
 }
 
 @Composable
-private fun StepperPreference(
+internal fun StepperPreference(
     label: String,
     value: Int,
     range: IntRange,

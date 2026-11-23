@@ -195,7 +195,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private boolean mLayoutHorizontal;
     private final boolean mIsRtl;
-    private final int mIconSize;
+    private int mIconSize;
+    // Lawnchair: icon size before enlarging an app of the big items page.
+    private int mBaseIconSize;
+    // Lawnchair: top padding before centering an enlarged app, -1 if not enlarged.
+    private int mPaddingTopBeforeBigApp = -1;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHideBadge = false;
@@ -317,6 +321,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
+        mBaseIconSize = mIconSize;
         a.recycle();
 
         mRunningAppIndicatorHeight =
@@ -1075,9 +1080,19 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mCenterVertically = centerVertically;
     }
 
+    /** Returns whether the content is vertically centered. */
+    public boolean isCenterVertically() {
+        return mCenterVertically;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int height = MeasureSpec.getSize(heightMeasureSpec);
+        if (mDisplay == DISPLAY_WORKSPACE
+                && updateBigAppIconSize(MeasureSpec.getSize(widthMeasureSpec), height)) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
         if (mCenterVertically) {
             Paint.FontMetrics fm = getPaint().getFontMetrics();
             int cellHeightPx = mIconSize + getCompoundDrawablePadding() +
@@ -1556,6 +1571,42 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     public int getIconSize() {
         return mIconSize;
+    }
+
+    /**
+     * Lawnchair: an app of the big items page spanning several cells shows a bigger icon,
+     * centered in its cells. Returns true if this is such an app.
+     */
+    private boolean updateBigAppIconSize(int width, int height) {
+        boolean isBig = app.lawnchair.folder.BigItemsPage.isBigApp(getTag())
+                && width > 0 && height > 0;
+        int targetSize = mBaseIconSize;
+        Paint.FontMetrics fm = getPaint().getFontMetrics();
+        int textHeight = (int) Math.ceil(fm.bottom - fm.top);
+        if (isBig) {
+            int available = Math.min(width - getPaddingLeft() - getPaddingRight(),
+                    height - textHeight - getCompoundDrawablePadding());
+            targetSize = Math.max(mBaseIconSize, Math.round(available * 0.8f));
+        }
+        if (targetSize != mIconSize) {
+            mIconSize = targetSize;
+            if (mIcon != null) {
+                applyCompoundDrawables(getIconOrTransparentColor());
+            }
+        }
+        if (isBig) {
+            if (mPaddingTopBeforeBigApp < 0) {
+                mPaddingTopBeforeBigApp = getPaddingTop();
+            }
+            int contentHeight = mIconSize + getCompoundDrawablePadding() + textHeight;
+            setPadding(getPaddingLeft(), Math.max(0, (height - contentHeight) / 2),
+                    getPaddingRight(), getPaddingBottom());
+        } else if (mPaddingTopBeforeBigApp >= 0) {
+            setPadding(getPaddingLeft(), mPaddingTopBeforeBigApp, getPaddingRight(),
+                    getPaddingBottom());
+            mPaddingTopBeforeBigApp = -1;
+        }
+        return isBig;
     }
 
     public boolean isDisplaySearchResult() {

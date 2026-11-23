@@ -140,9 +140,12 @@ public class ItemClickHandler {
     private static void onClickFolderIcon(View v) {
         FolderIcon folderIcon = (FolderIcon) v;
         // Lawnchair: large folders launch the tapped app directly.
-        WorkspaceItemInfo directItem = folderIcon.consumeLargeFolderTapTarget();
-        if (directItem != null) {
-            onClickAppShortcut(v, directItem, Launcher.getLauncher(v.getContext()));
+        ItemInfo directItem = folderIcon.consumeLargeFolderTapItem();
+        if (directItem instanceof WorkspaceItemInfo wii) {
+            onClickAppShortcut(v, wii, Launcher.getLauncher(v.getContext()));
+            return;
+        } else if (directItem instanceof AppInfo appInfo) {
+            startAppShortcutOrInfoActivity(v, appInfo, Launcher.getLauncher(v.getContext()));
             return;
         }
         Folder folder = folderIcon.getFolder();

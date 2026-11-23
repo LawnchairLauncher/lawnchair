@@ -38,6 +38,7 @@ import app.lawnchair.data.wallpaper.service.WallpaperService
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
+import app.lawnchair.folder.BigItemsPage
 import app.lawnchair.gestures.ui.LawnchairShortcutActivity
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
@@ -285,7 +286,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         super.getSupportedShortcuts(container),
         Stream.concat(
             Stream.of(LawnchairShortcut.UNINSTALL, LawnchairShortcut.CUSTOMIZE, LawnchairShortcut.OPEN_IN_STORE),
-            Stream.of(LawnchairShortcut.PAUSE_APPS),
+            Stream.of(LawnchairShortcut.PAUSE_APPS, BigItemsPage.RESIZE),
         ),
     )
 
