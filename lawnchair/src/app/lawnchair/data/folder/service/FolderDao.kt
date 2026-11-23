@@ -34,6 +34,30 @@ interface FolderDao {
     @Query("DELETE FROM FolderItems WHERE folderId = :folderId")
     suspend fun deleteFolderItemsByFolderId(folderId: Int)
 
+    @Insert
+    suspend fun insertFolderItem(item: FolderItemEntity): Long
+
+    @Query("SELECT COUNT(*) FROM FolderItems WHERE folderId = :folderId AND item_info = :componentKey")
+    suspend fun countFolderItem(folderId: Int, componentKey: String): Int
+
+    @Query("SELECT MAX(rank) FROM FolderItems WHERE folderId = :folderId")
+    suspend fun getMaxItemRank(folderId: Int): Int?
+
+    @Query("DELETE FROM FolderItems WHERE folderId = :folderId AND item_info = :componentKey")
+    suspend fun deleteFolderItem(folderId: Int, componentKey: String)
+
+    /**
+     * Appends [componentKey] at the end of the folder, unless it is already present.
+     */
+    @Transaction
+    suspend fun addItemToFolder(folderId: Int, componentKey: String) {
+        if (countFolderItem(folderId, componentKey) > 0) return
+        val rank = (getMaxItemRank(folderId) ?: -1) + 1
+        insertFolderItem(
+            FolderItemEntity(folderId = folderId, rank = rank, componentKey = componentKey),
+        )
+    }
+
     @Query("UPDATE Folders SET title = :title, timestamp = :timestamp WHERE id = :id")
     suspend fun updateFolderTitle(id: Int, title: String, timestamp: Long = System.currentTimeMillis())
 

@@ -46,6 +46,21 @@ class PreferenceActivity : ComponentActivity() {
                 null // Fallback to default if deserialization fails
             }
         }
+        val parentRoutes: List<PreferenceRoute> = intent.getStringExtra(EXTRA_PARENT_ROUTES)?.let { routesString ->
+            try {
+                Json.decodeFromString<List<PreferenceRoute>>(routesString)
+            } catch (e: Exception) {
+                null
+            }
+        }.orEmpty()
+        // With parents, start at the first one and stack the others plus the destination on top,
+        // so that back navigates up through them instead of closing the activity.
+        val startRoute = parentRoutes.firstOrNull() ?: initialRoute
+        val stackedRoutes = if (initialRoute != null && parentRoutes.isNotEmpty()) {
+            parentRoutes.drop(1) + initialRoute
+        } else {
+            emptyList()
+        }
 
         setContent {
             LawnchairTheme {
@@ -53,7 +68,8 @@ class PreferenceActivity : ComponentActivity() {
                 Preferences(
                     windowSizeClass = calculateWindowSizeClass(this),
                     displayFeatures = calculateDisplayFeatures(this),
-                    startDestination = initialRoute,
+                    startDestination = startRoute,
+                    stackedRoutes = stackedRoutes,
                     intent = intent,
                 )
             }
@@ -70,11 +86,24 @@ class PreferenceActivity : ComponentActivity() {
 
         private const val EXTRA_DESTINATION_ROUTE = "app.lawnchair.ui.preferences.DESTINATION_ROUTE"
 
+        private const val EXTRA_PARENT_ROUTES = "app.lawnchair.ui.preferences.PARENT_ROUTES"
+
+        /**
+         * @param parents routes to put below [destination] in the back stack, outermost first.
+         */
         @JvmStatic
-        fun createIntent(context: Context, destination: PreferenceRoute): Intent {
+        @JvmOverloads
+        fun createIntent(
+            context: Context,
+            destination: PreferenceRoute,
+            parents: List<PreferenceRoute> = emptyList(),
+        ): Intent {
             val intent = Intent(context, PreferenceActivity::class.java)
             val routeString = Json.encodeToString(destination)
             intent.putExtra(EXTRA_DESTINATION_ROUTE, routeString)
+            if (parents.isNotEmpty()) {
+                intent.putExtra(EXTRA_PARENT_ROUTES, Json.encodeToString(parents))
+            }
             return intent
         }
     }

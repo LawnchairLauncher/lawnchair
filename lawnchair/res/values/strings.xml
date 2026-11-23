@@ -146,7 +146,6 @@
     <string name="add_apps">Add apps</string>
     <string name="app_drawer_folder_settings">App drawer folder</string>
     <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
     <string name="add_label">Add</string>
     <string name="edit_label">Edit</string>
     <string name="apply_label">Apply</string>
@@ -159,6 +158,7 @@
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="folder_manage_apps">Manage apps</string>
     <string name="my_folder_label">My folder</string>
+    <string name="drawer_folder_min_apps_note">A folder appears in the app drawer once it contains at least 2 apps.</string>
     <string name="sort_active_items_action">Sort active items</string>
 
     <!-- A11y description -->

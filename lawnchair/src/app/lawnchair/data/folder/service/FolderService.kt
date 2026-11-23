@@ -51,6 +51,26 @@ class FolderService @Inject constructor(
         folderDao.insertFolder(FolderInfoEntity(title = title, rank = rank))
     }
 
+    /**
+     * Appends [componentKey] to the folder. The app stays in any other folder it belongs to.
+     */
+    suspend fun addItemToFolder(folderId: Int, componentKey: String) = withContext(Dispatchers.IO) {
+        folderDao.addItemToFolder(folderId, componentKey)
+    }
+
+    suspend fun removeItemFromFolder(folderId: Int, componentKey: String) = withContext(Dispatchers.IO) {
+        folderDao.deleteFolderItem(folderId, componentKey)
+    }
+
+    /**
+     * Creates a new folder at the end of the list and adds [componentKey] to it.
+     */
+    suspend fun createFolderWithItem(title: String, componentKey: String) = withContext(Dispatchers.IO) {
+        val folderId = saveFolderInfo(title).toInt()
+        folderDao.addItemToFolder(folderId, componentKey)
+        folderId
+    }
+
     suspend fun renameFolderInfo(folderId: Int, title: String) = withContext(Dispatchers.IO) {
         folderDao.updateFolderTitle(folderId, title)
     }
