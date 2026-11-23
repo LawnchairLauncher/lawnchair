@@ -131,13 +131,16 @@ private fun loadShortcuts(context: Context): List<ShortcutEntry> {
                 info.`package`
             }
             val shortcutLabel = (info.longLabel ?: info.shortLabel)?.toString().orEmpty()
+            // Badged for its profile, so work and personal shortcuts can be told apart.
             val icon = try {
-                launcherApps.getShortcutIconDrawable(info, density)
+                launcherApps.getShortcutBadgedIconDrawable(info, density)
             } catch (_: Exception) {
                 null
             } ?: pm.defaultActivityIcon
+            val label = if (shortcutLabel.isEmpty()) appLabel else "$appLabel: $shortcutLabel"
             result += ShortcutEntry(
-                label = if (shortcutLabel.isEmpty()) appLabel else "$appLabel: $shortcutLabel",
+                // Adds e.g. "Work" for shortcuts of another profile (also read by TalkBack).
+                label = pm.getUserBadgedLabel(label, info.userHandle).toString(),
                 icon = icon.toBitmap(),
                 target = OpenAppTarget.Shortcut(
                     intent = Intent(Intent.ACTION_MAIN).setPackage(info.`package`),
