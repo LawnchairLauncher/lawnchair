@@ -153,7 +153,10 @@ class HotseatPagedView @JvmOverloads constructor(
             for (j in container.childCount - 1 downTo 0) {
                 val child = container.getChildAt(j)
                 if (child !is BubbleTextView || child.visibility != VISIBLE) continue
-                if (Utilities.pointInView(child, containerX - child.left, containerY - child.top, 0f)) {
+                // Include the icon's translation (e.g. from Hotseat.adjustForBubbleBar()).
+                val iconX = containerX - child.left - child.translationX
+                val iconY = containerY - child.top - child.translationY
+                if (Utilities.pointInView(child, iconX, iconY, 0f)) {
                     return child.hasConfiguredHorizontalIconSwipeGesture()
                 }
             }
