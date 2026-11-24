@@ -99,7 +99,11 @@ fun DrawerFolderPreference(
                 FolderOption(
                     title = folder.title,
                     checked = checked,
-                    onClick = { setInFolder(folder.id, !checked) },
+                    onClick = {
+                        // Read at tap time: two taps can land before the next recomposition.
+                        val selected = pendingSelection[folder.id] ?: checked
+                        setInFolder(folder.id, !selected)
+                    },
                 )
             }
             if (newFolderTitle == null) {
