@@ -192,6 +192,7 @@ class PreferenceManager @Inject constructor(
 
     val drawerList = BoolPref("pref_drawerList", true, recreate)
     val folderApps = BoolPref("pref_hideFolderApps", true, reloadGrid)
+    val hideSingleAppFolders = BoolPref("pref_hideSingleAppFolders", true, reloadGrid)
 
     val recentsActionScreenshot = BoolPref("pref_recentsActionScreenshot", !isOnePlusStock)
     val recentsActionShare = BoolPref("pref_recentsActionShare", isOnePlusStock)

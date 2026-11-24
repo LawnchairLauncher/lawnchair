@@ -964,7 +964,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Determines whether we should animate the folder opening.
      */
     boolean shouldAnimateOpen(List<ItemInfo> items) {
-        if (items == null || items.size() <= 1) {
+        // LC-Note: App drawer folders may hold a single app when "Hide single-app folders" is
+        // off, so they must still open with one item.
+        int minItems = isInAppDrawer() ? 1 : 2;
+        if (items == null || items.size() < minItems) {
             Log.d(TAG, "Couldn't animate folder open because items is: " + items);
             return false;
         }
@@ -1511,6 +1514,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     void replaceFolderWithFinalItem() {
+        // LC-Note: App drawer folders are not on the workspace, so there is no cell to put the
+        // final item in (crashes in addInScreen). They may legitimately hold a single app when
+        // "Hide single-app folders" is off, so keep them as folders.
+        if (isInAppDrawer()) return;
         mDestroyed = mLauncherDelegate.replaceFolderWithFinalItem(this);
     }
 
