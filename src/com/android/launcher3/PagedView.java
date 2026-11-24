@@ -1800,16 +1800,24 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     /**
-     * LC-Note: Scroll for the page indicator. Past an end it shows whichever of the two pages
-     * there is more of, so the active dot never leaves the row.
+     * LC-Note: Scroll for the page indicator. Past an end it sweeps the whole range back
+     * to the other end for continuous infinite-scroll indicator animation, matching the
+     * behavior in Lawnchair 15.
      */
     protected int getScrollForPageIndicator() {
         int wrapOverscroll = getWrapOverscroll();
         if (wrapOverscroll == 0) {
             return getScrollX();
         }
-        boolean pastHalf = Math.abs(wrapOverscroll) > getWrapScreenDistance() / 2;
-        return (wrapOverscroll > 0) == pastHalf ? mMinScroll : mMaxScroll;
+        int wrapDistance = getWrapScreenDistance();
+        if (wrapDistance == 0) {
+            return getScrollX();
+        }
+        float progress = (float) wrapOverscroll / wrapDistance;
+        int end = wrapOverscroll > 0 ? mMaxScroll : mMinScroll;
+        return Utilities.boundToRange(
+                Math.round(end - progress * (mMaxScroll - mMinScroll)),
+                mMinScroll, mMaxScroll);
     }
 
     /**
