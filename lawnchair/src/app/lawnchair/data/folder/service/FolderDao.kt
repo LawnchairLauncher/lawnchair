@@ -58,6 +58,18 @@ interface FolderDao {
         )
     }
 
+    /**
+     * Creates a folder at the end of the list containing [componentKey]. Both inserts share one
+     * transaction, so a failure never leaves an empty folder behind.
+     */
+    @Transaction
+    suspend fun createFolderWithItem(title: String, componentKey: String): Int {
+        val rank = (getMaxFolderRank() ?: -1) + 1
+        val folderId = insertFolder(FolderInfoEntity(title = title, rank = rank)).toInt()
+        addItemToFolder(folderId, componentKey)
+        return folderId
+    }
+
     @Query("UPDATE Folders SET title = :title, timestamp = :timestamp WHERE id = :id")
     suspend fun updateFolderTitle(id: Int, title: String, timestamp: Long = System.currentTimeMillis())
 
