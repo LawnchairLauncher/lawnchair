@@ -67,7 +67,6 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private static final float SHIFT_PER_ANIMATION = 0.5f;
     private static final float SHIFT_THRESHOLD = (enableLauncherVisualRefresh() ? 0.5f : 0.2f);
     private static final long ANIMATION_DURATION = (enableLauncherVisualRefresh() ? 200 : 150);
-    private static final long PHONE_ANIMATION_DURATION = 350;
     private static final int PAGINATION_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
     private static final int PAGINATION_FADE_IN_DURATION = 83;
     private static final int PAGINATION_FADE_OUT_DURATION = 167;
@@ -103,31 +102,6 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
                 @Override
                 public void setValue(PageIndicatorDots obj, float pos) {
-                    if (enableLauncherVisualRefresh() && obj.mNumPages > 1) {
-                        if (obj.mAnimator != null) {
-                            obj.mMovingForward = obj.mActivePage >= obj.mCurrentPosition;
-                        } else if (pos > obj.mCurrentPosition) {
-                            obj.mMovingForward = true;
-                        } else if (pos < obj.mCurrentPosition) {
-                            obj.mMovingForward = false;
-                        }
-
-                        if (pos <= 0) {
-                            obj.mLastPosition = 1;
-                            obj.mFinalPosition = 0;
-                        } else if (pos >= obj.mNumPages - 1) {
-                            obj.mLastPosition = obj.mNumPages - 2;
-                            obj.mFinalPosition = obj.mNumPages - 1;
-                        } else if (obj.mMovingForward) {
-                            int base = (int) Math.floor(pos);
-                            obj.mLastPosition = base;
-                            obj.mFinalPosition = base + 1;
-                        } else {
-                            int base = (int) Math.ceil(pos);
-                            obj.mLastPosition = base;
-                            obj.mFinalPosition = base - 1;
-                        }
-                    }
                     obj.mCurrentPosition = pos;
                     obj.invalidate();
                     obj.invalidateOutline();
@@ -174,7 +148,6 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private int mLastPosition;
     private float mFinalPosition;
     private boolean mIsScrollPaused;
-    private boolean mMovingForward = true;
     @VisibleForTesting
     boolean mIsTwoPanels;
     private ObjectAnimator mAnimator;
@@ -239,6 +212,13 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
             float position = currentScroll / scrollPerPage;
 
             if (mAnimator == null) {
+                // mLastPosition is used to determine which dots should be growing / shrinking.
+                // Update it when the scroll moves pages. Fling animations also update mLastPosition
+                if (Math.abs(mLastPosition - position) > 1) {
+                    mLastPosition = Math.round(position);
+                }
+                mFinalPosition = mLastPosition + (position > mLastPosition ? 1 : -1);
+
                 // Update current position for smooth continuous animation without lag
                 CURRENT_POSITION.set(this, position);
 
@@ -348,10 +328,6 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         }
     }
 
-    private boolean isPhoneDevice() {
-        return getResources().getConfiguration().smallestScreenWidthDp < 600;
-    }
-
     private void animateToPosition(float position) {
         mFinalPosition = position;
         if (!enableLauncherVisualRefresh()
@@ -371,22 +347,8 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
                 // If user performs fling with only 11% of the distance to go, we don't want the
                 // animation to be 150 ms long so we tether it to the scroll distance remaining.
                 // Large jump scrolls can be more than 1, so we cap the animation time.
-                float distance = Math.abs(position - mCurrentPosition);
-                float remainingScroll = Math.min(1, distance);
-                boolean isPhone = isPhoneDevice();
-                long duration;
-                if (isPhone) {
-                    // Slow down animation on mobile devices so the transition across dots
-                    // is smooth, graceful, and clearly visible rather than jumping too fast.
-                    if (distance <= 1f) {
-                        duration = (long) Math.max(250, 350 * remainingScroll);
-                    } else {
-                        duration = (long) Math.min(850, 350 + (distance - 1) * 130);
-                    }
-                } else {
-                    duration = (long) (ANIMATION_DURATION * remainingScroll);
-                }
-                mAnimator.setDuration(duration);
+                float remainingScroll = Math.min(1, Math.abs(position - mCurrentPosition));
+                mAnimator.setDuration((long) (ANIMATION_DURATION * remainingScroll));
                 mAnimator.setInterpolator(new OvershootInterpolator());
                 mIsMoveAnimationQueued = false;
             }
@@ -464,18 +426,13 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         }
 
         if (mActivePage != activePage) {
-            boolean isBoundaryWrap = mNumPages > 2
-                    && ((mActivePage == 0 && activePage == mNumPages - 1)
-                            || (mActivePage == mNumPages - 1 && activePage == 0));
             mLastPosition = mActivePage;
             mActivePage = activePage;
 
             if (Flags.enableLauncherVisualRefresh()) {
-                // If the animation is a local snap or boundary wrap on phone, immediately perform it.
-                // Otherwise, delay snap animation until current scroll is within 1 page of the target page.
-                if (isPhoneDevice() && isBoundaryWrap) {
-                    animateToPosition(activePage);
-                } else if (Math.abs(mActivePage - mCurrentPosition) <= 1) {
+                // If the animation is a local snap, then immediately perform it. Otherwise, delay
+                // snap animation until current scroll is within 1 page of the target page.
+                if (Math.abs(mActivePage - mCurrentPosition) <= 1) {
                     animateToPosition(activePage);
                 } else {
                     mFinalPosition = activePage;
