@@ -30,12 +30,15 @@ import kotlinx.coroutines.withContext
 /**
  * @param appPackage The app the gesture belongs to (an icon's app), if any. Its shortcuts are
  * offered at the top, so e.g. a specific chat can be picked with one tap.
+ * @param allowShortcutTargets Whether app shortcuts may be picked. Not the case when creating a
+ * home screen shortcut for an action, since those cannot start app shortcuts.
  */
 @Composable
 fun CreateActionsScreen(
     modifier: Modifier = Modifier,
     appPackage: String? = null,
     appUser: UserHandle? = null,
+    allowShortcutTargets: Boolean = true,
     onSelect: (GestureHandlerConfig) -> Unit,
 ) {
     val context = LocalContext.current
@@ -44,10 +47,11 @@ fun CreateActionsScreen(
     val prefs2 = preferenceManager2()
     val newOptions =
         filterGestureHandlerOptions(deckLayoutEnabled = prefs2.deckLayout.getAdapter().state.value)
+            .filter { allowShortcutTargets || it != GestureHandlerOption.OpenShortcut }
 
     // Only the icon's own app is queried, which keeps this sheet fast.
     val appShortcuts by produceState(initialValue = emptyList<AppShortcutEntry>(), appPackage, appUser) {
-        if (appPackage != null) {
+        if (appPackage != null && allowShortcutTargets) {
             value = withContext(Dispatchers.IO) { AppShortcuts.load(context, appPackage, appUser) }
         }
     }
@@ -80,7 +84,10 @@ fun CreateActionsScreen(
                 AppItem(
                     label = entry.label,
                     icon = entry.icon,
-                    onClick = { onSelect(entry.toGestureConfig()) },
+                    onClick = {
+                        AppShortcuts.pin(context, entry.target)
+                        onSelect(entry.toGestureConfig())
+                    },
                 )
             }
             preferenceGroupItems(

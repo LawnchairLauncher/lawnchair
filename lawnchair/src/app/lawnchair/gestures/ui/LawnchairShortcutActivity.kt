@@ -79,6 +79,7 @@ class LawnchairShortcutActivity : ComponentActivity() {
                             CreateActionsScreen(
                                 appPackage = intent.getStringExtra(EXTRA_APP_PACKAGE),
                                 appUser = appUser,
+                                allowShortcutTargets = resultReceiver != null,
                                 onSelect = {
                                     if (resultReceiver != null) {
                                         val bundle = Bundle().apply {

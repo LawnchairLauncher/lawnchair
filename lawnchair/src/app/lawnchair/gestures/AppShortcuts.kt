@@ -12,6 +12,7 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.OpenAppTarget
 import app.lawnchair.util.toBitmap
 import com.android.launcher3.pm.UserCache
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 
 /** LC: one app shortcut (dynamic, manifest or pinned) that a gesture can open. */
 data class AppShortcutEntry(
@@ -83,5 +84,29 @@ object AppShortcuts {
         }
         return result.distinctBy { Triple(it.target.packageName, it.target.id, it.target.user) }
             .sortedBy { it.label.lowercase() }
+    }
+
+    /**
+     * Pins the shortcut a gesture was just set to, so that the app cannot withdraw it (dynamic
+     * shortcuts can be removed at any time). [LauncherApps.pinShortcuts] replaces the whole
+     * pinned list of the package, so the shortcuts that are already pinned are kept. Runs on the
+     * model thread, like the launcher's own pinned state sync.
+     */
+    fun pin(context: Context, target: OpenAppTarget.Shortcut) {
+        val appContext = context.applicationContext
+        MODEL_EXECUTOR.execute {
+            try {
+                val launcherApps = appContext.getSystemService(LauncherApps::class.java) ?: return@execute
+                if (!launcherApps.hasShortcutHostPermission()) return@execute
+                val query = ShortcutQuery()
+                    .setQueryFlags(ShortcutQuery.FLAG_MATCH_PINNED or ShortcutQuery.FLAG_GET_KEY_FIELDS_ONLY)
+                    .setPackage(target.packageName)
+                val pinned = launcherApps.getShortcuts(query, target.user).orEmpty().map { it.id }
+                if (target.id in pinned) return@execute
+                launcherApps.pinShortcuts(target.packageName, pinned + target.id, target.user)
+            } catch (e: Exception) {
+                Log.w("AppShortcuts", "Failed to pin shortcut", e)
+            }
+        }
     }
 }
