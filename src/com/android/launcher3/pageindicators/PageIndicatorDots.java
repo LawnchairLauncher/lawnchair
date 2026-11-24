@@ -211,14 +211,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
             float scrollPerPage = (float) totalScroll / (mNumPages - 1);
             float position = currentScroll / scrollPerPage;
 
-            if (mIsMoveAnimationQueued) {
-                mCurrentPosition = position;
-                // For jump animations, wait until we have scrolled to within 1 page away from the
-                // final destination to start the animation. This has the effect of a smooth delay.
-                if (Math.abs(mActivePage - position) <= 1) {
-                    animateToPosition(mActivePage);
-                }
-            } else if (mAnimator == null) {
+            if (mAnimator == null) {
                 // mLastPosition is used to determine which dots should be growing / shrinking.
                 // Update it when the scroll moves pages. Fling animations also update mLastPosition
                 if (Math.abs(mLastPosition - position) > 1) {
@@ -226,8 +219,14 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
                 }
                 mFinalPosition = mLastPosition + (position > mLastPosition ? 1 : -1);
 
-                // Just show current position if slow scroll. Otherwise, fling animation is going
+                // Update current position for smooth continuous animation without lag
                 CURRENT_POSITION.set(this, position);
+
+                // For queued animations (e.g. boundary wrap or multi-page jumps), trigger the snap
+                // once scroll is within 1 page of the target.
+                if (mIsMoveAnimationQueued && Math.abs(mActivePage - position) <= 1) {
+                    animateToPosition(mActivePage);
+                }
             }
 
             float delta = Math.abs((int) position - position);
