@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -64,7 +65,12 @@ fun DrawerFolderPreference(
     var newFolderTitle by rememberSaveable { mutableStateOf<String?>(null) }
     val defaultFolderTitle = stringResource(R.string.my_folder_label)
 
+    // Last selection per folder id, shown until the sheet closes. The folders flow only updates
+    // after the write, so without this a quick second tap would repeat the first action.
+    val pendingSelection = remember { mutableStateMapOf<Int, Boolean>() }
+
     val setInFolder = { folderId: Int, inFolder: Boolean ->
+        pendingSelection[folderId] = inFolder
         scope.launch {
             if (inFolder) {
                 folderService.addItemToFolder(folderId, componentKey)
@@ -89,7 +95,7 @@ fun DrawerFolderPreference(
                 .verticalScroll(rememberScrollState()),
         ) {
             folders.orEmpty().forEach { folder ->
-                val checked = folder in appFolders
+                val checked = pendingSelection[folder.id] ?: (folder in appFolders)
                 FolderOption(
                     title = folder.title,
                     checked = checked,

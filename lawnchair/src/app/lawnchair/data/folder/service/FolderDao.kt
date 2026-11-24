@@ -46,11 +46,16 @@ interface FolderDao {
     @Query("DELETE FROM FolderItems WHERE folderId = :folderId AND item_info = :componentKey")
     suspend fun deleteFolderItem(folderId: Int, componentKey: String)
 
+    @Query("SELECT COUNT(*) FROM Folders WHERE id = :folderId")
+    suspend fun countFolder(folderId: Int): Int
+
     /**
-     * Appends [componentKey] at the end of the folder, unless it is already present.
+     * Appends [componentKey] at the end of the folder, unless it is already present. Does nothing
+     * if the folder no longer exists (e.g. deleted from settings while the Customize sheet showed it).
      */
     @Transaction
     suspend fun addItemToFolder(folderId: Int, componentKey: String) {
+        if (countFolder(folderId) == 0) return
         if (countFolderItem(folderId, componentKey) > 0) return
         val rank = (getMaxItemRank(folderId) ?: -1) + 1
         insertFolderItem(
