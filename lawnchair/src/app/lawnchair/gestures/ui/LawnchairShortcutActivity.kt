@@ -22,6 +22,7 @@ import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.os.Bundle
 import android.os.ResultReceiver
+import android.os.UserHandle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -73,7 +74,11 @@ class LawnchairShortcutActivity : ComponentActivity() {
 
                             @Suppress("DEPRECATION")
                             val resultReceiver = intent.getParcelableExtra<ResultReceiver>(EXTRA_RESULT_RECEIVER)
+                            @Suppress("DEPRECATION")
+                            val appUser = intent.getParcelableExtra<UserHandle>(EXTRA_APP_USER)
                             CreateActionsScreen(
+                                appPackage = intent.getStringExtra(EXTRA_APP_PACKAGE),
+                                appUser = appUser,
                                 onSelect = {
                                     if (resultReceiver != null) {
                                         val bundle = Bundle().apply {
@@ -122,6 +127,10 @@ class LawnchairShortcutActivity : ComponentActivity() {
         const val START_ACTION = "app.lawnchair.START_ACTION"
         const val EXTRA_HANDLER = "app.lawnchair.EXTRA_HANDLER"
         const val EXTRA_RESULT_RECEIVER = "app.lawnchair.EXTRA_RESULT_RECEIVER"
+
+        // LC: the app a gesture belongs to; its shortcuts are offered first
+        const val EXTRA_APP_PACKAGE = "app.lawnchair.EXTRA_APP_PACKAGE"
+        const val EXTRA_APP_USER = "app.lawnchair.EXTRA_APP_USER"
         const val GESTURE_SHORTCUT_ID_PREFIX = "gesture:"
 
         fun shouldSkipShortcutBadge(context: Context, si: ShortcutInfo): Boolean {

@@ -672,7 +672,9 @@
     <string name="gesture_handler_open_assistant">Open assistant</string>
 
     <string name="pick_app_for_gesture">Pick app</string>
-    <string name="gesture_handler_open_shortcut_option">Open app shortcut</string>
+    <string name="gesture_handler_open_shortcut_option">Open other app shortcuts</string>
+    <string name="gesture_app_shortcuts_heading">%1$s shortcuts</string>
+    <string name="gesture_actions_general_heading">General</string>
     <string name="pick_shortcut_for_gesture">Pick app shortcut</string>
     <string name="pick_shortcut_for_gesture_empty">No app shortcuts found. Lawnchair has to be the default home app.</string>
     <string name="gesture_shortcut_unavailable">This shortcut is no longer available</string>

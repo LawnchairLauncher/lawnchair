@@ -153,6 +153,9 @@ fun AppGesturePreference(
             mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
             val intent = Intent(context, LawnchairShortcutActivity::class.java).apply {
                 putExtra(LawnchairShortcutActivity.EXTRA_RESULT_RECEIVER, resultReceiver)
+                // LC: the icon's own app shortcuts are offered first
+                putExtra(LawnchairShortcutActivity.EXTRA_APP_PACKAGE, cmp.componentName.packageName)
+                putExtra(LawnchairShortcutActivity.EXTRA_APP_USER, cmp.user)
             }
             context.startActivity(intent)
         },
