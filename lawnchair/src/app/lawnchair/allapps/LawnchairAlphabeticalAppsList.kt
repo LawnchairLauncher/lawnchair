@@ -23,6 +23,7 @@ import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.FolderInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.LabelComparator
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.onEach
 import java.util.function.Predicate
@@ -47,6 +48,7 @@ class LawnchairAlphabeticalAppsList<T>(
     )
     private val folderList = mutableListOf<FolderEntry>()
     private val filteredList = mutableListOf<AppInfo>()
+    private val labelComparator = LabelComparator()
 
     init {
         context.launcher.deviceProfile.inv.addOnChangeListener(this)
@@ -111,10 +113,21 @@ class LawnchairAlphabeticalAppsList<T>(
                 position++
             }
         } else {
-            folderList.forEach { folderEntry ->
-                val resolvedApps = folderEntry.itemComponentKeys.mapNotNull { keyString ->
+            val folders = if (prefs.sortDrawerFolders.get()) {
+                folderList.sortedWith(compareBy(labelComparator) { it.title })
+            } else {
+                folderList
+            }
+            val sortFolderItems = prefs.sortDrawerFolderItems.get()
+            folders.forEach { folderEntry ->
+                val folderApps = folderEntry.itemComponentKeys.mapNotNull { keyString ->
                     val componentKey = ComponentKey.fromString(keyString) ?: return@mapNotNull null
                     appsStore.getApp(componentKey) as? AppInfo
+                }
+                val resolvedApps = if (sortFolderItems) {
+                    folderApps.sortedWith(compareBy(labelComparator) { it.title?.toString().orEmpty() })
+                } else {
+                    folderApps
                 }
 
                 if (resolvedApps.size > 1) {

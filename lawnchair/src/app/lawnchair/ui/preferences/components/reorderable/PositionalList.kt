@@ -341,6 +341,7 @@ fun <T, K : Any> rememberPositionalListState(
 }
 
 enum class ReorderableKey {
+    HEADER_CONTENT,
     GHOST_ACTIVE,
     GHOST_DISABLED,
     HEADER_ENABLED,
@@ -377,6 +378,9 @@ object PositionalListDefaults {
  * @param itemContent The UI builder for an individual item, exposing a drag handle and status toggle.
  * @param contentPadding Padding applied to the underlying scrollable container.
  * @param modifier The modifier to be applied to the container.
+ * @param reorderEnabled Whether items can be reordered. When false (e.g. the list is sorted
+ * automatically), the accessibility move actions are removed; callers should also hide the drag handle.
+ * @param headerContent Optional content shown above the list, scrolling with it.
  */
 @Composable
 fun <T, K : Any> PositionalList(
@@ -388,6 +392,8 @@ fun <T, K : Any> PositionalList(
     ) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
+    reorderEnabled: Boolean = true,
+    headerContent: (@Composable () -> Unit)? = null,
 ) {
     val lazyListState = rememberLazyListState()
     val reorderableState = rememberReorderableLazyListState(lazyListState) { from, to ->
@@ -399,6 +405,12 @@ fun <T, K : Any> PositionalList(
         contentPadding = contentPadding,
         modifier = modifier,
     ) {
+        if (headerContent != null) {
+            item(key = ReorderableKey.HEADER_CONTENT) {
+                headerContent()
+            }
+        }
+
         item(key = ReorderableKey.HEADER_ENABLED) {
             PreferenceGroupHeading(heading = stringResource(R.string.reorderable_active_items))
         }
@@ -430,12 +442,16 @@ fun <T, K : Any> PositionalList(
             ReorderableItem(
                 state = reorderableState,
                 key = item.id,
-                modifier = Modifier.semanticReorderActions(
-                    index,
-                    state,
-                    stringResource(R.string.reorderable_move_up),
-                    stringResource(R.string.reorderable_move_down),
-                ),
+                modifier = if (reorderEnabled) {
+                    Modifier.semanticReorderActions(
+                        index,
+                        state,
+                        stringResource(R.string.reorderable_move_up),
+                        stringResource(R.string.reorderable_move_down),
+                    )
+                } else {
+                    Modifier
+                },
             ) {
                 ReorderableItemContainer(
                     item = item,
