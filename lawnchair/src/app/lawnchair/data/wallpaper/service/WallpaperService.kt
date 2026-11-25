@@ -3,6 +3,7 @@
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
+import android.util.AtomicFile
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.data.AppDatabase
@@ -14,7 +15,6 @@ import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import java.io.File
-import java.io.FileOutputStream
 import java.security.MessageDigest
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
@@ -134,8 +134,16 @@ class WallpaperService @Inject constructor(
         val imageFile = File(storageDir, "wallpaper_$checksum.jpg")
 
         if (!imageFile.exists()) {
-            FileOutputStream(imageFile).use { fos ->
+            // Write through AtomicFile so a failed write never leaves a partial
+            // file under the final checksum name that later saves would reuse.
+            val atomicFile = AtomicFile(imageFile)
+            val fos = atomicFile.startWrite()
+            try {
                 fos.write(imageData)
+                atomicFile.finishWrite(fos)
+            } catch (e: Exception) {
+                atomicFile.failWrite(fos)
+                throw e
             }
         }
 
