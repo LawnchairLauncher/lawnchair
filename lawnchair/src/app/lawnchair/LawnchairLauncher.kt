@@ -51,6 +51,7 @@ import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.unsafeLazy
 import app.lawnchair.views.LawnchairFloatingSurfaceView
+import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.BubbleTextView
@@ -375,6 +376,10 @@ class LawnchairLauncher : QuickstepLauncher() {
         if (activityContext == null) return null
 
         val isEmpty = WallpaperService.INSTANCE.get(this).getTopWallpapers().isEmpty()
+        if (isEmpty) {
+            // Populate Room off the main thread if wallpaper access just became available.
+            WallpaperManagerCompat.INSTANCE.get(this).ensureWallpaperSaved()
+        }
         val layout = if (isEmpty) R.layout.longpress_options_menu else R.layout.wallpaper_options_popup
 
         val popup = activityContext.layoutInflater.inflate(layout, activityContext.dragLayer, false) as OptionsPopupView<T>
@@ -471,6 +476,9 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     override fun onResume() {
         super.onResume()
+        // Seed the current static wallpaper if permission was granted after startup,
+        // or if the user switched back from a live wallpaper.
+        WallpaperManagerCompat.INSTANCE.get(this).ensureWallpaperSaved()
         restartIfPending()
         refreshPredictionContainersFromModel()
 

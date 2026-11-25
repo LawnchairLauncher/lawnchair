@@ -18,11 +18,15 @@ sealed class WallpaperManagerCompat(val context: Context) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val colorHints: Int get() = wallpaperColors?.colorHints ?: 0
     val wallpaperManager: WallpaperManager = context.requireSystemService()
-    val service = WallpaperService(context)
+    val service = WallpaperService.INSTANCE.get(context)
 
     abstract val wallpaperColors: WallpaperColorsCompat?
 
     val supportsDarkTheme: Boolean get() = (colorHints and HINT_SUPPORTS_DARK_THEME) != 0
+
+    init {
+        ensureWallpaperSaved()
+    }
 
     fun addOnChangeListener(listener: OnColorsChangedListener) {
         listeners.add(listener)
@@ -32,13 +36,23 @@ sealed class WallpaperManagerCompat(val context: Context) {
         listeners.remove(listener)
     }
 
-    protected fun notifyChange() {
-        // Querying/saving wallpapers touches Room, so keep it off the main thread
-        // (notifyChange is invoked from the WallpaperManager color callback on the main looper).
+    /**
+     * Seeds the current static wallpaper when the Room table is still empty.
+     * Work runs on [scope] so callers on the main thread are not blocked.
+     */
+    fun ensureWallpaperSaved() {
         scope.launch {
             if (service.getTopWallpapers().isEmpty()) {
                 service.saveWallpaper(wallpaperManager)
             }
+        }
+    }
+
+    protected fun notifyChange() {
+        // Saving wallpapers touches Room, so keep it off the main thread
+        // (notifyChange is invoked from the WallpaperManager color callback on the main looper).
+        scope.launch {
+            service.saveWallpaper(wallpaperManager)
         }
 
         listeners.toTypedArray().forEach {
