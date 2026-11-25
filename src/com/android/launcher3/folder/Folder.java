@@ -1310,7 +1310,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     && target != this) {
                 replaceFolderWithFinalItem();
             }
-        } else {
+        } else if (!isInAppDrawer()) {
+            // LC-Note: App drawer folders keep the dragged item (see onDragStart), so there is
+            // nothing to return; doing so would show it twice and add a duplicate to the folder.
             // The drag failed, we need to return the item to the folder
             ItemInfo info = d.dragInfo;
             View icon = (mCurrentDragView != null && mCurrentDragView.getTag() == info)
