@@ -15,6 +15,7 @@ import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import java.io.File
+import java.io.IOException
 import java.security.MessageDigest
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
@@ -145,6 +146,10 @@ class WallpaperService @Inject constructor(
                 atomicFile.failWrite(fos)
                 throw e
             }
+        }
+
+        if (!imageFile.isFile) {
+            throw IOException("Failed to publish wallpaper file ${imageFile.name}")
         }
 
         return imageFile.absolutePath
