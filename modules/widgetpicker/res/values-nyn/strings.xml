@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widgets_list_header_app_name_fallback_label">Eiziina rya puroguraamu</string>
+    <string name="widgets_list_header_widgets_count_label">{count, plural, =1{# widget} other{# widgets}}</string>
+    <string name="widget_span_dimensions_format">%1$d \u00d7 %2$d</string>
+    <string name="widget_tap_to_show_add_button_label">Yoreka akashaho k\'okwongyera</string>
+    <string name="widget_tap_to_hide_add_button_label">Hide ekikopo ky\'okwongyera</string>
+    <string name="featured_widgets_tab_label">Ebirikugambwaho</string>
+    <string name="browse_widgets_tab_label">Rondooza</string>
+    <string name="widgets_search_bar_hint">Okucondooza</string>
+    <string name="widgets_list_no_widgets_available">Wijeti hamwe n\'oburyo bukye tibirikukoresibwa</string>
+    <string name="widgets_no_search_results">Tihaine widget nainga emihanda mikye etungirwe</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widgets_list_header_app_name_fallback_label">Ekiror loka app</string>
+    <string name="widgets_list_header_widgets_count_label">{count, plural, =1{# widget} other{# widgets}}</string>
+    <string name="widget_span_dimensions_format">%1$d \u00d7 %2$d</string>
+    <string name="widget_tap_to_show_add_button_label">Kitodu ekato loka aiyatakin</string>
+    <string name="widget_tap_to_hide_add_button_label">Ingada ekato lo aiyatakin</string>
+    <string name="featured_widgets_tab_label">Aponi kitodiarai</string>
+    <string name="browse_widgets_tab_label">Aimo</string>
+    <string name="widgets_search_bar_hint">Aimo</string>
+    <string name="widgets_list_no_widgets_available">Widgets keda iponesio luegelegela mam ejaas</string>
+    <string name="widgets_no_search_results">Emamei widgets arai bo iponesio luegelegela lu adumun</string>
+</resources>

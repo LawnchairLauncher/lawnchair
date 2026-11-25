@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widgets_list_header_app_name_fallback_label">App ma ru</string>
+    <string name="widgets_list_header_widgets_count_label">{count, plural, =1{# widget} other{# widgets}}</string>
+    <string name="widget_span_dimensions_format">%1$d \u00d7 %2$d</string>
+    <string name="widget_tap_to_show_add_button_label">Le mi ma e\'da e\'yo \'bani \'ba o\'bazu \'diyi ma dria</string>
+    <string name="widget_tap_to_hide_add_button_label">Le mi ma zi e\'yo \'bani \'ba o\'bazu \'diyi ma dria ci</string>
+    <string name="featured_widgets_tab_label">E\'da eyi ma alea</string>
+    <string name="browse_widgets_tab_label">Le mi ma nda</string>
+    <string name="widgets_search_bar_hint">Le mi ma nda</string>
+    <string name="widgets_list_no_widgets_available">Afa \'bani ayule \'diyi azini geri \'bani \'ba eyi ma ti pezu \'diyi yo</string>
+    <string name="widgets_no_search_results">Ba awini widget eyi esu ku</string>
+</resources>
