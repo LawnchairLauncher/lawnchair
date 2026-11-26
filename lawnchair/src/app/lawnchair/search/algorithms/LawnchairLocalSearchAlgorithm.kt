@@ -108,6 +108,8 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         val prefs = PreferenceManager.getInstance(context)
         val historyEnabled = prefs.searchResulRecentSuggestion.get()
 
+        appSearchProvider.invalidateCache()
+
         if (!historyEnabled) {
             callback.clearSearchResult()
         } else {
@@ -141,6 +143,10 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     override fun cancel(interruptActiveRequests: Boolean) {
         modelRetryJob?.cancel()
         currentJob?.cancel()
+
+        if (interruptActiveRequests) {
+            appSearchProvider.invalidateCache()
+        }
     }
 
     private fun generateActionResults(query: String): List<SearchResult.Action> {
