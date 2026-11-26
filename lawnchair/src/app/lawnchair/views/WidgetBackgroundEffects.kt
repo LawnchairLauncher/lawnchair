@@ -3,6 +3,7 @@ package app.lawnchair.views
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.widget.RoundedCornerEnforcement
@@ -46,7 +47,11 @@ class WidgetBackgroundEffects(private val host: ViewGroup) {
     }
 
     private fun fadeBackground() {
-        // Setting the same alpha again is a no-op
-        background?.background?.mutate()?.alpha = backgroundAlpha
+        val bg = background ?: return
+        // Only write on change: some drawables (e.g. NinePatchDrawable) invalidate on every
+        // setAlpha, which would keep the widget redrawing from this pre-draw listener.
+        bg.background?.mutate()?.let { if (it.alpha != backgroundAlpha) it.alpha = backgroundAlpha }
+        // A background declared as an ImageView may draw its card through android:src
+        if (bg is ImageView) bg.imageAlpha = backgroundAlpha
     }
 }
