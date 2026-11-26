@@ -235,6 +235,13 @@ class LawnchairBackup(
                 backupKeys += key
             }
             parser.require(XmlPullParser.END_TAG, null, "map")
+            // nextTag() stops at </map>, so parse the rest too: only whitespace may follow
+            // (next() skips comments), and a malformed tail throws here.
+            while (parser.next() != XmlPullParser.END_DOCUMENT) {
+                require(parser.eventType == XmlPullParser.TEXT && parser.isWhitespace) {
+                    "Unexpected content after </map>"
+                }
+            }
             (prefs.all.keys - backupKeys).forEach { editor.remove(it) }
             return editor
         }
