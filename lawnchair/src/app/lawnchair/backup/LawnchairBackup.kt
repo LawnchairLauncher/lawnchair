@@ -6,6 +6,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Xml
+import androidx.core.content.edit
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.LawnchairProto.BackupInfo
 import app.lawnchair.util.hasFlag
@@ -16,11 +18,13 @@ import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.R
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.model.ModelDbController
 import com.android.launcher3.provider.RestoreDbTask
 import com.google.protobuf.Timestamp
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -33,6 +37,7 @@ import java.util.zip.ZipOutputStream
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.xmlpull.v1.XmlPullParser
 
 class LawnchairBackup(
     private val context: Context,
@@ -60,6 +65,7 @@ class LawnchairBackup(
     suspend fun restore(selectedContents: Int) {
         val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
         val contents = selectedContents and info.contents
+        var restoredPrefs: Map<String, Any>? = null
         if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
             handlers.putAll(
                 getFiles(context, forRestore = true).mapValues { entry ->
@@ -70,6 +76,10 @@ class LawnchairBackup(
                     }
                 },
             )
+            // The launcher's SharedPreferences stay cached in this process, and the cached
+            // instance writes its whole pre-restore map back to disk on the next commit. Read
+            // the backed up values instead of overwriting the file, and restore them through it.
+            handlers[PREFS_FILE_NAME] = { restoredPrefs = readSharedPrefsXml(it) }
         }
         if (contents.hasFlag(INCLUDE_WALLPAPER)) {
             handlers[WALLPAPER_FILE_NAME] = {
@@ -79,12 +89,28 @@ class LawnchairBackup(
         }
         context.getDatabasePath(LAUNCHER_DB_FILE_NAME).parentFile?.deleteRecursively()
         readZip(handlers)
-        // Written after the zip has been extracted: the backed up preferences file is one of
-        // the restored entries, so writing the grid state first would let it be overwritten.
+        restoredPrefs?.let { restoreSharedPrefs(it) }
+        // Written after the backed up preferences, which would otherwise replace the grid state.
         DeviceGridState(info.gridState).writeToPrefs(context, true)
 
         val dbController = ModelDbController(context)
         RestoreDbTask.performRestore(context, dbController)
+    }
+
+    private fun restoreSharedPrefs(values: Map<String, Any>) {
+        LauncherPrefs.getPrefs(context).edit(commit = true) {
+            clear()
+            values.forEach { (key, value) ->
+                when (value) {
+                    is String -> putString(key, value)
+                    is Int -> putInt(key, value)
+                    is Long -> putLong(key, value)
+                    is Float -> putFloat(key, value)
+                    is Boolean -> putBoolean(key, value)
+                    is Set<*> -> putStringSet(key, value.filterIsInstance<String>().toSet())
+                }
+            }
+        }
     }
 
     private suspend fun readZip(handlers: Map<String, suspend (InputStream) -> Unit>) {
@@ -187,6 +213,35 @@ class LawnchairBackup(
                         }
                     }
                 }
+            }
+        }
+
+        /** Parses a SharedPreferences XML file, skipping entries of unknown types. */
+        private fun readSharedPrefsXml(input: InputStream): Map<String, Any> {
+            val parser = Xml.newPullParser()
+            parser.setInput(ByteArrayInputStream(input.readBytes()), null)
+            val values = mutableMapOf<String, Any>()
+            while (parser.next() != XmlPullParser.END_DOCUMENT) {
+                // Entries are the direct children of the root <map> element.
+                if (parser.eventType != XmlPullParser.START_TAG || parser.depth != 2) continue
+                val name = parser.getAttributeValue(null, "name") ?: continue
+                val value = parser.getAttributeValue(null, "value")
+                when (parser.name) {
+                    "string" -> parser.nextText()
+                    "int" -> value?.toIntOrNull()
+                    "long" -> value?.toLongOrNull()
+                    "float" -> value?.toFloatOrNull()
+                    "boolean" -> value?.toBooleanStrictOrNull()
+                    "set" -> readStringSet(parser)
+                    else -> null
+                }?.let { values[name] = it }
+            }
+            return values
+        }
+
+        private fun readStringSet(parser: XmlPullParser): Set<String> = buildSet {
+            while (parser.next() != XmlPullParser.END_TAG) {
+                if (parser.eventType == XmlPullParser.START_TAG) add(parser.nextText())
             }
         }
 
