@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 @LauncherAppSingleton
@@ -63,6 +64,26 @@ class FolderService @Inject constructor(
         folderDao.updateFolderRanks(orderedIds)
     }
 
+    /**
+     * Removes drawer-folder membership for the given component keys (e.g. after an app is hidden).
+     */
+    suspend fun removeItemsByComponentKeys(componentKeys: Collection<String>) = withContext(Dispatchers.IO) {
+        if (componentKeys.isEmpty()) return@withContext
+        folderDao.deleteFolderItemsByComponentKeys(componentKeys.toList())
+    }
+
+    /**
+     * Removes drawer-folder membership for all components belonging to [packageNames]
+     * (e.g. after uninstall). Component keys are stored as `pkg/cls#user`.
+     */
+    suspend fun removeItemsByPackages(packageNames: Collection<String>) = withContext(Dispatchers.IO) {
+        packageNames.forEach { packageName ->
+            if (packageName.isNotEmpty()) {
+                folderDao.deleteFolderItemsByPackageName(packageName)
+            }
+        }
+    }
+
     private suspend fun migrateLegacyFolderRanks() = withContext(Dispatchers.IO) {
         val legacyOrder = prefs.sp.getString(LEGACY_FOLDER_ORDER_STRING, "") ?: ""
         if (legacyOrder.isNotEmpty()) {
@@ -104,6 +125,15 @@ class FolderService @Inject constructor(
     companion object {
         @JvmField
         val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getFolderService)
+
+        /** Blocking helper for Java model tasks (already on a background executor). */
+        @JvmStatic
+        fun removePackagesBlocking(context: Context, packages: Array<String>) {
+            if (packages.isEmpty()) return
+            runBlocking {
+                INSTANCE.get(context).removeItemsByPackages(packages.toList())
+            }
+        }
     }
 }
 

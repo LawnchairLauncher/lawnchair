@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.data.folder.FolderEntry
 import app.lawnchair.data.folder.model.FolderViewModel
+import app.lawnchair.data.folder.service.FolderService
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -26,6 +27,9 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.onEach
 import java.util.function.Predicate
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Suppress("SYNTHETIC_PROPERTY_WITHOUT_JAVA_ORIGIN")
 class LawnchairAlphabeticalAppsList<T>(
@@ -54,6 +58,7 @@ class LawnchairAlphabeticalAppsList<T>(
         try {
             prefs2.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
                 hiddenApps = it
+                pruneInvalidFolderMembership(alsoHidden = it)
                 onAppsUpdated()
             }
         } catch (t: Throwable) {
@@ -71,7 +76,37 @@ class LawnchairAlphabeticalAppsList<T>(
             if (folders != null) {
                 folderList.clear()
                 folderList.addAll(folders)
+                pruneInvalidFolderMembership(alsoHidden = hiddenApps)
                 updateAdapterItems()
+            }
+        }
+    }
+
+    /**
+     * Drops folder DB rows for hidden or malformed component keys.
+     * Uninstall cleanup is handled by PackageUpdatedTask; missing apps-store entries
+     * are not pruned here so temporarily unavailable apps (e.g. unmounted media) stay.
+     */
+    private fun pruneInvalidFolderMembership(alsoHidden: Set<String>) {
+        if (folderList.isEmpty()) return
+        val staleKeys = folderList.flatMap { folder ->
+            folder.itemComponentKeys.filter { keyString ->
+                if (alsoHidden.contains(keyString)) return@filter true
+                ComponentKey.fromString(keyString) == null
+            }
+        }.toSet()
+        if (staleKeys.isEmpty()) return
+        context.launcher.lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                // Recheck at delete time: membership may have been rewritten after the snapshot
+                // (e.g. unhide + re-add), and removeItemsByComponentKeys matches any folder.
+                val currentlyHidden = hiddenApps
+                val stillStale = staleKeys.filter { keyString ->
+                    currentlyHidden.contains(keyString) || ComponentKey.fromString(keyString) == null
+                }
+                if (stillStale.isNotEmpty()) {
+                    FolderService.INSTANCE.get(context).removeItemsByComponentKeys(stillStale)
+                }
             }
         }
     }
@@ -113,6 +148,7 @@ class LawnchairAlphabeticalAppsList<T>(
         } else {
             folderList.forEach { folderEntry ->
                 val resolvedApps = folderEntry.itemComponentKeys.mapNotNull { keyString ->
+                    if (hiddenApps.contains(keyString)) return@mapNotNull null
                     val componentKey = ComponentKey.fromString(keyString) ?: return@mapNotNull null
                     appsStore.getApp(componentKey) as? AppInfo
                 }
