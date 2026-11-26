@@ -54,12 +54,19 @@ class WidgetBackgroundEffects private constructor(
 
     private fun fadeBackground() {
         val bg = background ?: return
+        if (bg is ImageView) {
+            // A background declared as an ImageView may draw its card through android:src, so
+            // fade the whole view: background and src composite first, then fade once. Unlike
+            // alpha and imageAlpha, transitionAlpha can't be set through RemoteViews, so the
+            // provider's own values stay in effect and multiply with this one. Unchanged values
+            // are ignored.
+            bg.transitionAlpha = backgroundAlpha / 255f
+            return
+        }
         // Skip unchanged values: some drawables (e.g. NinePatchDrawable) invalidate on every
         // setAlpha. ColorDrawable reports its combined alpha here, so a translucent color always
         // differs, but its setAlpha ignores unchanged values itself.
         bg.background?.mutate()?.let { if (it.alpha != backgroundAlpha) it.alpha = backgroundAlpha }
-        // A background declared as an ImageView may draw its card through android:src
-        if (bg is ImageView) bg.imageAlpha = backgroundAlpha
     }
 
     companion object {
