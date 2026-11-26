@@ -67,9 +67,6 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
     // Lawnchair: LocalColorExtractor
     private final LocalColorExtractor mColorExtractor;
 
-    // LC-Note: Widget background settings from Lawnchair's home screen preferences
-    private final WidgetBackgroundEffects mBackgroundEffects;
-
     public BaseLauncherAppWidgetHostView(Context context) {
         super(context);
 
@@ -79,7 +76,8 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
         mInflater = LayoutInflater.from(context);
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(getContext());
         mColorExtractor = LocalColorExtractor.newInstance(getContext());
-        mBackgroundEffects = new WidgetBackgroundEffects(this);
+        // LC-Note: Applies Lawnchair's widget background settings
+        WidgetBackgroundEffects.install(this);
     }
 
     @Override
@@ -99,14 +97,12 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mColorExtractor.setListener(this);
-        mBackgroundEffects.onAttachedToWindow();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mColorExtractor.setListener(null);
-        mBackgroundEffects.onDetachedFromWindow();
     }
 
     @Override
@@ -118,7 +114,6 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
         }
 
         enforceRoundedCorners();
-        mBackgroundEffects.onLayout();
     }
 
     @UiThread
