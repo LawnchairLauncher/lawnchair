@@ -17,6 +17,7 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.RemoteViews;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.R;
@@ -67,6 +69,10 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
     // Lawnchair: LocalColorExtractor
     private final LocalColorExtractor mColorExtractor;
 
+    // LC-Note: Lawnchair's widget background settings, null when none is active
+    @Nullable
+    private final WidgetBackgroundEffects mBackgroundEffects;
+
     public BaseLauncherAppWidgetHostView(Context context) {
         super(context);
 
@@ -76,8 +82,7 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
         mInflater = LayoutInflater.from(context);
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(getContext());
         mColorExtractor = LocalColorExtractor.newInstance(getContext());
-        // LC-Note: Applies Lawnchair's widget background settings
-        WidgetBackgroundEffects.install(this);
+        mBackgroundEffects = WidgetBackgroundEffects.install(this);
     }
 
     @Override
@@ -114,6 +119,16 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
         }
 
         enforceRoundedCorners();
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        // LC-Note: Lets the widget background settings draw around the widget content
+        if (mBackgroundEffects != null) {
+            mBackgroundEffects.dispatchDraw(canvas, super::dispatchDraw);
+        } else {
+            super.dispatchDraw(canvas);
+        }
     }
 
     @UiThread

@@ -349,6 +349,12 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val widgetBackgroundBlur = preference(
+        key = floatPreferencesKey(name = "widget_background_blur"),
+        defaultValue = 0f,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val allowWidgetOverlap = preference(
         key = booleanPreferencesKey(name = "allow_widget_overlap"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_allow_widget_overlap),
