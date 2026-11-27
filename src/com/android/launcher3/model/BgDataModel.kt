@@ -23,6 +23,7 @@ import android.os.UserHandle
 import android.util.Log
 import android.util.SparseArray
 import androidx.annotation.AnyThread
+import app.lawnchair.gestures.GestureShortcutPins
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.BuildConfigs
 import com.android.launcher3.Flags
@@ -254,6 +255,8 @@ constructor(
         allWorkspaceItems.addAll(
             ItemInstallQueue.INSTANCE[context].getPendingShortcuts(user).toList()
         )
+        // LC: keep the shortcuts that gestures open pinned, even when not on the home screen
+        allWorkspaceItems.addAll(GestureShortcutPins.keysFor(context, user))
         // Map of packageName to shortcutIds that are currently in our model
         val modelMap =
             allWorkspaceItems

@@ -3,8 +3,8 @@
 package app.lawnchair.util
 
 import android.content.Intent
+import android.os.Parcel
 import android.os.UserHandle
-import androidx.core.os.UserHandleCompat
 import com.android.launcher3.util.ComponentKey
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -45,7 +45,16 @@ object UserHandlerSerializer : KSerializer<UserHandle> {
     override val descriptor = PrimitiveSerialDescriptor("UserHandle", PrimitiveKind.INT)
 
     override fun deserialize(decoder: Decoder): UserHandle {
-        return UserHandleCompat.getUserHandleForUid(decoder.decodeInt())
+        // The stored value is a user id (see serialize), not an app uid, so restore the
+        // handle from its parcel form; treating it as a uid would map user 10 to user 0.
+        val parcel = Parcel.obtain()
+        return try {
+            parcel.writeInt(decoder.decodeInt())
+            parcel.setDataPosition(0)
+            UserHandle.readFromParcel(parcel)
+        } finally {
+            parcel.recycle()
+        }
     }
 
     override fun serialize(encoder: Encoder, value: UserHandle) {

@@ -3,8 +3,10 @@ package app.lawnchair.gestures.config
 import android.app.Activity
 import android.content.Context
 import app.lawnchair.BlankActivity
+import app.lawnchair.gestures.handlers.OpenAppTarget
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.navigation.GesturesPickApp
+import app.lawnchair.ui.preferences.navigation.GesturesPickShortcut
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
 
@@ -16,6 +18,9 @@ sealed class GestureHandlerOption(
     fun getLabel(context: Context) = context.getString(labelRes)
 
     abstract suspend fun buildConfig(activity: Activity): GestureHandlerConfig?
+
+    /** Whether [config] was created by this option (used to mark the current choice). */
+    open fun matches(config: GestureHandlerConfig): Boolean = config::class.java == configClass
 
     sealed class Simple(labelRes: Int, iconRes: Int, val obj: GestureHandlerConfig) : GestureHandlerOption(labelRes, iconRes, obj::class.java) {
         constructor(obj: GestureHandlerConfig.Simple) : this(obj.labelRes, obj.iconRes, obj)
@@ -37,8 +42,26 @@ sealed class GestureHandlerOption(
         R.drawable.ic_launcher_home,
         GestureHandlerConfig.OpenApp::class.java,
     ) {
+        override fun matches(config: GestureHandlerConfig) = config is GestureHandlerConfig.OpenApp && config.target is OpenAppTarget.App
+
         override suspend fun buildConfig(activity: Activity): GestureHandlerConfig? {
             val intent = PreferenceActivity.createIntent(activity, GesturesPickApp)
+            val result = BlankActivity.startBlankActivityForResult(activity, intent)
+            val configString = result.data?.getStringExtra("config") ?: return null
+            return kotlinxJson.decodeFromString(configString)
+        }
+    }
+
+    // LC: open an app shortcut, such as a pinned chat.
+    data object OpenShortcut : GestureHandlerOption(
+        R.string.gesture_handler_open_shortcut_option,
+        R.drawable.ic_launcher_home,
+        GestureHandlerConfig.OpenApp::class.java,
+    ) {
+        override fun matches(config: GestureHandlerConfig) = config is GestureHandlerConfig.OpenApp && config.target is OpenAppTarget.Shortcut
+
+        override suspend fun buildConfig(activity: Activity): GestureHandlerConfig? {
+            val intent = PreferenceActivity.createIntent(activity, GesturesPickShortcut)
             val result = BlankActivity.startBlankActivityForResult(activity, intent)
             val configString = result.data?.getStringExtra("config") ?: return null
             return kotlinxJson.decodeFromString(configString)

@@ -13,6 +13,7 @@ val gestureHandlerOptions = listOf(
     GestureHandlerOption.OpenAppSearch,
     GestureHandlerOption.OpenSearch,
     GestureHandlerOption.OpenApp,
+    GestureHandlerOption.OpenShortcut,
     GestureHandlerOption.OpenAssistant,
 )
 
