@@ -3,6 +3,10 @@ package app.lawnchair.ui.preferences.navigation
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -68,6 +72,7 @@ inline fun <reified T> getDeepLink(route: T) where T : PreferenceRoute, T : Pref
 fun PreferenceNavigation(
     navController: NavHostController,
     startDestination: PreferenceRoute,
+    stackedRoutes: List<PreferenceRoute> = emptyList(),
     intent: Intent? = null,
 ) {
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
@@ -75,6 +80,15 @@ fun PreferenceNavigation(
 
     LaunchedEffect(intent) {
         intent?.let { navController.handleDeepLink(it) }
+    }
+
+    // Saved so the routes aren't stacked again when the activity is recreated.
+    var stackedRoutesHandled by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (!stackedRoutesHandled) {
+            stackedRoutes.forEach { navController.navigate(it) }
+            stackedRoutesHandled = true
+        }
     }
 
     // TODO: navigate to nav3: https://developer.android.com/guide/navigation/navigation-3

@@ -17,6 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 @LauncherAppSingleton
@@ -26,6 +28,7 @@ class FolderService @Inject constructor(
 
     private val folderDao = AppDatabase.INSTANCE.get(context).folderDao()
     private val prefs = PreferenceManager.getInstance(context)
+    private val membershipWriteMutex = Mutex()
 
     fun getFoldersFlow(): Flow<List<FolderEntry>> {
         return folderDao.getAllFoldersWithItems()
@@ -49,6 +52,34 @@ class FolderService @Inject constructor(
     suspend fun saveFolderInfo(title: String) = withContext(Dispatchers.IO) {
         val rank = (folderDao.getMaxFolderRank() ?: -1) + 1
         folderDao.insertFolder(FolderInfoEntity(title = title, rank = rank))
+    }
+
+    /**
+     * Appends [componentKey] to the folder. The app stays in any other folder it belongs to.
+     */
+    suspend fun addItemToFolder(folderId: Int, componentKey: String) = withOrderedWrite {
+        folderDao.addItemToFolder(folderId, componentKey)
+    }
+
+    suspend fun removeItemFromFolder(folderId: Int, componentKey: String) = withOrderedWrite {
+        folderDao.deleteFolderItem(folderId, componentKey)
+    }
+
+    /**
+     * Creates a new folder at the end of the list and adds [componentKey] to it.
+     */
+    suspend fun createFolderWithItem(title: String, componentKey: String) = withOrderedWrite {
+        folderDao.createFolderWithItem(title, componentKey)
+    }
+
+    /**
+     * Runs membership writes one at a time, in call order: [Mutex] is fair, so writes queue up
+     * in the order they were requested and a later tap can't be overtaken by an earlier one.
+     */
+    private suspend fun <T> withOrderedWrite(block: suspend () -> T): T {
+        return membershipWriteMutex.withLock {
+            withContext(Dispatchers.IO) { block() }
+        }
     }
 
     suspend fun renameFolderInfo(folderId: Int, title: String) = withContext(Dispatchers.IO) {

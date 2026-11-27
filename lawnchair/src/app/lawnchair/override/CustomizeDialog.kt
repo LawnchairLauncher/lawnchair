@@ -2,6 +2,7 @@ package app.lawnchair.override
 
 import android.app.Activity
 import android.graphics.drawable.Drawable
+import android.os.Process
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -200,6 +201,11 @@ fun CustomizeAppDialog(
                     adapter.onChange(newSet)
                 },
             )
+        }
+        // App drawer folders only exist for the main profile, and are hidden while the drawer
+        // is automatically categorized.
+        if (componentKey.user == Process.myUserHandle() && prefs.drawerList.get()) {
+            DrawerFolderPreference(componentKey = componentKey.toString())
         }
         if (context.launcher.stateManager.state != LauncherState.ALL_APPS) {
             PreferenceGroup(heading = stringResource(R.string.gestures_label)) {

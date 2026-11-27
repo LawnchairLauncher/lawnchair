@@ -19,6 +19,7 @@ import android.os.RemoteException
 import android.os.UserHandle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
@@ -27,7 +28,9 @@ import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.ui.preferences.PreferenceActivity
+import app.lawnchair.ui.preferences.navigation.AppDrawer
 import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
+import app.lawnchair.ui.preferences.navigation.AppDrawerFolder
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
@@ -41,6 +44,7 @@ import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.AppInfo as ModelAppInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
+import com.android.launcher3.shortcuts.DeepShortcutView
 import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
@@ -59,34 +63,66 @@ class LawnchairShortcut {
             val folderId = folderIcon.mInfo.id
             if (folderId == ItemInfo.NO_ID) return false
 
+            // Point the arrow at the folder preview, like app popups point at the app icon.
             val bounds = Rect()
             launcher.dragLayer.getDescendantRectRelativeToSelf(folderIcon, bounds)
-            // Unlike regular app, folder does not have any code that would allow it to be showing
-            // any popup we have to create our own.
-            //
-            // In the future we should perhaps move this entire code to a dedicated file like
-            // LawnchairFolderShortcut.kt
-            return OptionsPopupView.show<LawnchairLauncher>(
-                launcher,
-                RectF(bounds),
-                listOf(
-                    OptionsPopupView.OptionItem(
-                        launcher,
-                        R.string.edit_folder,
-                        R.drawable.ic_edit,
-                        StatsLogManager.LauncherEvent.IGNORE,
-                    ) {
-                        launcher.startActivity(
-                            PreferenceActivity.createIntent(
-                                launcher,
-                                AppDrawerAppListToFolder(folderId),
-                            ),
-                        )
-                        true
-                    },
-                ),
-                true,
-            ) != null
+            val previewBounds = Rect()
+            folderIcon.getPreviewBounds(previewBounds)
+            previewBounds.offset(bounds.left, bounds.top)
+
+            val items = listOf(
+                OptionsPopupView.OptionItem(
+                    launcher,
+                    R.string.action_customize,
+                    R.drawable.ic_edit,
+                    StatsLogManager.LauncherEvent.IGNORE,
+                ) {
+                    launcher.startActivity(
+                        PreferenceActivity.createIntent(
+                            launcher,
+                            AppDrawerAppListToFolder(folderId),
+                            // Back navigates up to the folder settings instead of closing.
+                            parents = listOf(AppDrawer, AppDrawerFolder),
+                        ),
+                    )
+                    true
+                },
+            )
+            return showSystemShortcutStylePopup(launcher, RectF(previewBounds), items)
+        }
+
+        /**
+         * Shows [items] laid out like the system shortcuts of an app popup
+         * ([com.android.launcher3.popup.PopupContainerWithArrow]): a single rounded container with
+         * fixed-width rows, instead of the separate cards of [OptionsPopupView.show].
+         */
+        private fun showSystemShortcutStylePopup(
+            launcher: LawnchairLauncher,
+            targetRect: RectF,
+            items: List<OptionsPopupView.OptionItem>,
+        ): Boolean {
+            @Suppress("UNCHECKED_CAST")
+            val popup = launcher.layoutInflater.inflate(
+                R.layout.longpress_options_menu,
+                launcher.dragLayer,
+                false,
+            ) as OptionsPopupView<LawnchairLauncher>
+            popup.setTargetRect(targetRect)
+            popup.setShouldAddArrow(true)
+
+            val container = popup.inflateAndAdd<ViewGroup>(R.layout.system_shortcut_rows_container, popup)
+            val itemWidth = launcher.resources.getDimensionPixelSize(R.dimen.bg_popup_item_width)
+            items.forEach { item ->
+                val view = popup.inflateAndAdd<DeepShortcutView>(R.layout.system_shortcut, container)
+                view.layoutParams.width = itemWidth
+                view.iconView.background = item.icon
+                view.bubbleText.text = item.label
+                view.setOnClickListener(popup)
+                view.setOnLongClickListener(popup)
+                popup.mItemMap[view] = item
+            }
+            popup.show()
+            return true
         }
 
         val CUSTOMIZE =

@@ -76,6 +76,7 @@ fun Preferences(
     displayFeatures: List<DisplayFeature>,
     modifier: Modifier = Modifier,
     startDestination: PreferenceRoute? = null,
+    stackedRoutes: List<PreferenceRoute> = emptyList(),
     intent: Intent? = null,
     interactor: PreferenceInteractor = viewModel<PreferenceViewModel>(),
 ) {
@@ -115,6 +116,7 @@ fun Preferences(
                     PreferenceNavigation(
                         navController = navController,
                         startDestination = startingRoute,
+                        stackedRoutes = stackedRoutes,
                         intent = intent,
                     )
                 }
