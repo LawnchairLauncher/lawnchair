@@ -405,9 +405,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             Executors.UI_HELPER_EXECUTOR.execute(() -> {
                 // Only show arrows if a mouse or touchpad is connected to the device
                 int arrowVisibility = isPointerEnabled(ctx) ? View.VISIBLE : View.GONE;
-                if (mLeftArrow != null) mLeftArrow.setVisibility(arrowVisibility);
-                if (mRightArrow != null) mRightArrow.setVisibility(arrowVisibility);
-
                 // If the arrows are visible, then their touch box will slightly overlap with the
                 // footer's padding by 8dp. Update it for proper alignment. PaddingEnd was always
                 // equal to paddingRight in both LTR & RTL mode, so isRtl is manually accounted for
@@ -416,12 +413,18 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                                 ? R.dimen.folder_footer_horiz_padding_minus_arrow_overlap
                                 : R.dimen.folder_footer_horiz_padding);
                 boolean isRtl = Utilities.isRtl(getResources());
-                mFooter.setPadding(
-                        isRtl ? endPadding : mFooter.getPaddingLeft(),
-                        mFooter.getPaddingTop(),
-                        isRtl ? mFooter.getPaddingRight() : endPadding,
-                        mFooter.getPaddingBottom()
-                );
+                // UI_HELPER_EXECUTOR is a worker looper, so touch the views from the main thread.
+                Executors.MAIN_EXECUTOR.execute(() -> {
+                    if (mPageIndicator.getVisibility() != View.VISIBLE) return;
+                    if (mLeftArrow != null) mLeftArrow.setVisibility(arrowVisibility);
+                    if (mRightArrow != null) mRightArrow.setVisibility(arrowVisibility);
+                    mFooter.setPadding(
+                            isRtl ? endPadding : mFooter.getPaddingLeft(),
+                            mFooter.getPaddingTop(),
+                            isRtl ? mFooter.getPaddingRight() : endPadding,
+                            mFooter.getPaddingBottom()
+                    );
+                });
             });
         } else {
             ((MarginLayoutParams) mFolderName.getLayoutParams()).setMarginEnd(0);
