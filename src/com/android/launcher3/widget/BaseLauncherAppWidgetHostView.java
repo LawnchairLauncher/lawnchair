@@ -29,6 +29,8 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Executors;
 
+import app.lawnchair.views.WidgetBackgroundEffects;
+
 /**
  * Launcher AppWidgetHostView with support for rounded corners and a fallback View.
  */
@@ -74,6 +76,8 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
         mInflater = LayoutInflater.from(context);
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(getContext());
         mColorExtractor = LocalColorExtractor.newInstance(getContext());
+        // LC-Note: Applies Lawnchair's widget background settings
+        WidgetBackgroundEffects.install(this);
     }
 
     @Override
