@@ -3,16 +3,12 @@ package app.lawnchair.views
 import android.graphics.Canvas
 import android.graphics.Outline
 import android.graphics.Rect
-import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.view.WindowManager
 import android.widget.ImageView
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
-import com.android.internal.graphics.drawable.BackgroundBlurDrawable
 import com.android.launcher3.widget.BaseLauncherAppWidgetHostView
 import com.android.launcher3.widget.RoundedCornerEnforcement
 import java.util.function.Consumer
@@ -24,14 +20,12 @@ import kotlin.math.roundToInt
  * Only the view the widget declares as its background (`@android:id/background`) is changed.
  * Widgets without exactly one such view are left alone.
  *
- * The blur uses the platform's cross-window background blur (Android 12+), so it blurs the
- * wallpaper behind the launcher window. When the system turns window blurs off later, for
- * example in battery saver, the region simply stays unblurred.
+ * The blur is a [BackgroundBlur] in the shape of the widget background.
  */
 class WidgetBackgroundEffects private constructor(
     private val host: BaseLauncherAppWidgetHostView,
     private val backgroundAlpha: Int,
-    private var blurRadius: Int,
+    private val blur: BackgroundBlur?,
 ) : View.OnAttachStateChangeListener,
     ViewTreeObserver.OnGlobalLayoutListener,
     ViewTreeObserver.OnPreDrawListener {
@@ -40,7 +34,6 @@ class WidgetBackgroundEffects private constructor(
     private var background: View? = null
     private val bounds = Rect()
     private var cornerRadius = 0f
-    private var blur: BackgroundBlurDrawable? = null
 
     override fun onViewAttachedToWindow(v: View) {
         observer = v.viewTreeObserver.also {
@@ -55,8 +48,7 @@ class WidgetBackgroundEffects private constructor(
             it.removeOnPreDrawListener(this)
         }
         observer = null
-        // The blur drawable belongs to the window it was created for
-        blur = null
+        blur?.release()
     }
 
     // RemoteViews updates can replace the widget's views, so look the background up after layouts
@@ -72,7 +64,7 @@ class WidgetBackgroundEffects private constructor(
             cornerRadius = cornerRadiusOf(bg)
         }
         if (bounds != oldBounds || cornerRadius != oldRadius) {
-            blur?.setCornerRadius(cornerRadius)
+            blur?.cornerRadius = cornerRadius
             host.invalidate()
         }
     }
@@ -86,13 +78,7 @@ class WidgetBackgroundEffects private constructor(
 
     /** Draws the widget content through [drawContent], with the blur behind it. */
     fun dispatchDraw(canvas: Canvas, drawContent: Consumer<Canvas>) {
-        // The blur drawable records a RenderNode, which needs a hardware canvas
-        if (!bounds.isEmpty && canvas.isHardwareAccelerated) {
-            blurDrawable()?.let {
-                it.bounds = bounds
-                it.draw(canvas)
-            }
-        }
+        blur?.draw(canvas, bounds)
         drawContent.accept(canvas)
     }
 
@@ -122,32 +108,7 @@ class WidgetBackgroundEffects private constructor(
         return outline.radius.coerceAtLeast(0f)
     }
 
-    private fun blurDrawable(): BackgroundBlurDrawable? {
-        if (blurRadius == 0) return null
-        blur?.let { return it }
-        return try {
-            host.viewRootImpl?.createBackgroundBlurDrawable()?.also {
-                it.setBlurRadius(blurRadius)
-                it.setCornerRadius(cornerRadius)
-                blur = it
-            }
-        } catch (e: LinkageError) {
-            // Hidden API: missing or blocked on this device
-            Log.w(TAG, "Background blur unavailable", e)
-            blurRadius = 0
-            null
-        }
-    }
-
     companion object {
-        private const val TAG = "WidgetBackgroundEffects"
-        private const val MAX_BLUR_DP = 40f
-
-        /** Whether the platform can blur behind widgets right now. */
-        @JvmStatic
-        fun isBlurSupported(view: View): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-            view.context.getSystemService(WindowManager::class.java)?.isCrossWindowBlurEnabled == true
-
         /**
          * Attaches the effects to [host] when any widget background setting is active.
          * Returns null otherwise.
@@ -157,14 +118,9 @@ class WidgetBackgroundEffects private constructor(
             val prefs = PreferenceManager2.getInstance(host.context)
             val opacity = prefs.widgetBackgroundOpacity.firstCached(prefs).coerceIn(0f, 1f)
             val alpha = (255 * opacity).roundToInt()
-            val blur = prefs.widgetBackgroundBlur.firstCached(prefs).coerceIn(0f, 1f)
-            val blurRadius = if (blur > 0f && isBlurSupported(host)) {
-                (MAX_BLUR_DP * host.resources.displayMetrics.density * blur).roundToInt()
-            } else {
-                0
-            }
-            if (alpha == 255 && blurRadius == 0) return null
-            return WidgetBackgroundEffects(host, alpha, blurRadius).also {
+            val blur = BackgroundBlur.create(host, prefs.widgetBackgroundBlur.firstCached(prefs))
+            if (alpha == 255 && blur == null) return null
+            return WidgetBackgroundEffects(host, alpha, blur).also {
                 host.addOnAttachStateChangeListener(it)
             }
         }
