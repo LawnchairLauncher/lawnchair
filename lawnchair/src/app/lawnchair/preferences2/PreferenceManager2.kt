@@ -623,6 +623,11 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.recreate() },
     )
 
+    val matchHotseatQsbAppearance = preference(
+        key = booleanPreferencesKey(name = "drawer_search_bar_match_dock_style"),
+        defaultValue = false,
+    )
+
     val webSuggestionProvider = preference(
         key = stringPreferencesKey(name = "web_suggestion_provider"),
         defaultValue = WebSearchProvider.fromString(

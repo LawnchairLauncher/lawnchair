@@ -38,6 +38,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.firstCached
@@ -190,19 +191,36 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     ColorTokens.SearchboxHighlight.resolveColor(context)
                 }
 
+                val matchDockAppearance by prefs2.matchHotseatQsbAppearance.asState()
+                val dockAlpha by prefs.hotseatQsbAlpha.observeAsState()
+                val dockCornerRadius by prefs.hotseatQsbCornerRadius.observeAsState()
+                val dockStrokeWidth by prefs.hotseatQsbStrokeWidth.observeAsState()
+                val dockStrokeColorStyle by prefs2.strokeColorStyle.asState()
+
                 val backgroundAlpha by animateIntAsState(
-                    if (isFocused || !queryEmpty) 0 else 100,
+                    when {
+                        isFocused || !queryEmpty -> 0
+                        matchDockAppearance -> dockAlpha
+                        else -> 100
+                    },
                 )
 
-                // Ignore other theme attributes to preserve existing behavior
+                // Unless it matches the dock bar, ignore other theme attributes to preserve existing
+                // behavior. The background color stays the drawer's own either way, since the dock
+                // color is picked for the wallpaper and this bar sits on the drawer sheet.
                 val style = buildQsbStyle(
                     context = context,
                     themed = themedQsb,
                     backgroundColor = backgroundColor,
                     backgroundAlpha = backgroundAlpha,
-                    cornerRadius = 1f,
-                    strokeColor = null,
-                    strokeWidth = 0f,
+                    cornerRadius = if (matchDockAppearance) dockCornerRadius else 1f,
+                    // Same as the dock bar: the stroke color is static and has no dark variant
+                    strokeColor = if (matchDockAppearance) {
+                        dockStrokeColorStyle.colorPreferenceEntry.lightColor.invoke(context)
+                    } else {
+                        null
+                    },
+                    strokeWidth = if (matchDockAppearance) dockStrokeWidth else 0f,
                 )
 
                 val actions = QsbActions(
