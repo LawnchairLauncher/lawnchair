@@ -378,10 +378,28 @@ public class AddItemActivity extends BaseActivity
     }
 
     private void acceptWidget(int widgetId) {
+        mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+        boolean accepted;
+        try {
+            accepted = mRequest.accept(mWidgetOptions);
+        } catch (IllegalStateException e) {
+            // A pin request is single-use: it can already be consumed when the bind result is
+            // redelivered, for example after the activity was recreated. The widget id may
+            // already back a live widget, so keep it and just close the sheet.
+            Log.e(TAG, "Failed to accept pin widget request", e);
+            mSlideInView.close(/* animate= */ true);
+            return;
+        }
+        if (!accepted) {
+            // Per PinItemRequest.accept() contract, a false return means the item was not
+            // pinned and must not be added.
+            mAppWidgetHolder.deleteAppWidgetId(widgetId);
+            mPendingBindWidgetId = -1;
+            mSlideInView.close(/* animate= */ true);
+            return;
+        }
         ItemInstallQueue.INSTANCE.get(this)
                 .queueItem(mRequest.getAppWidgetProviderInfo(this), widgetId);
-        mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-        mRequest.accept(mWidgetOptions);
         logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
         mSlideInView.close(/* animate= */ true);
     }
