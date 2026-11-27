@@ -23,6 +23,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,6 +54,7 @@ import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.ui.preferences.navigation.AppDrawerFolder
 import app.lawnchair.ui.util.bottomSheetHandler
 import com.android.launcher3.R
+import com.android.launcher3.util.LabelComparator
 import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
 
@@ -121,7 +123,11 @@ fun AppDrawerFoldersPreference(
     val bottomSheetHandler = bottomSheetHandler
     val prefs = preferenceManager()
 
-    val sortedDisplayList = folders ?: emptyList()
+    val sortFolders by prefs.sortDrawerFolders.getAdapter()
+    val labelComparator = remember { LabelComparator() }
+    val sortedDisplayList = folders.orEmpty().let { list ->
+        if (sortFolders) list.sortedWith(compareBy(labelComparator) { it.title }) else list
+    }
 
     LoadingScreen(
         isLoading = folders == null,
@@ -138,6 +144,11 @@ fun AppDrawerFoldersPreference(
                     adapter = prefs.folderApps.getAdapter(),
                     label = stringResource(id = R.string.apps_in_folder_label),
                     description = stringResource(id = R.string.apps_in_folder_description),
+                )
+                SwitchPreference(
+                    adapter = prefs.sortDrawerFolders.getAdapter(),
+                    label = stringResource(id = R.string.sort_drawer_folders_label),
+                    description = stringResource(id = R.string.sort_drawer_folders_description),
                 )
             }
             PreferenceGroup(heading = stringResource(R.string.folders_label)) {
@@ -169,47 +180,66 @@ fun AppDrawerFoldersPreference(
                     },
                 )
             }
-            ReorderablePreferenceGroup(
-                label = null,
-                items = sortedDisplayList,
-                defaultList = sortedDisplayList,
-                onOrderChange = { updatedFolders ->
-                    onOrderChange(updatedFolders.map { it.id })
-                },
-            ) { folderEntry, _, _ ->
-                val interactionSource = remember { MutableInteractionSource() }
-                FolderItem(
-                    folderEntry = folderEntry,
-                    onItemClick = {
-                        mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
-                        bottomSheetHandler.show {
-                            FolderEditSheet(
-                                folderId = folderEntry.id,
-                                initialTitle = folderEntry.title,
-                                itemCount = folderEntry.itemComponentKeys.size,
-                                onRename = onRenameFolder,
-                                onNavigate = {
-                                    onEditFolderItems(it)
-                                    bottomSheetHandler.hide()
-                                },
-                                onDismiss = {
-                                    bottomSheetHandler.hide()
-                                },
-                            )
+            val folderItem: @Composable (FolderEntry, (@Composable () -> Unit)?, MutableInteractionSource) -> Unit =
+                { folderEntry, dragIndicator, interactionSource ->
+                    FolderItem(
+                        folderEntry = folderEntry,
+                        onItemClick = {
+                            mMSDLPlayerWrapper.playToken(MSDLToken.TAP_MEDIUM_EMPHASIS)
+                            bottomSheetHandler.show {
+                                FolderEditSheet(
+                                    folderId = folderEntry.id,
+                                    initialTitle = folderEntry.title,
+                                    itemCount = folderEntry.itemComponentKeys.size,
+                                    onRename = onRenameFolder,
+                                    onNavigate = {
+                                        onEditFolderItems(it)
+                                        bottomSheetHandler.hide()
+                                    },
+                                    onDismiss = {
+                                        bottomSheetHandler.hide()
+                                    },
+                                )
+                            }
+                        },
+                        onItemDelete = { folderToDelete ->
+                            mMSDLPlayerWrapper.playToken(MSDLToken.SUCCESS)
+                            onDeleteFolder(folderToDelete)
+                        },
+                        dragIndicator = dragIndicator,
+                        interactionSource = interactionSource,
+                    )
+                }
+            if (sortFolders) {
+                // Alphabetical order replaces the manual one, so there is nothing to drag.
+                PreferenceGroup {
+                    sortedDisplayList.forEach { folderEntry ->
+                        key(folderEntry.id) {
+                            folderItem(folderEntry, null, remember { MutableInteractionSource() })
                         }
+                    }
+                }
+            } else {
+                ReorderablePreferenceGroup(
+                    label = null,
+                    items = sortedDisplayList,
+                    defaultList = sortedDisplayList,
+                    onOrderChange = { updatedFolders ->
+                        onOrderChange(updatedFolders.map { it.id })
                     },
-                    onItemDelete = { folderToDelete ->
-                        mMSDLPlayerWrapper.playToken(MSDLToken.SUCCESS)
-                        onDeleteFolder(folderToDelete)
-                    },
-                    dragIndicator = {
-                        ReorderableDragHandle(
-                            interactionSource = interactionSource,
-                            scope = this,
-                        )
-                    },
-                    interactionSource = interactionSource,
-                )
+                ) { folderEntry, _, _ ->
+                    val interactionSource = remember { MutableInteractionSource() }
+                    folderItem(
+                        folderEntry,
+                        {
+                            ReorderableDragHandle(
+                                interactionSource = interactionSource,
+                                scope = this,
+                            )
+                        },
+                        interactionSource,
+                    )
+                }
             }
         }
     }
@@ -289,7 +319,7 @@ fun FolderItem(
     onItemDelete: (FolderEntry) -> Unit,
     modifier: Modifier = Modifier,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    dragIndicator: @Composable () -> Unit,
+    dragIndicator: (@Composable () -> Unit)?,
 ) {
     val resources = LocalResources.current
     PreferenceTemplate(
@@ -308,9 +338,7 @@ fun FolderItem(
                 ),
             )
         },
-        startWidget = {
-            dragIndicator()
-        },
+        startWidget = dragIndicator,
         endWidget = {
             Row {
                 IconButton(

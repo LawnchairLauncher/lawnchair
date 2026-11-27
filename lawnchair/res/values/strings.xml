@@ -155,6 +155,10 @@
 
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="sort_drawer_folders_label">Sort folders alphabetically</string>
+    <string name="sort_drawer_folders_description">Folders are listed by name; drag and drop reordering is disabled</string>
+    <string name="sort_drawer_folder_items_label">Sort active items alphabetically</string>
+    <string name="sort_drawer_folder_items_description">Apps inside every folder are listed by name; drag and drop reordering is disabled</string>
 
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="folder_manage_apps">Manage apps</string>
