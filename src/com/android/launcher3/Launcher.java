@@ -1512,6 +1512,12 @@ public class Launcher extends StatefulActivity<LauncherState>
             // Show resize frame on the newly inflated LauncherAppWidgetHostView.
             LauncherAppWidgetHostView reInflatedHostView =
                     getWorkspace().getWidgetForAppWidgetId(appWidgetId);
+            if (reInflatedHostView == null) {
+                // The workspace view can already be gone, for example when the widget was
+                // removed while its configuration activity was showing. The restore itself is
+                // complete, there is just nothing left to resize or update.
+                return;
+            }
             showWidgetResizeFrame(
                     reInflatedHostView,
                     (LauncherAppWidgetInfo) reInflatedHostView.getTag(),
