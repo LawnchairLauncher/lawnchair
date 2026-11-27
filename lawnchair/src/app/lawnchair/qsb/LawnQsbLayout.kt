@@ -3,6 +3,7 @@ package app.lawnchair.qsb
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -18,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.animateToAllApps
 import app.lawnchair.launcher
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -32,6 +34,7 @@ import app.lawnchair.ui.preferences.navigation.Search
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.ProvideLifecycleState
 import app.lawnchair.util.repeatOnAttached
+import app.lawnchair.views.BackgroundBlur
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
@@ -52,12 +55,23 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
     private lateinit var searchProvider: QsbSearchProvider
 
+    // Blurs the wallpaper behind the bar, null when the setting is off, blur is unsupported or
+    // this isn't the launcher window
+    private var blur: BackgroundBlur? = null
+    private var blurCornerRadius = 0f
+    private val blurBounds = Rect()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onFinishInflate() {
         super.onFinishInflate()
 
         preferenceManager2 = PreferenceManager2.getInstance(context)
         searchProvider = getSearchProvider(context, preferenceManager2)
+
+        // The QSB style settings recreate the launcher when changed, so reading them once is enough
+        val prefs = PreferenceManager.getInstance(context)
+        blur = BackgroundBlur.create(this, prefs.hotseatQsbBlur.get())
+        blurCornerRadius = getHotseatQsbCornerRadius(context, prefs.hotseatQsbCornerRadius.get())
 
         composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
@@ -165,6 +179,25 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                     .collect()
             }
         }
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        val blur = blur ?: return
+        // The bar fills the compose view, so the blur takes its bounds and, like the bar's
+        // RoundedCornerShape, caps the corner radius at half the shorter side
+        blurBounds.set(composeView.left, composeView.top, composeView.right, composeView.bottom)
+        blur.cornerRadius = blurCornerRadius.coerceAtMost(minOf(blurBounds.width(), blurBounds.height()) / 2f)
+    }
+
+    override fun dispatchDraw(canvas: Canvas) {
+        blur?.draw(canvas, blurBounds)
+        super.dispatchDraw(canvas)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        blur?.release()
     }
 
     private fun openOptions() {

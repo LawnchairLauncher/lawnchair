@@ -815,6 +815,7 @@
     <string name="hotseat_mode_google_search">Google search bar</string>
 
     <string name="qsb_hotseat_background_transparency">Background opacity</string>
+    <string name="qsb_hotseat_background_blur">Background blur</string>
     <string name="qsb_hotseat_stroke_width">Outline width</string>
     <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Corner radius</string>
