@@ -3,6 +3,7 @@
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
+import android.util.AtomicFile
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.data.AppDatabase
@@ -14,10 +15,12 @@ import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import java.io.File
-import java.io.FileOutputStream
+import java.io.IOException
 import java.security.MessageDigest
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @LauncherAppSingleton
 class WallpaperService @Inject constructor(
@@ -26,10 +29,17 @@ class WallpaperService @Inject constructor(
 
     val dao = AppDatabase.Companion.INSTANCE.get(context).wallpaperDao()
 
+    private val mutex = Mutex()
+
     suspend fun saveWallpaper(wallpaperManager: WallpaperManager) {
         try {
-            val wallpaperDrawable = wallpaperManager.drawable
-            val currentBitmap = (wallpaperDrawable as BitmapDrawable).toBitmap()
+            // Live wallpapers have no static bitmap to store for the quick picker.
+            if (wallpaperManager.wallpaperInfo != null) {
+                return
+            }
+            val wallpaperDrawable = wallpaperManager.drawable ?: return
+            val currentBitmap = (wallpaperDrawable as? BitmapDrawable)?.bitmap
+                ?: wallpaperDrawable.toBitmap()
 
             val byteArray = bitmapToByteArray(currentBitmap)
 
@@ -46,46 +56,48 @@ class WallpaperService @Inject constructor(
     }
 
     private suspend fun saveWallpaper(imageData: ByteArray) {
-        val timestamp = System.currentTimeMillis()
+        mutex.withLock {
+            val timestamp = System.currentTimeMillis()
 
-        val checksum = calculateChecksum(imageData)
+            val checksum = calculateChecksum(imageData)
 
-        val existingWallpapers = dao.getTopWallpapers()
+            val existingWallpapers = dao.getTopWallpapers()
 
-        if (existingWallpapers.any { it.checksum == checksum }) {
-            Log.d("WallpaperService", "Wallpaper already exists with checksum: $checksum")
-            return
-        }
-        val imagePath = saveImageToAppStorage(imageData)
-        if (existingWallpapers.size < 4) {
-            val wallpaper = Wallpaper(
-                imagePath = imagePath,
-                rank = existingWallpapers.size,
-                timestamp = timestamp,
-                checksum = checksum,
-            )
-            dao.insert(wallpaper)
-        } else {
-            val lowestRankedWallpaper = existingWallpapers.minByOrNull { it.timestamp }
-
-            if (lowestRankedWallpaper != null) {
-                dao.deleteWallpaper(lowestRankedWallpaper.id)
-                deleteWallpaperFile(lowestRankedWallpaper.imagePath)
+            if (existingWallpapers.any { it.checksum == checksum }) {
+                Log.d("WallpaperService", "Wallpaper already exists with checksum: $checksum")
+                return
             }
+            val imagePath = saveImageToAppStorage(imageData, checksum)
+            if (existingWallpapers.size < 4) {
+                val wallpaper = Wallpaper(
+                    imagePath = imagePath,
+                    rank = existingWallpapers.size,
+                    timestamp = timestamp,
+                    checksum = checksum,
+                )
+                dao.insert(wallpaper)
+            } else {
+                val lowestRankedWallpaper = existingWallpapers.minByOrNull { it.timestamp }
 
-            for (wallpaper in existingWallpapers) {
-                if (wallpaper.rank >= (lowestRankedWallpaper?.rank ?: 0)) {
-                    dao.updateRank(wallpaper.rank)
+                if (lowestRankedWallpaper != null) {
+                    dao.deleteWallpaper(lowestRankedWallpaper.id)
+                    deleteWallpaperFile(lowestRankedWallpaper.imagePath)
                 }
-            }
 
-            val wallpaper = Wallpaper(
-                imagePath = imagePath,
-                rank = 0,
-                timestamp = timestamp,
-                checksum = checksum,
-            )
-            dao.insert(wallpaper)
+                for (wallpaper in existingWallpapers) {
+                    if (wallpaper.rank >= (lowestRankedWallpaper?.rank ?: 0)) {
+                        dao.updateRank(wallpaper.rank)
+                    }
+                }
+
+                val wallpaper = Wallpaper(
+                    imagePath = imagePath,
+                    rank = 0,
+                    timestamp = timestamp,
+                    checksum = checksum,
+                )
+                dao.insert(wallpaper)
+            }
         }
     }
 
@@ -114,19 +126,30 @@ class WallpaperService @Inject constructor(
         }
     }
 
-    private fun saveImageToAppStorage(imageData: ByteArray): String {
+    private fun saveImageToAppStorage(imageData: ByteArray, checksum: String): String {
         val storageDir = File(context.filesDir, "wallpapers")
         if (!storageDir.exists()) {
             storageDir.mkdirs()
         }
 
-        val imageHash = imageData.hashCode().toString()
-        val imageFile = File(storageDir, "wallpaper_$imageHash.jpg")
+        val imageFile = File(storageDir, "wallpaper_$checksum.jpg")
 
         if (!imageFile.exists()) {
-            FileOutputStream(imageFile).use { fos ->
+            // Write through AtomicFile so a failed write never leaves a partial
+            // file under the final checksum name that later saves would reuse.
+            val atomicFile = AtomicFile(imageFile)
+            val fos = atomicFile.startWrite()
+            try {
                 fos.write(imageData)
+                atomicFile.finishWrite(fos)
+            } catch (e: Exception) {
+                atomicFile.failWrite(fos)
+                throw e
             }
+        }
+
+        if (!imageFile.isFile) {
+            throw IOException("Failed to publish wallpaper file ${imageFile.name}")
         }
 
         return imageFile.absolutePath
