@@ -3,9 +3,11 @@ package app.lawnchair.backup
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Xml
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.LawnchairProto.BackupInfo
 import app.lawnchair.util.hasFlag
@@ -16,6 +18,7 @@ import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.R
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.model.ModelDbController
@@ -33,6 +36,7 @@ import java.util.zip.ZipOutputStream
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.xmlpull.v1.XmlPullParser
 
 class LawnchairBackup(
     private val context: Context,
@@ -60,9 +64,16 @@ class LawnchairBackup(
     suspend fun restore(selectedContents: Int) {
         val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
         val contents = selectedContents and info.contents
+        var prefsEditor: SharedPreferences.Editor? = null
         if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
+            // The launcher's SharedPreferences stay cached in this process, and the cached
+            // instance writes its whole pre-restore map back to disk on the next commit. Stage the
+            // backed up values through it instead of overwriting the file, before anything is
+            // deleted, so a malformed file aborts the restore with nothing changed.
+            val prefs = LauncherPrefs.getPrefs(context)
+            readZip(mapOf(PREFS_FILE_NAME to { prefsEditor = stageSharedPrefs(prefs, it) }))
             handlers.putAll(
-                getFiles(context, forRestore = true).mapValues { entry ->
+                (getFiles(context, forRestore = true) - PREFS_FILE_NAME).mapValues { entry ->
                     {
                         val file = entry.value
                         file.parentFile?.mkdirs()
@@ -77,10 +88,12 @@ class LawnchairBackup(
                 wallpaperManager.setBitmap(BitmapFactory.decodeStream(it))
             }
         }
+        // Files restored by copying (DataStore, Room prefs DB, launcher DB) must not be written
+        // in-process before restartLauncher().
         context.getDatabasePath(LAUNCHER_DB_FILE_NAME).parentFile?.deleteRecursively()
         readZip(handlers)
-        // Written after the zip has been extracted: the backed up preferences file is one of
-        // the restored entries, so writing the grid state first would let it be overwritten.
+        prefsEditor?.let { check(it.commit()) }
+        // Written after the backed up preferences, which would otherwise replace the grid state.
         DeviceGridState(info.gridState).writeToPrefs(context, true)
 
         val dbController = ModelDbController(context)
@@ -187,6 +200,66 @@ class LawnchairBackup(
                         }
                     }
                 }
+            }
+        }
+
+        /**
+         * Parses a SharedPreferences XML file into an uncommitted editor of [prefs] that sets every
+         * backed up value and removes the keys missing from the backup. Throws on any entry that
+         * SharedPreferences could not have written.
+         */
+        private fun stageSharedPrefs(prefs: SharedPreferences, xml: InputStream): SharedPreferences.Editor {
+            val editor = prefs.edit()
+            val backupKeys = mutableSetOf<String>()
+            val parser = Xml.newPullParser()
+            parser.setInput(xml, null)
+            parser.nextTag()
+            parser.require(XmlPullParser.START_TAG, null, "map")
+            while (parser.nextTag() == XmlPullParser.START_TAG) {
+                val tag = parser.name
+                val key = requireNotNull(parser.getAttributeValue(null, "name")) { "<$tag> without a name" }
+
+                // Reads the value attribute and moves to the end tag of the empty element.
+                fun value() = requireNotNull(parser.getAttributeValue(null, "value")) { "$key without a value" }
+                    .also { parser.nextTag() }
+                when (tag) {
+                    "string" -> editor.putString(key, parser.nextText())
+                    "int" -> editor.putInt(key, value().toInt())
+                    "long" -> editor.putLong(key, value().toLong())
+                    "float" -> editor.putFloat(key, value().toFloat())
+                    "boolean" -> editor.putBoolean(key, value().toBooleanStrict())
+                    "set" -> editor.putStringSet(key, readStringSet(parser))
+                    else -> throw IllegalArgumentException("Unknown entry <$tag> for $key")
+                }
+                parser.require(XmlPullParser.END_TAG, null, tag)
+                backupKeys += key
+            }
+            parser.require(XmlPullParser.END_TAG, null, "map")
+            // nextTag() stops at </map>, so parse the rest too: only whitespace may follow
+            // (next() skips comments), and a malformed tail throws here.
+            while (parser.next() != XmlPullParser.END_DOCUMENT) {
+                require(parser.eventType == XmlPullParser.TEXT && parser.isWhitespace) {
+                    "Unexpected content after </map>"
+                }
+            }
+            (prefs.all.keys - backupKeys).forEach { editor.remove(it) }
+            return editor
+        }
+
+        private fun readStringSet(parser: XmlPullParser): Set<String?> = buildSet {
+            while (parser.nextTag() == XmlPullParser.START_TAG) {
+                val tag = parser.name
+                when (tag) {
+                    "string" -> add(parser.nextText())
+
+                    "null" -> {
+                        add(null)
+                        parser.nextTag()
+                    }
+
+                    else -> throw IllegalArgumentException("Unknown set element <$tag>")
+                }
+                parser.require(XmlPullParser.END_TAG, null, tag)
             }
         }
 
