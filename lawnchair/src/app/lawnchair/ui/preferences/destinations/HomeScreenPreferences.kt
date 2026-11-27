@@ -271,6 +271,23 @@ fun HomeScreenPreferences(
                 adapter = prefs2.roundedWidgets.getAdapter(),
                 label = stringResource(id = R.string.force_rounded_widgets),
             )
+            SliderPreference(
+                label = stringResource(id = R.string.widget_background_opacity_label),
+                adapter = prefs2.widgetBackgroundOpacity.getAdapter(),
+                step = 0.05f,
+                valueRange = 0F..1F,
+                showAsPercentage = true,
+            )
+            // Cross-window blur needs Android 12
+            if (Utilities.ATLEAST_S) {
+                SliderPreference(
+                    label = stringResource(id = R.string.widget_background_blur_label),
+                    adapter = prefs2.widgetBackgroundBlur.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 0F..1F,
+                    showAsPercentage = true,
+                )
+            }
             SwitchPreference(
                 adapter = prefs2.allowWidgetOverlap.getAdapter(),
                 label = stringResource(id = R.string.allow_widget_overlap),

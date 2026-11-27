@@ -792,6 +792,8 @@
     <string name="color_dark">Dark</string>
 
     <string name="force_rounded_widgets">Rounded corners</string>
+    <string name="widget_background_opacity_label">Background opacity</string>
+    <string name="widget_background_blur_label">Background blur</string>
     <string name="allow_widget_overlap">Allow overlap</string>
 
     <string name="force_widget_resize_label">Enforce widget resizing</string>
@@ -813,6 +815,7 @@
     <string name="hotseat_mode_google_search">Google search bar</string>
 
     <string name="qsb_hotseat_background_transparency">Background opacity</string>
+    <string name="qsb_hotseat_background_blur">Background blur</string>
     <string name="qsb_hotseat_stroke_width">Outline width</string>
     <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Corner radius</string>

@@ -54,6 +54,7 @@ import app.lawnchair.ui.preferences.navigation.DockSearchProvider
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import app.lawnchair.ui.theme.preferenceGroupColor
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 @Composable
 fun DockSearchPreference(
@@ -128,6 +129,16 @@ fun DockSearchPreference(
                                 valueRange = 0..100,
                                 showUnit = "%",
                             )
+                            // Cross-window blur needs Android 12
+                            if (Utilities.ATLEAST_S) {
+                                SliderPreference(
+                                    label = stringResource(id = R.string.qsb_hotseat_background_blur),
+                                    adapter = prefs.hotseatQsbBlur.getAdapter(),
+                                    step = 0.05f,
+                                    valueRange = 0F..1F,
+                                    showAsPercentage = true,
+                                )
+                            }
                             SliderPreference(
                                 label = stringResource(id = R.string.qsb_hotseat_stroke_width),
                                 adapter = qsbHotseatStrokeWidth,

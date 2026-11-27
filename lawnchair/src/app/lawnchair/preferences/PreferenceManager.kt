@@ -178,6 +178,7 @@ class PreferenceManager @Inject constructor(
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
     val hotseatQsbAlpha = IntPref("pref_searchHotseatTranparency", 100, recreate)
     val hotseatQsbStrokeWidth = FloatPref("pref_searchStrokeWidth", 0F, recreate)
+    val hotseatQsbBlur = FloatPref("pref_hotseatQsbBlur", 0F, recreate)
     val hotseatBG = BoolPref("pref_hotseatBG", false, recreate)
     val hotseatBGHorizontalInsetLeft = IntPref("pref_hotseatBGHRinsetLeft", 0, recreate)
     val hotseatBGVerticalInsetTop = IntPref("pref_hotseatBGVRinsetTop", 0, recreate)
