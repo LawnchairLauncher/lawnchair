@@ -6,6 +6,7 @@ import android.app.prediction.AppTargetId
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherApps
+import android.os.BadParcelableException
 import android.os.Build
 import android.os.Process
 import android.os.UserHandle
@@ -194,6 +195,11 @@ class LawnchairPredictionEngine(
                     // Lawnchair-Note: Android 17 QPR2 Beta 3 crash when accessing activity list with null pkgName for non-Main user
                     // Ref: https://issuetracker.google.com/issues/547643926
                     Log.e("LawnchairPredictionEngine", "Failed to get activity list for user $user", e)
+                    emptyList()
+                } catch (e: BadParcelableException) {
+                    // The parceled list can arrive truncated when the binder transaction fails
+                    // partway; skip this profile for this prediction round.
+                    Log.w("LawnchairPredictionEngine", "Incomplete activity list for user $user", e)
                     emptyList()
                 }.asSequence()
             }
