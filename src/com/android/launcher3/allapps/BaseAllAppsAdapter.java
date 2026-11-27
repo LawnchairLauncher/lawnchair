@@ -26,6 +26,7 @@ import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_ENABLED;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -160,6 +161,13 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
          * as well. Returning true will prevent redrawing of thee item.
          */
         public boolean isContentSame(AdapterItem other) {
+            // LC-Note: Folder items carry their data in folderInfo, not itemInfo, so they were
+            // always considered unchanged and never redrawn after a folder edit.
+            if (viewType == VIEW_TYPE_FOLDER) {
+                return folderInfo.id == other.folderInfo.id
+                        && TextUtils.equals(folderInfo.title, other.folderInfo.title)
+                        && folderInfo.getContents().equals(other.folderInfo.getContents());
+            }
             return itemInfo == null && other.itemInfo == null;
         }
 
