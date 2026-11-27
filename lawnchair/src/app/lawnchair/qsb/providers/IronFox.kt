@@ -12,6 +12,7 @@ data object IronFox : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "org.ironfoxoss.ironfox",
     action = "org.mozilla.fenix.OPEN_TAB",
+    privateAction = "org.mozilla.fenix.OPEN_PRIVATE_TAB",
     className = "org.mozilla.fenix.IntentReceiverActivity",
     website = "https://gitlab.com/ironfox-oss/IronFox",
     type = QsbSearchProviderType.APP,

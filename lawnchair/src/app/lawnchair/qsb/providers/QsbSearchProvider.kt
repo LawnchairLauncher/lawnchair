@@ -25,6 +25,7 @@ sealed class QsbSearchProvider(
     val packageName: String,
     val className: String? = null,
     val action: String? = null,
+    val privateAction: String? = null,
     val supportVoiceIntent: Boolean = false,
     val website: String,
     val type: QsbSearchProviderType = QsbSearchProviderType.APP_AND_WEBSITE,
@@ -37,14 +38,26 @@ sealed class QsbSearchProvider(
         launch(launcher, forceWebsite)
     }
 
+    /**
+     * Launches the provider. If [privateAction] is set and the private tab preference is on,
+     * the browser is opened on a private tab instead of a regular one.
+     */
     open suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
-        createLaunchIntent(launcher, forceWebsite)
+        val privateTab = privateAction != null &&
+            PreferenceManager2.getInstance(launcher).hotseatQsbPrivateTab.first()
+        createLaunchIntent(launcher, forceWebsite, privateTab)
             ?.let { launcher.startActivity(it) }
     }
 
-    private fun createLaunchIntent(context: Context, forceWebsite: Boolean): Intent? {
+    /**
+     * Picks the intent to launch. The private search intent is preferred when [privateTab] is set,
+     * then the regular search intent, and finally the website. Each one is only used if it resolves.
+     */
+    private fun createLaunchIntent(context: Context, forceWebsite: Boolean, privateTab: Boolean): Intent? {
         if (!forceWebsite) {
-            val intent = createSearchIntent().takeIf { context.resolveIntent(it) != null }
+            val intent = (if (privateTab) createSearchIntent(privateTab = true) else null)
+                ?.takeIf { context.resolveIntent(it) != null }
+                ?: createSearchIntent().takeIf { context.resolveIntent(it) != null }
             if (intent != null) {
                 return intent
             }
@@ -52,7 +65,11 @@ sealed class QsbSearchProvider(
         return createWebsiteIntent().takeIf { context.resolveIntent(it) != null }
     }
 
-    fun createSearchIntent() = Intent(action)
+    /**
+     * Creates the intent that opens the provider's app. With [privateTab], it uses [privateAction]
+     * instead of [action].
+     */
+    fun createSearchIntent(privateTab: Boolean = false) = Intent(if (privateTab) privateAction else action)
         .addFlags(INTENT_FLAGS)
         .apply {
             if (className != null) {

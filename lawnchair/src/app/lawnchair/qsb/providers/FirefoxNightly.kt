@@ -12,6 +12,7 @@ data object FirefoxNightly : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "org.mozilla.fenix",
     action = "org.mozilla.fenix.OPEN_TAB",
+    privateAction = "org.mozilla.fenix.OPEN_PRIVATE_TAB",
     className = "org.mozilla.fenix.IntentReceiverActivity",
     website = "https://play.google.com/store/apps/details?id=org.mozilla.fenix",
     type = QsbSearchProviderType.APP,
