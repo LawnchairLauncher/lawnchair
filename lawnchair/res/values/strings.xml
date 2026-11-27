@@ -155,6 +155,8 @@
 
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="hide_single_app_folders_label">Hide single-app folders</string>
+    <string name="hide_single_app_folders_description">Folders containing only one app are not shown in the app drawer</string>
 
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="folder_manage_apps">Manage apps</string>

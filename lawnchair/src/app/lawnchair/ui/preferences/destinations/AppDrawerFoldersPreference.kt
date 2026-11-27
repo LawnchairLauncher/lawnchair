@@ -139,6 +139,11 @@ fun AppDrawerFoldersPreference(
                     label = stringResource(id = R.string.apps_in_folder_label),
                     description = stringResource(id = R.string.apps_in_folder_description),
                 )
+                SwitchPreference(
+                    adapter = prefs.hideSingleAppFolders.getAdapter(),
+                    label = stringResource(id = R.string.hide_single_app_folders_label),
+                    description = stringResource(id = R.string.hide_single_app_folders_description),
+                )
             }
             PreferenceGroup(heading = stringResource(R.string.folders_label)) {
                 PreferenceTemplate(

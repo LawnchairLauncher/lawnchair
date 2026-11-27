@@ -131,6 +131,12 @@ public class FolderGridOrganizer {
             done = gridCountX == oldCountX && gridCountY == oldCountY;
         }
 
+        // LC-Note: A single-app folder (app drawer, "Hide single-app folders" off) would be one
+        // cell wide, too narrow to show its title. Keep it as wide as a two-app folder.
+        if (count == 1 && mMaxCountX >= 2) {
+            gridCountX = 2;
+        }
+
         mCountX = gridCountX;
         mCountY = gridCountY;
     }

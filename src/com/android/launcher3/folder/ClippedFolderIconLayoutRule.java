@@ -137,6 +137,12 @@ public class ClippedFolderIconLayoutRule {
     }
 
     private void getPosition(int index, int curNumItems, float[] result) {
+        // LC-Note: App drawer folders may hold a single app when "Hide single-app folders" is
+        // off; center it instead of leaving it in the left slot of the two-item layout.
+        if (curNumItems == 1) {
+            result[0] = result[1] = mAvailableSpace / 2 - (mIconSize * scaleForItem(1, 0)) / 2;
+            return;
+        }
         // The case of two items is homomorphic to the case of one.
         curNumItems = Math.max(curNumItems, 2);
 
