@@ -87,6 +87,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        if (mContainerType == HOTSEAT) {
+            setClipChildren(false);
+            setClipToPadding(false);
+            setClipToOutline(false);
+            return;
+        }
         boolean mAllowWidgetOverlap = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getAllowWidgetOverlap());
         setClipChildren(!mAllowWidgetOverlap);
         setClipToPadding(!mAllowWidgetOverlap);
