@@ -27,6 +27,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.content.edit
 import app.lawnchair.smartspace.provider.OnboardingProvider
 import app.lawnchair.ui.preferences.navigation.PreferenceRoute
+import app.lawnchair.ui.preferences.search.SettingsSearchHighlight
 import app.lawnchair.ui.theme.EdgeToEdge
 import app.lawnchair.ui.theme.LawnchairTheme
 import com.android.launcher3.LauncherPrefs
@@ -46,6 +47,9 @@ class PreferenceActivity : ComponentActivity() {
                 null // Fallback to default if deserialization fails
             }
         }
+
+        // LC: a launcher setting found by the app drawer search is highlighted when shown.
+        intent.getStringExtra(EXTRA_SEARCH_HIGHLIGHT)?.let { SettingsSearchHighlight.set(it) }
 
         setContent {
             LawnchairTheme {
@@ -68,6 +72,7 @@ class PreferenceActivity : ComponentActivity() {
 
     companion object {
 
+        const val EXTRA_SEARCH_HIGHLIGHT = "app.lawnchair.ui.preferences.SEARCH_HIGHLIGHT"
         private const val EXTRA_DESTINATION_ROUTE = "app.lawnchair.ui.preferences.DESTINATION_ROUTE"
 
         @JvmStatic

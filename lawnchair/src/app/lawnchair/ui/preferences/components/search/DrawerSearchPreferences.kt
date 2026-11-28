@@ -195,6 +195,11 @@ private fun LocalSearchSettings(
             navController.navigate(SearchProviderPreference(SearchProviderId.FILES))
         },
     )
+    SwitchPreference(
+        adapter = preferenceManager2().searchResultLauncherSettings.getAdapter(),
+        label = stringResource(R.string.search_pref_result_launcher_settings_title),
+        description = stringResource(R.string.search_pref_result_launcher_settings_description),
+    )
     TwoTargetSwitchPreference(
         adapter = prefs.searchResultSettingsEntry.getAdapter(),
         label = stringResource(id = R.string.search_pref_result_settings_title),

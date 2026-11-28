@@ -207,6 +207,10 @@ data class SelectIcon(
     val componentKey: String,
 ) : PreferenceRoute
 
+// LC: search in all settings
+@Serializable
+data object SettingsSearch : PreferenceRootRoute
+
 // default to empty
 @Serializable
 data class IconPicker(val packageName: String = "") : PreferenceRoute

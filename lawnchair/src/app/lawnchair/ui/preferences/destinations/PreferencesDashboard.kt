@@ -34,10 +34,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Science
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.TipsAndUpdates
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
@@ -84,6 +86,7 @@ import app.lawnchair.ui.preferences.navigation.HomeScreen
 import app.lawnchair.ui.preferences.navigation.PreferenceRootRoute
 import app.lawnchair.ui.preferences.navigation.Quickstep
 import app.lawnchair.ui.preferences.navigation.Search
+import app.lawnchair.ui.preferences.navigation.SettingsSearch
 import app.lawnchair.ui.preferences.navigation.Smartspace
 import app.lawnchair.ui.util.addIf
 import app.lawnchair.util.isDefaultLauncher
@@ -115,7 +118,16 @@ fun PreferencesDashboard(
         modifier = modifier,
         verticalArrangement = Arrangement.Top,
         backArrowVisible = false,
-        actions = { PreferencesOverflowMenu(currentRoute = currentRoute, onNavigate = onNavigate) },
+        actions = {
+            // LC: search in all settings.
+            IconButton(onClick = { onNavigate(SettingsSearch) }) {
+                Icon(
+                    imageVector = Icons.Rounded.Search,
+                    contentDescription = stringResource(id = R.string.settings_search_hint),
+                )
+            }
+            PreferencesOverflowMenu(currentRoute = currentRoute, onNavigate = onNavigate)
+        },
     ) {
         AnnouncementPreference()
 

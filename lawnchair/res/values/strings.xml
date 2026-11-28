@@ -187,6 +187,8 @@
 
     -->
     <string name="settings">Settings</string>
+    <string name="settings_search_hint">Search settings</string>
+    <string name="settings_search_no_results">No matching settings</string>
     <!-- Shown on large screens until a settings page is picked from the menu beside it. -->
     <string name="settings_pick_a_page">Pick a setting from the menu</string>
 
@@ -965,6 +967,7 @@
     <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
     <string name="all_apps_search_result_files">Files from device</string>
     <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
+    <string name="all_apps_search_result_launcher_settings">Launcher settings</string>
 
     <string name="all_apps_search_market_message">Search for more apps</string>
     <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>
@@ -1017,6 +1020,8 @@
     <string name="search_pref_result_shortcuts_title">App shortcuts</string>
     <string name="search_pref_result_people_title">People</string>
     <string name="search_pref_result_tips_title">Pixel tips</string>
+    <string name="search_pref_result_launcher_settings_title">Launcher settings</string>
+    <string name="search_pref_result_launcher_settings_description">Finds the settings of this launcher and opens them</string>
     <string name="search_pref_result_settings_title">Android settings</string>
     <string name="search_pref_result_files_title">Files</string>
     <string name="search_pref_result_visual_media_title">Photos and videos</string>

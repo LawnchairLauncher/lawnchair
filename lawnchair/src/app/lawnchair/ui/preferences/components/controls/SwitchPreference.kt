@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.preferences.search.rememberSearchHighlight
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
@@ -89,7 +90,7 @@ fun SwitchPreference(
 
     PreferenceTemplate(
         title = { Text(text = label) },
-        modifier = modifier,
+        modifier = modifier.then(rememberSearchHighlight(label)),
         enabled = enabled,
         description = description?.let { { Text(text = it) } },
         endWidget = {

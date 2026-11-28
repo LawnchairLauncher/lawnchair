@@ -35,6 +35,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.preferences.search.rememberSearchHighlight
 
 @Composable
 fun PreferenceGroup(
@@ -71,6 +72,7 @@ fun PreferenceGroupHeading(
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = modifier
+                .then(rememberSearchHighlight(heading))
                 .height(48.dp)
                 .padding(horizontal = 32.dp)
                 .fillMaxWidth(),
