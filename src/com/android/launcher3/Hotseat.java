@@ -472,10 +472,34 @@ public class Hotseat extends FrameLayout implements Insettable {
 
         // Single-page dock: forward horizontal swipes to workspace.
         if (mWorkspace != null) {
+            // LC: a swipe that starts on a dock icon with a sideways gesture belongs to the icon,
+            // not to the workspace paging.
+            final int action = ev.getActionMasked();
+            if (action == MotionEvent.ACTION_DOWN) {
+                mTouchOnIconWithHorizontalGesture = isTouchOnIconWithHorizontalGesture(ev);
+            }
+            if (mTouchOnIconWithHorizontalGesture) {
+                if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                    mTouchOnIconWithHorizontalGesture = false;
+                }
+                mSendTouchToWorkspace = false;
+                return false;
+            }
             mSendTouchToWorkspace = mWorkspace.onInterceptTouchEvent(ev);
             return mSendTouchToWorkspace;
         }
         return false;
+    }
+
+    private boolean mTouchOnIconWithHorizontalGesture;
+
+    /** LC: whether {@code ev} (in this view's coordinates) is on a dock icon with a left/right gesture. */
+    private boolean isTouchOnIconWithHorizontalGesture(MotionEvent ev) {
+        float[] coord = new float[] {ev.getX(), ev.getY()};
+        // Maps into the dock pages' coordinates, scroll included.
+        Utilities.mapCoordInSelfToDescendant(mPagedView, this, coord);
+        BubbleTextView icon = mPagedView.findIcon(coord[0], coord[1]);
+        return icon != null && icon.hasConfiguredHorizontalIconSwipeGesture();
     }
 
     @Override
