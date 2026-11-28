@@ -172,7 +172,7 @@ fun AppDrawerPreferences(
             SliderPreference(
                 label = stringResource(id = R.string.icon_sizes),
                 adapter = prefs2.drawerIconSizeFactor.getAdapter(),
-                step = 0.1f,
+                step = 0.05f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
             )
