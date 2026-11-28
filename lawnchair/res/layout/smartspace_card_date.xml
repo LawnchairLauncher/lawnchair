@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/smartspace_subtitle_group"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/enhanced_smartspace_extras_margin_top"
             android:orientation="horizontal"
             android:visibility="invisible">
 

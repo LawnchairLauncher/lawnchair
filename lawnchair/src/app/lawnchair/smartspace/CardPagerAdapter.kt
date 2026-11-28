@@ -17,6 +17,24 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
     private var smartspaceTargets = targets
     private val holders = SparseArray<ViewHolder>()
 
+    var cardTopPadding = context.resources.getDimensionPixelSize(R.dimen.enhanced_smartspace_padding_top)
+        set(value) {
+            if (field == value) return
+            field = value
+            for (i in 0 until holders.size()) {
+                holders.valueAt(i).card.setTopPadding(value)
+            }
+        }
+
+    /** The most subtitle lines any of the current cards may show. */
+    val maxSubtitleLines: Int
+        get() {
+            val multipleCards = smartspaceTargets.size > 1
+            return smartspaceTargets.maxOfOrNull {
+                BcSmartspaceCard.getMaxSubtitleLines(it, multipleCards)
+            } ?: 1
+        }
+
     fun setTargets(newTargets: List<SmartspaceTarget>) {
         targets.clear()
         targets.addAll(newTargets)
@@ -26,6 +44,7 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
     override fun instantiateItem(container: ViewGroup, position: Int): ViewHolder {
         val target = smartspaceTargets[position]
         val card = createBaseCard(container, getFeatureType(target))
+        card.setTopPadding(cardTopPadding)
         val viewHolder = ViewHolder(position, card, target)
         onBindViewHolder(viewHolder)
         container.addView(card)
@@ -46,7 +65,10 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
     override fun getItemPosition(obj: Any): Int {
         val viewHolder = obj as ViewHolder
         val target = getTargetAtPosition(viewHolder.position)
-        if (viewHolder.target === target) {
+        // The card's subtitle line limit depends on whether it is the only card, so the
+        // same target still needs rebinding when that changes.
+        val multipleCards = smartspaceTargets.size > 1
+        if (viewHolder.target === target && viewHolder.multipleCards == multipleCards) {
             return POSITION_UNCHANGED
         }
         if (target == null ||
@@ -70,7 +92,8 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
     private fun onBindViewHolder(viewHolder: ViewHolder) {
         val target = smartspaceTargets[viewHolder.position]
         val card = viewHolder.card
-        card.setSmartspaceTarget(target, smartspaceTargets.size > 1)
+        viewHolder.multipleCards = smartspaceTargets.size > 1
+        card.setSmartspaceTarget(target, viewHolder.multipleCards)
         card.setPrimaryTextColor(currentTextColor)
     }
 
@@ -98,5 +121,6 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
         val position: Int,
         val card: BcSmartspaceCard,
         var target: SmartspaceTarget,
+        var multipleCards: Boolean = false,
     )
 }
