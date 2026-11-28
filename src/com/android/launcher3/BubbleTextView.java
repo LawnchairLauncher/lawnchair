@@ -729,6 +729,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                 || x > getWidth() - getPaddingRight();
     }
 
+    /**
+     * LC: whether a touch down at the given position (in this view's coordinates) reaches this
+     * icon, i.e. is not ignored as being in its padding. Used to find the icon a swipe starts on.
+     */
+    public boolean acceptsTouchDownAt(float x, float y) {
+        return Utilities.pointInView(this, x, y, 0) && !shouldIgnoreTouchDown(x, y);
+    }
+
     /** Lawnchair: Handle icon swipe gesture feature, self-explanatory. 
      * Only do horizontal gesture at the moment
      * @param event The type of MotionEvent to handle */

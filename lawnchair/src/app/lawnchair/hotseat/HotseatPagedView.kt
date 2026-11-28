@@ -162,7 +162,8 @@ class HotseatPagedView @JvmOverloads constructor(
                 // Include the icon's translation (e.g. from Hotseat.adjustForBubbleBar()).
                 val iconX = containerX - child.left - child.translationX
                 val iconY = containerY - child.top - child.translationY
-                if (Utilities.pointInView(child, iconX, iconY, 0f)) return child
+                // Only where the icon takes the touch down itself, not in its padding.
+                if (child.acceptsTouchDownAt(iconX, iconY)) return child
             }
         }
         return null
