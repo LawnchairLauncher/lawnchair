@@ -51,6 +51,7 @@ import app.lawnchair.ui.preferences.destinations.QuickstepPreferences
 import app.lawnchair.ui.preferences.destinations.SearchPreferences
 import app.lawnchair.ui.preferences.destinations.SearchProviderPreferences
 import app.lawnchair.ui.preferences.destinations.SelectAppsForDrawerFolder
+import app.lawnchair.ui.preferences.destinations.SelectFolderIconPreference
 import app.lawnchair.ui.preferences.destinations.SelectIconPreference
 import app.lawnchair.ui.preferences.destinations.ShapePreference
 import app.lawnchair.ui.preferences.destinations.SmartspacePreferences
@@ -221,6 +222,10 @@ fun PreferenceNavigation(
             val componentKey = args.componentKey
             val key = ComponentKey.fromString(componentKey)!!
             SelectIconPreference(key)
+        }
+        composable<SelectFolderIcon> { backStackEntry ->
+            val args: SelectFolderIcon = backStackEntry.toRoute()
+            SelectFolderIconPreference(itemId = args.itemId, title = args.title)
         }
         composable<IconPicker> { backStackEntry ->
             val args: IconPicker = backStackEntry.toRoute()

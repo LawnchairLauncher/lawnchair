@@ -29,6 +29,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.Converters
+import app.lawnchair.folder.FolderIconOverride
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
@@ -971,6 +972,24 @@ class PreferenceManager2 @Inject constructor(
                 .getOrDefault(GestureHandlerConfig.NoOp)
         } ?: GestureHandlerConfig.NoOp
     }
+
+    // LC: custom icon of a home screen folder, keyed by its item id. Stored as JSON so it is part
+    // of the preferences backup.
+    private fun folderIconKey(itemId: Int) = stringPreferencesKey("folder_icon:$itemId")
+
+    suspend fun setFolderIcon(itemId: Int, icon: FolderIconOverride?) {
+        val key = folderIconKey(itemId)
+        preferencesDataStore.edit { prefs ->
+            if (icon == null) prefs.remove(key) else prefs[key] = kotlinxJson.encodeToString(icon)
+        }
+    }
+
+    fun getFolderIcon(itemId: Int): Flow<FolderIconOverride?> {
+        val key = folderIconKey(itemId)
+        return preferencesDataStore.data.map { prefs -> prefs[key]?.let(FolderIconOverride::decode) }
+    }
+
+    fun getFolderIconCached(itemId: Int): FolderIconOverride? = getCachedPreferences()[folderIconKey(itemId)]?.let(FolderIconOverride::decode)
 
     private fun initializeIconShape(shape: IconShape) {
         CustomAdaptiveIconDrawable.sInitialized = true

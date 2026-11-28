@@ -553,6 +553,24 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mActivityContext.getDragController().removeDragListener(this);
     }
 
+    /**
+     * LC: opens the folder and starts editing its name, as if the name field had been tapped.
+     * Used by the folder's long-press menu.
+     */
+    public void openAndEditName() {
+        if (!isOpen() && !isDestroyed()) {
+            animateOpen();
+        }
+        // After the open animation has started, so the field is laid out and can take focus.
+        postDelayed(() -> {
+            if (isOpen()) {
+                mFolderName.showKeyboard();
+            }
+        }, EDIT_NAME_DELAY_MS);
+    }
+
+    private static final long EDIT_NAME_DELAY_MS = 150;
+
     public void startEditingFolderName() {
         showLabelSuggestions();
         mFolderName.setHint("");
