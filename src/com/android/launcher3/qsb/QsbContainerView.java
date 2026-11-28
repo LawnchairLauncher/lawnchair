@@ -35,6 +35,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,8 @@ import com.android.launcher3.widget.util.WidgetSizes;
  * AppWidgetManager directly, so that it keeps working in that case.
  */
 public class QsbContainerView extends FrameLayout {
+
+    private static final String TAG = "QsbContainerView";
 
     public static final String SEARCH_ENGINE_SETTINGS_KEY = "selected_search_engine";
 
@@ -284,7 +287,14 @@ public class QsbContainerView extends FrameLayout {
 
         @Override
         public void onDestroy() {
-            mQsbWidgetHost.stopListening();
+            try {
+                mQsbWidgetHost.stopListening();
+            } catch (RuntimeException e) {
+                // LC: On some Android 11 builds the widget service throws a NullPointerException
+                // from stopListening while the launcher is being destroyed (#7596). Nothing is
+                // left to clean up here, so don't let it crash the launcher.
+                Log.w(TAG, "Failed to stop listening for QSB widget updates", e);
+            }
             super.onDestroy();
         }
 
