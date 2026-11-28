@@ -99,6 +99,11 @@ public class ClippedFolderIconLayoutRule {
 
         if (numItemsInPage <= MAX_NUM_ITEMS_IN_PREVIEW) {
             getPosition(index, numItemsInPage, mTmpPoint);
+        } else if (page == 0 && FolderGridOrganizer.sPreviewFirstItems
+                && index < MAX_NUM_ITEMS_IN_PREVIEW) {
+            // LC: with "first items" the first four items are drawn in the preview's 2x2 block,
+            // whatever the folder's column count, so they move from and to their preview spots.
+            getGridPosition(index / 2, index % 2, mTmpPoint);
         } else {
             getGridPosition(index / mNumFolderColumns, index % mNumFolderColumns, mTmpPoint);
         }

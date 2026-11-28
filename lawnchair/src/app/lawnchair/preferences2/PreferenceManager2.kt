@@ -502,6 +502,13 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // LC: folder previews show the first four items in reading order instead of the folder's
+    // upper left 2x2 corner (Android's default).
+    val folderPreviewFirstItems = preference(
+        key = booleanPreferencesKey(name = "folder_preview_first_items"),
+        defaultValue = false,
+    )
+
     val folderPreviewBackgroundOpacity = preference(
         key = floatPreferencesKey(name = "folder_preview_background_opacity"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_preview_background_opacity),

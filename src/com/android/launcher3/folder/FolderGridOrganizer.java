@@ -42,6 +42,8 @@ public class FolderGridOrganizer {
     private int mCountX;
     private int mCountY;
     private boolean mDisplayingUpperLeftQuadrant = false;
+    /** LC: set from the folder settings; see {@link #isItemInPreview(int, int)}. */
+    public static volatile boolean sPreviewFirstItems = false;
     private static final int PREVIEW_MAX_ROWS = 2;
     private static final int PREVIEW_MAX_COLUMNS = 2;
 
@@ -207,7 +209,9 @@ public class FolderGridOrganizer {
     public boolean isItemInPreview(int page, int rank) {
         // First page items are laid out such that the first 4 items are always in the upper
         // left quadrant. For all other pages, we need to check the row and col.
-        if (page > 0 || mDisplayingUpperLeftQuadrant) {
+        // LC: with "first items" the preview shows the first four items in reading order
+        // instead of the folder's upper left 2x2 corner, matching the order inside the folder.
+        if (page > 0 || (mDisplayingUpperLeftQuadrant && !sPreviewFirstItems)) {
             int col = rank % mCountX;
             int row = rank / mCountX;
             return col < PREVIEW_MAX_COLUMNS && row < PREVIEW_MAX_ROWS;
