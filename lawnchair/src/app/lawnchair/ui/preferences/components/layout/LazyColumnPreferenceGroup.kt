@@ -36,14 +36,10 @@ fun LazyListScope.preferenceGroupItems(
     count: Int,
     isFirstChild: Boolean,
     showDividers: Boolean = true,
-    heading:
-    @Composable()
-    (() -> String)? = null,
+    heading: @Composable (() -> String)? = null,
     key: ((index: Int) -> Any)? = null,
     contentType: (index: Int) -> Any? = { null },
-    itemContent:
-    @Composable()
-    (LazyItemScope.(index: Int) -> Unit),
+    itemContent: @Composable (LazyItemScope.(index: Int) -> Unit),
 ) {
     item {
         if (!isFirstChild) {
@@ -71,14 +67,10 @@ inline fun <T> LazyListScope.preferenceGroupItems(
     items: List<T>,
     isFirstChild: Boolean,
     showDividers: Boolean = true,
-    noinline heading:
-    @Composable()
-    (() -> String)? = null,
+    noinline heading: @Composable (() -> String)? = null,
     noinline key: ((index: Int, item: T) -> Any)? = null,
     noinline contentType: (index: Int) -> Any? = { null },
-    crossinline itemContent:
-    @Composable()
-    (LazyItemScope.(index: Int, item: T) -> Unit),
+    crossinline itemContent: @Composable (LazyItemScope.(index: Int, item: T) -> Unit),
 ) {
     preferenceGroupItems(
         items.size,
