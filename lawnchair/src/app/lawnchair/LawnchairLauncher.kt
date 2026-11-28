@@ -62,6 +62,7 @@ import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDIC
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.folder.FolderGridOrganizer
 import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.PredictedContainerInfo
@@ -230,6 +231,15 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
         preferenceManager2.backPressGestureHandler.onEach(launchIn = lifecycleScope) { handler ->
             hasBackGesture = handler !is GestureHandlerConfig.NoOp
+        }
+        preferenceManager2.folderPreviewFirstItems.onEach(launchIn = lifecycleScope) { firstItems ->
+            if (FolderGridOrganizer.sPreviewFirstItems == firstItems) return@onEach
+            FolderGridOrganizer.sPreviewFirstItems = firstItems
+            // Redraw the folder previews with the other set of items.
+            workspace.mapOverItems { _, view ->
+                if (view is FolderIcon) view.onItemsChanged(false)
+                false
+            }
         }
 
         lifecycleScope.launch {

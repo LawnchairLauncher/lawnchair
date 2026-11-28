@@ -921,6 +921,8 @@
     </plurals>
 
     <!-- Folder settings -->
+    <string name="folder_preview_first_items">Preview the first four apps</string>
+    <string name="folder_preview_first_items_description">With more than four apps, the folder icon shows the first four instead of the top left corner of the open folder</string>
     <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
     <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Icon background color</string>
