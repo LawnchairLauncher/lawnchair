@@ -17,6 +17,7 @@ import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
+import java.lang.ref.WeakReference
 import java.util.WeakHashMap
 
 /**
@@ -28,12 +29,26 @@ object ShortcutOverrides {
 
     private const val TAG = "ShortcutOverrides"
 
-    // The shortcut's own name and icon, to go back to when the override is removed.
-    private val originals = WeakHashMap<WorkspaceItemInfo, Pair<CharSequence?, BitmapInfo>>()
+    /**
+     * The shortcut's own name, icon and accessibility label, to go back to when the override is
+     * removed, and the values put into the item last, to notice updates by the shortcut's app.
+     */
+    private class Original(
+        val title: CharSequence?,
+        val bitmap: BitmapInfo,
+        val contentDescription: CharSequence?,
+        val appliedTitle: CharSequence?,
+        val appliedBitmap: BitmapInfo,
+        val appliedContentDescription: CharSequence?,
+    )
+
+    private val originals = WeakHashMap<WorkspaceItemInfo, Original>()
 
     // Icon pack icons turned into launcher icons; null when loading failed.
     private val icons = HashMap<FolderIconOverride, BitmapInfo?>()
-    private val loading = HashSet<FolderIconOverride>()
+
+    // Shortcuts waiting for an icon that is being loaded; all are bound again when it is ready.
+    private val waiting = HashMap<FolderIconOverride, MutableList<Pair<WeakReference<View>, WorkspaceItemInfo>>>()
 
     /** Pinned shortcuts on the home screen, in the dock or in a folder. */
     @JvmStatic
@@ -43,40 +58,76 @@ object ShortcutOverrides {
         (info.container == Favorites.CONTAINER_DESKTOP || info.container == Favorites.CONTAINER_HOTSEAT || info.container >= 0)
 
     /** The shortcut's name as its app set it, without the user's own name. */
-    fun originalTitle(info: WorkspaceItemInfo): String = (originals[info]?.first ?: info.title)?.toString().orEmpty()
+    fun originalTitle(info: WorkspaceItemInfo): String = (currentOriginal(info)?.title ?: info.title)?.toString().orEmpty()
+
+    /**
+     * The item's original values. Values in the item that differ from what was put in last were
+     * set by the shortcut's app in the meantime (e.g. a new name) and become the new originals.
+     */
+    private fun currentOriginal(info: WorkspaceItemInfo): Original? {
+        val original = originals[info] ?: return null
+        return Original(
+            title = if (info.title?.toString() != original.appliedTitle?.toString()) info.title else original.title,
+            bitmap = if (info.bitmap !== original.appliedBitmap) info.bitmap else original.bitmap,
+            contentDescription = if (info.contentDescription?.toString() != original.appliedContentDescription?.toString()) {
+                info.contentDescription
+            } else {
+                original.contentDescription
+            },
+            appliedTitle = original.appliedTitle,
+            appliedBitmap = original.appliedBitmap,
+            appliedContentDescription = original.appliedContentDescription,
+        )
+    }
 
     /** Puts the user's name and icon into [info] before [view] shows it. */
     @JvmStatic
     fun apply(view: View, info: WorkspaceItemInfo) {
         if (!isCustomizable(info)) return
-        val prefs = PreferenceManager2.getInstance(view.context)
+        val context = view.context
+        val prefs = PreferenceManager2.getInstance(context)
         val title = prefs.getItemTitleCached(info.id)
         val icon = prefs.getFolderIconCached(info.id)
-        val original = originals[info]
+        val original = currentOriginal(info)
         if (title == null && icon == null) {
             if (original != null) {
-                info.title = original.first
-                info.bitmap = original.second
+                info.title = original.title
+                info.bitmap = original.bitmap
+                info.contentDescription = original.contentDescription
                 originals.remove(info)
             }
             return
         }
-        val base = original ?: (info.title to info.bitmap).also { originals[info] = it }
-        info.title = title ?: base.first
+        val baseTitle = original?.title ?: info.title
+        val baseBitmap = original?.bitmap ?: info.bitmap
+        val baseDescription = original?.contentDescription ?: info.contentDescription
+        info.title = title ?: baseTitle
+        // Screen readers announce the user's name, still marked with the work profile if needed.
+        info.contentDescription = if (title != null) {
+            context.packageManager.getUserBadgedLabel(title, info.user)
+        } else {
+            baseDescription
+        }
         info.bitmap = when {
-            icon == null -> base.second
+            icon == null -> baseBitmap
 
-            icons.containsKey(icon) -> icons[icon] ?: base.second
+            icons.containsKey(icon) -> icons[icon] ?: baseBitmap
 
             else -> {
                 load(view, info, icon)
-                base.second
+                baseBitmap
             }
         }
+        originals[info] = Original(baseTitle, baseBitmap, baseDescription, info.title, info.bitmap, info.contentDescription)
     }
 
     private fun load(view: View, info: WorkspaceItemInfo, icon: FolderIconOverride) {
-        if (!loading.add(icon)) return
+        val binding = WeakReference(view) to info
+        waiting[icon]?.let {
+            it += binding
+            return
+        }
+        waiting[icon] = mutableListOf(binding)
         val context = view.context.applicationContext
         UI_HELPER_EXECUTOR.execute {
             val bitmap = try {
@@ -87,8 +138,10 @@ object ShortcutOverrides {
             }
             MAIN_EXECUTOR.execute {
                 icons[icon] = bitmap
-                loading.remove(icon)
-                if (view is BubbleTextView && view.tag === info) view.applyFromWorkspaceItem(info)
+                waiting.remove(icon)?.forEach { (viewRef, item) ->
+                    val target = viewRef.get()
+                    if (target is BubbleTextView && target.tag === item) target.applyFromWorkspaceItem(item)
+                }
             }
         }
     }
