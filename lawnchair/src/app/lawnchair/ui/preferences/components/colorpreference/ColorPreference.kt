@@ -28,6 +28,7 @@ import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.ColorSelection as ColorSelectionRoute
+import app.lawnchair.ui.preferences.search.rememberSearchHighlight
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
@@ -67,7 +68,7 @@ fun ColorPreference(
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     PreferenceTemplate(
         title = { Text(text = label) },
-        modifier = modifier,
+        modifier = modifier.then(rememberSearchHighlight(label)),
         description = {
             Text(text = selectedColor.colorPreferenceEntry.label())
         },

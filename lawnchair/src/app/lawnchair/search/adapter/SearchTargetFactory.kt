@@ -164,6 +164,21 @@ class SearchTargetFactory(
     fun createSettingsTarget(info: SettingInfo): SearchTargetCompat? {
         val id = "_${info.id}"
 
+        // LC: a launcher setting, opened in the launcher's own settings.
+        info.intent?.let { launcherIntent ->
+            val action = SearchActionCompat.Builder(id, info.name)
+                .setIcon(Icon.createWithAdaptiveBitmap(createSmallSearchResultBitmap(context, R.drawable.ic_setting)))
+                .setIntent(launcherIntent)
+                .build()
+            return createSearchTarget(
+                id,
+                action,
+                LayoutType.ICON_SLICE,
+                SearchTargetCompat.RESULT_TYPE_SETTING_TILE,
+                SETTINGS,
+            )
+        }
+
         val intent = Intent(info.action)
         if (info.requiresUri) {
             intent.data = Uri.fromParts("package", context.packageName, null)

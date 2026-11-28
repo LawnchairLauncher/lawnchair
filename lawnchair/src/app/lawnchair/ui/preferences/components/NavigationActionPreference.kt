@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.PreferenceRoute
+import app.lawnchair.ui.preferences.search.rememberSearchHighlight
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
@@ -42,7 +43,7 @@ fun NavigationActionPreference(
 
     PreferenceTemplate(
         title = { Text(text = label) },
-        modifier = modifier,
+        modifier = modifier.then(rememberSearchHighlight(label)),
         description = subtitle?.let { { Text(text = it) } },
         endWidget = endWidget,
         onClick = if (destination != null) {

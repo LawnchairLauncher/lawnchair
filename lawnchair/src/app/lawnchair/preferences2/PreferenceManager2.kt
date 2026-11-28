@@ -502,6 +502,12 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // LC: the launcher's own settings among the app drawer search results.
+    val searchResultLauncherSettings = preference(
+        key = booleanPreferencesKey(name = "search_result_launcher_settings"),
+        defaultValue = true,
+    )
+
     val folderPreviewBackgroundOpacity = preference(
         key = floatPreferencesKey(name = "folder_preview_background_opacity"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_preview_background_opacity),

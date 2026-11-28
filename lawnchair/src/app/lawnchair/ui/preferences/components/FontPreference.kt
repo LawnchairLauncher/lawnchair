@@ -9,6 +9,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.GeneralFontSelection
+import app.lawnchair.ui.preferences.search.rememberSearchHighlight
 import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
 
@@ -23,7 +24,7 @@ fun FontPreference(
 
     PreferenceTemplate(
         title = { Text(text = label) },
-        modifier = modifier,
+        modifier = modifier.then(rememberSearchHighlight(label)),
         description = {
             val font = fontPref.getAdapter().state.value
             Text(

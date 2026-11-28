@@ -72,9 +72,18 @@ data object SettingsSectionBuilder : SectionBuilder {
         }
 
         val targets = mutableListOf<SearchTargetCompat>()
-        targets.add(factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device)))
-        targets.addAll(settings.mapNotNull { factory.createSettingsTarget(it.data) })
-        targets.add(factory.createHeaderTarget(SPACE))
+        // LC: the launcher's own settings get their own section, above the device settings.
+        val (launcher, device) = settings.partition { it.data.intent != null }
+        if (launcher.isNotEmpty()) {
+            targets.add(factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_launcher_settings)))
+            targets.addAll(launcher.mapNotNull { factory.createSettingsTarget(it.data) })
+            targets.add(factory.createHeaderTarget(SPACE))
+        }
+        if (device.isNotEmpty()) {
+            targets.add(factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device)))
+            targets.addAll(device.mapNotNull { factory.createSettingsTarget(it.data) })
+            targets.add(factory.createHeaderTarget(SPACE))
+        }
         return targets
     }
 }
