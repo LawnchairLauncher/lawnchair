@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.lawnchair.animation.FolderAnimationSpeed
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
@@ -74,6 +75,12 @@ fun ExperimentalFeaturesPreferences(
                 adapter = prefs2.showDeckLayout.getAdapter(),
                 label = stringResource(R.string.show_deck_layout),
                 description = stringResource(R.string.show_deck_layout_description),
+            )
+            /* TODO: Make this stable in the next version of Lawnchair 16 */
+            ListPreference(
+                adapter = prefs2.folderAnimationSpeed.getAdapter(),
+                entries = FolderAnimationSpeed.entries(),
+                label = stringResource(R.string.folder_animation_speed_label),
             )
             SwitchPreference(
                 checked = hasPermission && enableWallpaperBlur.state.value,
