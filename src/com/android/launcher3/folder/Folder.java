@@ -558,18 +558,18 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Used by the folder's long-press menu.
      */
     public void openAndEditName() {
-        if (!isOpen() && !isDestroyed()) {
-            animateOpen();
+        if (isOpen()) {
+            mFolderName.showKeyboard();
+            return;
         }
-        // After the open animation has started, so the field is laid out and can take focus.
-        postDelayed(() -> {
-            if (isOpen()) {
-                mFolderName.showKeyboard();
-            }
-        }, EDIT_NAME_DELAY_MS);
+        if (isDestroyed()) return;
+        // The name field takes focus once the open animation has ended, after its own focus
+        // handling, which would otherwise move the focus to the first item again.
+        mEditNameOnOpen = true;
+        animateOpen();
     }
 
-    private static final long EDIT_NAME_DELAY_MS = 150;
+    private boolean mEditNameOnOpen;
 
     public void startEditingFolderName() {
         showLabelSuggestions();
@@ -920,6 +920,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         FOLDER_OPENED_MESSAGE);
 
                 mContent.setFocusOnFirstChild();
+                // LC: opened by the long-press menu's "Rename"
+                if (mEditNameOnOpen) {
+                    mEditNameOnOpen = false;
+                    if (isOpen()) mFolderName.showKeyboard();
+                }
             }
         });
 
@@ -1115,6 +1120,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     private void closeComplete(boolean wasAnimated) {
         mIsOpen = false;
+        mEditNameOnOpen = false;
 
         // TODO: Clear all active animations.
         BaseDragLayer parent = (BaseDragLayer) getParent();

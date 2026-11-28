@@ -599,13 +599,15 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
         if (!mBackgroundIsVisible) return;
 
-        // LC: a custom icon picked for this folder replaces its preview.
-        if (mInfo != null && FolderCustomIcon.draw(this, mInfo.id, canvas, getFolderIconBounds())) {
+        mPreviewItemManager.recomputePreviewDrawingParams();
+
+        // LC: a custom icon picked for this folder replaces its preview. Folders in the app
+        // drawer have their own ids, which can match a home screen folder's.
+        if (mInfo != null && !isInAppDrawer()
+                && FolderCustomIcon.draw(this, mInfo.id, canvas, getFolderIconBounds())) {
             drawDot(canvas);
             return;
         }
-
-        mPreviewItemManager.recomputePreviewDrawingParams();
 
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackground(canvas);
