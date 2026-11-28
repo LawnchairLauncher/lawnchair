@@ -14,10 +14,13 @@ import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.qsb.QsbContainerView
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withTimeoutOrNull
 
 data object Google : QsbSearchProvider(
     id = "google",
@@ -31,8 +34,9 @@ data object Google : QsbSearchProvider(
 ) {
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         if (!forceWebsite) {
-            val subscription = getSearchIntent(launcher)
-            val pendingIntent = subscription.firstOrNull()
+            val pendingIntent = withTimeoutOrNull(2.seconds) {
+                getSearchIntent(launcher).filterNotNull().firstOrNull()
+            }
             val options = ActivityOptions.makeBasic()
             if (Utilities.ATLEAST_U) {
                 options.setPendingIntentBackgroundActivityStartMode(
@@ -40,15 +44,18 @@ data object Google : QsbSearchProvider(
                 )
             }
             if (pendingIntent != null) {
-                launcher.startIntentSender(
-                    pendingIntent.intentSender,
-                    null,
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-                    0,
-                    options.toBundle(),
-                )
-                return
+                try {
+                    launcher.startIntentSender(
+                        pendingIntent.intentSender,
+                        null,
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
+                        0,
+                        options.toBundle(),
+                    )
+                    return
+                } catch (_: Exception) {
+                }
             }
         }
         super.launch(launcher, forceWebsite)
@@ -66,6 +73,7 @@ data object Google : QsbSearchProvider(
             View.MeasureSpec.makeMeasureSpec(1000, View.MeasureSpec.EXACTLY),
             View.MeasureSpec.makeMeasureSpec(100, View.MeasureSpec.EXACTLY),
         )
+        view.layout(0, 0, 1000, 100)
         return view.descendants
             .filter { it.pendingIntent != null }
             .sortedByDescending { it.measuredWidth * it.measuredHeight }
