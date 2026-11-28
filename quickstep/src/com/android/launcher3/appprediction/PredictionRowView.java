@@ -74,6 +74,8 @@ public class PredictionRowView<T extends Context & ActivityContext>
     private FloatingHeaderView mParent;
 
     private boolean mPredictionsEnabled = false;
+    // LC-Note: set while the drawer's suggestion tabs (AppSuggestionsHeaderView) take this row's place.
+    private boolean mHiddenBySuggestionTabs = false;
 
     private boolean mPredictionUiUpdatePaused = false;
 
@@ -121,8 +123,15 @@ public class PredictionRowView<T extends Context & ActivityContext>
         mParent = parent;
     }
 
+    // LC-Note: hides this row while the drawer's suggestion tabs show.
+    public void setHiddenBySuggestionTabs(boolean hidden) {
+        mHiddenBySuggestionTabs = hidden;
+        updateVisibility();
+    }
+
     private void updateVisibility() {
-        boolean enabled = mPredictionsEnabled && PreferenceCacheExtensionsKt.firstCached(prefs2.getShowSuggestedAppsInDrawer());
+        boolean enabled = mPredictionsEnabled && PreferenceCacheExtensionsKt.firstCached(prefs2.getShowSuggestedAppsInDrawer())
+                && !mHiddenBySuggestionTabs; // LC-Note: suggestion tabs
         setVisibility(enabled ? VISIBLE : GONE);
         if (mActivityContext.getAppsView() != null) {
             if (enabled) {
