@@ -1999,7 +1999,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public void updateOpenFolderPosition(int[] inOutPosition, Rect bounds, int width, int height) {
         int left = inOutPosition[0];
-        int top = inOutPosition[1];
+        //int top = inOutPosition[1];
         DeviceProfile deviceProfile = getDeviceProfile();
         int distFromEdgeOfScreen = getWorkspace().getPaddingLeft();
         final int availableWidth = deviceProfile.getDeviceProperties().getAvailableWidthPx();
@@ -2013,16 +2013,16 @@ public class Launcher extends StatefulActivity<LauncherState>
             // If the folder doesn't fit within the bounds, center it about the desired bounds
             left = bounds.left + (bounds.width() - width) / 2;
         }
-        if (height >= bounds.height()) {
-            // Folder height is greater than page height, center on page
-            top = bounds.top + (bounds.height() - height) / 2;
-        } else {
+//        if (height >= bounds.height()) {
+//            // Folder height is greater than page height, center on page
+//            top = bounds.top + (bounds.height() - height) / 2;
+//        } else {
             // Folder height is less than page height, so bound it to the absolute open folder
             // bounds if necessary
             Rect folderBounds = deviceProfile.getAbsoluteOpenFolderBounds();
             left = Math.max(folderBounds.left, Math.min(left, folderBounds.right - width));
-            top = Math.max(folderBounds.top, Math.min(top, folderBounds.bottom - height));
-        }
+            int top = Math.max(folderBounds.top, folderBounds.bottom - height);
+  //      }
         inOutPosition[0] = left;
         inOutPosition[1] = top;
     }
