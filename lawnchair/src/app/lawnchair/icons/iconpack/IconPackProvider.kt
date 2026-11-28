@@ -34,6 +34,9 @@ class IconPackProvider @Inject constructor(
         if (packageName.isEmpty()) {
             return null
         }
+        if (packageName == LocalIconPack.PACKAGE_NAME) {
+            return iconPacks.getOrPut(packageName) { LocalIconPack(context) }
+        }
         return iconPacks.getOrPut(packageName) {
             try {
                 CustomIconPack(context, packageName)

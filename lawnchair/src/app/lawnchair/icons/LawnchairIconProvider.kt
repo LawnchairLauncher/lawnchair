@@ -149,6 +149,9 @@ class LawnchairIconProvider @Inject constructor(
         val componentName = resolveComponentName(info, appInfo, user)
 
         var iconEntry: IconEntry? = null
+        val componentKey = componentName?.let { ComponentKey(it, user) }
+        val hasOverride = componentKey != null && overrideRepo.overridesMap.containsKey(componentKey)
+
         if (componentName != null) {
             iconEntry = resolveIconEntry(componentName, user)
         }
@@ -161,7 +164,7 @@ class LawnchairIconProvider @Inject constructor(
         val iconPackIcon = iconPackEntry?.let { iconPackProvider.getDrawable(it, iconDpi, user) }
         val baseIcon = iconPackIcon ?: super.getIcon(info, appInfo, iconDpi)
 
-        if (!themedIconsEnabled || iconEntry == null) {
+        if (hasOverride || !themedIconsEnabled || iconEntry == null) {
             return baseIcon
         }
 
