@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.lawnchair.allapps.AppDrawerMode
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -43,6 +44,7 @@ import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.AppDrawerHapticFeedbackPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreferenceWithPreview
@@ -82,7 +84,13 @@ fun AppDrawerPreferences(
             }
         }
         val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
+        val drawerModeAdapter = prefs2.drawerMode.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
+            ListPreference(
+                adapter = drawerModeAdapter,
+                entries = AppDrawerMode.entries(),
+                label = stringResource(id = R.string.app_drawer_mode),
+            )
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),
                 destination = AppDrawerHiddenApps,

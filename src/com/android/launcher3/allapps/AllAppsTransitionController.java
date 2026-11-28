@@ -39,6 +39,7 @@ import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
@@ -111,7 +112,12 @@ public class AllAppsTransitionController
                 @Override
                 public Float get(AllAppsTransitionController controller) {
                     if (controller.mShouldShowAllAppsOnSheet) {
-                        return controller.mAppsView.getActiveRecyclerView().getTranslationY();
+                        AllAppsRecyclerView rv = controller.mAppsView.getActiveRecyclerView();
+                        if (rv != null) {
+                            return rv.getTranslationY();
+                        }
+                        ViewGroup container = controller.mAppsView.getAppsRecyclerViewContainer();
+                        return container != null ? container.getTranslationY() : 0f;
                     } else {
                         return controller.getAppsViewPullbackTranslationY().getValue();
                     }
@@ -119,14 +125,23 @@ public class AllAppsTransitionController
 
                 @Override
                 public void setValue(AllAppsTransitionController controller, float translation) {
+                    AllAppsRecyclerView rv = controller.mAppsView.getActiveRecyclerView();
+                    ViewGroup container = controller.mAppsView.getAppsRecyclerViewContainer();
                     if (controller.mShouldShowAllAppsOnSheet) {
-                        controller.mAppsView.getActiveRecyclerView().setTranslationY(translation);
+                        if (rv != null) {
+                            rv.setTranslationY(translation);
+                        } else if (container != null) {
+                            container.setTranslationY(translation);
+                        }
                         controller.getAppsViewPullbackTranslationY().setValue(
                                 ALL_APPS_PULL_BACK_TRANSLATION_DEFAULT);
                     } else {
                         controller.getAppsViewPullbackTranslationY().setValue(translation);
-                        controller.mAppsView.getActiveRecyclerView().setTranslationY(
-                                ALL_APPS_PULL_BACK_TRANSLATION_DEFAULT);
+                        if (rv != null) {
+                            rv.setTranslationY(ALL_APPS_PULL_BACK_TRANSLATION_DEFAULT);
+                        } else if (container != null) {
+                            container.setTranslationY(ALL_APPS_PULL_BACK_TRANSLATION_DEFAULT);
+                        }
                     }
                 }
             };
@@ -139,7 +154,12 @@ public class AllAppsTransitionController
                 @Override
                 public Float get(AllAppsTransitionController controller) {
                     if (controller.mShouldShowAllAppsOnSheet) {
-                        return controller.mAppsView.getActiveRecyclerView().getAlpha();
+                        AllAppsRecyclerView rv = controller.mAppsView.getActiveRecyclerView();
+                        if (rv != null) {
+                            return rv.getAlpha();
+                        }
+                        ViewGroup container = controller.mAppsView.getAppsRecyclerViewContainer();
+                        return container != null ? container.getAlpha() : 1f;
                     } else {
                         return controller.getAppsViewPullbackAlpha().getValue();
                     }
@@ -147,14 +167,23 @@ public class AllAppsTransitionController
 
                 @Override
                 public void setValue(AllAppsTransitionController controller, float alpha) {
+                    AllAppsRecyclerView rv = controller.mAppsView.getActiveRecyclerView();
+                    ViewGroup container = controller.mAppsView.getAppsRecyclerViewContainer();
                     if (controller.mShouldShowAllAppsOnSheet) {
-                        controller.mAppsView.getActiveRecyclerView().setAlpha(alpha);
+                        if (rv != null) {
+                            rv.setAlpha(alpha);
+                        } else if (container != null) {
+                            container.setAlpha(alpha);
+                        }
                         controller.getAppsViewPullbackAlpha().setValue(
                                 ALL_APPS_PULL_BACK_ALPHA_DEFAULT);
                     } else {
                         controller.getAppsViewPullbackAlpha().setValue(alpha);
-                        controller.mAppsView.getActiveRecyclerView().setAlpha(
-                                ALL_APPS_PULL_BACK_ALPHA_DEFAULT);
+                        if (rv != null) {
+                            rv.setAlpha(ALL_APPS_PULL_BACK_ALPHA_DEFAULT);
+                        } else if (container != null) {
+                            container.setAlpha(ALL_APPS_PULL_BACK_ALPHA_DEFAULT);
+                        }
                     }
                 }
             };
@@ -306,6 +335,7 @@ public class AllAppsTransitionController
         }
 
         AllAppsRecyclerView rv = mLauncher.getAppsView().getActiveRecyclerView();
+        View targetView = rv != null ? rv : mLauncher.getAppsView().getAppsRecyclerViewContainer();
 
         // Disable view clipping from all apps' RecyclerView up to all apps view during scale
         // animation, and vice versa. The goal is to display extra roll(s) app icons (rendered in
@@ -313,12 +343,14 @@ public class AllAppsTransitionController
         boolean hasScaleEffect = scaleProgress < 1f;
         if (hasScaleEffect != mHasScaleEffect) {
             mHasScaleEffect = hasScaleEffect;
-            if (mHasScaleEffect) {
-                modifyAttributesOnViewTree(rv, mLauncher.getAppsView(),
-                        CLIP_CHILDREN_FALSE_MODIFIER);
-            } else {
-                restoreAttributesOnViewTree(rv, mLauncher.getAppsView(),
-                        CLIP_CHILDREN_FALSE_MODIFIER);
+            if (targetView != null) {
+                if (mHasScaleEffect) {
+                    modifyAttributesOnViewTree(targetView, mLauncher.getAppsView(),
+                            CLIP_CHILDREN_FALSE_MODIFIER);
+                } else {
+                    restoreAttributesOnViewTree(targetView, mLauncher.getAppsView(),
+                            CLIP_CHILDREN_FALSE_MODIFIER);
+                }
             }
         }
     }

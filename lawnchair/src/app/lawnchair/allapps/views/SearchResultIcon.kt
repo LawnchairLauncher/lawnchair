@@ -93,6 +93,10 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     override val titleText: CharSequence? get() = text
 
     override fun launch(): Boolean {
+        if (boundId.contains("private_space") || (tag is SearchActionItemInfo && (tag as SearchActionItemInfo).intent?.action == app.lawnchair.search.PrivateSpaceSearchUtils.PRIVATE_SPACE_ACTION)) {
+            app.lawnchair.search.PrivateSpaceSearchUtils.unlockOrOpenPrivateSpace(context)
+            return true
+        }
         ItemClickHandler.INSTANCE.onClick(this)
         return true
     }
@@ -234,6 +238,10 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onClick(v: View) {
+        if (boundId.contains("private_space") || (tag is SearchActionItemInfo && (tag as SearchActionItemInfo).intent?.action == app.lawnchair.search.PrivateSpaceSearchUtils.PRIVATE_SPACE_ACTION)) {
+            app.lawnchair.search.PrivateSpaceSearchUtils.unlockOrOpenPrivateSpace(context)
+            return
+        }
         ItemClickHandler.INSTANCE.onClick(v)
     }
 

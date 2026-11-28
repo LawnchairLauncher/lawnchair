@@ -112,7 +112,11 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             }
         }
         setSubtitleText(target.searchAction?.subtitle, showDelimiter)
-        if (shouldHandleClick(target) && !isSmall) {
+        if (target.packageName == app.lawnchair.search.PrivateSpaceSearchUtils.PRIVATE_SPACE_PACKAGE) {
+            setOnClickListener {
+                app.lawnchair.search.PrivateSpaceSearchUtils.unlockOrOpenPrivateSpace(context)
+            }
+        } else if (shouldHandleClick(target) && !isSmall) {
             setOnClickListener {
                 target.searchAction?.intent?.let { intent -> handleSearchTargetClick(context, intent) }
             }

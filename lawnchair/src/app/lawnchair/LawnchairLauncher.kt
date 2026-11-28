@@ -120,7 +120,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     private val rememberPositionStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
             if (toState is AllAppsState) {
-                mAppsView.activeRecyclerView.restoreScrollPosition()
+                mAppsView.activeRecyclerView?.restoreScrollPosition()
             }
         }
         override fun onStateTransitionComplete(finalState: LauncherState) {}

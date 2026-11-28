@@ -87,6 +87,9 @@
     <!-- which app drawer bg color to use by default -->
     <string name="config_default_app_drawer_bg_color" translatable="false">default</string>
 
+    <!-- which app drawer mode to use by default -->
+    <string name="config_default_app_drawer_mode" translatable="false">vertical</string>
+
     <!-- which smartspace mode to use by default -->
     <string name="config_default_smartspace_mode" translatable="false">lawnchair</string>
 

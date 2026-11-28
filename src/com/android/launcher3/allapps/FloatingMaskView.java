@@ -80,7 +80,7 @@ public class FloatingMaskView extends ConstraintLayout {
 
     @VisibleForTesting
     void setParameters(ViewGroup.MarginLayoutParams lp, AllAppsRecyclerView recyclerView) {
-        if (lp != null) {
+        if (lp != null && recyclerView != null) {
             lp.rightMargin = recyclerView.getPaddingRight();
             lp.leftMargin = recyclerView.getPaddingLeft();
             getBottomBox().setMinimumHeight(recyclerView.getPaddingBottom());

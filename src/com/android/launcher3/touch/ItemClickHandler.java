@@ -129,6 +129,20 @@ public class ItemClickHandler {
             }
         } else if (tag instanceof ItemClickProxy) {
             ((ItemClickProxy) tag).onItemClicked(v);
+        } else if (tag instanceof com.android.launcher3.model.data.SearchActionItemInfo saii
+                && "app.lawnchair.action.UNLOCK_PRIVATE_SPACE".equals(saii.getIntent() != null ? saii.getIntent().getAction() : null)) {
+            launcher.getAppsView().post(() -> {
+                com.android.launcher3.allapps.PrivateProfileManager ppm = launcher.getAppsView().getPrivateProfileManager();
+                if (ppm != null) {
+                    if (ppm.getCurrentState() == com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED) {
+                        ppm.setQuietMode(false);
+                    } else {
+                        launcher.getAppsView().getSearchUiManager().resetSearch();
+                        launcher.getAppsView().switchToTab(com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN);
+                        ppm.expandPrivateSpace();
+                    }
+                }
+            });
         }
     }
 
@@ -383,6 +397,21 @@ public class ItemClickHandler {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "start: startAppShortcutOrInfoActivity");
         Intent intent = item.getIntent();
+        if (intent != null && "app.lawnchair.action.UNLOCK_PRIVATE_SPACE".equals(intent.getAction())) {
+            launcher.getAppsView().post(() -> {
+                com.android.launcher3.allapps.PrivateProfileManager ppm = launcher.getAppsView().getPrivateProfileManager();
+                if (ppm != null) {
+                    if (ppm.getCurrentState() == com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED) {
+                        ppm.setQuietMode(false);
+                    } else {
+                        launcher.getAppsView().getSearchUiManager().resetSearch();
+                        launcher.getAppsView().switchToTab(com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN);
+                        ppm.expandPrivateSpace();
+                    }
+                }
+            });
+            return;
+        }
         if (item instanceof ItemInfoWithIcon itemInfoWithIcon) {
             if ((itemInfoWithIcon.runtimeStatusFlags
                     & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {

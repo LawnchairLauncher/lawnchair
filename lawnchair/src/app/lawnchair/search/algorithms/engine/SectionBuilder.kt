@@ -154,6 +154,21 @@ data object HistorySectionBuilder : SectionBuilder {
     }
 }
 
+data object PrivateSpaceSectionBuilder : SectionBuilder {
+    override fun build(
+        context: Context,
+        factory: SearchTargetFactory,
+        results: List<SearchResult>,
+    ): List<SearchTargetCompat> {
+        val privateSpace = results.filterIsInstance<SearchResult.Action.PrivateSpace>()
+        if (privateSpace.isEmpty()) return emptyList()
+        val targets = mutableListOf<SearchTargetCompat>()
+        targets.add(factory.createPrivateSpaceTarget(privateSpace.first().isLocked))
+        targets.add(factory.createHeaderTarget(SPACE))
+        return targets
+    }
+}
+
 data object ActionsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
