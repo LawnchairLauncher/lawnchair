@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -103,6 +104,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private var searchAlgorithm: LawnchairSearchAlgorithm? = null
 
     private var isDirectFocus = false
+    private var wasKeyboardVisible = false
     private var focusedResultTitle = ""
     private var canShowHint = false
     private var queryEmpty by mutableStateOf(true)
@@ -425,6 +427,22 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     override fun onGlobalLayout() {
         canShowHint = input.layout?.getEllipsisCount(0) == 0
+
+        val rootInsets = input.rootWindowInsets
+        val isKeyboardVisible = if (rootInsets != null) {
+            val compatInsets = WindowInsetsCompat.toWindowInsetsCompat(rootInsets, input)
+            compatInsets.isVisible(WindowInsetsCompat.Type.ime()) ||
+                compatInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom > 0
+        } else {
+            false
+        }
+
+        if (wasKeyboardVisible && !isKeyboardVisible) {
+            if (input.hasFocus()) {
+                input.clearFocus()
+            }
+        }
+        wasKeyboardVisible = isKeyboardVisible
     }
 
     override fun onAttachedToWindow() {
@@ -446,6 +464,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         }
         input.viewTreeObserver.removeOnGlobalLayoutListener(this)
         setDirectFocus(false)
+        wasKeyboardVisible = false
     }
 
     override fun onAppsUpdated() {
