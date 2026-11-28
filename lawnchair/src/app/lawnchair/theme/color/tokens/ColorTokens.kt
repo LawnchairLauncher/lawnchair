@@ -58,6 +58,10 @@ object ColorTokens {
 
     @JvmField val SearchResultSmallIcon = DayNightColorToken(Accent1_100, Accent2_800)
 
+    @JvmField val SearchResultCalendarIcon = DayNightColorToken(Accent1_100, Accent1_700)
+
+    @JvmField val SearchResultCalendarIconForeground = DayNightColorToken(Accent1_900, Accent1_100)
+
     @JvmField val SurfaceContainerHighest = DayNightColorToken(Neutral1_500.setLStar(90.0), Neutral1_500.setLStar(22.0))
 
     @JvmField val SurfaceContainerLow = DayNightColorToken(Neutral1_500.setLStar(96.0), Neutral1_500.setLStar(10.0))

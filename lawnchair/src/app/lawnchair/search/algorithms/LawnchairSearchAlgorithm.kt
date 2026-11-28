@@ -7,6 +7,7 @@ import app.lawnchair.allapps.views.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.search.LawnchairSearchAdapterProvider
+import app.lawnchair.search.adapter.CALENDAR
 import app.lawnchair.search.adapter.START_PAGE
 import app.lawnchair.search.adapter.SearchAdapterItem
 import app.lawnchair.search.adapter.SearchTargetCompat
@@ -86,7 +87,11 @@ sealed class LawnchairSearchAlgorithm(
         val smallIconIndices = findIndices(filtered, SMALL_ICON_HORIZONTAL_TEXT)
         val iconRowIndices = findIndices(filtered, ICON_HORIZONTAL_TEXT)
         val peopleTileIndices = findIndices(filtered, PEOPLE_TILE)
-        val suggestionIndices = findIndices(filtered, HORIZONTAL_MEDIUM_TEXT)
+        // Web suggestions and calendar events share a layout but are separate sections, so each
+        // gets its own card. Grouping them together renders both as one connected card.
+        val mediumTextIndices = findIndices(filtered, HORIZONTAL_MEDIUM_TEXT)
+        val calendarIndices = mediumTextIndices.filter { filtered[it].isCalendar }
+        val suggestionIndices = mediumTextIndices.filterNot { filtered[it].isCalendar }
         val fileIndices = findIndices(filtered, THUMBNAIL)
         val settingIndices = findIndices(filtered, ICON_SLICE)
         val recentIndices = findIndices(filtered, WIDGET_LIVE)
@@ -107,6 +112,7 @@ sealed class LawnchairSearchAlgorithm(
             } else {
                 val background = getBackground(
                     target.layoutType,
+                    target.isCalendar,
                     index,
                     isFirst,
                     isLast,
@@ -114,6 +120,7 @@ sealed class LawnchairSearchAlgorithm(
                     iconRowIndices,
                     peopleTileIndices,
                     suggestionIndices,
+                    calendarIndices,
                     fileIndices,
                     settingIndices,
                     recentIndices,
@@ -159,6 +166,7 @@ sealed class LawnchairSearchAlgorithm(
 
     private fun getBackground(
         layoutType: String,
+        isCalendar: Boolean,
         index: Int,
         isFirst: Boolean,
         isLast: Boolean,
@@ -166,6 +174,7 @@ sealed class LawnchairSearchAlgorithm(
         iconRowIndices: List<Int>,
         peopleTileIndices: List<Int>,
         suggestionIndices: List<Int>,
+        calendarIndices: List<Int>,
         fileIndices: List<Int>,
         settingIndices: List<Int>,
         recentIndices: List<Int>,
@@ -178,6 +187,8 @@ sealed class LawnchairSearchAlgorithm(
         layoutType == ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, iconRowIndices)
 
         layoutType == PEOPLE_TILE -> getGroupedBackground(index, peopleTileIndices)
+
+        layoutType == HORIZONTAL_MEDIUM_TEXT && isCalendar -> getGroupedBackground(index, calendarIndices)
 
         layoutType == HORIZONTAL_MEDIUM_TEXT -> getGroupedBackground(index, suggestionIndices)
 
@@ -251,6 +262,9 @@ sealed class LawnchairSearchAlgorithm(
         }
     }
 }
+
+private val SearchTargetCompat.isCalendar
+    get() = resultType == SearchTargetCompat.RESULT_TYPE_CALENDAR && packageName == CALENDAR
 
 private fun Sequence<SearchTargetCompat>.removeDuplicateDividers(): Sequence<SearchTargetCompat> {
     var previousWasDivider = true

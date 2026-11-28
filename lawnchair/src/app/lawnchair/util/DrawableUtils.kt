@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.createBitmap
@@ -45,18 +46,22 @@ fun createFilePreviewFallbackBitmap(context: Context, @DrawableRes drawable: Int
 /** Create a plain icon with [drawable] in the centre as small icon for search target.
  *
  * For file preview, use [createFilePreviewFallbackBitmap] instead. */
-fun createSmallSearchResultBitmap(context: Context, @DrawableRes drawable: Int): Bitmap {
+fun createSmallSearchResultBitmap(
+    context: Context,
+    @DrawableRes drawable: Int,
+    @ColorInt backgroundColor: Int? = null,
+    @ColorInt foregroundColor: Int? = null,
+): Bitmap {
     val iconSize = context.resources.getDimensionPixelSize(android.R.dimen.app_icon_size)
     val bitmap = createBitmap(iconSize, iconSize)
     val canvas = Canvas(bitmap)
 
-    val backgroundColor = ColorTokens.SearchResultSmallIcon.resolveColor(context)
-    canvas.drawColor(backgroundColor)
+    canvas.drawColor(backgroundColor ?: ColorTokens.SearchResultSmallIcon.resolveColor(context))
 
     val iconDrawable = ContextCompat.getDrawable(context, drawable)
     iconDrawable?.let { drawable ->
         drawable.mutate()
-        drawable.setTint(ColorTokens.TextColorPrimary.resolveColor(context))
+        drawable.setTint(foregroundColor ?: ColorTokens.TextColorPrimary.resolveColor(context))
         val inset = (iconSize * .27f).toInt()
         drawable.setBounds(inset, inset, iconSize - inset, iconSize - inset)
         drawable.draw(canvas)
