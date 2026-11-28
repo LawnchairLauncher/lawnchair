@@ -231,6 +231,16 @@ class LawnchairLauncher : QuickstepLauncher() {
         preferenceManager2.backPressGestureHandler.onEach(launchIn = lifecycleScope) { handler ->
             hasBackGesture = handler !is GestureHandlerConfig.NoOp
         }
+        // LC: a folder's custom icon may have been picked or reset; folders read it when drawn.
+        preferenceManager2.preferencesDataStore.data.onEach {
+            preferenceManager2.withFreshCache {
+                if (isDestroyed) return@withFreshCache
+                workspace.mapOverItems { _, view ->
+                    if (view is FolderIcon) view.invalidate()
+                    false
+                }
+            }
+        }.launchIn(lifecycleScope)
 
         lifecycleScope.launch {
             LauncherOptionsPopup.restoreMissingPopupOptions(launcher)

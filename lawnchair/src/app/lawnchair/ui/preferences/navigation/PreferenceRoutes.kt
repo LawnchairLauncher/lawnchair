@@ -207,6 +207,13 @@ data class SelectIcon(
     val componentKey: String,
 ) : PreferenceRoute
 
+// LC: icon of a home screen folder
+@Serializable
+data class SelectFolderIcon(
+    val itemId: Int,
+    val title: String = "",
+) : PreferenceRoute
+
 // default to empty
 @Serializable
 data class IconPicker(val packageName: String = "") : PreferenceRoute
