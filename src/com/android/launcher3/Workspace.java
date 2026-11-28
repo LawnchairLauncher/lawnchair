@@ -147,6 +147,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import app.lawnchair.hotseat.HotseatPagedView;
+import app.lawnchair.ui.popup.FolderOptionsPopup;
 import app.lawnchair.gestures.PanToMoveController;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
@@ -1993,6 +1994,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (btv.isDisplaySearchResult()) {
                 dragOptions.preDragEndScale = (float) mAllAppsIconSize / btv.getIconSize();
             }
+        } else if (child instanceof FolderIcon folderIcon && !dragOptions.isAccessibleDrag) {
+            // LC: long-press menu on home screen folders (rename, change icon)
+            dragOptions.preDragCondition = FolderOptionsPopup.startLongPressAction(folderIcon);
         }
 
         boolean lockHomeScreen = PreferenceCacheExtensionsKt.firstCached(mPreferenceManager2.getLockHomeScreen());

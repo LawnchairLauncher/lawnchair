@@ -208,6 +208,8 @@
     <string name="drawer_search_description">Web suggestions, global search</string>
 
     <string name="folders_label">Folders</string>
+    <string name="folder_rename">Rename</string>
+    <string name="folder_change_icon">Change icon</string>
     <string name="folders_description">Row and column count</string>
 
     <string name="gestures_label">Gestures</string>
