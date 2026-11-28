@@ -51,6 +51,7 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import app.lawnchair.views.LauncherPreviewView
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.R
 
@@ -215,7 +216,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
         val hotseatRows = prefs.hotseatRows
         val dockPages = prefs.dockPages
 
-        val adapters = listOf(
+        val layoutAdapters = listOf(
             prefs2.hotseatMode.getAdapter(),
             prefs.hotseatColumns.getAdapter(),
             prefs.hotseatColumnsUnfolded.getAdapter(),
@@ -228,16 +229,17 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
             prefs2.hotseatBottomFactor.getAdapter(),
             prefs2.strokeColorStyle.getAdapter(),
             prefs2.enableLabelInDock.getAdapter(),
-            prefs.hotseatBG.getAdapter(),
-            prefs.hotseatBGHorizontalInsetLeft.getAdapter(),
-            prefs.hotseatBGVerticalInsetTop.getAdapter(),
-            prefs.hotseatBGHorizontalInsetRight.getAdapter(),
-            prefs.hotseatBGVerticalInsetBottom.getAdapter(),
             prefs2.pageIndicatorHeightFactor.getAdapter(),
-            prefs2.hotseatBackgroundColor.getAdapter(),
-            prefs2.hotseatBackgroundCornerRadius.getAdapter(),
-            prefs.hotseatBGAlpha.getAdapter(),
         )
+
+        val hotseatBg = prefs.hotseatBG.getAdapter().state.value
+        val hotseatBgColor = prefs2.hotseatBackgroundColor.getAdapter().state.value
+        val hotseatBgCornerRadius = prefs2.hotseatBackgroundCornerRadius.getAdapter().state.value
+        val hotseatBgAlpha = prefs.hotseatBGAlpha.getAdapter().state.value
+        val hotseatBgInsetLeft = prefs.hotseatBGHorizontalInsetLeft.getAdapter().state.value
+        val hotseatBgInsetRight = prefs.hotseatBGHorizontalInsetRight.getAdapter().state.value
+        val hotseatBgInsetTop = prefs.hotseatBGVerticalInsetTop.getAdapter().state.value
+        val hotseatBgInsetBottom = prefs.hotseatBGVerticalInsetBottom.getAdapter().state.value
 
         PreferenceGroupHeading(
             heading = stringResource(id = R.string.preview_label),
@@ -257,10 +259,21 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
                         wallpaper = wallpaper,
                         modifier = Modifier.fillMaxSize(),
                     )
-                    key(adapters.map { it.state.value }.toTypedArray()) {
+                    key(layoutAdapters.map { it.state.value }) {
                         DummyLauncherLayout(
                             idp = createPreviewIdp { copy(numHotseatColumns = prefs.hotseatColumns.get()) },
                             modifier = Modifier.fillMaxSize(),
+                            update = { view ->
+                                @Suppress("UNUSED_VARIABLE")
+                                val dummy = hotseatBg.hashCode() xor
+                                    hotseatBgCornerRadius.hashCode() xor
+                                    hotseatBgAlpha.hashCode() xor
+                                    hotseatBgInsetLeft xor
+                                    hotseatBgInsetRight xor
+                                    hotseatBgInsetTop xor
+                                    hotseatBgInsetBottom
+                                (view as? LauncherPreviewView)?.refreshHotseat(hotseatBgColor)
+                            },
                         )
                     }
                 }

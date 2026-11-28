@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import app.lawnchair.preferences.PrefEntry
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
@@ -114,7 +115,7 @@ val isSelectedThemeDark: Boolean
     @Composable get() {
         if (LocalInspectionMode.current) return isAutoThemeDark
 
-        val themeChoice by preferenceManager().launcherTheme.observeAsState()
+        val themeChoice by (preferenceManager().launcherTheme as PrefEntry<String>).observeAsState()
         return when (themeChoice) {
             ThemeChoice.LIGHT -> false
             ThemeChoice.DARK -> true

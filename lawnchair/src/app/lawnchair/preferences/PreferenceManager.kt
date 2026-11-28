@@ -70,6 +70,11 @@ class PreferenceManager @Inject constructor(
         Unit
     }
 
+    private val refreshHotseatBackground = {
+        LawnchairLauncher.instance?.hotseat?.refreshBackground()
+        Unit
+    }
+
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
     val themedIconPackPackage = StringPref("pref_themedIconPackPackage", "", reloadIcons)
     val allowRotation = BoolPref("pref_allowRotation", false)
@@ -178,13 +183,13 @@ class PreferenceManager @Inject constructor(
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
     val hotseatQsbAlpha = IntPref("pref_searchHotseatTranparency", 100, recreate)
     val hotseatQsbStrokeWidth = FloatPref("pref_searchStrokeWidth", 0F, recreate)
-    val hotseatBG = BoolPref("pref_hotseatBG", false, recreate)
-    val hotseatBGHorizontalInsetLeft = IntPref("pref_hotseatBGHRinsetLeft", 0, recreate)
-    val hotseatBGVerticalInsetTop = IntPref("pref_hotseatBGVRinsetTop", 0, recreate)
-    val hotseatBGHorizontalInsetRight = IntPref("pref_hotseatBGHRinsetRight", 0, recreate)
-    val hotseatBGVerticalInsetBottom = IntPref("pref_hotseatBGVRinsetBottom", 0, recreate)
+    val hotseatBG = BoolPref("pref_hotseatBG", false, refreshHotseatBackground)
+    val hotseatBGHorizontalInsetLeft = IntPref("pref_hotseatBGHRinsetLeft", 0, refreshHotseatBackground)
+    val hotseatBGVerticalInsetTop = IntPref("pref_hotseatBGVRinsetTop", 0, refreshHotseatBackground)
+    val hotseatBGHorizontalInsetRight = IntPref("pref_hotseatBGHRinsetRight", 0, refreshHotseatBackground)
+    val hotseatBGVerticalInsetBottom = IntPref("pref_hotseatBGVRinsetBottom", 0, refreshHotseatBackground)
 
-    val hotseatBGAlpha = IntPref("pref_hotseatBGTransparency", 100, recreate)
+    val hotseatBGAlpha = IntPref("pref_hotseatBGTransparency", 100, refreshHotseatBackground)
 
     val enableWallpaperBlur = BoolPref("pref_enableWallpaperBlur", false, recreate)
     val wallpaperBlur = IntPref("pref_wallpaperBlur", 25, recreate)

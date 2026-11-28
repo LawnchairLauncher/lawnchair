@@ -471,6 +471,7 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     override fun onResume() {
         super.onResume()
+        hotseat?.refreshBackground()
         restartIfPending()
         refreshPredictionContainersFromModel()
 
