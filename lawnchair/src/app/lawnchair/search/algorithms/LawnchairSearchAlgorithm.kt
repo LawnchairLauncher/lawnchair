@@ -204,11 +204,28 @@ sealed class LawnchairSearchAlgorithm(
         else -> centerBackground
     }
 
-    private fun getGroupedBackground(index: Int, indices: List<Int>): SearchItemBackground = when {
-        indices.size == 1 -> normalBackground
-        index == indices.first() -> topBackground
-        index == indices.last() -> bottomBackground
-        else -> centerBackground
+    private fun getGroupedBackground(index: Int, indices: List<Int>): SearchItemBackground {
+        // Group adjacent layout indices to prevent all layouts from being connected to the same group.
+        val localIndices = getAdjacentGroup(index, indices)
+        return when {
+            localIndices.size == 1 -> normalBackground
+            index == localIndices.first() -> topBackground
+            index == localIndices.last() -> bottomBackground
+            else -> centerBackground
+        }
+    }
+
+    private fun getAdjacentGroup(index: Int, indices: List<Int>): List<Int> {
+        val pos = indices.indexOf(index)
+        if (pos < 0) return listOf(index)
+
+        var start = pos
+        while (start > 0 && indices[start] == indices[start - 1] + 1) start--
+
+        var end = pos
+        while (end < indices.size - 1 && indices[end] == indices[end + 1] - 1) end++
+
+        return indices.subList(start, end + 1)
     }
 
     open fun doZeroStateSearch(callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
