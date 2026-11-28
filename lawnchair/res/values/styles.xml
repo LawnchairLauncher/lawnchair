@@ -226,6 +226,21 @@
         <item name="keyShadowOffsetY">@dimen/key_text_shadow_dy</item>
     </style>
 
+    <style name="TextAppearance.Smartspacer.Page.Title" parent="TextAppearance.Smartspacer.Page.Title.Preview">
+        <item name="android:fontFamily">variable-title-medium-emphasized</item>
+        <item name="customFontType">@id/font_heading</item>
+    </style>
+
+    <style name="TextAppearance.Smartspacer.Page.Subtitle" parent="TextAppearance.Smartspacer.Page.Subtitle.Preview">
+        <item name="android:fontFamily">variable-title-medium</item>
+        <item name="customFontType">@id/font_body</item>
+    </style>
+
+    <style name="TextAppearance.Smartspacer.Page.Popup" parent="TextAppearance.Smartspacer.Page.Popup.Preview">
+        <item name="android:fontFamily">variable-body-medium</item>
+        <item name="customFontType">@id/font_body</item>
+    </style>
+
     <style name="AllAppsStyle4x5Fold" parent="@style/AllAppsStyleDefault">
         <item name="horizontalPadding">32dp</item>
     </style>
