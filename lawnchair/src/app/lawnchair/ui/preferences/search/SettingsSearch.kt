@@ -137,10 +137,9 @@ internal object SettingsSearchCatalog {
 
     /**
      * Settings that the index finds but that are only shown in some builds; the generator cannot
-     * see such conditions.
+     * see such conditions. GeneralPreferences shows the auto updater only in nightly builds.
      */
     private fun isAvailable(entry: SettingsSearchEntry): Boolean = when (entry.label) {
-        // GeneralPreferences shows the auto updater only in nightly builds.
         "auto_updater_label" -> BuildConfig.APPLICATION_ID.contains("nightly")
         else -> true
     }
