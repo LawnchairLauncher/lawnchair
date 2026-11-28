@@ -114,6 +114,7 @@ import java.util.Objects;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.gestures.IconGestureListener;
+import app.lawnchair.override.ShortcutOverrides;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.LawnchairUtilsKt;
@@ -419,6 +420,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @UiThread
     public void applyFromWorkspaceItem(WorkspaceItemInfo info) {
+        // LC: own name and icon of a pinned shortcut
+        ShortcutOverrides.apply(this, info);
         applyIconAndLabel(info);
         setItemInfo(info);
 

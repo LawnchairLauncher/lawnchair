@@ -40,6 +40,7 @@ import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.ui.LawnchairShortcutActivity
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
+import app.lawnchair.override.ShortcutOverrides
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
@@ -65,6 +66,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.PredictedContainerInfo
+import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.shortcuts.DeepShortcutView
 import com.android.launcher3.statemanager.StateManager
@@ -231,12 +233,16 @@ class LawnchairLauncher : QuickstepLauncher() {
         preferenceManager2.backPressGestureHandler.onEach(launchIn = lifecycleScope) { handler ->
             hasBackGesture = handler !is GestureHandlerConfig.NoOp
         }
-        // LC: a folder's custom icon may have been picked or reset; folders read it when drawn.
+        // LC: a folder's custom icon, or a pinned shortcut's own name or icon, may have changed.
         preferenceManager2.preferencesDataStore.data.onEach {
             preferenceManager2.withFreshCache {
                 if (isDestroyed) return@withFreshCache
-                workspace.mapOverItems { _, view ->
-                    if (view is FolderIcon) view.invalidate()
+                workspace.mapOverItems { info, view ->
+                    refreshCustomizedItem(info, view)
+                    (view as? FolderIcon)?.folder?.mapOverItems { folderInfo, folderView ->
+                        refreshCustomizedItem(folderInfo, folderView)
+                        false
+                    }
                     false
                 }
             }
@@ -502,6 +508,14 @@ class LawnchairLauncher : QuickstepLauncher() {
                 }
             },
         )
+    }
+
+    // LC: binds pinned shortcuts again for a changed name or icon; folders read theirs when drawn.
+    private fun refreshCustomizedItem(info: ItemInfo?, view: View) {
+        if (view is BubbleTextView && info is WorkspaceItemInfo && ShortcutOverrides.isCustomizable(info)) {
+            view.applyFromWorkspaceItem(info)
+        }
+        if (view is FolderIcon) view.invalidate()
     }
 
     override fun onStateSetEnd(state: LauncherState) {

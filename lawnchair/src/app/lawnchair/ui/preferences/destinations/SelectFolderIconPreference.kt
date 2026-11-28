@@ -27,7 +27,8 @@ import com.google.android.msdl.data.model.MSDLToken
 import kotlinx.coroutines.launch
 
 /**
- * LC: picks an icon pack icon for a home screen folder, shown instead of the folder's preview.
+ * LC: picks an icon pack icon for a home screen folder (shown instead of its preview) or a
+ * pinned shortcut.
  * Works like picking a custom app icon.
  */
 @Composable
