@@ -140,8 +140,14 @@ class HotseatPagedView @JvmOverloads constructor(
 
     private fun isTouchOnIconWithHorizontalSwipeGesture(x: Float, y: Float): Boolean {
         // Children are laid out in scrolled content coordinates.
-        val contentX = x + scrollX
-        val contentY = y + scrollY
+        return findIcon(x + scrollX, y + scrollY)?.hasConfiguredHorizontalIconSwipeGesture() == true
+    }
+
+    /**
+     * LC: the icon at ([contentX], [contentY]), given in the coordinates the pages are laid out in
+     * (this view's coordinates plus its scroll).
+     */
+    fun findIcon(contentX: Float, contentY: Float): BubbleTextView? {
         for (i in childCount - 1 downTo 0) {
             val page = getChildAt(i) as? CellLayout ?: continue
             val pageX = contentX - page.left
@@ -156,12 +162,10 @@ class HotseatPagedView @JvmOverloads constructor(
                 // Include the icon's translation (e.g. from Hotseat.adjustForBubbleBar()).
                 val iconX = containerX - child.left - child.translationX
                 val iconY = containerY - child.top - child.translationY
-                if (Utilities.pointInView(child, iconX, iconY, 0f)) {
-                    return child.hasConfiguredHorizontalIconSwipeGesture()
-                }
+                if (Utilities.pointInView(child, iconX, iconY, 0f)) return child
             }
         }
-        return false
+        return null
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {

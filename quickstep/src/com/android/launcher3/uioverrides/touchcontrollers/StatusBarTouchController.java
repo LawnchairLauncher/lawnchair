@@ -36,6 +36,7 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 
+import app.lawnchair.gestures.IconSwipeTouch;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -219,15 +220,10 @@ public class StatusBarTouchController implements TouchController {
 
     private boolean canInterceptTouch(MotionEvent ev) {
         // Lawnchair: Icon Swipe Gestures (For vertical down gestures)
-        if (mLauncher instanceof Launcher launcher) {
-            if (launcher.getWorkspace() != null && launcher.getDragLayer() != null) {
-                float[] coord = new float[]{ev.getX(), ev.getY()};
-                launcher.getDragLayer().mapCoordInSelfToDescendant(launcher.getWorkspace(), coord);
-                if (launcher.getWorkspace()
-                        .isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)) {
-                    return false;
-                }
-            }
+        if (mLauncher instanceof Launcher launcher
+                && IconSwipeTouch.isOnIconWithSwipeGesture(launcher, ev, true)) {
+            // LC: also icons in the dock
+            return false;
         }
         if (isTrackpadScroll(ev) || !mIsEnabledCheck.get()
                 || AbstractFloatingView.getTopOpenViewWithType(mLauncher,

@@ -107,12 +107,7 @@ class VerticalSwipeTouchController(
             return false
         }
         // LC: Icon Swipe Gestures (For vertical gestures)
-        val isIconSwipe = launcher.workspace?.let {
-            val coord = floatArrayOf(ev.x, ev.y)
-            launcher.dragLayer.mapCoordInSelfToDescendant(it, coord)
-            it.isTouchOnIconWithSwipeGesture(coord[0], coord[1], true)
-        } ?: false
-        if (isIconSwipe) {
+        if (IconSwipeTouch.isOnIconWithSwipeGesture(launcher, ev, true)) {
             return false
         }
         return AbstractFloatingView.getTopOpenView(launcher) == null &&
