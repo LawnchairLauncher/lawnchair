@@ -43,6 +43,14 @@ object AutoBackup {
 
     private const val TAG = "AutoBackup"
     private const val FILE_PREFIX = "Lawnchair_Auto_Backup "
+    private const val FILE_EXTENSION = ".lawnchairbackup"
+
+    // Names of files this class created: the prefix, the time and, if the folder already had that
+    // name, a number the storage provider added ("... (1).lawnchairbackup").
+    private val backupFileName = Regex(
+        "^" + Regex.escape(FILE_PREFIX) + "\\d{4}-\\d{2}-\\d{2} \\d{2}-\\d{2}(-\\d{2})?( \\(\\d+\\))?" +
+            Regex.escape(FILE_EXTENSION) + "$",
+    )
     private const val STATE_PREFS = "auto_backup_state"
     private const val KEY_LAST_TIME = "last_time"
     private const val KEY_LAST_ERROR = "last_error"
@@ -105,32 +113,47 @@ object AutoBackup {
         withContext(Dispatchers.IO) {
             val resolver = context.contentResolver
             val parent = DocumentsContract.buildDocumentUriUsingTree(folder, DocumentsContract.getTreeDocumentId(folder))
-            val name = FILE_PREFIX + SimpleDateFormat("yyyy-MM-dd HH-mm", Locale.ROOT).format(Date())
-            val file = DocumentsContract.createDocument(resolver, parent, LawnchairBackup.MIME_TYPE, "$name.lawnchairbackup")
+            val name = FILE_PREFIX + SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.ROOT).format(Date())
+            val file = DocumentsContract.createDocument(resolver, parent, LawnchairBackup.MIME_TYPE, name + FILE_EXTENSION)
                 ?: error(context.getString(R.string.auto_backup_error_folder))
-            LawnchairBackup.create(context, LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS, preview, file)
-            deleteOldBackups(context, folder, keep)
+            try {
+                LawnchairBackup.create(context, LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS, preview, file)
+            } catch (e: Exception) {
+                // Do not leave a partial backup behind (e.g. when the storage ran full).
+                runCatching { DocumentsContract.deleteDocument(resolver, file) }
+                throw e
+            }
+            deleteOldBackups(context, folder, keep, DocumentsContract.getDocumentId(file))
         }
     }
 
-    /** Deletes all but the newest [keep] automatic backups in [folder]. Names sort by date. */
-    private fun deleteOldBackups(context: Context, folder: Uri, keep: Int) {
+    /**
+     * Deletes all but the newest [keep] automatic backups in [folder], always keeping the one just
+     * made ([newId]). Only files named like an automatic backup are considered; names sort by date.
+     */
+    private fun deleteOldBackups(context: Context, folder: Uri, keep: Int, newId: String) {
         val resolver = context.contentResolver
         val children = DocumentsContract.buildChildDocumentsUriUsingTree(folder, DocumentsContract.getTreeDocumentId(folder))
         val backups = mutableListOf<Pair<String, String>>()
         resolver.query(
             children,
-            arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_DISPLAY_NAME),
+            arrayOf(
+                DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                DocumentsContract.Document.COLUMN_MIME_TYPE,
+            ),
             null,
             null,
             null,
         )?.use { cursor ->
             while (cursor.moveToNext()) {
+                val id = cursor.getString(0) ?: continue
                 val name = cursor.getString(1) ?: continue
-                if (name.startsWith(FILE_PREFIX)) backups += cursor.getString(0) to name
+                if (cursor.getString(2) == DocumentsContract.Document.MIME_TYPE_DIR) continue
+                if (id != newId && backupFileName.matches(name)) backups += id to name
             }
         }
-        backups.sortedByDescending { it.second }.drop(keep).forEach { (id, name) ->
+        backups.sortedByDescending { it.second }.drop(keep - 1).forEach { (id, name) ->
             try {
                 DocumentsContract.deleteDocument(resolver, DocumentsContract.buildDocumentUriUsingTree(folder, id))
             } catch (e: Exception) {
