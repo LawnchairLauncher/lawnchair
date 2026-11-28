@@ -6,8 +6,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.LawnchairProto.BackupInfo
+import app.lawnchair.data.AppDatabase
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.scaleDownTo
 import app.lawnchair.util.scaleDownToDisplaySize
@@ -160,6 +162,12 @@ class LawnchairBackup(
                 .setPreviewDarkText(wallpaperSupportsDarkText)
                 .build()
 
+            // LC: committed changes can still sit in the preferences database's write-ahead log,
+            // which is not part of the backup. Move them into the database file first.
+            withContext(Dispatchers.IO) {
+                runCatching { AppDatabase.INSTANCE.get(context).checkpoint() }
+                    .onFailure { Log.w("LawnchairBackup", "Could not checkpoint the preferences database", it) }
+            }
             val pfd = context.contentResolver.openFileDescriptor(fileUri, "w")!!
             withContext(Dispatchers.IO) {
                 pfd.use {

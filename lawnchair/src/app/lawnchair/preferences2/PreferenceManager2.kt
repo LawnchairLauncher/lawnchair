@@ -502,6 +502,27 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // LC: automatic backups into a folder picked by the user (see AutoBackup).
+    val autoBackupEnabled = preference(
+        key = booleanPreferencesKey(name = "auto_backup_enabled"),
+        defaultValue = false,
+    )
+
+    val autoBackupFolder = preference(
+        key = stringPreferencesKey(name = "auto_backup_folder"),
+        defaultValue = "",
+    )
+
+    val autoBackupIntervalDays = preference(
+        key = intPreferencesKey(name = "auto_backup_interval_days"),
+        defaultValue = 1,
+    )
+
+    val autoBackupKeep = preference(
+        key = intPreferencesKey(name = "auto_backup_keep"),
+        defaultValue = 5,
+    )
+
     val folderPreviewBackgroundOpacity = preference(
         key = floatPreferencesKey(name = "folder_preview_background_opacity"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_preview_background_opacity),
