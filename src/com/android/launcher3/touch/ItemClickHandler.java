@@ -138,7 +138,17 @@ public class ItemClickHandler {
      * @param v The view that was clicked. Must be an instance of {@link FolderIcon}.
      */
     private static void onClickFolderIcon(View v) {
-        Folder folder = ((FolderIcon) v).getFolder();
+        FolderIcon folderIcon = (FolderIcon) v;
+        // Lawnchair: large folders launch the tapped app directly.
+        ItemInfo directItem = folderIcon.consumeLargeFolderTapItem();
+        if (directItem instanceof WorkspaceItemInfo wii) {
+            onClickAppShortcut(v, wii, Launcher.getLauncher(v.getContext()));
+            return;
+        } else if (directItem instanceof AppInfo appInfo) {
+            startAppShortcutOrInfoActivity(v, appInfo, Launcher.getLauncher(v.getContext()));
+            return;
+        }
+        Folder folder = folderIcon.getFolder();
         if (!folder.isOpen() && !folder.isDestroyed()) {
             // Open the requested folder
             folder.animateOpen();

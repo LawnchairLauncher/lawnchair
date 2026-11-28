@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.preferences.destinations
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +27,8 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
@@ -91,6 +94,31 @@ fun FolderPreferences(
             )
         }
 
+        val largeFolderScrollAdapter = prefs2.largeFolderScrollByDefault.getAdapter()
+        PreferenceGroup(
+            heading = stringResource(id = R.string.large_folders_label),
+            description = stringResource(id = R.string.large_folders_description),
+        ) {
+            ListPreference(
+                adapter = largeFolderScrollAdapter,
+                entries = largeFolderBehaviourEntries(),
+                label = stringResource(id = R.string.large_folder_behaviour_label),
+            )
+            ExpandAndShrink(visible = largeFolderScrollAdapter.state.value) {
+                Column {
+                    ListPreference(
+                        adapter = prefs2.largeFolderScrollHorizontalByDefault.getAdapter(),
+                        entries = largeFolderDirectionEntries(),
+                        label = stringResource(id = R.string.large_folder_scroll_direction_label),
+                    )
+                    SwitchPreference(
+                        adapter = prefs2.largeFolderShowScrollBarByDefault.getAdapter(),
+                        label = stringResource(id = R.string.large_folder_show_scroll_bar),
+                    )
+                }
+            }
+        }
+
         val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreenFolder.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SwitchPreference(
@@ -109,3 +137,13 @@ fun FolderPreferences(
         }
     }
 }
+
+private fun largeFolderBehaviourEntries() = listOf(
+    ListPreferenceEntry(false) { stringResource(id = R.string.large_folder_behaviour_expand) },
+    ListPreferenceEntry(true) { stringResource(id = R.string.large_folder_behaviour_scroll) },
+)
+
+private fun largeFolderDirectionEntries() = listOf(
+    ListPreferenceEntry(false) { stringResource(id = R.string.large_folder_scroll_vertical) },
+    ListPreferenceEntry(true) { stringResource(id = R.string.large_folder_scroll_horizontal) },
+)

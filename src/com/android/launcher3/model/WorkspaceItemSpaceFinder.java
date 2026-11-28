@@ -103,6 +103,8 @@ public class WorkspaceItemSpaceFinder {
         if (smartspaceEnabled) {
             screensToExclude.add(FIRST_SCREEN_ID);
         }
+        // Lawnchair: new items are never placed automatically on the big items page.
+        screensToExclude.add(com.android.launcher3.Workspace.BIG_ITEMS_SCREEN_ID);
 
         for (int screen = 0; screen < screenCount; screen++) {
             screenId = workspaceScreens.get(screen);

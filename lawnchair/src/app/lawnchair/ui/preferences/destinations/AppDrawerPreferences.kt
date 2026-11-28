@@ -75,9 +75,19 @@ fun AppDrawerPreferences(
         modifier = modifier,
     ) {
         val drawerListAdapter = prefs.drawerList.getAdapter()
+        val categoryTabsAdapter = prefs.drawerCategoryTabs.getAdapter()
+        PreferenceGroup {
+            SwitchPreference(
+                adapter = categoryTabsAdapter,
+                label = stringResource(id = R.string.drawer_category_tabs_label),
+                description = stringResource(id = R.string.drawer_category_tabs_description),
+            )
+        }
         Column {
-            DrawerLayoutPreference(drawerListAdapter)
-            ExpandAndShrink(visible = drawerListAdapter.state.value) {
+            ExpandAndShrink(visible = !categoryTabsAdapter.state.value) {
+                DrawerLayoutPreference(drawerListAdapter)
+            }
+            ExpandAndShrink(visible = drawerListAdapter.state.value || categoryTabsAdapter.state.value) {
                 AppDrawerFolderPreferenceItem()
             }
         }

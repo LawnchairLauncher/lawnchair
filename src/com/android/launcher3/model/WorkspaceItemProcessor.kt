@@ -173,8 +173,9 @@ class WorkspaceItemProcessor(
         c.applyCommonProperties(info)
         info.intent = intent
         info.rank = c.rank
-        info.spanX = 1
-        info.spanY = 1
+        // Lawnchair: apps can be enlarged on the big items page.
+        info.spanX = if (c.container == Favorites.CONTAINER_DESKTOP) c.spanX.coerceAtLeast(1) else 1
+        info.spanY = if (c.container == Favorites.CONTAINER_DESKTOP) c.spanY.coerceAtLeast(1) else 1
         info.runtimeStatusFlags = info.runtimeStatusFlags or disabledState
         if (isSafeMode && !appInfoWrapper.isSystem()) {
             info.runtimeStatusFlags =
@@ -429,8 +430,9 @@ class WorkspaceItemProcessor(
             c.applyCommonProperties(info)
             info.intent = intent
             info.rank = c.rank
-            info.spanX = 1
-            info.spanY = 1
+            // Lawnchair: shortcuts can be enlarged on the big items page.
+            info.spanX = if (c.container == Favorites.CONTAINER_DESKTOP) c.spanX.coerceAtLeast(1) else 1
+            info.spanY = if (c.container == Favorites.CONTAINER_DESKTOP) c.spanY.coerceAtLeast(1) else 1
             info.runtimeStatusFlags = info.runtimeStatusFlags or disabledState
             if (isSafeMode && !appInfoWrapper.isSystem()) {
                 info.runtimeStatusFlags =
@@ -522,6 +524,18 @@ class WorkspaceItemProcessor(
         collection.spanY = 1
         if (collection is FolderInfo) {
             collection.options = c.options
+            // Lawnchair: large folders keep their stored span on the desktop.
+            if (collection.hasOption(FolderInfo.FLAG_LARGE_FOLDER) &&
+                collection.container == Favorites.CONTAINER_DESKTOP
+            ) {
+                val spanX = c.spanX
+                val spanY = c.spanY
+                val range = 1..FolderInfo.LARGE_FOLDER_MAX_SPAN
+                if (spanX in range && spanY in range && (spanX > 1 || spanY > 1)) {
+                    collection.spanX = spanX
+                    collection.spanY = spanY
+                }
+            }
         } else {
             // An app pair may be inside another folder, so it needs to preserve rank information.
             collection.rank = c.rank
@@ -688,6 +702,9 @@ class WorkspaceItemProcessor(
 
             itemInfo.getContents().sortWith(Folder.ITEM_POS_COMPARATOR)
             verifiers.forEach { it.setFolderInfo(itemInfo) }
+            // Lawnchair: every app of a large folder is visible on the workspace, not only the
+            // ones of the small 2x2 preview, so they all need high-res icons.
+            val isLargeFolder = itemInfo.isLargeFolder
 
             // Update ranks here to ensure there are no gaps caused by removed folder items.
             // Ranks are the source of truth for folder items, so cellX and cellY can be
@@ -698,7 +715,7 @@ class WorkspaceItemProcessor(
                     info is WorkspaceItemInfo &&
                         info.matchingLookupFlag.isVisuallyLessThan(Favorites.DESKTOP_ICON_FLAG) &&
                         info.itemType == Favorites.ITEM_TYPE_APPLICATION &&
-                        verifiers.any { it.isItemInPreview(info.rank) }
+                        (isLargeFolder || verifiers.any { it.isItemInPreview(info.rank) })
                 ) {
                     iconCache.getTitleAndIcon(info, Favorites.DESKTOP_ICON_FLAG)
                 }

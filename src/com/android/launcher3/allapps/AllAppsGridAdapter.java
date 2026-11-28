@@ -189,6 +189,10 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
         @Override
         protected int incrementTotalHeight(Adapter adapter, int position, int heightUntilLastPos) {
             AllAppsGridAdapter.AdapterItem item = mApps.getAdapterItems().get(position);
+            // LC: two large folders share a row, only count the first one.
+            if (item.viewType == VIEW_TYPE_LARGE_FOLDER && item.rowAppIndex % 2 == 1) {
+                return heightUntilLastPos;
+            }
             // only account for the first icon in the row since they are the same size
             // within a row
             return (isIconViewType(item.viewType) && item.rowAppIndex != 0)
@@ -205,6 +209,10 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
             if (totalSpans % itemPerRow != 0) {
                 totalSpans *= itemPerRow;
             }
+        }
+        // LC: large folders of the Categories tab take half a row.
+        if (totalSpans % 2 != 0) {
+            totalSpans *= 2;
         }
         mGridLayoutMgr.setSpanCount(totalSpans);
     }
@@ -229,6 +237,8 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
             int viewType = items.get(position).viewType;
             if (isIconViewType(viewType)) {
                 return totalSpans / mAppsPerRow;
+            } else if (viewType == VIEW_TYPE_LARGE_FOLDER) {
+                return totalSpans / 2;
             } else {
                 if (mAdapterProvider.isViewSupported(viewType)) {
                     return totalSpans / mAdapterProvider.getItemsPerRow(viewType, mAppsPerRow);

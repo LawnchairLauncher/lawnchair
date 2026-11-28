@@ -146,6 +146,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import app.lawnchair.folder.BigItemsPage;
+import app.lawnchair.folder.LargeFolderController;
 import app.lawnchair.hotseat.HotseatPagedView;
 import app.lawnchair.gestures.PanToMoveController;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
@@ -736,13 +738,39 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // insert it before that.
         int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
         if (insertIndex < 0) {
+            insertIndex = getDefaultInsertIndex(screenId);
+        }
+        if (screenId == BIG_ITEMS_SCREEN_ID) {
             insertIndex = mScreenOrder.size();
         }
         insertNewWorkspaceScreen(screenId, insertIndex);
     }
 
     public void insertNewWorkspaceScreen(int screenId) {
-        insertNewWorkspaceScreen(screenId, getChildCount());
+        int insertIndex = getDefaultInsertIndex(screenId);
+        // Lawnchair: a page inserted before the big items page must not move the user away from
+        // the page they are looking at (e.g. the extra empty page added while dragging).
+        boolean shiftCurrentPage = insertIndex < getChildCount() && insertIndex <= getNextPage();
+        insertNewWorkspaceScreen(screenId, insertIndex);
+        if (shiftCurrentPage) {
+            setCurrentPage(getNextPage() + 1);
+        }
+    }
+
+    /**
+     * Lawnchair: new pages go to the end, but before the big items page which always stays last.
+     */
+    private int getDefaultInsertIndex(int screenId) {
+        int bigIndex = mScreenOrder.indexOf(BIG_ITEMS_SCREEN_ID);
+        if (screenId != BIG_ITEMS_SCREEN_ID && bigIndex >= 0) {
+            return bigIndex;
+        }
+        return getChildCount();
+    }
+
+    /** Lawnchair: Returns true if the given layout is the big items page. */
+    public boolean isBigItemsPage(@Nullable CellLayout layout) {
+        return layout != null && mWorkspaceScreens.get(BIG_ITEMS_SCREEN_ID) == layout;
     }
 
     public CellLayout insertNewWorkspaceScreen(int screenId, int insertIndex) {
@@ -802,8 +830,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 lastChildOnScreen = true;
             }
             CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
+            // Lawnchair: the final regular page is the one before the big items page.
+            int finalPageIndex = getPageCount() - 1;
+            int bigIndex = mScreenOrder.indexOf(BIG_ITEMS_SCREEN_ID);
+            if (bigIndex > 0 && bigIndex == finalPageIndex) {
+                finalPageIndex--;
+            }
             if (!FOLDABLE_SINGLE_PAGE.get() && getLeftmostVisiblePageForIndex(indexOfChild(cl))
-                    == getLeftmostVisiblePageForIndex(getPageCount() - 1)) {
+                    == getLeftmostVisiblePageForIndex(finalPageIndex)) {
                 childOnFinalScreen = true;
             }
         }
@@ -875,6 +909,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // depends on the panel count.
         for (int pageIndex = pageCount - panelCount; pageIndex < pageCount; pageIndex++) {
             int screenId = mScreenOrder.get(pageIndex);
+            if (screenId == BIG_ITEMS_SCREEN_ID) {
+                // Lawnchair: the big items page is never turned into an extra empty page.
+                return;
+            }
             CellLayout screen = mWorkspaceScreens.get(screenId);
             if (screen == null || screen.getShortcutsAndWidgets().getChildCount() != 0
                     || screen.isDropPending()) {
@@ -940,8 +978,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         convertFinalScreenToEmptyScreenIfNecessary();
         // Then we remove the extra page(s) if they are not the only pages left in Workspace.
         if (hasExtraEmptyScreens()) {
+            // Lawnchair: extra pages may sit before the current page (before the big items page).
+            final int nextPage = getNextPage();
+            final int[] removedBefore = {0};
             forEachExtraEmptyPageId(extraEmptyPageId -> {
-                removeView(mWorkspaceScreens.get(extraEmptyPageId));
+                CellLayout extraPage = mWorkspaceScreens.get(extraEmptyPageId);
+                if (extraPage != null && indexOfChild(extraPage) < nextPage) {
+                    removedBefore[0]++;
+                }
+                removeView(extraPage);
                 mWorkspaceScreens.remove(extraEmptyPageId);
                 mScreenOrder.removeValue(extraEmptyPageId);
             });
@@ -949,7 +994,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             // Since we removed some screens, before moving to next page, update the state
             // description with correct page numbers.
             updateAccessibilityViewPageDescription();
-            setCurrentPage(getNextPage());
+            setCurrentPage(Math.max(0, nextPage - removedBefore[0]));
 
             // Update the page indicator to reflect the removed page.
             showPageIndicatorAtCurrentScroll();
@@ -997,6 +1042,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     private int commitExtraEmptyScreen(int emptyScreenId) {
         CellLayout cl = mWorkspaceScreens.get(emptyScreenId);
+        // Lawnchair: keep the page where it is (e.g. before the big items page).
+        int orderIndex = mScreenOrder.indexOf(emptyScreenId);
         mWorkspaceScreens.remove(emptyScreenId);
         mScreenOrder.removeValue(emptyScreenId);
 
@@ -1009,7 +1056,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         }
 
         mWorkspaceScreens.put(newScreenId, cl);
-        mScreenOrder.add(newScreenId);
+        if (orderIndex >= 0 && orderIndex <= mScreenOrder.size()) {
+            mScreenOrder.add(orderIndex, newScreenId);
+        } else {
+            mScreenOrder.add(newScreenId);
+        }
         persistCurrentScreenOrderSync();
 
         return newScreenId;
@@ -1131,6 +1182,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         for (int i = 0; i < total; i++) {
             int id = mWorkspaceScreens.keyAt(i);
             CellLayout cl = mWorkspaceScreens.valueAt(i);
+            // Lawnchair: the big items page stays while it's enabled, even when empty.
+            if (id == BIG_ITEMS_SCREEN_ID && PreferenceCacheExtensionsKt.firstCached(
+                    mPreferenceManager2.getBigItemsPage())) {
+                continue;
+            }
             // FIRST_SCREEN_ID can never be removed.
             if (shouldPreserveEmptyScreenWhenStripping(
                     id, persistedScreenIds, isExtraEmptyScreen(id))) {
@@ -1162,6 +1218,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // In the case that we remove the last such screen(s), we convert the last screen(s)
         // to the empty screen(s)
         int minScreens = getPanelCount();
+        // Lawnchair: the big items page doesn't count as a page to add regular items to.
+        if (mWorkspaceScreens.containsKey(BIG_ITEMS_SCREEN_ID)
+                && !removeScreens.contains(BIG_ITEMS_SCREEN_ID)) {
+            minScreens++;
+        }
 
         int pageShift = 0;
         for (int i = 0; i < removeScreens.size(); i++) {
@@ -1185,7 +1246,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                         // in a two panel scenario when there are only two empty pages left
                         : EXTRA_EMPTY_SCREEN_ID;
                 mWorkspaceScreens.put(extraScreenId, cl);
-                mScreenOrder.add(extraScreenId);
+                // Lawnchair: keep the screen order in sync with the page (it may sit before the
+                // big items page).
+                int childIndex = indexOfChild(cl);
+                if (childIndex >= 0 && childIndex < mScreenOrder.size()) {
+                    mScreenOrder.add(childIndex, extraScreenId);
+                } else {
+                    mScreenOrder.add(extraScreenId);
+                }
             }
         }
 
@@ -2008,6 +2076,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
             return null;
         }
+        // Lawnchair: long-pressing a desktop folder offers switching between regular / large.
+        if (child instanceof FolderIcon folderIcon && !dragOptions.isAccessibleDrag
+                && dragOptions.preDragCondition == null
+                && LargeFolderController.canResize(folderIcon)) {
+            dragOptions.preDragCondition =
+                    LargeFolderController.showResizePopup(mLauncher, folderIcon);
+        }
         if (dragOptions.preDragCondition != null) {
             int xDragOffSet = dragOptions.preDragCondition.getDragOffset().x;
             int yDragOffSet = dragOptions.preDragCondition.getDragOffset().y;
@@ -2058,6 +2133,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public boolean acceptDrop(DragObject d) {
         // If it's an external drop (e.g. from All Apps), check if it should be accepted
         CellLayout dropTargetLayout = mDropToLayout;
+        // Lawnchair: large folders only live on the desktop.
+        if (dropTargetLayout != null && mLauncher.isHotseatLayout(dropTargetLayout)
+                && d.dragInfo instanceof FolderInfo folderInfo && folderInfo.isLargeFolder()) {
+            return false;
+        }
         if (d.dragSource != this) {
             // Don't accept the drop if we're not over a valid drop target at time of drop
             if (dropTargetLayout == null) {
@@ -2220,6 +2300,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             destInfo.cellY = -1;
             sourceInfo.cellX = -1;
             sourceInfo.cellY = -1;
+            // Lawnchair: enlarged apps become regular icons inside folders, and folders created
+            // on the big items page become large folders.
+            BigItemsPage.resetSpan(destInfo);
+            BigItemsPage.resetSpan(sourceInfo);
+            if (isBigItemsPage(target)) {
+                BigItemsPage.enlargeFolderLater(mLauncher, fi);
+            }
 
             // If the dragView is null, we can't animate
             boolean animate = d != null;
@@ -2250,6 +2337,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
             if (fi.acceptDrop(d.dragInfo)) {
+                // Lawnchair: enlarged apps become regular icons inside folders.
+                BigItemsPage.resetSpan(d.dragInfo);
                 mStatsLogManager.logger().withItemInfo(fi.mInfo).withInstanceId(d.logInstanceId)
                         .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED_ON_FOLDER_ICON);
                 fi.onDrop(d, false /* itemReturnedOnFailedDrop */);
@@ -2295,6 +2384,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             boolean droppedOnOriginalCellDuringTransition = false;
 
             if (dropTargetLayout != null && !d.cancelled) {
+                // Lawnchair: enlarged apps only exist on the big items page.
+                if (!isBigItemsPage(dropTargetLayout) && BigItemsPage.resetSpan(d.dragInfo)) {
+                    mDragInfo.spanX = 1;
+                    mDragInfo.spanY = 1;
+                }
                 // Move internally
                 boolean hasMovedLayouts = (getParentCellLayoutForView(cell) != dropTargetLayout);
                 boolean hasMovedIntoHotseat = mLauncher.isHotseatLayout(dropTargetLayout);
@@ -2400,6 +2494,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     lp.cellHSpan = item.spanX;
                     lp.cellVSpan = item.spanY;
                     lp.isLockedToGrid = true;
+                    // Lawnchair: the span of an enlarged app may have changed.
+                    cell.requestLayout();
 
                     if (container != CONTAINER_HOTSEAT
                             && cell instanceof LauncherAppWidgetHostView) {
@@ -2411,6 +2507,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     }
                     mLauncher.getModelWriter().modifyItemInDatabase(info, container, screenId,
                             lp.getCellX(), lp.getCellY(), item.spanX, item.spanY);
+                    // Lawnchair: folders moved to the big items page become large folders.
+                    if (isBigItemsPage(dropTargetLayout) && cell instanceof FolderIcon fi) {
+                        BigItemsPage.enlargeFolderLater(mLauncher, fi);
+                    }
                 } else {
                     if (!returnToOriginalCellToPreventShuffling) {
                         onNoCellFound(dropTargetLayout, d.dragInfo, d.logInstanceId);
@@ -3206,6 +3306,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             //  needed values instead of choosing on each case what to modify.
             View view = mLauncher.getItemInflater().inflateItem(info, cellLayout, container);
             d.dragInfo = info = (ItemInfo) view.getTag();
+            // Lawnchair: items dropped from outside (e.g. a folder) always start as 1x1.
+            BigItemsPage.resetSpan(info);
 
             // First we find the cell nearest to point at which the item is
             // dropped, without any consideration to whether there is an item there.
@@ -3650,6 +3752,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (!reordered.contains(existingId)) {
                 reordered.add(existingId);
             }
+        }
+        // Lawnchair: the big items page is always the last page.
+        if (reordered.contains(BIG_ITEMS_SCREEN_ID)) {
+            reordered.removeValue(BIG_ITEMS_SCREEN_ID);
+            reordered.add(BIG_ITEMS_SCREEN_ID);
         }
         mScreenOrder.clear();
         mScreenOrder.addAll(reordered);

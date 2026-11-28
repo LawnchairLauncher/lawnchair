@@ -37,7 +37,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.content.res.Resources;
+import android.graphics.drawable.GradientDrawable;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -57,6 +62,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.MSDLPlayerWrapper;
 import com.google.android.msdl.data.model.MSDLToken;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
@@ -167,7 +173,22 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
             RectF targetRect,
             List<OptionItem> items,
             boolean shouldAddArrow) {
-        return show(activityContext, targetRect, items, shouldAddArrow, 0 /* width */);
+        return show(activityContext, targetRect, items, Collections.emptyList(), shouldAddArrow,
+                0 /* width */);
+    }
+
+    /**
+     * Lawnchair: shows the popup with the given rows plus a row of icon-only actions at its end
+     * (like the system shortcut icons of an app popup).
+     */
+    public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
+            ActivityContext activityContext,
+            RectF targetRect,
+            List<OptionItem> items,
+            List<OptionItem> iconOnlyItems,
+            boolean shouldAddArrow) {
+        return show(activityContext, targetRect, items, iconOnlyItems, shouldAddArrow,
+                0 /* width */);
     }
 
     @Nullable
@@ -175,6 +196,7 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
             @Nullable ActivityContext activityContext,
             RectF targetRect,
             List<OptionItem> items,
+            List<OptionItem> iconOnlyItems,
             boolean shouldAddArrow,
             int width) {
         if (activityContext == null) {
@@ -195,6 +217,39 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
             view.setOnClickListener(popup);
             view.setOnLongClickListener(popup);
             popup.mItemMap.put(view, item);
+        }
+        if (!iconOnlyItems.isEmpty()) {
+            // Lawnchair: icon-only actions are shown as a row of round buttons.
+            Resources res = popup.getResources();
+            int size = res.getDimensionPixelSize(R.dimen.system_shortcut_header_icon_touch_size);
+            int gap = res.getDimensionPixelSize(R.dimen.popup_margin) * 4;
+            float elevation = res.getDimension(R.dimen.deep_shortcuts_elevation);
+            LinearLayout row = new LinearLayout(popup.getContext());
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setClipToPadding(false);
+            row.setClipChildren(false);
+            for (int i = 0; i < iconOnlyItems.size(); i++) {
+                OptionItem item = iconOnlyItems.get(i);
+                ImageView view = (ImageView) LayoutInflater.from(popup.getContext())
+                        .inflate(R.layout.system_shortcut_icon_only, row, false);
+                GradientDrawable circle = new GradientDrawable();
+                circle.setShape(GradientDrawable.OVAL);
+                circle.setColor(popup.mColors[0]);
+                view.setBackground(circle);
+                view.setElevation(elevation);
+                view.setImageDrawable(item.icon);
+                view.setContentDescription(item.label);
+                view.setOnClickListener(popup);
+                view.setOnLongClickListener(popup);
+                popup.mItemMap.put(view, item);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(size, size);
+                if (i > 0) {
+                    lp.setMarginStart(gap);
+                }
+                row.addView(view, lp);
+            }
+            popup.addView(row, new LinearLayout.LayoutParams(
+                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         }
 
         popup.show();

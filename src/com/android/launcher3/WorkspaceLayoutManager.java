@@ -43,6 +43,11 @@ public interface WorkspaceLayoutManager {
     IntSet EXTRA_EMPTY_SCREEN_IDS =
             IntSet.wrap(EXTRA_EMPTY_SCREEN_ID, EXTRA_EMPTY_SCREEN_SECOND_ID);
 
+    // Lawnchair: the screen id of the "big items" page, always shown as the last page. It only
+    // holds widgets, large folders and resizable apps. Negative so that it never collides with
+    // the ids handed out for new screens (max id + 1).
+    int BIG_ITEMS_SCREEN_ID = -300;
+
     // The is the first screen. It is always present, even if its empty.
     int FIRST_SCREEN_ID = 0;
 

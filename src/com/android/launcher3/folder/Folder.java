@@ -890,6 +890,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
+                if (mFolderIcon.isLargeFolderMode()) {
+                    // Lawnchair: the folder grows out of the large folder tile, which stays
+                    // hidden while the folder is open.
+                    mFolderIcon.clearLargeFolderLaunchState();
+                    mFolderIcon.setIconVisible(false);
+                    return;
+                }
                 mFolderIcon.setIconVisible(false);
                 mFolderIcon.drawLeaveBehindIfExists();
             }
@@ -972,6 +979,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private FolderAnimationCreator getFolderAnimationManager() {
+        if (mFolderIcon != null && mFolderIcon.isLargeFolderMode()) {
+            // Lawnchair: the preview-morph animations assume a regular 1x1 folder icon.
+            return new LargeFolderAnimationManager(this);
+        }
         boolean shouldUseSpringMotion = Flags.enableLauncherIconShapes()
                 && Flags.enableExpressiveFolderExpansion();
         if (shouldUseSpringMotion) {

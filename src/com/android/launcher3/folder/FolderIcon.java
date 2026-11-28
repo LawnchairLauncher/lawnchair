@@ -31,6 +31,7 @@ import static com.android.launcher3.model.data.FolderInfo.willAcceptItemType;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -43,12 +44,15 @@ import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.VelocityTracker;
+import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.Alarm;
@@ -77,6 +81,7 @@ import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppPairInfo;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.LabelState;
 import com.android.launcher3.model.data.ItemInfo;
@@ -88,7 +93,10 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.FloatingIconViewCompanion;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
+import app.lawnchair.util.LawnchairUtilsKt;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -140,6 +148,44 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     private Rect mTouchArea = new Rect();
 
     private float mScaleForReorderBounce = 1f;
+
+    // Lawnchair: large folder support. A large folder spans several cells and shows its first
+    // items as directly launchable icons. Remaining items either go to an overflow slot that
+    // opens the folder, or the tile scrolls (see FolderInfo#FLAG_LARGE_FOLDER_SCROLL).
+    private static final float LARGE_TILE_PADDING_FACTOR = 0.06f;
+    private static final float LARGE_ICON_SLOT_FACTOR = 0.80f;
+    private static final float LARGE_OVERFLOW_ICON_FACTOR = 0.80f;
+    private static final float LARGE_PRESSED_SCALE = 0.88f;
+    private static final float LARGE_CORNER_FACTOR = 0.3f;
+    private static final int LARGE_OVERFLOW_PREVIEW_COUNT = 4;
+    private static final int LARGE_SCROLL_SETTLE_DURATION = 250;
+    private static final float LARGE_SCROLL_FLING_FACTOR = 0.15f;
+    private final Rect mLargeTileRect = new Rect();
+    private final Rect mLargeViewport = new Rect();
+    private float mLargeSlotWidth;
+    private float mLargeSlotHeight;
+    private int mLargeSlotIconSize;
+    private final ArrayList<PreviewItemDrawingParams> mLargeItems = new ArrayList<>();
+    private final ArrayList<PreviewItemDrawingParams> mLargeOverflowItems = new ArrayList<>();
+    private final Paint mLargeTilePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mLargeIndicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Rect mTmpRect = new Rect();
+    private final Rect mTmpRect2 = new Rect();
+    private boolean mLargeHasOverflow;
+    private int mSmallLabelTopMargin;
+    private int mLargePressedSlot = -1;
+    private int mLargeTouchedSlot = -1;
+    private int mLargeLaunchSlot = -1;
+    private int mLargeHiddenSlot = -1;
+    private boolean mLargeAccepting;
+    private float mLargeScrollOffset;
+    private float mLargeScrollStartOffset;
+    private float mLargeDownX;
+    private float mLargeDownY;
+    private boolean mLargeScrolling;
+    private boolean mLargeDisallowingIntercept;
+    @Nullable private VelocityTracker mLargeVelocityTracker;
+    @Nullable private ValueAnimator mLargeScrollAnimator;
 
     private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "dotScale") {
@@ -216,6 +262,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         } else {
             lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
         }
+        icon.mSmallLabelTopMargin = lp.topMargin;
 
         icon.setTag(folderInfo);
         icon.setOnClickListener(activity.getItemOnClickListener());
@@ -231,6 +278,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         icon.mPreviewVerifier = createFolderGridOrganizer(activity.getDeviceProfile());
         icon.mPreviewVerifier.setFolderInfo(folderInfo);
         icon.updatePreviewItems(false);
+        icon.rebuildLargeFolderItems();
 
         return icon;
     }
@@ -245,6 +293,17 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     }
 
     public void getPreviewBounds(Rect outBounds) {
+        if (isLargeFolderMode()) {
+            // While an app launched from the large folder animates, it originates from (and
+            // returns to) its own slot rather than the whole tile.
+            ensureLargeFolderLayout();
+            if (mLargeLaunchSlot >= 0 && mLargeLaunchSlot < getLargeSlotCount()) {
+                getLargeSlotIconRect(mLargeLaunchSlot, outBounds);
+            } else {
+                outBounds.set(mLargeTileRect);
+            }
+            return;
+        }
         mPreviewItemManager.recomputePreviewDrawingParams();
         mBackground.getBounds(outBounds);
         // The preview items go outside of the bounds of the background.
@@ -273,10 +332,14 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     public void onDragEnter(ItemInfo dragInfo) {
         if (mFolder.isDestroyed() || !willAcceptItem(dragInfo)) return;
-        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) getLayoutParams();
-        CellLayout cl = (CellLayout) getParent().getParent();
-
-        mBackground.animateToAccept(cl, lp.getCellX(), lp.getCellY());
+        if (isLargeFolderMode()) {
+            mLargeAccepting = true;
+            invalidate();
+        } else {
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) getLayoutParams();
+            CellLayout cl = (CellLayout) getParent().getParent();
+            mBackground.animateToAccept(cl, lp.getCellX(), lp.getCellY());
+        }
         mOpenAlarm.setOnAlarmListener(mOnOpenListener);
         if (SPRING_LOADING_ENABLED &&
                 ((dragInfo instanceof WorkspaceItemFactory)
@@ -318,6 +381,10 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     }
 
     public void onDragExit() {
+        if (mLargeAccepting) {
+            mLargeAccepting = false;
+            invalidate();
+        }
         mBackground.animateToRest();
         mOpenAlarm.cancelAlarm();
     }
@@ -554,6 +621,22 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     }
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
+        if (isLargeFolderMode()) {
+            computeLargeFolderLayout(getWidth(), getHeight());
+            int slot = Math.min(index, getLargeSlotCount() - 1);
+            Rect r = mTmpRect;
+            if (slot >= 0) {
+                getLargeSlotIconRect(slot, r);
+            }
+            if (slot < 0 || !Rect.intersects(r, mLargeViewport)) {
+                center[0] = mLargeTileRect.centerX();
+                center[1] = mLargeTileRect.centerY();
+                return (float) mLargeSlotIconSize / mActivity.getDeviceProfile().iconSizePx;
+            }
+            center[0] = r.centerX();
+            center[1] = r.centerY();
+            return (float) r.width() / mActivity.getDeviceProfile().iconSizePx;
+        }
         mTmpParams = mPreviewItemManager.computePreviewItemDrawingParams(
                 Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index), curNumItems, mTmpParams);
 
@@ -576,6 +659,13 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     @Override
     public void setIconVisible(boolean visible) {
+        if (isLargeFolderMode() && mLargeLaunchSlot >= 0) {
+            // An app launched from a large folder: only hide the slot it is animating from.
+            mLargeHiddenSlot = visible ? -1 : mLargeLaunchSlot;
+            invalidate();
+            return;
+        }
+        mLargeHiddenSlot = -1;
         mBackgroundIsVisible = visible;
         invalidate();
     }
@@ -597,6 +687,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         super.dispatchDraw(canvas);
 
         if (!mBackgroundIsVisible) return;
+
+        if (isLargeFolderMode()) {
+            drawLargeFolder(canvas);
+            return;
+        }
 
         mPreviewItemManager.recomputePreviewDrawingParams();
 
@@ -635,8 +730,36 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         }
     }
 
+    // Lawnchair: whether the label is vertically centered outside of large folder mode.
+    private Boolean mLabelCenterVertically = null;
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        FrameLayout.LayoutParams nameLp =
+                (FrameLayout.LayoutParams) mFolderName.getLayoutParams();
+        if (isLargeFolderMode()) {
+            int width = MeasureSpec.getSize(widthMeasureSpec);
+            int height = MeasureSpec.getSize(heightMeasureSpec);
+            computeLargeFolderLayout(width, height);
+            // The label sits below the tile, where the labels of the last covered row would be.
+            int labelTop = mLargeTileRect.bottom
+                    + mActivity.getDeviceProfile().iconDrawablePaddingPx;
+            nameLp.topMargin = labelTop - getPaddingTop();
+            // The label has no icon here: centering it vertically (as for an icon + label)
+            // would push the text up into the tile.
+            if (mLabelCenterVertically == null) {
+                mLabelCenterVertically = mFolderName.isCenterVertically();
+            }
+            mFolderName.setCenterVertically(false);
+            mFolderName.setPadding(mFolderName.getPaddingLeft(), 0,
+                    mFolderName.getPaddingRight(), mFolderName.getPaddingBottom());
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
+        if (mLabelCenterVertically != null) {
+            mFolderName.setCenterVertically(mLabelCenterVertically);
+        }
+        nameLp.topMargin = mSmallLabelTopMargin;
         boolean shouldCenterIcon = mActivity.getDeviceProfile().iconCenterVertically;
         if (shouldCenterIcon) {
             int iconSize = mActivity.getDeviceProfile().iconSizePx;
@@ -671,7 +794,8 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     @Override
     protected boolean verifyDrawable(@NonNull Drawable who) {
-        return mPreviewItemManager.verifyDrawable(who) || super.verifyDrawable(who);
+        return mPreviewItemManager.verifyDrawable(who) || isLargeFolderDrawable(who)
+                || super.verifyDrawable(who);
     }
 
     private void updatePreviewItems(boolean animate) {
@@ -685,9 +809,23 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
      */
     public void updatePreviewItems(Predicate<ItemInfo> itemCheck) {
         mPreviewItemManager.updatePreviewItems(itemCheck);
+        if (isLargeFolderMode()) {
+            for (PreviewItemDrawingParams p : mLargeItems) {
+                if (p.item != null && itemCheck.test(p.item)) {
+                    mPreviewItemManager.setDrawable(p, p.item);
+                }
+            }
+            for (PreviewItemDrawingParams p : mLargeOverflowItems) {
+                if (p.item != null && itemCheck.test(p.item)) {
+                    mPreviewItemManager.setDrawable(p, p.item);
+                }
+            }
+            invalidate();
+        }
     }
 
     public void onItemsChanged(boolean animate) {
+        rebuildLargeFolderItems();
         updatePreviewItems(false);
         updateDotInfo();
         setContentDescription(getAccessiblityTitle(mInfo.title));
@@ -708,6 +846,16 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
             return false;
         }
 
+        if (isLargeFolderMode() && handleLargeFolderTouch(event)) {
+            // Scrolling inside a large folder: cancel any pending click / long press.
+            MotionEvent cancel = MotionEvent.obtain(event);
+            cancel.setAction(MotionEvent.ACTION_CANCEL);
+            super.onTouchEvent(cancel);
+            mLongPressHelper.onTouchEvent(cancel);
+            cancel.recycle();
+            return true;
+        }
+
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         super.onTouchEvent(event);
@@ -720,6 +868,12 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
      * Returns true if the touch down at the provided position be ignored
      */
     protected boolean shouldIgnoreTouchDown(float x, float y) {
+        if (isLargeFolderMode()) {
+            // Tile plus the label below it.
+            mTouchArea.set(mLargeTileRect.left, mLargeTileRect.top, mLargeTileRect.right,
+                    getHeight());
+            return !mTouchArea.contains((int) x, (int) y);
+        }
         mTouchArea.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
                 getHeight() - getPaddingBottom());
         return !mTouchArea.contains((int) x, (int) y);
@@ -729,6 +883,16 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
     public void cancelLongPress() {
         super.cancelLongPress();
         mLongPressHelper.cancelLongPress();
+    }
+
+    @Override
+    public boolean performLongClick() {
+        // A long press never launches the touched slot afterwards.
+        mLargeTouchedSlot = -1;
+        setLargePressedSlot(-1);
+        // Let the drag layer receive the rest of the gesture so the folder can be dragged.
+        setLargeDisallowIntercept(false);
+        return super.performLongClick();
     }
 
     private boolean isInHotseat() {
@@ -751,6 +915,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     public void onFolderClose(int currentPage) {
         mPreviewItemManager.onFolderClose(currentPage);
+        if (isLargeFolderMode()) {
+            // Picks up icons that were updated (e.g. loaded in high-res) while the folder was open.
+            rebuildLargeFolderItems();
+            invalidate();
+        }
     }
 
     @Override
@@ -777,6 +946,10 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     @Override
     public void getWorkspaceVisualDragBounds(Rect bounds) {
+        if (isLargeFolderMode()) {
+            bounds.set(mLargeTileRect);
+            return;
+        }
         getPreviewBounds(bounds);
     }
 
@@ -802,6 +975,566 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         super.onHoverChanged(hovered);
         if (enableCursorHoverStates()) {
             mBackground.setHovered(hovered);
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------
+    // Lawnchair: large folders
+    // ---------------------------------------------------------------------------------------
+
+    /**
+     * Returns true if this icon is rendered as a large folder: a multi-cell tile whose items can
+     * be launched directly.
+     */
+    public boolean isLargeFolderMode() {
+        // Also the categories / folders of the app drawer's Categories tab (container NO_ID).
+        return mInfo != null && mInfo.isLargeFolder()
+                && (mInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                        || mInfo.container == ItemInfo.NO_ID);
+    }
+
+    /** Returns true if this large folder scrolls inside its tile instead of overflowing. */
+    public boolean isLargeFolderScrollMode() {
+        return isLargeFolderMode() && mInfo.hasOption(FolderInfo.FLAG_LARGE_FOLDER_SCROLL);
+    }
+
+    private boolean isLargeScrollHorizontal() {
+        return mInfo.hasOption(FolderInfo.FLAG_LARGE_FOLDER_SCROLL_HORIZONTAL);
+    }
+
+    /**
+     * Must be called after the folder's span or large folder options changed.
+     */
+    public void onLargeFolderSpanChanged() {
+        mLargeLaunchSlot = -1;
+        mLargeHiddenSlot = -1;
+        mLargeTouchedSlot = -1;
+        mLargePressedSlot = -1;
+        mLargeAccepting = false;
+        cancelLargeScrollAnimation();
+        mLargeScrollOffset = 0;
+        mLargeTileRect.setEmpty();
+        mLargeViewport.setEmpty();
+        rebuildLargeFolderItems();
+        if (!isLargeFolderMode()) {
+            updatePreviewItems(false);
+        }
+        requestLayout();
+        invalidate();
+    }
+
+    /**
+     * Returns the item to launch directly for the tap that triggered the current click, or null
+     * if the folder should be opened instead (overflow slot, empty slot, label or a non-touch
+     * click such as accessibility). Consumes the tap.
+     */
+    @Nullable
+    public WorkspaceItemInfo consumeLargeFolderTapTarget() {
+        return consumeLargeFolderTapItem() instanceof WorkspaceItemInfo wii ? wii : null;
+    }
+
+    /**
+     * Same as {@link #consumeLargeFolderTapTarget()}, but also returns the apps ({@code AppInfo})
+     * of the app drawer's large folders.
+     */
+    @Nullable
+    public ItemInfo consumeLargeFolderTapItem() {
+        int slot = mLargeTouchedSlot;
+        mLargeTouchedSlot = -1;
+        if (!isLargeFolderMode() || slot < 0 || slot >= mLargeItems.size()) {
+            return null;
+        }
+        ItemInfo item = mLargeItems.get(slot).item;
+        if (item instanceof WorkspaceItemInfo || item instanceof AppInfo) {
+            mLargeLaunchSlot = slot;
+            return item;
+        }
+        return null;
+    }
+
+    /**
+     * Clears the state of a previous direct launch, e.g. when the folder itself is opened.
+     */
+    public void clearLargeFolderLaunchState() {
+        if (mLargeLaunchSlot != -1 || mLargeHiddenSlot != -1) {
+            mLargeLaunchSlot = -1;
+            mLargeHiddenSlot = -1;
+            invalidate();
+        }
+    }
+
+    /** Returns the corner radius of the large folder tile, in this view's coordinates. */
+    public float getLargeFolderCornerRadius() {
+        return Math.min(mActivity.getDeviceProfile().iconSizePx * LARGE_CORNER_FACTOR,
+                Math.min(mLargeTileRect.width(), mLargeTileRect.height()) / 2f);
+    }
+
+    private void rebuildLargeFolderItems() {
+        mLargeItems.clear();
+        mLargeOverflowItems.clear();
+        mLargeHasOverflow = false;
+        mLargeLaunchSlot = -1;
+        mLargeHiddenSlot = -1;
+        if (!isLargeFolderMode()) {
+            return;
+        }
+        ArrayList<ItemInfo> contents = new ArrayList<>(mInfo.getContents());
+        contents.sort(Comparator.comparingInt(item -> item.rank));
+        if (isLargeFolderScrollMode()) {
+            for (ItemInfo item : contents) {
+                mLargeItems.add(newLargeFolderParams(item));
+            }
+            clampLargeScroll();
+            return;
+        }
+        int slots = Math.max(1, mInfo.spanX * mInfo.spanY);
+        mLargeHasOverflow = contents.size() > slots;
+        int direct = mLargeHasOverflow ? slots - 1 : contents.size();
+        for (int i = 0; i < direct; i++) {
+            mLargeItems.add(newLargeFolderParams(contents.get(i)));
+        }
+        if (mLargeHasOverflow) {
+            int end = Math.min(contents.size(), direct + LARGE_OVERFLOW_PREVIEW_COUNT);
+            for (int i = direct; i < end; i++) {
+                mLargeOverflowItems.add(newLargeFolderParams(contents.get(i)));
+            }
+        }
+    }
+
+    private PreviewItemDrawingParams newLargeFolderParams(ItemInfo item) {
+        PreviewItemDrawingParams p = new PreviewItemDrawingParams(0, 0, 1);
+        mPreviewItemManager.setDrawable(p, item);
+        return p;
+    }
+
+    private boolean isLargeFolderDrawable(Drawable who) {
+        for (PreviewItemDrawingParams p : mLargeItems) {
+            if (p.drawable == who) return true;
+        }
+        for (PreviewItemDrawingParams p : mLargeOverflowItems) {
+            if (p.drawable == who) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Lays out the tile so that it lines up with regular icons: it starts at the icon of the
+     * top-left covered cell and ends at the icon of the bottom-right covered cell.
+     */
+    private void computeLargeFolderLayout(int width, int height) {
+        if (width <= 0 || height <= 0 || mInfo == null) {
+            mLargeTileRect.setEmpty();
+            mLargeViewport.setEmpty();
+            return;
+        }
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        int spanX = Math.max(1, mInfo.spanX);
+        int spanY = Math.max(1, mInfo.spanY);
+        float cellWidth = (width - (spanX - 1f) * dp.cellLayoutBorderSpacePx.x) / spanX;
+        float cellHeight = (height - (spanY - 1f) * dp.cellLayoutBorderSpacePx.y) / spanY;
+
+        int iconSize = dp.iconSizePx;
+        Paint.FontMetrics fm = mFolderName.getPaint().getFontMetrics();
+        int textHeight = (int) Math.ceil(fm.bottom - fm.top);
+        int contentHeight = iconSize + dp.iconDrawablePaddingPx + textHeight;
+        int iconTop = dp.cellYPaddingPx >= 0
+                ? dp.cellYPaddingPx
+                : (int) Math.max(0, (cellHeight - contentHeight) / 2f);
+        int iconLeft = (int) Math.max(0, (cellWidth - iconSize) / 2f);
+        int tileBottom = Math.round(height - cellHeight + iconTop + iconSize);
+        if (mInfo.container == ItemInfo.NO_ID) {
+            // App drawer (Categories tab): keep the label below the tile inside this view.
+            tileBottom = Math.min(tileBottom,
+                    height - 2 * textHeight - 2 * dp.iconDrawablePaddingPx);
+        }
+        mLargeTileRect.set(iconLeft, iconTop, width - iconLeft,
+                Math.max(iconTop + iconSize, Math.min(height, tileBottom)));
+        int tileColor = LawnchairUtilsKt.resolveFolderPreviewColor(getContext());
+        mLargeTilePaint.setColor(tileColor);
+        boolean lightTile = ColorUtils.calculateLuminance(tileColor | 0xFF000000) > 0.5;
+        mLargeIndicatorPaint.setColor(lightTile ? 0x66000000 : 0x99FFFFFF);
+
+        int pad = Math.round(Math.min(mLargeTileRect.width(), mLargeTileRect.height())
+                * LARGE_TILE_PADDING_FACTOR);
+        mLargeViewport.set(mLargeTileRect.left + pad, mLargeTileRect.top + pad,
+                mLargeTileRect.right - pad, mLargeTileRect.bottom - pad);
+        mLargeSlotWidth = mLargeViewport.width() / (float) spanX;
+        mLargeSlotHeight = mLargeViewport.height() / (float) spanY;
+        mLargeSlotIconSize = Math.round(Math.min(
+                Math.min(mLargeSlotWidth, mLargeSlotHeight) * LARGE_ICON_SLOT_FACTOR, iconSize));
+        clampLargeScroll();
+    }
+
+    private void ensureLargeFolderLayout() {
+        if (mLargeViewport.isEmpty()) {
+            computeLargeFolderLayout(getWidth(), getHeight());
+        }
+    }
+
+    /** Number of touchable slots: all grid cells, or every item when scrolling. */
+    private int getLargeSlotCount() {
+        return isLargeFolderScrollMode()
+                ? mLargeItems.size()
+                : Math.max(1, mInfo.spanX * mInfo.spanY);
+    }
+
+    /** Bounds of the given slot in this view's coordinates, with the scroll applied. */
+    private void getLargeSlotRect(int slot, Rect out) {
+        int spanX = Math.max(1, mInfo.spanX);
+        int spanY = Math.max(1, mInfo.spanY);
+        float x;
+        float y;
+        if (isLargeFolderScrollMode() && isLargeScrollHorizontal()) {
+            int perPage = spanX * spanY;
+            int page = slot / perPage;
+            int inPage = slot % perPage;
+            x = (page * spanX + inPage % spanX) * mLargeSlotWidth - mLargeScrollOffset;
+            y = (inPage / spanX) * mLargeSlotHeight;
+        } else {
+            x = (slot % spanX) * mLargeSlotWidth;
+            y = (slot / spanX) * mLargeSlotHeight;
+            if (isLargeFolderScrollMode()) {
+                y -= mLargeScrollOffset;
+            }
+        }
+        float left = Utilities.isRtl(getResources())
+                ? mLargeViewport.right - x - mLargeSlotWidth
+                : mLargeViewport.left + x;
+        float top = mLargeViewport.top + y;
+        out.set(Math.round(left), Math.round(top), Math.round(left + mLargeSlotWidth),
+                Math.round(top + mLargeSlotHeight));
+    }
+
+    /** Bounds of the icon drawn in the given slot. */
+    private void getLargeSlotIconRect(int slot, Rect out) {
+        getLargeSlotRect(slot, out);
+        int left = out.centerX() - mLargeSlotIconSize / 2;
+        int top = out.centerY() - mLargeSlotIconSize / 2;
+        out.set(left, top, left + mLargeSlotIconSize, top + mLargeSlotIconSize);
+    }
+
+    private int getLargeSlotAt(float x, float y) {
+        ensureLargeFolderLayout();
+        if (!mLargeViewport.contains((int) x, (int) y)) {
+            return -1;
+        }
+        int count = getLargeSlotCount();
+        for (int i = 0; i < count; i++) {
+            getLargeSlotRect(i, mTmpRect);
+            if (mTmpRect.contains((int) x, (int) y)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private float getLargeMaxScroll() {
+        if (!isLargeFolderScrollMode() || mLargeViewport.isEmpty()) {
+            return 0;
+        }
+        int spanX = Math.max(1, mInfo.spanX);
+        int spanY = Math.max(1, mInfo.spanY);
+        int count = mLargeItems.size();
+        if (isLargeScrollHorizontal()) {
+            int perPage = spanX * spanY;
+            int pages = (count + perPage - 1) / perPage;
+            return Math.max(0, (pages - 1) * spanX * mLargeSlotWidth);
+        }
+        int rows = (count + spanX - 1) / spanX;
+        return Math.max(0, (rows - spanY) * mLargeSlotHeight);
+    }
+
+    /** Scroll snaps to whole pages (horizontal) or rows (vertical). */
+    private float getLargeScrollStep() {
+        return isLargeScrollHorizontal()
+                ? Math.max(1, mInfo.spanX) * mLargeSlotWidth
+                : mLargeSlotHeight;
+    }
+
+    private void clampLargeScroll() {
+        mLargeScrollOffset = Utilities.boundToRange(mLargeScrollOffset, 0f, getLargeMaxScroll());
+    }
+
+    private void cancelLargeScrollAnimation() {
+        if (mLargeScrollAnimator != null) {
+            mLargeScrollAnimator.cancel();
+            mLargeScrollAnimator = null;
+        }
+    }
+
+    private void settleLargeScroll(float velocity) {
+        float step = getLargeScrollStep();
+        float projected = mLargeScrollOffset - velocity * LARGE_SCROLL_FLING_FACTOR;
+        float target = step > 0 ? Math.round(projected / step) * step : projected;
+        target = Utilities.boundToRange(target, 0f, getLargeMaxScroll());
+        cancelLargeScrollAnimation();
+        if (Math.abs(target - mLargeScrollOffset) < 0.5f) {
+            mLargeScrollOffset = target;
+            invalidate();
+            return;
+        }
+        mLargeScrollAnimator = ValueAnimator.ofFloat(mLargeScrollOffset, target);
+        mLargeScrollAnimator.setDuration(LARGE_SCROLL_SETTLE_DURATION);
+        mLargeScrollAnimator.setInterpolator(Interpolators.DECELERATE_2);
+        mLargeScrollAnimator.addUpdateListener(anim -> {
+            mLargeScrollOffset = (float) anim.getAnimatedValue();
+            invalidate();
+        });
+        mLargeScrollAnimator.start();
+    }
+
+    private void setLargeDisallowIntercept(boolean disallow) {
+        if (mLargeDisallowingIntercept != disallow) {
+            mLargeDisallowingIntercept = disallow;
+            if (getParent() != null) {
+                getParent().requestDisallowInterceptTouchEvent(disallow);
+            }
+        }
+    }
+
+    /**
+     * Handles slot presses and in-tile scrolling. Returns true while the gesture is a scroll, in
+     * which case the event must not be used for clicks / long presses.
+     */
+    private boolean handleLargeFolderTouch(MotionEvent event) {
+        float x = event.getX();
+        float y = event.getY();
+        boolean horizontal = isLargeScrollHorizontal();
+        // In RTL, horizontal content is mirrored, so dragging right scrolls forward.
+        float direction = horizontal && Utilities.isRtl(getResources()) ? -1f : 1f;
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mLargeLaunchSlot = -1;
+                mLargeHiddenSlot = -1;
+                mLargeScrolling = false;
+                cancelLargeScrollAnimation();
+                mLargeTouchedSlot = getLargeSlotAt(x, y);
+                setLargePressedSlot(mLargeTouchedSlot);
+                if (isLargeFolderScrollMode() && getLargeMaxScroll() > 0) {
+                    mLargeDownX = x;
+                    mLargeDownY = y;
+                    mLargeScrollStartOffset = mLargeScrollOffset;
+                    if (mLargeVelocityTracker == null) {
+                        mLargeVelocityTracker = VelocityTracker.obtain();
+                    } else {
+                        mLargeVelocityTracker.clear();
+                    }
+                    mLargeVelocityTracker.addMovement(event);
+                    // Keep the workspace / swipe gestures from stealing the scroll; released
+                    // again below if the gesture turns out not to be a scroll.
+                    setLargeDisallowIntercept(true);
+                }
+                return false;
+            case MotionEvent.ACTION_MOVE: {
+                if (!mLargeDisallowingIntercept && !mLargeScrolling) {
+                    return false;
+                }
+                if (mLargeVelocityTracker != null) {
+                    mLargeVelocityTracker.addMovement(event);
+                }
+                float along = (horizontal ? x - mLargeDownX : y - mLargeDownY) * direction;
+                float cross = horizontal ? y - mLargeDownY : x - mLargeDownX;
+                if (!mLargeScrolling) {
+                    int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+                    if (Math.abs(along) > slop && Math.abs(along) >= Math.abs(cross)) {
+                        boolean canScroll = along < 0
+                                ? mLargeScrollOffset < getLargeMaxScroll()
+                                : mLargeScrollOffset > 0;
+                        if (!canScroll) {
+                            setLargeDisallowIntercept(false);
+                            return false;
+                        }
+                        mLargeScrolling = true;
+                        mLargeTouchedSlot = -1;
+                        setLargePressedSlot(-1);
+                        mLargeDownX = x;
+                        mLargeDownY = y;
+                        mLargeScrollStartOffset = mLargeScrollOffset;
+                        return true;
+                    } else if (Math.abs(cross) > slop) {
+                        setLargeDisallowIntercept(false);
+                        return false;
+                    }
+                    return false;
+                }
+                mLargeScrollOffset = Utilities.boundToRange(
+                        mLargeScrollStartOffset - along, 0f, getLargeMaxScroll());
+                invalidate();
+                return true;
+            }
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL: {
+                boolean wasScrolling = mLargeScrolling;
+                if (wasScrolling) {
+                    float velocity = 0;
+                    if (mLargeVelocityTracker != null) {
+                        mLargeVelocityTracker.addMovement(event);
+                        mLargeVelocityTracker.computeCurrentVelocity(1000);
+                        velocity = (horizontal ? mLargeVelocityTracker.getXVelocity()
+                                : mLargeVelocityTracker.getYVelocity()) * direction;
+                    }
+                    settleLargeScroll(velocity);
+                }
+                mLargeScrolling = false;
+                setLargeDisallowIntercept(false);
+                if (event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+                    mLargeTouchedSlot = -1;
+                }
+                setLargePressedSlot(-1);
+                return wasScrolling;
+            }
+        }
+        return mLargeScrolling;
+    }
+
+    private void setLargePressedSlot(int slot) {
+        if (mLargePressedSlot != slot) {
+            mLargePressedSlot = slot;
+            invalidate();
+        }
+    }
+
+    private void drawLargeFolder(Canvas canvas) {
+        ensureLargeFolderLayout();
+        if (mLargeViewport.isEmpty()) return;
+        int saveCount = canvas.save();
+        if (mLargeAccepting) {
+            canvas.scale(1.04f, 1.04f, mLargeTileRect.exactCenterX(),
+                    mLargeTileRect.exactCenterY());
+        }
+        float radius = getLargeFolderCornerRadius();
+        canvas.drawRoundRect(mLargeTileRect.left, mLargeTileRect.top, mLargeTileRect.right,
+                mLargeTileRect.bottom, radius, radius, mLargeTilePaint);
+
+        boolean scroll = isLargeFolderScrollMode();
+        if (scroll) {
+            canvas.save();
+            canvas.clipRect(mLargeViewport);
+        }
+        // Directly launchable items
+        int count = Math.min(mLargeItems.size(), getLargeSlotCount());
+        for (int i = 0; i < count; i++) {
+            if (i == mLargeHiddenSlot) continue;
+            getLargeSlotIconRect(i, mTmpRect);
+            if (scroll && !Rect.intersects(mTmpRect, mLargeViewport)) continue;
+            int itemSave = canvas.save();
+            if (i == mLargePressedSlot) {
+                canvas.scale(LARGE_PRESSED_SCALE, LARGE_PRESSED_SCALE,
+                        mTmpRect.exactCenterX(), mTmpRect.exactCenterY());
+            }
+            drawLargeFolderItem(canvas, mLargeItems.get(i).drawable, mTmpRect);
+            canvas.restoreToCount(itemSave);
+            if (hasLargeFolderDot(mLargeItems.get(i).item)) {
+                drawLargeFolderDot(canvas, mTmpRect);
+            }
+        }
+        if (scroll) {
+            canvas.restore();
+            drawLargeScrollIndicator(canvas);
+        }
+
+        // Overflow slot: a mini grid of the following items, tapping it opens the folder.
+        if (mLargeHasOverflow && !scroll && mLargeItems.size() < getLargeSlotCount()) {
+            int slot = mLargeItems.size();
+            Rect slotRect = mTmpRect2;
+            getLargeSlotIconRect(slot, slotRect);
+            int overflowSave = canvas.save();
+            if (slot == mLargePressedSlot) {
+                canvas.scale(LARGE_PRESSED_SCALE, LARGE_PRESSED_SCALE,
+                        slotRect.exactCenterX(), slotRect.exactCenterY());
+            }
+            float cell = slotRect.width() / 2f;
+            int mini = Math.round(cell * LARGE_OVERFLOW_ICON_FACTOR);
+            boolean rtl = Utilities.isRtl(getResources());
+            for (int k = 0; k < mLargeOverflowItems.size(); k++) {
+                int col = rtl ? 1 - (k % 2) : k % 2;
+                int row = k / 2;
+                int cx = Math.round(slotRect.left + cell * (col + 0.5f));
+                int cy = Math.round(slotRect.top + cell * (row + 0.5f));
+                mTmpRect.set(cx - mini / 2, cy - mini / 2,
+                        cx - mini / 2 + mini, cy - mini / 2 + mini);
+                drawLargeFolderItem(canvas, mLargeOverflowItems.get(k).drawable, mTmpRect);
+            }
+            canvas.restoreToCount(overflowSave);
+            if (hasLargeOverflowDot()) {
+                drawLargeFolderDot(canvas, slotRect);
+            }
+        }
+        canvas.restoreToCount(saveCount);
+    }
+
+    /** A thin scroll bar in the tile's padding, showing where the scroll is. */
+    private void drawLargeScrollIndicator(Canvas canvas) {
+        float max = getLargeMaxScroll();
+        if (max <= 0 || mInfo.hasOption(FolderInfo.FLAG_LARGE_FOLDER_HIDE_SCROLL_BAR)) return;
+        int pad = mLargeViewport.left - mLargeTileRect.left;
+        float thickness = Math.min(3 * getResources().getDisplayMetrics().density, pad * 0.5f);
+        if (thickness <= 0) return;
+        float progress = mLargeScrollOffset / max;
+        if (isLargeScrollHorizontal()) {
+            float track = mLargeViewport.width();
+            float length = Math.max(thickness * 4, track * track / (track + max));
+            float start = mLargeViewport.left + (track - length)
+                    * (Utilities.isRtl(getResources()) ? 1 - progress : progress);
+            float cy = mLargeViewport.bottom + pad / 2f;
+            canvas.drawRoundRect(start, cy - thickness / 2, start + length, cy + thickness / 2,
+                    thickness / 2, thickness / 2, mLargeIndicatorPaint);
+        } else {
+            float track = mLargeViewport.height();
+            float length = Math.max(thickness * 4, track * track / (track + max));
+            float start = mLargeViewport.top + (track - length) * progress;
+            float cx = Utilities.isRtl(getResources())
+                    ? mLargeViewport.left - pad / 2f
+                    : mLargeViewport.right + pad / 2f;
+            canvas.drawRoundRect(cx - thickness / 2, start, cx + thickness / 2, start + length,
+                    thickness / 2, thickness / 2, mLargeIndicatorPaint);
+        }
+    }
+
+    private static void drawLargeFolderItem(Canvas canvas, @Nullable Drawable d, Rect bounds) {
+        if (d == null) return;
+        Rect oldBounds = d.copyBounds();
+        d.setBounds(bounds);
+        d.draw(canvas);
+        d.setBounds(oldBounds);
+    }
+
+    private boolean hasLargeFolderDot(@Nullable ItemInfo item) {
+        return item != null && !mForceHideDot && mActivity.getDotInfoForItem(item) != null;
+    }
+
+    private boolean hasLargeOverflowDot() {
+        if (mForceHideDot) return false;
+        for (ItemInfo item : mInfo.getContents()) {
+            boolean isDirect = false;
+            for (PreviewItemDrawingParams p : mLargeItems) {
+                if (p.item == item) {
+                    isDirect = true;
+                    break;
+                }
+            }
+            if (!isDirect && mActivity.getDotInfoForItem(item) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void drawLargeFolderDot(Canvas canvas, Rect iconRect) {
+        if (mDotRenderer == null) return;
+        mDotParams.iconBounds.set(iconRect);
+        mDotParams.scale = 1f;
+        mDotParams.dotColor = mBackground.getDotColor();
+        mDotRenderer.draw(canvas, mDotParams);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        cancelLargeScrollAnimation();
+        if (mLargeVelocityTracker != null) {
+            mLargeVelocityTracker.recycle();
+            mLargeVelocityTracker = null;
         }
     }
 
