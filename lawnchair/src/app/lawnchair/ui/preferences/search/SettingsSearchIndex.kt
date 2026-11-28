@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.search
 
+import app.lawnchair.ui.preferences.destinations.SearchRoute
 import app.lawnchair.ui.preferences.navigation.About
 import app.lawnchair.ui.preferences.navigation.AppDrawer
 import app.lawnchair.ui.preferences.navigation.BackupAndRestore
@@ -160,7 +161,7 @@ internal val settingsSearchEntries = listOf(
     SettingsSearchEntry("show_labels", null, "AppDrawer", "app_drawer_label", false),
     SettingsSearchEntry("label_size", null, "AppDrawer", "app_drawer_label", false),
     SettingsSearchEntry("twoline_label", null, "AppDrawer", "app_drawer_label", false),
-    SettingsSearchEntry("advanced", "pref_all_apps_remember_position_description", "AppDrawer", "app_drawer_label", true),
+    SettingsSearchEntry("advanced", null, "AppDrawer", "app_drawer_label", true),
     SettingsSearchEntry("pref_all_apps_remember_position_title", "pref_all_apps_remember_position_description", "AppDrawer", "app_drawer_label", false),
     SettingsSearchEntry("pref_all_apps_show_scrollbar_title", null, "AppDrawer", "app_drawer_label", false),
     SettingsSearchEntry("layout", null, "AppDrawer", "app_drawer_label", false),
@@ -168,32 +169,32 @@ internal val settingsSearchEntries = listOf(
     SettingsSearchEntry("app_drawer_haptic_feedback_label", null, "AppDrawer", "app_drawer_label", false),
     SettingsSearchEntry("search_bar_settings", null, "AppDrawer", "app_drawer_label", false),
     SettingsSearchEntry("search_bar_label", null, "AppDrawer", "app_drawer_label", true),
-    SettingsSearchEntry("search_bar_settings", null, "Search", "search_bar_label", true),
-    SettingsSearchEntry("search_provider", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("style", null, "Search", "search_bar_label", true),
-    SettingsSearchEntry("apply_accent_color_label", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("corner_radius_label", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("qsb_hotseat_background_transparency", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("qsb_hotseat_stroke_width", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("preview_label", null, "Search", "search_bar_label", true),
-    SettingsSearchEntry("hotseat_mode_label", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("show_app_search_bar", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("general_label", null, "Search", "search_bar_label", true),
-    SettingsSearchEntry("pref_search_auto_show_keyboard", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("allapps_match_qsb_style_label", "allapps_match_qsb_style_description", "Search", "search_bar_label", false),
-    SettingsSearchEntry("show_search_result_types", null, "Search", "search_bar_label", true),
-    SettingsSearchEntry("search_pref_result_apps_and_shortcuts_title", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("search_pref_result_shortcuts_title", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("search_pref_result_people_title", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("search_pref_result_tips_title", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("search_pref_result_settings_title", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("app_search_algorithm", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("search_pref_result_web_title", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("search_pref_result_files_title", "search_pref_result_files_description", "Search", "search_bar_label", false),
-    SettingsSearchEntry("search_pref_result_launcher_settings_title", "search_pref_result_launcher_settings_description", "Search", "search_bar_label", false),
-    SettingsSearchEntry("search_pref_result_history_title", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("all_apps_search_result_calculator", null, "Search", "search_bar_label", false),
-    SettingsSearchEntry("show_hidden_apps_in_search_results", null, "Search", "search_bar_label", false),
+    SettingsSearchEntry("search_bar_settings", null, "SearchDock", "search_bar_label", true),
+    SettingsSearchEntry("search_provider", null, "SearchDock", "search_bar_label", false),
+    SettingsSearchEntry("style", null, "SearchDock", "search_bar_label", true),
+    SettingsSearchEntry("apply_accent_color_label", null, "SearchDock", "search_bar_label", false),
+    SettingsSearchEntry("corner_radius_label", null, "SearchDock", "search_bar_label", false),
+    SettingsSearchEntry("qsb_hotseat_background_transparency", null, "SearchDock", "search_bar_label", false),
+    SettingsSearchEntry("qsb_hotseat_stroke_width", null, "SearchDock", "search_bar_label", false),
+    SettingsSearchEntry("preview_label", null, "SearchDock", "search_bar_label", true),
+    SettingsSearchEntry("hotseat_mode_label", null, "SearchDock", "search_bar_label", false),
+    SettingsSearchEntry("show_app_search_bar", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("general_label", null, "SearchDrawer", "search_bar_label", true),
+    SettingsSearchEntry("pref_search_auto_show_keyboard", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("allapps_match_qsb_style_label", "allapps_match_qsb_style_description", "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("show_search_result_types", null, "SearchDrawer", "search_bar_label", true),
+    SettingsSearchEntry("search_pref_result_apps_and_shortcuts_title", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("search_pref_result_shortcuts_title", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("search_pref_result_people_title", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("search_pref_result_tips_title", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("search_pref_result_settings_title", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("app_search_algorithm", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("search_pref_result_web_title", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("search_pref_result_files_title", "search_pref_result_files_description", "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("search_pref_result_launcher_settings_title", "search_pref_result_launcher_settings_description", "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("search_pref_result_history_title", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("all_apps_search_result_calculator", null, "SearchDrawer", "search_bar_label", false),
+    SettingsSearchEntry("show_hidden_apps_in_search_results", null, "SearchDrawer", "search_bar_label", false),
     SettingsSearchEntry("general_label", null, "Folders", "folders_label", true),
     SettingsSearchEntry("folder_shape_label", null, "Folders", "folders_label", false),
     SettingsSearchEntry("folder_preview_bg_opacity_label", null, "Folders", "folders_label", false),
@@ -280,6 +281,8 @@ internal fun settingsSearchRoute(screen: String): PreferenceRoute? = when (scree
     "Predictions" -> Predictions
     "Quickstep" -> Quickstep
     "Search" -> Search()
+    "SearchDock" -> Search(SearchRoute.DOCK_SEARCH)
+    "SearchDrawer" -> Search(SearchRoute.DRAWER_SEARCH)
     "Smartspace" -> Smartspace
     else -> null
 }

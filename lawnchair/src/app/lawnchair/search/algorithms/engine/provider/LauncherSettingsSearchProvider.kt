@@ -36,7 +36,9 @@ object LauncherSettingsSearchProvider : SearchProvider {
             val route = settingsSearchRoute(result.entry.screen) ?: return@mapNotNull null
             val intent = PreferenceActivity.createIntent(context, route)
                 .putExtra(PreferenceActivity.EXTRA_SEARCH_HIGHLIGHT, result.label)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                // A fresh settings task, so a later result does not just bring back the screen
+                // of an earlier one (the route and highlight are read when the activity starts).
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             SearchResult.Setting(
                 SettingInfo(
                     id = "launcher_${result.entry.screen}_${result.entry.label}",

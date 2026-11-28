@@ -25,6 +25,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceSearchScaffold
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.util.MSDLPlayerWrapper
 import com.google.android.msdl.data.model.MSDLToken
@@ -134,7 +135,18 @@ internal object SettingsSearchCatalog {
         return if (id == 0) null else getString(id)
     }
 
+    /**
+     * Settings that the index finds but that are only shown in some builds; the generator cannot
+     * see such conditions.
+     */
+    private fun isAvailable(entry: SettingsSearchEntry): Boolean = when (entry.label) {
+        // GeneralPreferences shows the auto updater only in nightly builds.
+        "auto_updater_label" -> BuildConfig.APPLICATION_ID.contains("nightly")
+        else -> true
+    }
+
     private fun load(context: Context): List<SettingsSearchResult> = settingsSearchEntries.mapNotNull { entry ->
+        if (!isAvailable(entry)) return@mapNotNull null
         val label = context.stringByName(entry.label) ?: return@mapNotNull null
         val title = context.stringByName(entry.screenTitle)
         SettingsSearchResult(
